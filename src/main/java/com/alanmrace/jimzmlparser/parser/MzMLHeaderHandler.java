@@ -19,7 +19,7 @@ import javax.xml.parsers.SAXParserFactory;
 import com.alanmrace.jimzmlparser.mzML.*;
 import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
-import imzMLConverter.InvalidMzML;
+import com.alanmrace.jimzmlparser.exceptions.InvalidMzML;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;

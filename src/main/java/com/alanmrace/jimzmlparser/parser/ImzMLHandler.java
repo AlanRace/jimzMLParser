@@ -13,8 +13,8 @@ import com.alanmrace.jimzmlparser.mzML.Binary;
 import com.alanmrace.jimzmlparser.mzML.BinaryDataArray;
 import com.alanmrace.jimzmlparser.mzML.CVParam;
 import com.alanmrace.jimzmlparser.obo.OBO;
-import imzMLConverter.InvalidImzML;
-import imzMLConverter.InvalidMzML;
+import com.alanmrace.jimzmlparser.exceptions.InvalidImzML;
+import com.alanmrace.jimzmlparser.exceptions.InvalidMzML;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

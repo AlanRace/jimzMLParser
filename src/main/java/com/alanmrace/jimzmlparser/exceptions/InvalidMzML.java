@@ -1,4 +1,4 @@
-package imzMLConverter;
+package com.alanmrace.jimzmlparser.exceptions;
 
 public class InvalidMzML extends RuntimeException {
 	/**
