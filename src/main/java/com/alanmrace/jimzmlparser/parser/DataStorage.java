@@ -47,8 +47,10 @@ public abstract class DataStorage {
 	
 	openFileInputStream();
 	
-	randomAccessFile.seek(offset);
-	randomAccessFile.read(buffer);
+        synchronized(randomAccessFile) {
+            randomAccessFile.seek(offset);
+            randomAccessFile.read(buffer);
+        }
 	
 	return buffer;
 		

@@ -21,6 +21,8 @@ import com.alanmrace.jimzmlparser.mzML.ScanSettings;
 import com.alanmrace.jimzmlparser.mzML.ScanSettingsList;
 import com.alanmrace.jimzmlparser.mzML.Spectrum;
 import com.alanmrace.jimzmlparser.mzML.SpectrumList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ImzML extends MzML implements Serializable {
 
@@ -366,41 +368,43 @@ public class ImzML extends MzML implements Serializable {
 //		return datacube;
 //	}
 //	
-//	public double[][] generateTICImage() {
-//		double[][] image = new double[getHeight()][getWidth()];
-//
+	public double[][] generateTICImage() {
+		double[][] image = new double[getHeight()][getWidth()];
+
 //		RandomAccessFile raf = null;
-//		
-//		for(Spectrum spectrum : getRun().getSpectrumList()) {
-//			int x = spectrum.getScanList().getScan(0).getCVParam(Scan.positionXID).getValueAsInteger() - 1;
-//			int y = spectrum.getScanList().getScan(0).getCVParam(Scan.positionYID).getValueAsInteger() - 1;				
-//			
-//			try {
-//				double tic = spectrum.getCVParam(Spectrum.totalIonCurrentID).getValueAsDouble();
-////				System.out.println(spectrum.getID());
-////				System.out.println(image.length + " - " + y);
-////				System.out.println("x -> " + image[y].length + " - " + x);
-//				image[y][x] = tic;
-//			} catch(NullPointerException ex) {
-//				try {
+		
+		for(Spectrum spectrum : getRun().getSpectrumList()) {
+			int x = spectrum.getScanList().getScan(0).getCVParam(Scan.positionXID).getValueAsInteger() - 1;
+			int y = spectrum.getScanList().getScan(0).getCVParam(Scan.positionYID).getValueAsInteger() - 1;				
+			
+			try {
+				double tic = spectrum.getCVParam(Spectrum.totalIonCurrentID).getValueAsDouble();
+//				System.out.println(spectrum.getID());
+//				System.out.println(image.length + " - " + y);
+//				System.out.println("x -> " + image[y].length + " - " + x);
+				image[y][x] = tic;
+			} catch(NullPointerException ex) {
+				try {
 //					if(raf == null)
 //						raf = new RandomAccessFile(ibdFile, "r");
-//					
-//					double[] intensityArray = spectrum.getIntensityArray(raf);				
-//					
-//					try {
-//						for(int i = 0; i < intensityArray.length; i++)
-//							image[y][x] += intensityArray[i];
-//					} catch(NullPointerException exception) {
-//						// Do nothing - no data
-//					}
-//				}catch (FileNotFoundException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//			}
-//		}
-//		
+					
+					double[] intensityArray = spectrum.getIntensityArray();				
+					
+					try {
+						for(int i = 0; i < intensityArray.length; i++)
+							image[y][x] += intensityArray[i];
+					} catch(NullPointerException exception) {
+						// Do nothing - no data
+					}
+				}catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+                            } catch (IOException ex1) {
+                                Logger.getLogger(ImzML.class.getName()).log(Level.SEVERE, null, ex1);
+                            }
+			}
+		}
+		
 //		if(raf != null) {
 //			try {
 //				raf.close();
@@ -409,9 +413,9 @@ public class ImzML extends MzML implements Serializable {
 //				e.printStackTrace();
 //			}
 //		}
-//		
-//		return image;
-//	}
+		
+		return image;
+	}
 //	
 //	public double[][] generateBasePeakMZImage() {
 //		double[][] image = new double[getHeight()][getWidth()];

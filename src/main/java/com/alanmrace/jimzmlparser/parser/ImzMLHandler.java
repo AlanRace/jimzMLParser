@@ -15,6 +15,8 @@ import com.alanmrace.jimzmlparser.mzML.CVParam;
 import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.exceptions.InvalidImzML;
 import com.alanmrace.jimzmlparser.exceptions.InvalidMzML;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -100,13 +102,15 @@ public class ImzMLHandler extends MzMLHeaderHandler {
         @Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		if(ibdFile != null && qName.equals("binaryDataArray")) {
-			CVParam dataType = currentBinaryDataArray.getCVParamOrChild(BinaryDataArray.dataTypeID);
+//			CVParam dataType = currentBinaryDataArray.getCVParamOrChild(BinaryDataArray.dataTypeID);
 			
-			if(dataType == null)
-				dataType = currentBinaryDataArray.getCVParamOrChild(BinaryDataArray.ibdDataType);
+//			if(dataType == null)
+//				dataType = currentBinaryDataArray.getCVParamOrChild(BinaryDataArray.ibdDataType);
 
-                        if(true)
-                            throw new RuntimeException("Removed code - won't work");
+                        currentBinaryDataArray.setDataLocation(new DataLocation(this.dataStorage, currentOffset, (int)this.currentNumBytes));
+                        
+//                        if(true)
+//                            throw new RuntimeException("Removed code - won't work");
 //			currentBinaryDataArray.setBinary(new Binary(dataStorage, currentOffset, currentNumBytes, dataType));
 		}
 		
@@ -121,4 +125,17 @@ public class ImzMLHandler extends MzMLHeaderHandler {
 		return imzML;
 	}
 
+        public static void main(String args[]) {
+            ImzML imzML = ImzMLHandler.parseimzML("D:\\2012_5_2_medium(120502,20h18m)_23.898, 29.745, 30.898, 41.766, 7.000, 0.100, 1_1.imzML");
+            
+            double[] mzs;
+            try {
+                mzs = imzML.getSpectrum(1, 1).getmzArray();
+                System.out.println(mzs[0]);
+            } catch (IOException ex) {
+                Logger.getLogger(ImzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        }
+        
 }

@@ -248,18 +248,18 @@ public class Spectrum extends MzMLContent  implements Serializable {
         public double[] getmzArray(boolean keepInMemory) throws IOException{
 //	    System.out.println(dataLocation);
 	    
-		if(dataLocation.getDataStorage() instanceof MzMLSpectrumDataStorage)
+		if(dataLocation != null && dataLocation.getDataStorage() instanceof MzMLSpectrumDataStorage)
 		    convertMzMLDataStorageToBase64();
 
 		return binaryDataArrayList.getmzArray().getDataAsDouble(keepInMemory);
         }
         
-        public double[] getIntenistyArray() throws IOException {
+        public double[] getIntensityArray() throws IOException {
             return getIntensityArray(false);
         }
         
         public double[] getIntensityArray(boolean keepInMemory) throws IOException{
-            if(dataLocation.getDataStorage() instanceof MzMLSpectrumDataStorage)
+            if(dataLocation != null && dataLocation.getDataStorage() instanceof MzMLSpectrumDataStorage)
                 convertMzMLDataStorageToBase64();
             
             return binaryDataArrayList.getIntensityArray().getDataAsDouble(keepInMemory);
