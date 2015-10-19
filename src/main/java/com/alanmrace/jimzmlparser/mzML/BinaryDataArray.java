@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
+import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
 
@@ -286,8 +287,12 @@ public class BinaryDataArray extends MzMLContent  implements Serializable {
             return getDataAsDouble(false);
         }
         
-        public double[] getDataAsDouble(boolean keepInMemory) throws IOException {
-	    byte[] data = dataLocation.getData();
+        public byte[] getDataAsByte() throws IOException {
+            return getDataAsByte(false);
+        }
+        
+        public byte[] getDataAsByte(boolean keepInMemory) throws IOException {
+            byte[] data = dataLocation.getData();
 	    
 	    // Check if the data is compressed, if so decompress
 	    try {
@@ -295,6 +300,12 @@ public class BinaryDataArray extends MzMLContent  implements Serializable {
 	    } catch (DataFormatException ex) {
 		Logger.getLogger(BinaryDataArray.class.getName()).log(Level.SEVERE, ""+data, ex);
 	    }
+            
+            return data;
+        }
+        
+        public double[] getDataAsDouble(boolean keepInMemory) throws IOException {
+	    byte[] data = getDataAsByte(keepInMemory);
 	    
 	    CVParam dataTypeCVParam = this.getCVParamOrChild(BinaryDataArray.dataTypeID);
 	    
@@ -364,7 +375,33 @@ public class BinaryDataArray extends MzMLContent  implements Serializable {
 	    return convertedData;
         }
         
+        public static byte[] compressZLib(byte[] data) {
+            Deflater compressor = new Deflater();
+            compressor.setInput(data);
+            compressor.finish();
 
+            ArrayList<Byte> compressedData = new ArrayList<Byte>();
+//            int length = 0;
+            int compressed = 0;
+
+            do {
+		byte[] temp = new byte[BYTE_BUFFER_SIZE]; // 2^20
+
+		compressed = compressor.deflate(temp);
+
+		for(int i = 0; i < compressed; i++)
+                    compressedData.add(temp[i]);
+
+//                length += compressed;
+            } while(compressed != 0);
+
+            byte[] compressedBytes = new byte[compressedData.size()];
+
+            for(int i = 0; i < compressedData.size(); i++)
+                compressedBytes[i] = compressedData.get(i);
+
+            return compressedBytes;
+        }
 	
 	protected byte[] decompressZLib(byte[] data) throws DataFormatException {
 	    Inflater decompressor = new Inflater();
@@ -401,6 +438,30 @@ public class BinaryDataArray extends MzMLContent  implements Serializable {
 
 	    return data;
 	}
+        
+        public static byte[] compress(byte[] data, CVParam compressionCVParam) {
+            // Check the decompression type needed
+	    
+	    byte[] compressedData = data;
+	    
+	    switch(compressionCVParam.getTerm().getID()) {
+		case BinaryDataArray.noCompressionID:
+		    break;
+		case BinaryDataArray.zlibCompressionID:
+		    compressedData = compressZLib(data);
+		    break;
+		default:
+		    throw new UnsupportedOperationException("Compression not supported: " + compressionCVParam);
+	    }
+	    
+	    return compressedData;
+        }
+        
+        protected byte[] compress(byte[] data) {
+            CVParam compressionCVParam = this.getCVParamOrChild(BinaryDataArray.compressionTypeID);
+            
+            return compress(data, compressionCVParam);
+        }
 	
 	protected byte[] decompress(byte[] data) throws DataFormatException {
 	    // Check the decompression type needed
@@ -559,6 +620,6 @@ public class BinaryDataArray extends MzMLContent  implements Serializable {
 	}
 	
 	public String toString() {
-		return "binaryDataArray";
+		return "binaryDataArray: " + dataLocation;
 	}
 }

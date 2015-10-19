@@ -31,8 +31,9 @@ public class Base64DataStorage extends DataStorage {
     }
     
     public static void main(String[] args) throws IOException {
-	String mzMLFile = "C:\\Users\\Alan\\Documents\\Work\\jimzMLParser\\src\\main\\resources\\imzMLConverterTestData_23.898, 29.745, 30.898, 41.766, 7.000, 0.100, 1_1.mzML";
-	
+	//String mzMLFile = "C:\\Users\\Alan\\Documents\\Work\\jimzMLParser\\src\\main\\resources\\imzMLConverterTestData_23.898, 29.745, 30.898, 41.766, 7.000, 0.100, 1_1.mzML";
+	String mzMLFile = "D:\\Test\\Data7_1_2011-acc0.1_cyc10_Sample001_1.mzML";
+        
         MzML mzML = MzMLHeaderHandler.parsemzMLHeader(mzMLFile);
         
         Spectrum spectrum = mzML.getRun().getSpectrumList().getSpectrum(0);

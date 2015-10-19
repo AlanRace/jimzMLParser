@@ -193,7 +193,7 @@ public class Spectrum extends MzMLContent  implements Serializable {
 		return binaryDataArrayList;
 	}
         	
-        protected DataLocation getDataLocation() {
+        public DataLocation getDataLocation() {
             return dataLocation;
         }
         

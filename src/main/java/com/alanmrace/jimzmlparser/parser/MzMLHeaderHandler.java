@@ -20,6 +20,7 @@ import com.alanmrace.jimzmlparser.mzML.*;
 import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 import com.alanmrace.jimzmlparser.exceptions.InvalidMzML;
+import java.util.logging.Level;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
@@ -83,7 +84,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
         
         protected DataStorage dataStorage;
 	
-        public MzMLHeaderHandler(OBO obo) {
+        protected MzMLHeaderHandler(OBO obo) {
             this.obo = obo;
 		
             processingSpectrum = false;
@@ -1002,9 +1003,9 @@ public class MzMLHeaderHandler extends DefaultHandler {
 			
 			currentContent = currentChromatogram;
                 } else if(qName.equals("offset") || qName.equals("indexListOffset")) {
-                    if(qName.equals("offset")) {
-			previousOffsetIDRef = currentOffsetIDRef;
-			
+                    previousOffsetIDRef = currentOffsetIDRef;
+                    
+                    if(qName.equals("offset")) {	
                         this.currentOffsetIDRef = attributes.getValue("idRef");
 		    }
                     
@@ -1050,18 +1051,40 @@ public class MzMLHeaderHandler extends DefaultHandler {
 		    long offset = Long.parseLong(offsetData.toString());
 		    
 		    Spectrum spectrum = spectrumList.getSpectrum(previousOffsetIDRef);
-		    
+                    
+                    if(spectrum == null)
+                        spectrum = spectrumList.getSpectrum(spectrumList.size()-1);
+//System.out.println(previousOffset + " " + spectrum);		    
                     if(previousOffset != -1) {
 			DataLocation dataLocation = new DataLocation(dataStorage, previousOffset, (int)(offset-previousOffset));
 			
-//			System.out.println(previousOffsetIDRef + " " + dataLocation);
+                    //    System.out.println("DataLocation: " + dataLocation);
+			
+                
 			
 			spectrum.setDataLocation(dataLocation);
+                        
+                    //    System.out.println(previousOffsetIDRef + " " + dataLocation);
+                    //    System.out.println(spectrum.getDataLocation());
+                    //    System.out.println(spectrum.getBinaryDataArrayList().getBinaryDataArray(0));
+                    //    System.out.println(run.getSpectrumList().size());
+                    //    System.out.println(run.getSpectrumList().getSpectrum(0).getBinaryDataArrayList().getBinaryDataArray(0));
                     }
                     
 		    previousOffset = offset;
                     processingOffset = false;
                     break;
+//                case "mzML":
+//                    for(Spectrum curSpectrum : spectrumList) {
+//                        System.out.println(curSpectrum.getDataLocation());
+//                        try {
+//                            curSpectrum.getmzArray();
+//                        } catch (IOException ex) {
+//                            Logger.getLogger(MzMLHeaderHandler.class.getName()).log(Level.SEVERE, null, ex);
+//                        }
+//                    }
+//                    
+//                    break;
             }
 	}
 	
