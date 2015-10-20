@@ -145,6 +145,10 @@ public class OBO implements Serializable {
 		}
 	}
 
+        public static OBO getOBO() {
+            return new OBO("imagingMS.obo");
+        }
+        
 	public OBOTerm getTerm(String id) {
 		if(id == null)
 			return null;

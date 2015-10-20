@@ -1,9 +1,12 @@
 package com.alanmrace.jimzmlparser.mzML;
 
+import com.alanmrace.jimzmlparser.obo.OBOTerm;
 import com.alanmrace.jimzmlparser.parser.DataLocation;
 import com.alanmrace.jimzmlparser.parser.DataStorage;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
@@ -307,17 +310,23 @@ public class BinaryDataArray extends MzMLContent  implements Serializable {
         public double[] getDataAsDouble(boolean keepInMemory) throws IOException {
 	    byte[] data = getDataAsByte(keepInMemory);
 	    
-	    CVParam dataTypeCVParam = this.getCVParamOrChild(BinaryDataArray.dataTypeID);
+	    CVParam dataType = this.getCVParamOrChild(BinaryDataArray.dataTypeID);
 	    
 //	    System.out.println("DataType: " + dataType);
 	    
-	    double[] convertedData = null;
+	    double[] convertedData = convertDataToDouble(data, dataType);
+	    
+	    return convertedData;
+        }
+        
+        public static double[] convertDataToDouble(byte[] data, CVParam dataType) {
+            double[] convertedData = null;
 	    
 	    ByteBuffer buffer = ByteBuffer.wrap(data);
 	    buffer.order(ByteOrder.LITTLE_ENDIAN);
 	    
 	    // Check on the data type and convert to double if necessary
-	    switch(dataTypeCVParam.getTerm().getID()) {
+	    switch(dataType.getTerm().getID()) {
 		case BinaryDataArray.doublePrecisionID:
 		    convertedData = new double[data.length / 8];
 		    
@@ -371,8 +380,75 @@ public class BinaryDataArray extends MzMLContent  implements Serializable {
 		default:
 		    throw new UnsupportedOperationException("Data type not supported: " + dataType);
 	    }
-	    
-	    return convertedData;
+            
+            return convertedData;
+        }
+        
+        public static byte[] convertDataType(byte[] data, Binary.DataType dataType, CVParam newDataType) {
+            switch(dataType) {
+                case singlePrecision:
+                    return convertDataType(data, new EmptyCVParam(new OBOTerm(BinaryDataArray.singlePrecisionID)), newDataType);
+                case signed64bitInteger:
+                    return convertDataType(data, new EmptyCVParam(new OBOTerm(BinaryDataArray.signed64bitIntegerID)), newDataType);
+                case signed32bitInteger:
+                    return convertDataType(data, new EmptyCVParam(new OBOTerm(BinaryDataArray.signed32bitIntegerID)), newDataType);
+                case signed16bitInteger:
+                    return convertDataType(data, new EmptyCVParam(new OBOTerm(BinaryDataArray.signed16bitIntegerID)), newDataType);
+                case signed8bitInteger:
+                    return convertDataType(data, new EmptyCVParam(new OBOTerm(BinaryDataArray.signed8bitIntegerID)), newDataType);
+                case doublePrecision:
+                default:
+                    return convertDataType(data, new EmptyCVParam(new OBOTerm(BinaryDataArray.doublePrecisionID)), newDataType);
+            }
+        }
+        
+        public static byte[] convertDataType(byte[] data, CVParam originalDataType, CVParam newDataType) {
+            if(originalDataType.getTerm().getID().equals(newDataType.getTerm().getID()))
+                return data;
+            
+            double[] doubleData = convertDataToDouble(data, originalDataType);
+            
+            ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
+            DataOutputStream byteStream = new DataOutputStream(byteArrayStream);
+            
+            try {
+                switch(newDataType.getTerm().getID()) {
+                    case BinaryDataArray.doublePrecisionID:
+                        for(double dataPoint : doubleData)
+                            byteStream.writeLong(Long.reverseBytes(Double.doubleToLongBits(dataPoint)));
+                        
+                        break;
+                    case BinaryDataArray.singlePrecisionID:
+                        for(double dataPoint : doubleData)
+                            byteStream.writeInt(Integer.reverseBytes(Float.floatToIntBits((float) dataPoint)));
+                        
+                        break;
+                    case BinaryDataArray.signed64bitIntegerID:
+                        for(double dataPoint : doubleData)
+                            byteStream.writeLong(Long.reverseBytes((long) dataPoint));
+                        
+                        break;
+                    case BinaryDataArray.signed32bitIntegerID:
+                        for(double dataPoint : doubleData)
+                            byteStream.writeInt(Integer.reverseBytes((int) dataPoint));
+                        
+                        break;
+                    case BinaryDataArray.signed16bitIntegerID:
+                        for(double dataPoint : doubleData)
+                            byteStream.writeShort(Short.reverseBytes((short) dataPoint));
+                        
+                        break;
+                    case BinaryDataArray.signed8bitIntegerID:
+                        for(double dataPoint : doubleData)
+                            byteStream.writeByte((byte) dataPoint);
+                        
+                        break;
+                }                
+            } catch (IOException ex) {
+                Logger.getLogger(BinaryDataArray.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            return byteArrayStream.toByteArray();
         }
         
         public static byte[] compressZLib(byte[] data) {
@@ -590,7 +666,7 @@ public class BinaryDataArray extends MzMLContent  implements Serializable {
 	 * @return the binary data array type
 	 */
 	public CVParam getDataArrayType() {
-		return getCVParam(binaryDataArrayID);
+		return getCVParamOrChild(binaryDataArrayID);
 	}
 	
 	/* (non-Javadoc)
