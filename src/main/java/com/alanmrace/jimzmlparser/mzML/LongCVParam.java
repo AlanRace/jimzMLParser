@@ -37,7 +37,7 @@ public class LongCVParam extends CVParam {
 	
 	@Override
 	public String getValueAsString() {
-		return "" + getValue();
+		return "" + getValueAsLong();
 	}
 
 	@Override

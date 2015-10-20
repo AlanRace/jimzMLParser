@@ -45,7 +45,7 @@ public class IntegerCVParam extends CVParam {
 	
 	@Override
 	public String getValueAsString() {
-		return "" + getValue();
+		return "" + getValueAsInteger();
 	}
 
 	@Override
