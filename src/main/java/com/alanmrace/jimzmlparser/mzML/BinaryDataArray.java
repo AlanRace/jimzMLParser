@@ -295,6 +295,9 @@ public class BinaryDataArray extends MzMLContent  implements Serializable {
         }
         
         public byte[] getDataAsByte(boolean keepInMemory) throws IOException {
+            if(dataLocation == null)
+                return null;
+            
             byte[] data = dataLocation.getData();
 	    
 	    // Check if the data is compressed, if so decompress
@@ -321,6 +324,9 @@ public class BinaryDataArray extends MzMLContent  implements Serializable {
         
         public static double[] convertDataToDouble(byte[] data, CVParam dataType) {
             double[] convertedData = null;
+            
+            if(data == null)
+                return convertedData;
 	    
 	    ByteBuffer buffer = ByteBuffer.wrap(data);
 	    buffer.order(ByteOrder.LITTLE_ENDIAN);
