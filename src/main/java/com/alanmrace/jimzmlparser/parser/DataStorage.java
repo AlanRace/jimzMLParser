@@ -5,9 +5,7 @@
  */
 package com.alanmrace.jimzmlparser.parser;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -20,32 +18,26 @@ public abstract class DataStorage {
     protected File dataFile;
     
 //    protected FileInputStream fileInputStream;
-    protected RandomAccessFile randomAccessFile;
+    protected final RandomAccessFile randomAccessFile;
     protected boolean fileStreamOpen = false;
     
 //    public abstract byte[] getData(long offset, int length) throws IOException;
     
-    public DataStorage(File dataFile) {
+    public DataStorage(File dataFile) throws FileNotFoundException {
         this.dataFile = dataFile;
+        
+        randomAccessFile = new RandomAccessFile(dataFile, "r");
+
+        fileStreamOpen = true;
     }
     
     public File getFile() {
 	return dataFile;
     }
     
-    protected void openFileInputStream() throws FileNotFoundException {
-        if(!fileStreamOpen) {
-//            fileInputStream = new FileInputStream(dataFile);
-	    randomAccessFile = new RandomAccessFile(dataFile, "r");
-
-            fileStreamOpen = true;
-        }
-    }
     
     public byte[] getData(long offset, int length) throws IOException {
 	byte[] buffer = new byte[length];
-	
-	openFileInputStream();
 	
         synchronized(randomAccessFile) {
             randomAccessFile.seek(offset);
@@ -60,9 +52,6 @@ public abstract class DataStorage {
     public void close() throws IOException {
         if(fileStreamOpen){
             randomAccessFile.close();
-            randomAccessFile = null;
-//	    bufferedInputStream.close();
-//	    bufferedInputStream = null;
             
             fileStreamOpen = false;
         }

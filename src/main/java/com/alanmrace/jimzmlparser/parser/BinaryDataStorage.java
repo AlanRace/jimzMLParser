@@ -16,7 +16,7 @@ import java.io.FileNotFoundException;
  */
 public class BinaryDataStorage extends DataStorage {
 
-    public BinaryDataStorage(File dataFile) {
+    public BinaryDataStorage(File dataFile) throws FileNotFoundException {
         super(dataFile);
     }
 

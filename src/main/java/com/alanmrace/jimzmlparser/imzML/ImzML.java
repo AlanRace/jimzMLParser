@@ -55,6 +55,9 @@ public class ImzML extends MzML implements Serializable {
 		super(imzML);
 	}
 	
+        public ImzML(MzML mzML) {
+            super(mzML);
+        }
 	
 	public synchronized Spectrum getSpectrum(int x, int y) {	
 		return getSpectrum(x, y, 1);
