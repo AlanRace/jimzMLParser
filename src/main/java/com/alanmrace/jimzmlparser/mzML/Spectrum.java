@@ -231,6 +231,9 @@ public class Spectrum extends MzMLContent  implements Serializable {
 //		    System.out.println(spectrumData.substring(binaryStart, binaryEnd));
 		}
 		
+		// Finished with mzMLDataStorage now
+	//	mzMLDataStorage.close();
+		
 		dataLocation = null;
 		
 //		System.out.println("Data: ");
