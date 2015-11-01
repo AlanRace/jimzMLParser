@@ -65,7 +65,10 @@ public abstract class CVParam  implements Serializable { //, MutableTreeNode {
 		//if(value != null)
 		//	output.write(" value=\"" + XMLHelper.ensureSafeXML(value.toString()) + "\"");
 		
-		output.write(" value=\"" + XMLHelper.ensureSafeXML(getValueAsString()) + "\"");
+		String value = getValueAsString();
+		
+		if(value != null && !value.equals("null"))
+		    output.write(" value=\"" + XMLHelper.ensureSafeXML(value) + "\"");
 		
 		if(units != null) {
 			output.write(" unitCvRef=\"" + XMLHelper.ensureSafeXML(units.getNamespace()) + "\"");
