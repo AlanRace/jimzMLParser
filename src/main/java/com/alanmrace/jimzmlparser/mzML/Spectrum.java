@@ -18,44 +18,43 @@ import java.util.zip.DataFormatException;
 
 import javax.swing.tree.TreeNode;
 
-public class Spectrum extends MzMLContent  implements Serializable {
+public class Spectrum extends MzMLContent implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-	
-	public static final String scanPolarityID 				= "MS:1000465";
-	public static final String spectrumTypeID 				= "MS:1000559";
-	public static final String spectrumRepresentationID 	= "MS:1000525";
-	public static final String spectrumAttributeID 			= "MS:1000499";
-	
-	public static final String totalIonCurrentID 			= "MS:1000285";
-	public static final String basePeakMZID 				= "MS:1000504";
-	public static final String basePeakIntensityID 			= "MS:1000505";
-	
-	public static final String lowestObservedmzID 			= "MS:1000528";
-	public static final String highestObservedmzID 			= "MS:1000527";
-	
-	public static final String MS1Spectrum					= "MS:1000579"; // EmptyCVParam
-	public static final String positiveScanID				= "MS:1000130";	// EmptyCVParam
-	public static final String profileSpectrumID			= "MS:1000128"; // EmptyCVParam
-		
-	private DataProcessing dataProcessingRef;
-	private int defaultArrayLength;
-	private String id;
+    public static final String scanPolarityID = "MS:1000465";
+    public static final String spectrumTypeID = "MS:1000559";
+    public static final String spectrumRepresentationID = "MS:1000525";
+    public static final String spectrumAttributeID = "MS:1000499";
+
+    public static final String totalIonCurrentID = "MS:1000285";
+    public static final String basePeakMZID = "MS:1000504";
+    public static final String basePeakIntensityID = "MS:1000505";
+
+    public static final String lowestObservedmzID = "MS:1000528";
+    public static final String highestObservedmzID = "MS:1000527";
+
+    public static final String MS1Spectrum = "MS:1000579"; // EmptyCVParam
+    public static final String positiveScanID = "MS:1000130";	// EmptyCVParam
+    public static final String profileSpectrumID = "MS:1000128"; // EmptyCVParam
+
+    private DataProcessing dataProcessingRef;
+    private int defaultArrayLength;
+    private String id;
 //	private int index;
-	private SourceFile sourceFileRef;
-	private String spotID;
-	
-	private ScanList scanList;
-	private PrecursorList precursorList;
-	private ProductList productList;
-	private BinaryDataArrayList binaryDataArrayList;
+    private SourceFile sourceFileRef;
+    private String spotID;
 
-        private DataLocation dataLocation;
-        
+    private ScanList scanList;
+    private PrecursorList precursorList;
+    private ProductList productList;
+    private BinaryDataArrayList binaryDataArrayList;
+
+    private DataLocation dataLocation;
+
 //	public Spectrum() {
 //		super();
 //		
@@ -72,203 +71,216 @@ public class Spectrum extends MzMLContent  implements Serializable {
 //		this.id = id;
 //		this.defaultArrayLength = defaultArrayLength;
 //	}
-	
-	public Spectrum(String id, int defaultArrayLength, int index) {
-		this.id = id;
-		this.defaultArrayLength = defaultArrayLength;
+    public Spectrum(String id, int defaultArrayLength, int index) {
+        this.id = id;
+        this.defaultArrayLength = defaultArrayLength;
 //		this.index = index;
-	}
-	
-	public Spectrum(Spectrum spectrum, ReferenceableParamGroupList rpgList, DataProcessingList dpList, 
-			SourceFileList sourceFileList, InstrumentConfigurationList icList) {
-		super(spectrum, rpgList);
-		
-		this.id = spectrum.id;
-		this.defaultArrayLength = spectrum.defaultArrayLength;
-		this.spotID = spectrum.spotID;
-		
-		if(spectrum.dataProcessingRef != null && dpList != null) {
-			for(DataProcessing dp : dpList) {
-				if(spectrum.dataProcessingRef.getID().equals(dp.getID())) {
-					dataProcessingRef = dp;
-				}
-			}
-		}
-		
-		if(spectrum.sourceFileRef != null && sourceFileList != null) {
-			for(SourceFile sourceFile : sourceFileList) {
-				if(spectrum.sourceFileRef.getID().equals(sourceFile.getID())) {
-					sourceFileRef = sourceFile;
-					
-					break;
-				}
-			}
-		}
-		
-		if(spectrum.scanList != null)
-			scanList = new ScanList(spectrum.scanList, rpgList, sourceFileList, icList);
-		if(spectrum.precursorList != null)
-			precursorList = new PrecursorList(spectrum.precursorList, rpgList, sourceFileList);
-		if(spectrum.productList != null)
-			productList = new ProductList(spectrum.productList, rpgList);
-		if(spectrum.binaryDataArrayList != null)
-			binaryDataArrayList = new BinaryDataArrayList(spectrum.binaryDataArrayList, rpgList, dpList);
-	}
-	
-        @Override
-	public ArrayList<OBOTermInclusion> getListOfRequiredCVParams() {
-		ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
-		required.add(new OBOTermInclusion(spectrumTypeID, true, true, false));
-		required.add(new OBOTermInclusion(spectrumRepresentationID, true, true, true));
-				
-		return required; 
-	}
-	
-        @Override
-	public ArrayList<OBOTermInclusion> getListOfOptionalCVParams() {
-		ArrayList<OBOTermInclusion> optional = new ArrayList<OBOTermInclusion>();
-		optional.add(new OBOTermInclusion(scanPolarityID, true, true, false));
-		optional.add(new OBOTermInclusion(spectrumAttributeID, false, true, false));
-		
-		return optional;
-	}
-        
-	// Set optional attributes
-	public void setDataProcessingRef(DataProcessing dataProcessingRef) {
-		this.dataProcessingRef = dataProcessingRef;
-	}
-	
-	public void setSourceFileRef(SourceFile sourceFileRef) {
-		this.sourceFileRef = sourceFileRef;
-	}
-	
-	public void setSpotID(String spotID) {
-		this.spotID = spotID;
-	}
-	
-	public String getID() {
-		return id;
-	}
-	
-	public ScanList getScanList() {
-		return scanList;
-	}
-	
-	public void setScanList(ScanList scanList) {
-		scanList.setParent(this);
-		
-		this.scanList = scanList;
-	}
-	
-	public void setPrecursorList(PrecursorList precursorList) {
-		precursorList.setParent(this);
-		
-		this.precursorList = precursorList;
-	}
-	
-	public PrecursorList getPrecursorList() {
-		return precursorList;
-	}
-	
-	public void setProductList(ProductList productList) {
-		productList.setParent(this);
-		
-		this.productList = productList;
-	}
-	
-	public ProductList getProductList() {
-		return productList;
-	}
-	
-	public void setBinaryDataArrayList(BinaryDataArrayList binaryDataArrayList) {
-		binaryDataArrayList.setParent(this);
-		
-		this.binaryDataArrayList = binaryDataArrayList;
-	}
-	
-	public BinaryDataArrayList getBinaryDataArrayList() {
-		if(binaryDataArrayList == null)
-			binaryDataArrayList = new BinaryDataArrayList(0);
-			
-		return binaryDataArrayList;
-	}
-        	
-        public DataLocation getDataLocation() {
-            return dataLocation;
+    }
+
+    public Spectrum(Spectrum spectrum, ReferenceableParamGroupList rpgList, DataProcessingList dpList,
+            SourceFileList sourceFileList, InstrumentConfigurationList icList) {
+        super(spectrum, rpgList);
+
+        this.id = spectrum.id;
+        this.defaultArrayLength = spectrum.defaultArrayLength;
+        this.spotID = spectrum.spotID;
+
+        if (spectrum.dataProcessingRef != null && dpList != null) {
+            for (DataProcessing dp : dpList) {
+                if (spectrum.dataProcessingRef.getID().equals(dp.getID())) {
+                    dataProcessingRef = dp;
+                }
+            }
         }
-        
-	/**
-	 *
-	 * @param dataLocation
-	 */
-	public void setDataLocation(DataLocation dataLocation) {
-		this.dataLocation = dataLocation;
-	}
 
-        private void convertMzMLDataStorageToBase64() throws IOException {
-		// Load in the data from the data storage
-		byte[] data = dataLocation.getData();
-		String spectrumData = new String(data);
-		
-		MzMLSpectrumDataStorage mzMLDataStorage = (MzMLSpectrumDataStorage) dataLocation.getDataStorage();
+        if (spectrum.sourceFileRef != null && sourceFileList != null) {
+            for (SourceFile sourceFile : sourceFileList) {
+                if (spectrum.sourceFileRef.getID().equals(sourceFile.getID())) {
+                    sourceFileRef = sourceFile;
 
-		// Identify where each binary data array is within the spectrum mzML
-		for(BinaryDataArray bda : binaryDataArrayList) {
-		    CVParam cvParam = bda.getCVParamOrChild(BinaryDataArray.binaryDataArrayID);
-		    String cvParamID = cvParam.getTerm().getID();
-		    
-		    int cvParamLocation = spectrumData.indexOf(cvParamID);
-//		    System.out.println(cvParamLocation);
-//		    System.out.println(cvParamID);
-//		    System.out.println(spectrumData);
-		    String subSpectrumData = spectrumData.substring(cvParamLocation);
-		    
-		    int binaryStart = subSpectrumData.indexOf("<binary>") + cvParamLocation + "<binary>".length();
-		    int binaryEnd = subSpectrumData.indexOf("</binary>") + cvParamLocation;
-		    
-		    bda.setDataLocation(new DataLocation(mzMLDataStorage.getBase64DataStorage(), binaryStart + dataLocation.getOffset(), binaryEnd - binaryStart));
-//		    System.out.println(cvParam);
-//		    System.out.println(spectrumData.substring(binaryStart, binaryEnd));
-		}
-		
+                    break;
+                }
+            }
+        }
+
+        if (spectrum.scanList != null) {
+            scanList = new ScanList(spectrum.scanList, rpgList, sourceFileList, icList);
+        }
+        if (spectrum.precursorList != null) {
+            precursorList = new PrecursorList(spectrum.precursorList, rpgList, sourceFileList);
+        }
+        if (spectrum.productList != null) {
+            productList = new ProductList(spectrum.productList, rpgList);
+        }
+        if (spectrum.binaryDataArrayList != null) {
+            binaryDataArrayList = new BinaryDataArrayList(spectrum.binaryDataArrayList, rpgList, dpList);
+        }
+    }
+
+    @Override
+    public ArrayList<OBOTermInclusion> getListOfRequiredCVParams() {
+        ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
+        required.add(new OBOTermInclusion(spectrumTypeID, true, true, false));
+        required.add(new OBOTermInclusion(spectrumRepresentationID, true, true, true));
+
+        return required;
+    }
+
+    @Override
+    public ArrayList<OBOTermInclusion> getListOfOptionalCVParams() {
+        ArrayList<OBOTermInclusion> optional = new ArrayList<OBOTermInclusion>();
+        optional.add(new OBOTermInclusion(scanPolarityID, true, true, false));
+        optional.add(new OBOTermInclusion(spectrumAttributeID, false, true, false));
+
+        return optional;
+    }
+
+    // Set optional attributes
+    public void setDataProcessingRef(DataProcessing dataProcessingRef) {
+        this.dataProcessingRef = dataProcessingRef;
+    }
+
+    public void setSourceFileRef(SourceFile sourceFileRef) {
+        this.sourceFileRef = sourceFileRef;
+    }
+
+    public void setSpotID(String spotID) {
+        this.spotID = spotID;
+    }
+
+    public String getID() {
+        return id;
+    }
+
+    public ScanList getScanList() {
+        return scanList;
+    }
+
+    public void setScanList(ScanList scanList) {
+        scanList.setParent(this);
+
+        this.scanList = scanList;
+    }
+
+    public void setPrecursorList(PrecursorList precursorList) {
+        precursorList.setParent(this);
+
+        this.precursorList = precursorList;
+    }
+
+    public PrecursorList getPrecursorList() {
+        return precursorList;
+    }
+
+    public void setProductList(ProductList productList) {
+        productList.setParent(this);
+
+        this.productList = productList;
+    }
+
+    public ProductList getProductList() {
+        return productList;
+    }
+
+    public void setBinaryDataArrayList(BinaryDataArrayList binaryDataArrayList) {
+        binaryDataArrayList.setParent(this);
+
+        this.binaryDataArrayList = binaryDataArrayList;
+    }
+
+    public BinaryDataArrayList getBinaryDataArrayList() {
+        if (binaryDataArrayList == null) {
+            binaryDataArrayList = new BinaryDataArrayList(0);
+        }
+
+        return binaryDataArrayList;
+    }
+
+    public DataLocation getDataLocation() {
+        return dataLocation;
+    }
+
+    /**
+     *
+     * @param dataLocation
+     */
+    public void setDataLocation(DataLocation dataLocation) {
+        this.dataLocation = dataLocation;
+    }
+
+    private void convertMzMLDataStorageToBase64() throws IOException {
+        // Load in the data from the data storage
+        byte[] data = dataLocation.getData();
+        String spectrumData = new String(data);
+
+        MzMLSpectrumDataStorage mzMLDataStorage = (MzMLSpectrumDataStorage) dataLocation.getDataStorage();
+
+        // Identify where each binary data array is within the spectrum mzML
+        if (binaryDataArrayList != null) {
+            for (BinaryDataArray bda : binaryDataArrayList) {
+                CVParam cvParam = bda.getCVParamOrChild(BinaryDataArray.binaryDataArrayID);
+                String cvParamID = cvParam.getTerm().getID();
+
+                int cvParamLocation = spectrumData.indexOf(cvParamID);
+    //		    System.out.println(cvParamLocation);
+                //		    System.out.println(cvParamID);
+                //		    System.out.println(spectrumData);
+                String subSpectrumData = spectrumData.substring(cvParamLocation);
+
+                int binaryStart = subSpectrumData.indexOf("<binary>") + cvParamLocation + "<binary>".length();
+                int binaryEnd = subSpectrumData.indexOf("</binary>") + cvParamLocation;
+
+                bda.setDataLocation(new DataLocation(mzMLDataStorage.getBase64DataStorage(), binaryStart + dataLocation.getOffset(), binaryEnd - binaryStart));
+    //		    System.out.println(cvParam);
+                //		    System.out.println(spectrumData.substring(binaryStart, binaryEnd));
+            }
+        }
+
 		// Finished with mzMLDataStorage now
-	//	mzMLDataStorage.close();
-		
-		dataLocation = null;
-		
+        //	mzMLDataStorage.close();
+        dataLocation = null;
+
 //		System.out.println("Data: ");
 //		System.out.println(spectrumData);
-		// Create Base64DataStorage with the calculated offsets
-		// Add the new DataStorage to the corresponding BinaryDataArray
-
+        // Create Base64DataStorage with the calculated offsets
+        // Add the new DataStorage to the corresponding BinaryDataArray
 //		throw new UnsupportedOperationException("Not yet supported");
-        }
-        
-        public double[] getmzArray() throws IOException {
-		return getmzArray(false);
-        }
-        
-        public double[] getmzArray(boolean keepInMemory) throws IOException{
-//	    System.out.println(dataLocation);
-	    
-		if(dataLocation != null && dataLocation.getDataStorage() instanceof MzMLSpectrumDataStorage)
-		    convertMzMLDataStorageToBase64();
+    }
 
-		return binaryDataArrayList.getmzArray().getDataAsDouble(keepInMemory);
+    public double[] getmzArray() throws IOException {
+        return getmzArray(false);
+    }
+
+    public double[] getmzArray(boolean keepInMemory) throws IOException {
+//	    System.out.println(dataLocation);
+
+        if (binaryDataArrayList == null) {
+            return null;
+        }
+
+        if (dataLocation != null && dataLocation.getDataStorage() instanceof MzMLSpectrumDataStorage) {
+            convertMzMLDataStorageToBase64();
+        }
+
+        return binaryDataArrayList.getmzArray().getDataAsDouble(keepInMemory);
+    }
+
+    public double[] getIntensityArray() throws IOException {
+        return getIntensityArray(false);
+    }
+
+    public double[] getIntensityArray(boolean keepInMemory) throws IOException {
+        if (binaryDataArrayList == null) {
+            return null;
         }
         
-        public double[] getIntensityArray() throws IOException {
-            return getIntensityArray(false);
+        if (dataLocation != null && dataLocation.getDataStorage() instanceof MzMLSpectrumDataStorage) {
+            convertMzMLDataStorageToBase64();
         }
-        
-        public double[] getIntensityArray(boolean keepInMemory) throws IOException{
-            if(dataLocation != null && dataLocation.getDataStorage() instanceof MzMLSpectrumDataStorage)
-                convertMzMLDataStorageToBase64();
-            
-            return binaryDataArrayList.getIntensityArray().getDataAsDouble(keepInMemory);
-        }
-        
-        
+
+        return binaryDataArrayList.getIntensityArray().getDataAsDouble(keepInMemory);
+    }
+
 //	private double[] getDoubleData(RandomAccessFile ibdFile, BinaryDataArray bda) {
 //		byte[] data = null;
 //		
@@ -357,7 +369,6 @@ public class Spectrum extends MzMLContent  implements Serializable {
 //		
 //		return null;
 //	}
-	
 //	public void addBinaryDataArray(BinaryDataArray bda) {
 //		this.binaryDataArray.add(bda);
 //	}
@@ -369,7 +380,6 @@ public class Spectrum extends MzMLContent  implements Serializable {
 //	public BinaryDataArray getBinaryDataArray(int index) {
 //		return binaryDataArray.get(index);
 //	}
-	
 //	public void setXYPosition(OBO obo, int x, int y) {
 //		if(scanList.getScanCount() < 1)
 //			scanList.addScan(new Scan());
@@ -399,34 +409,40 @@ public class Spectrum extends MzMLContent  implements Serializable {
 //		
 //		return offset;
 //	}
-	
-	public void outputXML(BufferedWriter output, int indent, int index) throws IOException {
-		MzMLContent.indent(output, indent);
-		output.write("<spectrum");
-		output.write(" defaultArrayLength=\"" + defaultArrayLength + "\"");
-		output.write(" id=\"" + XMLHelper.ensureSafeXML(id) + "\"");
-		output.write(" index=\"" + index + "\"");
-		if(dataProcessingRef != null)
-			output.write(" dataProcessingRef=\"" + XMLHelper.ensureSafeXML(dataProcessingRef.getID()) + "\"");
-		if(sourceFileRef != null)
-			output.write(" sourceFileRef=\"" + XMLHelper.ensureSafeXML(sourceFileRef.getID()) + "\"");
-		if(spotID != null)
-			output.write(" spotID=\"" + XMLHelper.ensureSafeXML(spotID) + "\"");
-		output.write(">\n");
-		
-		super.outputXML(output, indent+1);
-		
-		if(scanList != null && scanList.size() > 0)
-			scanList.outputXML(output, indent+1);
-		
-		if(precursorList != null && precursorList.size() > 0)
-			precursorList.outputXML(output, indent+1);
-		
-		if(productList != null && productList.size() > 0)
-			productList.outputXML(output, indent+1);
-		
-		if(binaryDataArrayList != null && binaryDataArrayList.size() > 0) 
-			binaryDataArrayList.outputXML(output, indent+1);
+    public void outputXML(BufferedWriter output, int indent, int index) throws IOException {
+        MzMLContent.indent(output, indent);
+        output.write("<spectrum");
+        output.write(" defaultArrayLength=\"" + defaultArrayLength + "\"");
+        output.write(" id=\"" + XMLHelper.ensureSafeXML(id) + "\"");
+        output.write(" index=\"" + index + "\"");
+        if (dataProcessingRef != null) {
+            output.write(" dataProcessingRef=\"" + XMLHelper.ensureSafeXML(dataProcessingRef.getID()) + "\"");
+        }
+        if (sourceFileRef != null) {
+            output.write(" sourceFileRef=\"" + XMLHelper.ensureSafeXML(sourceFileRef.getID()) + "\"");
+        }
+        if (spotID != null) {
+            output.write(" spotID=\"" + XMLHelper.ensureSafeXML(spotID) + "\"");
+        }
+        output.write(">\n");
+
+        super.outputXML(output, indent + 1);
+
+        if (scanList != null && scanList.size() > 0) {
+            scanList.outputXML(output, indent + 1);
+        }
+
+        if (precursorList != null && precursorList.size() > 0) {
+            precursorList.outputXML(output, indent + 1);
+        }
+
+        if (productList != null && productList.size() > 0) {
+            productList.outputXML(output, indent + 1);
+        }
+
+        if (binaryDataArrayList != null && binaryDataArrayList.size() > 0) {
+            binaryDataArrayList.outputXML(output, indent + 1);
+        }
 //			MzMLContent.indent(output, indent+1);
 //			output.write("<binaryDataArrayList");
 //			output.write(" count=\"" + binaryDataArray.size() + "\"");
@@ -438,29 +454,29 @@ public class Spectrum extends MzMLContent  implements Serializable {
 //			MzMLContent.indent(output, indent+1);
 //			output.write("</binaryDataArrayList>\n");
 //		}
-		
-		MzMLContent.indent(output, indent);
-		output.write("</spectrum>\n");
-	}
-	
-	public String toString() {
-		return "spectrum:" + 
-				" id=\"" + id + "\"" + 
-			((dataProcessingRef != null)? (" dataProcessingRef=\"" + dataProcessingRef.getID() + "\"") : "" + 
-			" defaultArrayLength=\"" + defaultArrayLength + "\"" + 
-			((sourceFileRef != null)? (" sourceFileRef=\"" + sourceFileRef.getID() + "\"") : "") + 
-			((spotID != null && !spotID.isEmpty())? (" spotID=\"" + spotID + "\"") : ""));
-	}
-	
-	private int getAdditionalChildrenCount() {
-		int additionalChildren = ((scanList != null)? 1 : 0) + 
-				((precursorList != null)? 1 : 0) + 
-				((productList != null)? 1 : 0) + 
-				((binaryDataArrayList != null)? 1 : 0);
-		
-		return additionalChildren;
-	}
-	
+
+        MzMLContent.indent(output, indent);
+        output.write("</spectrum>\n");
+    }
+
+    public String toString() {
+        return "spectrum:"
+                + " id=\"" + id + "\""
+                + ((dataProcessingRef != null) ? (" dataProcessingRef=\"" + dataProcessingRef.getID() + "\"") : ""
+                        + " defaultArrayLength=\"" + defaultArrayLength + "\""
+                        + ((sourceFileRef != null) ? (" sourceFileRef=\"" + sourceFileRef.getID() + "\"") : "")
+                        + ((spotID != null && !spotID.isEmpty()) ? (" spotID=\"" + spotID + "\"") : ""));
+    }
+
+    private int getAdditionalChildrenCount() {
+        int additionalChildren = ((scanList != null) ? 1 : 0)
+                + ((precursorList != null) ? 1 : 0)
+                + ((productList != null) ? 1 : 0)
+                + ((binaryDataArrayList != null) ? 1 : 0);
+
+        return additionalChildren;
+    }
+
 //	@Override
 //	public int getChildCount() {
 //		return super.getChildCount() + getAdditionalChildrenCount();
