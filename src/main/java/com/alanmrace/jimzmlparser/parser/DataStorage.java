@@ -34,8 +34,8 @@ public abstract class DataStorage {
         
         randomAccessFile = new RandomAccessFile(dataFile, "r");
 
-	logger.log(Level.INFO, MessageFormat.format("[Opened] {0} ({1})", new Object[]{dataFile, randomAccessFile}));
-        System.out.println(Arrays.toString(Thread.currentThread().getStackTrace()));
+	logger.log(Level.FINER, MessageFormat.format("[Opened] {0} ({1})", new Object[]{dataFile, randomAccessFile}));
+//        logger.log(Level.FINEST, Arrays.toString(Thread.currentThread().getStackTrace()));
 	
         fileStreamOpen = true;
     }
@@ -68,7 +68,7 @@ public abstract class DataStorage {
         if(fileStreamOpen){
             randomAccessFile.close();
 	    
-	    logger.log(Level.INFO, MessageFormat.format("[Closed] {0} ({1})", new Object[]{dataFile, randomAccessFile}));
+	    logger.log(Level.FINER, MessageFormat.format("[Closed] {0} ({1})", new Object[]{dataFile, randomAccessFile}));
             
             fileStreamOpen = false;
         }
