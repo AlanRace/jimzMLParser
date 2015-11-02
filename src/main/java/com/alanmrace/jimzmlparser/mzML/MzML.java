@@ -12,6 +12,7 @@ import java.io.Serializable;
 import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.parser.DataLocation;
 import com.alanmrace.jimzmlparser.parser.DataStorage;
+import com.alanmrace.jimzmlparser.parser.MzMLSpectrumDataStorage;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,6 +29,8 @@ public class MzML extends MzMLContent implements Serializable {
     public static String schemaLocation = "http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.0_idx.xsd";
 
     public static String currentVersion = "1.1.0";
+    
+    protected DataStorage dataStorage;
 
     // Attributes
     private String accession;	// Optional
@@ -86,6 +89,10 @@ public class MzML extends MzMLContent implements Serializable {
 		fileDescription.getSourceFileList(), sampleList, dataProcessingList);
     }
 
+    public void setDataStorage(DataStorage dataStorage) {
+        this.dataStorage = dataStorage;
+    }
+    
 //	@JsonIgnore
     public void setOBO(OBO obo) {
 	this.obo = obo;
@@ -577,23 +584,30 @@ public class MzML extends MzMLContent implements Serializable {
     }
 
     // Clean up by closing any open DataStorage
-    public void close() {
+    public void close() {        
+        if(dataStorage != null) {
+            try {
+                dataStorage.close();
+            } catch (IOException ex) {
+                Logger.getLogger(MzML.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
 	SpectrumList spectrumList = getRun().getSpectrumList();
 
 	if (spectrumList.size() > 0) {
-	    Spectrum spectrum = spectrumList.getSpectrum(0);
-	    DataLocation dataLocation = spectrum.getDataLocation();
+            Spectrum spectrum = spectrumList.getSpectrum(0);
+            //for(Spectrum spectrum : spectrumList) {
+                closeDataStorage(spectrum.getDataLocation());
+                
+                BinaryDataArrayList bdal = spectrum.getBinaryDataArrayList();
 
-	    closeDataStorage(dataLocation);
+                if (bdal.size() > 0) {
+                    BinaryDataArray bda = bdal.getBinaryDataArray(0);
 
-	    BinaryDataArrayList bdal = spectrum.getBinaryDataArrayList();
-
-	    if (bdal.size() > 0) {
-		BinaryDataArray bda = bdal.getBinaryDataArray(0);
-		dataLocation = bda.getDataLocation();
-
-		closeDataStorage(dataLocation);
-	    }
+                    closeDataStorage(bda.getDataLocation());
+                }
+            //}
 	}
     }
 

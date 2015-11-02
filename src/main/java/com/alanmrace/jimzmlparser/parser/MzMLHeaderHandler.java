@@ -83,6 +83,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
     protected long previousOffset = -1;
 
     protected DataStorage dataStorage;
+    protected boolean openDataStorage = true;
 
     protected MzMLHeaderHandler(OBO obo) {
         this.obo = obo;
@@ -101,17 +102,27 @@ public class MzMLHeaderHandler extends DefaultHandler {
         this.locator = locator;
     }
 
-    public MzMLHeaderHandler(OBO obo, File mzMLFile) throws FileNotFoundException {
-        this(obo);
-
-        this.dataStorage = new MzMLSpectrumDataStorage(mzMLFile);
+    public void setOpenDataStorage(boolean openDataStorage) {
+        this.openDataStorage = openDataStorage;
     }
 
-    public static MzML parsemzMLHeader(String filename) throws FileNotFoundException {
+    public MzMLHeaderHandler(OBO obo, File mzMLFile) throws FileNotFoundException {
+        this(obo, mzMLFile, true);
+    }
+    
+    public MzMLHeaderHandler(OBO obo, File mzMLFile, boolean openDataFile) throws FileNotFoundException {
+        this(obo);
+
+        if(openDataFile) 
+            this.dataStorage = new MzMLSpectrumDataStorage(mzMLFile);
+    }
+
+    public static MzML parsemzMLHeader(String filename, boolean openDataFile) throws FileNotFoundException {
         OBO obo = new OBO("imagingMS.obo");
 
         // Parse mzML
-        MzMLHeaderHandler handler = new MzMLHeaderHandler(obo, new File(filename));
+        MzMLHeaderHandler handler = new MzMLHeaderHandler(obo, new File(filename), openDataFile);
+        handler.setOpenDataStorage(openDataFile);
 
         SAXParserFactory spf = SAXParserFactory.newInstance();
         try {
@@ -130,6 +141,10 @@ public class MzMLHeaderHandler extends DefaultHandler {
         handler.getmzML().setOBO(obo);
 
         return handler.getmzML();
+    }
+
+    public static MzML parsemzMLHeader(String filename) throws FileNotFoundException {
+        return parsemzMLHeader(filename, true);
     }
 
     @Override
@@ -210,6 +225,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
         } else if (qName.equalsIgnoreCase("mzML")) {
             mzML = new MzML(attributes.getValue("version"));
 
+            mzML.setDataStorage(dataStorage);
             mzML.setOBO(obo);
 
             // Add optional attributes
@@ -487,7 +503,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             } else {
                 logger.log(Level.WARNING, "Invalid mzML file - could not find softwareRef ''{0}''. Attempting to continue...", softwareRef);
 
-				// TODO: Reinstate these checks
+                // TODO: Reinstate these checks
                 //throw new InvalidMzML("Can't find softwareRef '" + softwareRef + "' in instrumentConfiguration '" + currentInstrumentConfiguration.getID() + "'");
             }
         } else if (qName.equals("dataProcessingList")) {
@@ -533,7 +549,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             } else {
                 logger.warning("Invalid mzML file - could not find softwareRef '" + softwareRef + "'. Attempting to continue...");
 
-				// TODO: reininstate these checks
+                // TODO: reininstate these checks
                 //throw new InvalidMzML("Can't find softwareRef '" + softwareRef + "'");
             }
         } else if (qName.equals("run")) {
@@ -550,7 +566,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             if (instrumentConfiguration != null) {
                 run = new Run(attributes.getValue("id"), instrumentConfiguration);
             } else {
-				// TODO: Workaround only in place because of ABSciex converter bug where 
+                // TODO: Workaround only in place because of ABSciex converter bug where 
                 // the defaultInstrumentConfigurationRef is auto-incremented in every raster
                 // line file but the instrumentConfiguration id remains as 'instrumentConfiguration1'					
                 if (currentInstrumentConfiguration != null) {
@@ -732,7 +748,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 if (instrumentConfiguration != null) {
                     currentScan.setInstrumentConfigurationRef(instrumentConfiguration);
                 } else {
-					// TODO: Workaround only in place because of ABSciex converter bug where 
+                    // TODO: Workaround only in place because of ABSciex converter bug where 
                     // the defaultInstrumentConfigurationRef is auto-incremented in every raster
                     // line file but the instrumentConfiguration id remains as 'instrumentConfiguration1'					
                     if (currentInstrumentConfiguration != null) {
@@ -1068,7 +1084,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 break;
             case "offset":
             case "indexListOffset":
-                    //System.out.println("[" + offsetData.toString() + "] " + spectrumList.getSpectrum(currentOffsetIDRef));
+                //System.out.println("[" + offsetData.toString() + "] " + spectrumList.getSpectrum(currentOffsetIDRef));
 
 //		    System.out.println("OffsetData: " + offsetData);
                 long offset = Long.parseLong(offsetData.toString());
@@ -1080,10 +1096,12 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 }
 //System.out.println(previousOffset + " " + spectrum);		    
                 if (previousOffset != -1) {
-                    DataLocation dataLocation = new DataLocation(dataStorage, previousOffset, (int) (offset - previousOffset));
+                    if (openDataStorage) {
+                        DataLocation dataLocation = new DataLocation(dataStorage, previousOffset, (int) (offset - previousOffset));
 
-                    //    System.out.println("DataLocation: " + dataLocation);
-                    spectrum.setDataLocation(dataLocation);
+                        //    System.out.println("DataLocation: " + dataLocation);
+                        spectrum.setDataLocation(dataLocation);
+                    }
 
                     //    System.out.println(previousOffsetIDRef + " " + dataLocation);
                     //    System.out.println(spectrum.getDataLocation());
@@ -1144,7 +1162,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream("RianTest.mzML"), encoding);
                 BufferedWriter output = new BufferedWriter(out);
 
-				//writer = new FileWriter(imzMLFilename + ".imzML");
+                //writer = new FileWriter(imzMLFilename + ".imzML");
                 //			System.out.println(out.getEncoding() + " - " + xo.getFormat().getEncoding());
                 //			xo.output(new Document(mzMLElement), out);
                 output.write("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>\n");

@@ -222,7 +222,7 @@ public class Spectrum extends MzMLContent implements Serializable {
                 String cvParamID = cvParam.getTerm().getID();
 
                 int cvParamLocation = spectrumData.indexOf(cvParamID);
-    //		    System.out.println(cvParamLocation);
+                //		    System.out.println(cvParamLocation);
                 //		    System.out.println(cvParamID);
                 //		    System.out.println(spectrumData);
                 String subSpectrumData = spectrumData.substring(cvParamLocation);
@@ -231,13 +231,11 @@ public class Spectrum extends MzMLContent implements Serializable {
                 int binaryEnd = subSpectrumData.indexOf("</binary>") + cvParamLocation;
 
                 bda.setDataLocation(new DataLocation(mzMLDataStorage.getBase64DataStorage(), binaryStart + dataLocation.getOffset(), binaryEnd - binaryStart));
-    //		    System.out.println(cvParam);
+                //		    System.out.println(cvParam);
                 //		    System.out.println(spectrumData.substring(binaryStart, binaryEnd));
             }
         }
-
-		// Finished with mzMLDataStorage now
-        //	mzMLDataStorage.close();
+        
         dataLocation = null;
 
 //		System.out.println("Data: ");
@@ -273,7 +271,7 @@ public class Spectrum extends MzMLContent implements Serializable {
         if (binaryDataArrayList == null) {
             return null;
         }
-        
+
         if (dataLocation != null && dataLocation.getDataStorage() instanceof MzMLSpectrumDataStorage) {
             convertMzMLDataStorageToBase64();
         }

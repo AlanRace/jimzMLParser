@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,7 +34,8 @@ public abstract class DataStorage {
         
         randomAccessFile = new RandomAccessFile(dataFile, "r");
 
-	logger.log(Level.INFO, "[Opened] {0} ({1})", new Object[]{dataFile, randomAccessFile});
+	logger.log(Level.INFO, MessageFormat.format("[Opened] {0} ({1})", new Object[]{dataFile, randomAccessFile}));
+        System.out.println(Arrays.toString(Thread.currentThread().getStackTrace()));
 	
         fileStreamOpen = true;
     }
@@ -44,7 +47,7 @@ public abstract class DataStorage {
     
     public byte[] getData(long offset, int length) throws IOException {
 	if(!fileStreamOpen) {
-	    logger.log(Level.SEVERE, "Trying to access data from a closed stream (" + randomAccessFile + ")");
+	    logger.log(Level.SEVERE, MessageFormat.format("Trying to access data from a closed stream ({0})", randomAccessFile));
 	    
 	    return new byte[0];
 	}
@@ -65,7 +68,7 @@ public abstract class DataStorage {
         if(fileStreamOpen){
             randomAccessFile.close();
 	    
-	    logger.log(Level.INFO, "[Closed] {0} ({1})", new Object[]{dataFile, randomAccessFile});
+	    logger.log(Level.INFO, MessageFormat.format("[Closed] {0} ({1})", new Object[]{dataFile, randomAccessFile}));
             
             fileStreamOpen = false;
         }

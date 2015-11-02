@@ -7,6 +7,7 @@ package com.alanmrace.jimzmlparser.parser;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  *
@@ -24,5 +25,11 @@ public class MzMLSpectrumDataStorage extends DataStorage {
     
     public Base64DataStorage getBase64DataStorage() {
 	return base64DataStorage;
+    }
+    
+    @Override
+    public void close() throws IOException {
+        super.close();
+        base64DataStorage.close();
     }
 }
