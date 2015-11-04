@@ -59,6 +59,14 @@ public class ChromatogramList extends MzMLContent  implements Serializable, Iter
 	public Chromatogram getChromatogram(int index) {
 		return chromatogramList.get(index);
 	}
+        
+        public Chromatogram getChromatogram(String id) {
+            for(Chromatogram chromtogram : chromatogramList)
+                if(chromtogram.getID().equals(id))
+                    return chromtogram;
+            
+            return null;
+        }
 	
 	public void outputXML(BufferedWriter output, int indent) throws IOException {
 		MzMLContent.indent(output, indent);

@@ -1,24 +1,14 @@
 package com.alanmrace.jimzmlparser.mzML;
 
-import com.alanmrace.jimzmlparser.parser.Base64DataStorage;
 import com.alanmrace.jimzmlparser.parser.DataLocation;
-import com.alanmrace.jimzmlparser.parser.DataStorage;
 import com.alanmrace.jimzmlparser.parser.MzMLSpectrumDataStorage;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.io.Serializable;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Vector;
-import java.util.zip.DataFormatException;
 
-import javax.swing.tree.TreeNode;
-
-public class Spectrum extends MzMLContent implements Serializable {
+public class Spectrum extends MzMLDataContainer implements Serializable {
 
     /**
      *
@@ -41,9 +31,7 @@ public class Spectrum extends MzMLContent implements Serializable {
     public static final String positiveScanID = "MS:1000130";	// EmptyCVParam
     public static final String profileSpectrumID = "MS:1000128"; // EmptyCVParam
 
-    private DataProcessing dataProcessingRef;
-    private int defaultArrayLength;
-    private String id;
+ //   private DataProcessing dataProcessingRef;
 //	private int index;
     private SourceFile sourceFileRef;
     private String spotID;
@@ -51,9 +39,6 @@ public class Spectrum extends MzMLContent implements Serializable {
     private ScanList scanList;
     private PrecursorList precursorList;
     private ProductList productList;
-    private BinaryDataArrayList binaryDataArrayList;
-
-    private DataLocation dataLocation;
 
 //	public Spectrum() {
 //		super();
@@ -72,8 +57,9 @@ public class Spectrum extends MzMLContent implements Serializable {
 //		this.defaultArrayLength = defaultArrayLength;
 //	}
     public Spectrum(String id, int defaultArrayLength, int index) {
-        this.id = id;
-        this.defaultArrayLength = defaultArrayLength;
+        super(id, defaultArrayLength, index);
+//        this.id = id;
+//        this.defaultArrayLength = defaultArrayLength;
 //		this.index = index;
     }
 
@@ -135,22 +121,13 @@ public class Spectrum extends MzMLContent implements Serializable {
         return optional;
     }
 
-    // Set optional attributes
-    public void setDataProcessingRef(DataProcessing dataProcessingRef) {
-        this.dataProcessingRef = dataProcessingRef;
-    }
-
     public void setSourceFileRef(SourceFile sourceFileRef) {
         this.sourceFileRef = sourceFileRef;
     }
 
     public void setSpotID(String spotID) {
         this.spotID = spotID;
-    }
-
-    public String getID() {
-        return id;
-    }
+    }    
 
     public ScanList getScanList() {
         return scanList;
@@ -182,69 +159,6 @@ public class Spectrum extends MzMLContent implements Serializable {
         return productList;
     }
 
-    public void setBinaryDataArrayList(BinaryDataArrayList binaryDataArrayList) {
-        binaryDataArrayList.setParent(this);
-
-        this.binaryDataArrayList = binaryDataArrayList;
-    }
-
-    public BinaryDataArrayList getBinaryDataArrayList() {
-        if (binaryDataArrayList == null) {
-            binaryDataArrayList = new BinaryDataArrayList(0);
-        }
-
-        return binaryDataArrayList;
-    }
-
-    public DataLocation getDataLocation() {
-        return dataLocation;
-    }
-
-    /**
-     *
-     * @param dataLocation
-     */
-    public void setDataLocation(DataLocation dataLocation) {
-        this.dataLocation = dataLocation;
-    }
-
-    private void convertMzMLDataStorageToBase64() throws IOException {
-        // Load in the data from the data storage
-        byte[] data = dataLocation.getData();
-        String spectrumData = new String(data);
-
-        MzMLSpectrumDataStorage mzMLDataStorage = (MzMLSpectrumDataStorage) dataLocation.getDataStorage();
-
-        // Identify where each binary data array is within the spectrum mzML
-        if (binaryDataArrayList != null) {
-            for (BinaryDataArray bda : binaryDataArrayList) {
-                CVParam cvParam = bda.getCVParamOrChild(BinaryDataArray.binaryDataArrayID);
-                String cvParamID = cvParam.getTerm().getID();
-
-                int cvParamLocation = spectrumData.indexOf(cvParamID);
-                //		    System.out.println(cvParamLocation);
-                //		    System.out.println(cvParamID);
-                //		    System.out.println(spectrumData);
-                String subSpectrumData = spectrumData.substring(cvParamLocation);
-
-                int binaryStart = subSpectrumData.indexOf("<binary>") + cvParamLocation + "<binary>".length();
-                int binaryEnd = subSpectrumData.indexOf("</binary>") + cvParamLocation;
-
-                bda.setDataLocation(new DataLocation(mzMLDataStorage.getBase64DataStorage(), binaryStart + dataLocation.getOffset(), binaryEnd - binaryStart));
-                //		    System.out.println(cvParam);
-                //		    System.out.println(spectrumData.substring(binaryStart, binaryEnd));
-            }
-        }
-        
-        dataLocation = null;
-
-//		System.out.println("Data: ");
-//		System.out.println(spectrumData);
-        // Create Base64DataStorage with the calculated offsets
-        // Add the new DataStorage to the corresponding BinaryDataArray
-//		throw new UnsupportedOperationException("Not yet supported");
-    }
-
     public double[] getmzArray() throws IOException {
         return getmzArray(false);
     }
@@ -261,22 +175,6 @@ public class Spectrum extends MzMLContent implements Serializable {
         }
 
         return binaryDataArrayList.getmzArray().getDataAsDouble(keepInMemory);
-    }
-
-    public double[] getIntensityArray() throws IOException {
-        return getIntensityArray(false);
-    }
-
-    public double[] getIntensityArray(boolean keepInMemory) throws IOException {
-        if (binaryDataArrayList == null) {
-            return null;
-        }
-
-        if (dataLocation != null && dataLocation.getDataStorage() instanceof MzMLSpectrumDataStorage) {
-            convertMzMLDataStorageToBase64();
-        }
-
-        return binaryDataArrayList.getIntensityArray().getDataAsDouble(keepInMemory);
     }
 
 //	private double[] getDoubleData(RandomAccessFile ibdFile, BinaryDataArray bda) {

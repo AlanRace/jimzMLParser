@@ -1051,7 +1051,15 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
             offsetData.setLength(0);
             processingOffset = true;
-        } else if (qName.equals("indexedmzML") || qName.equals("indexList") || qName.equals("index") || qName.equals("indexListOffset")) {
+        } else if (qName.equals("index")) {
+            if(attributes.getValue("name").equals("chromatogram")) {
+                this.processingChromatogram = true;
+//                this.processingSpectrum = false;
+            } else {
+                this.processingSpectrum = true;
+//                this.processingChromatogram = false;
+            }
+        } else if (qName.equals("indexedmzML") || qName.equals("indexList") || qName.equals("indexListOffset")) {
         } else {
             logger.log(Level.FINEST, "No processing for tag <{0}>", qName);
         }
@@ -1089,26 +1097,47 @@ public class MzMLHeaderHandler extends DefaultHandler {
 //		    System.out.println("OffsetData: " + offsetData);
                 long offset = Long.parseLong(offsetData.toString());
 
-                Spectrum spectrum = spectrumList.getSpectrum(previousOffsetIDRef);
+                MzMLDataContainer dataContainer = null;
+                
+                // There is probably a better way to do this - store a HashMap of IDs and 
+                // locations, then at the end of the file, sort the HashMap by location
+                // and then assign the DataLocation
+                                
+                if(processingSpectrum) {
+                    dataContainer = spectrumList.getSpectrum(previousOffsetIDRef);
 
-                if (spectrum == null) {
-                    spectrum = spectrumList.getSpectrum(spectrumList.size() - 1);
-                }
-//System.out.println(previousOffset + " " + spectrum);		    
-                if (previousOffset != -1) {
-                    if (openDataStorage) {
-                        DataLocation dataLocation = new DataLocation(dataStorage, previousOffset, (int) (offset - previousOffset));
-
-                        //    System.out.println("DataLocation: " + dataLocation);
-                        spectrum.setDataLocation(dataLocation);
+                    if (dataContainer == null) {
+                        dataContainer = spectrumList.getSpectrum(spectrumList.size() - 1);
                     }
-
-                    //    System.out.println(previousOffsetIDRef + " " + dataLocation);
-                    //    System.out.println(spectrum.getDataLocation());
-                    //    System.out.println(spectrum.getBinaryDataArrayList().getBinaryDataArray(0));
-                    //    System.out.println(run.getSpectrumList().size());
-                    //    System.out.println(run.getSpectrumList().getSpectrum(0).getBinaryDataArrayList().getBinaryDataArray(0));
+                } else {
+                    dataContainer = chromatogramList.getChromatogram(previousOffsetIDRef);
+                    
+                    if (dataContainer == null) {
+                        dataContainer = chromatogramList.getChromatogram(chromatogramList.size() - 1);
+                    }
                 }
+                
+                if(processingSpectrum && processingChromatogram)
+                    processingSpectrum = false;
+                
+    //System.out.println(previousOffset + " " + spectrum);		    
+                    if (previousOffset != -1) {
+                        if (openDataStorage && dataContainer != null) {
+                            DataLocation dataLocation = new DataLocation(dataStorage, previousOffset, (int) (offset - previousOffset));
+
+                            if(dataContainer.getID().equals("TIC"))
+                                System.out.println(dataLocation);
+                            
+                            //    System.out.println("DataLocation: " + dataLocation);
+                            dataContainer.setDataLocation(dataLocation);
+                        }
+
+                        //    System.out.println(previousOffsetIDRef + " " + dataLocation);
+                        //    System.out.println(spectrum.getDataLocation());
+                        //    System.out.println(spectrum.getBinaryDataArrayList().getBinaryDataArray(0));
+                        //    System.out.println(run.getSpectrumList().size());
+                        //    System.out.println(run.getSpectrumList().getSpectrum(0).getBinaryDataArrayList().getBinaryDataArray(0));
+                    }
 
                 previousOffset = offset;
                 processingOffset = false;
