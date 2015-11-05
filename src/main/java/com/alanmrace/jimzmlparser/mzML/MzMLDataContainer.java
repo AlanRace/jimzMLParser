@@ -80,23 +80,24 @@ public class MzMLDataContainer extends MzMLContent {
                 CVParam cvParam = bda.getCVParamOrChild(BinaryDataArray.binaryDataArrayID);
                 String cvParamID = cvParam.getTerm().getID();
 
-                System.out.println("Looking for " + cvParam + " in " + this.id);
+//                System.out.println("Looking for " + cvParam + " in " + this.id);
                 
                 int cvParamLocation = spectrumData.indexOf(cvParamID);
                 //		    System.out.println(cvParamLocation);
                 //		    System.out.println(cvParamID);
                 
-                if(cvParamLocation == -1)
-                    System.out.println(spectrumData);
-                
-                String subSpectrumData = spectrumData.substring(cvParamLocation);
+                if(cvParamLocation != -1) {
+                    String subSpectrumData = spectrumData.substring(cvParamLocation);
 
-                int binaryStart = subSpectrumData.indexOf("<binary>") + cvParamLocation + "<binary>".length();
-                int binaryEnd = subSpectrumData.indexOf("</binary>") + cvParamLocation;
+                    int binaryStart = subSpectrumData.indexOf("<binary>") + cvParamLocation + "<binary>".length();
+                    int binaryEnd = subSpectrumData.indexOf("</binary>") + cvParamLocation;
 
-                bda.setDataLocation(new DataLocation(mzMLDataStorage.getBase64DataStorage(), binaryStart + dataLocation.getOffset(), binaryEnd - binaryStart));
-                //		    System.out.println(cvParam);
-                //		    System.out.println(spectrumData.substring(binaryStart, binaryEnd));
+                    bda.setDataLocation(new DataLocation(mzMLDataStorage.getBase64DataStorage(), binaryStart + dataLocation.getOffset(), binaryEnd - binaryStart));
+                    //		    System.out.println(cvParam);
+                    //		    System.out.println(spectrumData.substring(binaryStart, binaryEnd));
+                } else {
+                    System.out.println("Data: " + spectrumData);
+                }
             }
         }
         

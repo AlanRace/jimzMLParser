@@ -6,6 +6,7 @@
 package com.alanmrace.jimzmlparser.parser;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  *
@@ -36,6 +37,12 @@ public class DataLocation {
     }
     
     public byte[] getData() throws IOException {
+        if(length <= 0) {
+            System.out.println("Index less than " + length);
+            System.out.println(Arrays.toString(Thread.currentThread().getStackTrace()));
+            return new byte[0];
+        }
+        
         return dataStorage.getData(offset, length);
     }
     

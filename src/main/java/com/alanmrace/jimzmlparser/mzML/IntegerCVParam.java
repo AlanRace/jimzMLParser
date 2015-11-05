@@ -35,7 +35,7 @@ public class IntegerCVParam extends CVParam {
 		this.units = cvParam.units;
 	}
 	
-	public double getValue() {
+	public int getValue() {
 		return value;
 	}
 	

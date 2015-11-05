@@ -27,7 +27,7 @@ public class LongCVParam extends CVParam {
 		this.units = cvParam.units;
 	}
 	
-	public double getValue() {
+	public long getValue() {
 		return value;
 	}
 	

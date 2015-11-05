@@ -109,12 +109,13 @@ public class MzMLHeaderHandler extends DefaultHandler {
     public MzMLHeaderHandler(OBO obo, File mzMLFile) throws FileNotFoundException {
         this(obo, mzMLFile, true);
     }
-    
+
     public MzMLHeaderHandler(OBO obo, File mzMLFile, boolean openDataFile) throws FileNotFoundException {
         this(obo);
 
-        if(openDataFile) 
+        if (openDataFile) {
             this.dataStorage = new MzMLSpectrumDataStorage(mzMLFile);
+        }
     }
 
     public static MzML parsemzMLHeader(String filename, boolean openDataFile) throws FileNotFoundException {
@@ -1052,7 +1053,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             offsetData.setLength(0);
             processingOffset = true;
         } else if (qName.equals("index")) {
-            if(attributes.getValue("name").equals("chromatogram")) {
+            if (attributes.getValue("name").equals("chromatogram")) {
                 this.processingChromatogram = true;
 //                this.processingSpectrum = false;
             } else {
@@ -1098,12 +1099,11 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 long offset = Long.parseLong(offsetData.toString());
 
                 MzMLDataContainer dataContainer = null;
-                
+
                 // There is probably a better way to do this - store a HashMap of IDs and 
                 // locations, then at the end of the file, sort the HashMap by location
                 // and then assign the DataLocation
-                                
-                if(processingSpectrum) {
+                if (processingSpectrum) {
                     dataContainer = spectrumList.getSpectrum(previousOffsetIDRef);
 
                     if (dataContainer == null) {
@@ -1111,33 +1111,33 @@ public class MzMLHeaderHandler extends DefaultHandler {
                     }
                 } else {
                     dataContainer = chromatogramList.getChromatogram(previousOffsetIDRef);
-                    
+
                     if (dataContainer == null) {
                         dataContainer = chromatogramList.getChromatogram(chromatogramList.size() - 1);
                     }
                 }
-                
-                if(processingSpectrum && processingChromatogram)
-                    processingSpectrum = false;
-                
-    //System.out.println(previousOffset + " " + spectrum);		    
-                    if (previousOffset != -1) {
-                        if (openDataStorage && dataContainer != null) {
-                            DataLocation dataLocation = new DataLocation(dataStorage, previousOffset, (int) (offset - previousOffset));
 
-                            if(dataContainer.getID().equals("TIC"))
-                                System.out.println(dataLocation);
-                            
-                            //    System.out.println("DataLocation: " + dataLocation);
-                            dataContainer.setDataLocation(dataLocation);
-                        }
+                if (processingSpectrum && processingChromatogram) {
+                    processingSpectrum = false;
+                }
+
+                //System.out.println(previousOffset + " " + spectrum);		    
+                if (previousOffset != -1) {
+                    if (openDataStorage && dataContainer != null) {
+                        DataLocation dataLocation = new DataLocation(dataStorage, previousOffset, (int) (offset - previousOffset));
+
+//                            if(dataContainer.getID().equals("TIC"))
+//                                System.out.println(dataLocation);
+                        //    System.out.println("DataLocation: " + dataLocation);
+                        dataContainer.setDataLocation(dataLocation);
+                    }
 
                         //    System.out.println(previousOffsetIDRef + " " + dataLocation);
-                        //    System.out.println(spectrum.getDataLocation());
-                        //    System.out.println(spectrum.getBinaryDataArrayList().getBinaryDataArray(0));
-                        //    System.out.println(run.getSpectrumList().size());
-                        //    System.out.println(run.getSpectrumList().getSpectrum(0).getBinaryDataArrayList().getBinaryDataArray(0));
-                    }
+                    //    System.out.println(spectrum.getDataLocation());
+                    //    System.out.println(spectrum.getBinaryDataArrayList().getBinaryDataArray(0));
+                    //    System.out.println(run.getSpectrumList().size());
+                    //    System.out.println(run.getSpectrumList().getSpectrum(0).getBinaryDataArrayList().getBinaryDataArray(0));
+                }
 
                 previousOffset = offset;
                 processingOffset = false;
