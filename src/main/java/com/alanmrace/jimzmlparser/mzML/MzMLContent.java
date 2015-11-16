@@ -168,7 +168,17 @@ public abstract class MzMLContent implements Serializable { //, MutableTreeNode 
     public void addReferenceableParamGroupRef(ReferenceableParamGroupRef rpg) {
 //		rpg.setParent(this);
 
-        getReferenceableParamGroupRefList().add(rpg);
+        boolean exists = false;
+        
+        for(ReferenceableParamGroupRef ref : getReferenceableParamGroupRefList()) {
+            if(ref.getRef().getID().equals(rpg.getRef().getID())) {
+                exists = true;
+                break;
+            }
+        }
+        
+        if(!exists)
+            getReferenceableParamGroupRefList().add(rpg);
     }
 
     public int getReferenceableParamGroupRefCount() {

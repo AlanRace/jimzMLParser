@@ -33,20 +33,26 @@ public class ImzMLHandler extends MzMLHeaderHandler {
         super(obo);
     }
 
-    public ImzMLHandler(OBO obo, File ibdFile) throws FileNotFoundException {
+    public ImzMLHandler(OBO obo, File ibdFile, boolean openDataStorage) throws FileNotFoundException {
         super(obo);
 
         this.ibdFile = ibdFile;
-        this.dataStorage = new BinaryDataStorage(ibdFile);
+        
+        if(openDataStorage)
+            this.dataStorage = new BinaryDataStorage(ibdFile);
     }
 
     public static ImzML parseimzML(String filename) throws FileNotFoundException {
+        return parseimzML(filename, true);
+    }
+        
+    public static ImzML parseimzML(String filename, boolean openDataStorage) throws FileNotFoundException {
         OBO obo = new OBO("imagingMS.obo");
 
         File ibdFile = new File(filename.substring(0, filename.lastIndexOf('.')) + ".ibd");
 
         // Convert mzML header information -> imzML
-        ImzMLHandler handler = new ImzMLHandler(obo, ibdFile);
+        ImzMLHandler handler = new ImzMLHandler(obo, ibdFile, openDataStorage);
 
         SAXParserFactory spf = SAXParserFactory.newInstance();
         try {
@@ -73,9 +79,17 @@ public class ImzMLHandler extends MzMLHeaderHandler {
             String accession = attributes.getValue("accession");
 
             if (accession.equals(BinaryDataArray.externalEncodedLengthID)) {
-                currentNumBytes = Long.parseLong(attributes.getValue("value"));
+                try {
+                    currentNumBytes = Long.parseLong(attributes.getValue("value"));
+                } catch(NumberFormatException ex) {
+                    currentNumBytes = (long)Double.parseDouble(attributes.getValue("value"));
+                }
             } else if (accession.equals(BinaryDataArray.externalOffsetID)) {
-                currentOffset = Long.parseLong(attributes.getValue("value"));
+                try {
+                    currentOffset = Long.parseLong(attributes.getValue("value"));
+                } catch(NumberFormatException ex) {
+                    currentNumBytes = (long)Double.parseDouble(attributes.getValue("value"));
+                }
             }
         }
 

@@ -1,5 +1,6 @@
 package com.alanmrace.jimzmlparser.mzML;
 
+import com.alanmrace.jimzmlparser.imzML.PixelLocation;
 import com.alanmrace.jimzmlparser.parser.DataLocation;
 import com.alanmrace.jimzmlparser.parser.MzMLSpectrumDataStorage;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
@@ -39,6 +40,8 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
     private ScanList scanList;
     private PrecursorList precursorList;
     private ProductList productList;
+    
+    private PixelLocation pixelLocation;
 
 //	public Spectrum() {
 //		super();
@@ -157,6 +160,30 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
 
     public ProductList getProductList() {
         return productList;
+    }
+    
+    public PixelLocation getPixelLocation() {
+        if(pixelLocation == null) {
+            // 
+            for(Scan scan : scanList) {
+                CVParam xValue = scan.getCVParam(Scan.positionXID);
+                CVParam yValue = scan.getCVParam(Scan.positionYID);
+                CVParam zValue = scan.getCVParam(Scan.positionZID);
+                
+                if(xValue != null && yValue != null) {
+                    int x = xValue.getValueAsInteger();
+                    int y = yValue.getValueAsInteger();
+                    
+                    int z = (zValue != null)? zValue.getValueAsInteger() : 1;
+                    
+                    pixelLocation = new PixelLocation(x, y, z);
+                    
+                    break;
+                }
+            }
+        }
+        
+        return pixelLocation;
     }
 
     public double[] getmzArray() throws IOException {

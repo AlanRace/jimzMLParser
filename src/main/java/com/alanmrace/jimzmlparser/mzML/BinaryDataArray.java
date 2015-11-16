@@ -391,6 +391,9 @@ public class BinaryDataArray extends MzMLContent  implements Serializable {
         }
         
         public static byte[] convertDataType(byte[] data, Binary.DataType dataType, CVParam newDataType) {
+            if(dataType == null)
+                return convertDataType(data, new EmptyCVParam(new OBOTerm(BinaryDataArray.doublePrecisionID)), newDataType);
+                
             switch(dataType) {
                 case singlePrecision:
                     return convertDataType(data, new EmptyCVParam(new OBOTerm(BinaryDataArray.singlePrecisionID)), newDataType);
@@ -646,6 +649,7 @@ public class BinaryDataArray extends MzMLContent  implements Serializable {
 		super.addCVParam(cvParam);
 	}
 	
+        @Override
 	public void addReferenceableParamGroupRef(ReferenceableParamGroupRef rpgr) {
 		CVParam child = rpgr.getRef().getCVParamOrChild(binaryDataArrayID);
 		
