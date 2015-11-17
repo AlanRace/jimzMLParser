@@ -1,6 +1,7 @@
 package com.alanmrace.jimzmlparser.imzML;
 
 import com.alanmrace.jimzmlparser.exceptions.ImzMLWriteException;
+import com.alanmrace.jimzmlparser.mzML.BinaryDataArray;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,8 +15,10 @@ import com.alanmrace.jimzmlparser.mzML.MzML;
 import com.alanmrace.jimzmlparser.mzML.Scan;
 import com.alanmrace.jimzmlparser.mzML.ScanSettings;
 import com.alanmrace.jimzmlparser.mzML.ScanSettingsList;
+import com.alanmrace.jimzmlparser.mzML.Software;
 import com.alanmrace.jimzmlparser.mzML.Spectrum;
 import com.alanmrace.jimzmlparser.mzML.SpectrumList;
+import java.nio.ByteBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,6 +35,8 @@ public class ImzML extends MzML {
 
     private File ibdFile;
 
+    private double[] fullmzList;
+    
     private Spectrum[][][] spectrumGrid;
 
     private static double minMZ = Double.MAX_VALUE;
@@ -53,6 +58,34 @@ public class ImzML extends MzML {
         super(mzML);
     }
 
+    public synchronized double[] getFullmzList() {
+        if(fullmzList == null) {
+            Software imzMLConverter = this.getSoftwareList().getSoftware("imzMLConverter");
+            
+            if(imzMLConverter != null) {
+                CVParam offsetParam = imzMLConverter.getCVParam(BinaryDataArray.externalOffsetID);
+                CVParam encodedLengthParam = imzMLConverter.getCVParam(BinaryDataArray.externalEncodedLengthID);
+
+                if(offsetParam != null) {
+                    try {
+                        byte[] fullmzListBytes = dataStorage.getData(offsetParam.getValueAsLong(), encodedLengthParam.getValueAsInteger());
+                        
+                        fullmzList = new double[fullmzListBytes.length / Double.BYTES];
+                        
+                        ByteBuffer buffer = ByteBuffer.wrap(fullmzListBytes);
+                        
+                        for(int i = 0; i < fullmzList.length; i++)
+                            fullmzList[i] = buffer.getDouble();
+                    } catch (IOException ex) {
+                        Logger.getLogger(ImzML.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        }
+        
+        return fullmzList;
+    }
+    
     public synchronized Spectrum getSpectrum(int x, int y) {
         return getSpectrum(x, y, 1);
     }
