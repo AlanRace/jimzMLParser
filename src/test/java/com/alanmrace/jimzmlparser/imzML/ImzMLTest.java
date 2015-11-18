@@ -6,7 +6,11 @@
 package com.alanmrace.jimzmlparser.imzML;
 
 import com.alanmrace.jimzmlparser.mzML.Spectrum;
+import com.alanmrace.jimzmlparser.parser.ImzMLHandler;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -21,6 +25,10 @@ import org.junit.Ignore;
  */
 public class ImzMLTest {
     
+    private static final Logger logger = Logger.getLogger(ImzMLTest.class.getName());
+    
+    public static final String TEST_RESOURCE = "/MatrixTests_N2.imzML"; // "/2012_5_2_medium(120502,20h18m).wiff"; 
+    
     ImzML instance;
     
     public ImzMLTest() {
@@ -28,6 +36,8 @@ public class ImzMLTest {
     
     @BeforeClass
     public static void setUpClass() {
+        System.out.println("Setting up MzMLToImzMLConverterTest");
+        assertNotNull("Test file missing", ImzMLTest.class.getResource(TEST_RESOURCE));
     }
     
     @AfterClass
@@ -36,6 +46,12 @@ public class ImzMLTest {
     
     @Before
     public void setUp() {
+        try {
+            instance = ImzMLHandler.parseimzML(ImzMLTest.class.getResource(TEST_RESOURCE).getPath());
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(ImzMLTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail("FileNotFoundException: " + ex);
+        }
     }
     
     @After
@@ -49,11 +65,18 @@ public class ImzMLTest {
     public void testGetFullmzList() {
         System.out.println("getFullmzList");
         
-        double[] expResult = null;
+//        double[] expResult = null;
         double[] result = instance.getFullmzList();
-        assertArrayEquals(expResult, result, 0.01);
+        
+        assertNotNull(result);
+        
+        assertEquals(50, result[0], 1);
+        assertEquals(2000, result[result.length-1], 1);
+        
+        
+//        assertArrayEquals(expResult, result, 0.01);
         // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+//        fail("The test case is a prototype.");
     }
 
     /**

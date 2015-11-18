@@ -19,6 +19,7 @@ import com.alanmrace.jimzmlparser.mzML.Software;
 import com.alanmrace.jimzmlparser.mzML.Spectrum;
 import com.alanmrace.jimzmlparser.mzML.SpectrumList;
 import java.nio.ByteBuffer;
+import java.nio.DoubleBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,6 +29,8 @@ public class ImzML extends MzML {
      *
      */
     private static final long serialVersionUID = 1L;
+    
+    private static final Logger logger = Logger.getLogger(ImzML.class.getName());
 
     private int width;
     private int height;
@@ -59,23 +62,36 @@ public class ImzML extends MzML {
     }
 
     public synchronized double[] getFullmzList() {
+        logger.entering(ImzML.class.getName(), "getFullmzList");
+        
         if(fullmzList == null) {
             Software imzMLConverter = this.getSoftwareList().getSoftware("imzMLConverter");
+            
+            logger.log(Level.FINE, "Software found: {0}", imzMLConverter);
             
             if(imzMLConverter != null) {
                 CVParam offsetParam = imzMLConverter.getCVParam(BinaryDataArray.externalOffsetID);
                 CVParam encodedLengthParam = imzMLConverter.getCVParam(BinaryDataArray.externalEncodedLengthID);
 
+                logger.log(Level.FINE, "Found CVParams: {0}, {1}", new Object[]{offsetParam, encodedLengthParam});
+                
                 if(offsetParam != null) {
                     try {
                         byte[] fullmzListBytes = dataStorage.getData(offsetParam.getValueAsLong(), encodedLengthParam.getValueAsInteger());
                         
+                        logger.log(Level.FINE, "Read in {0} bytes", fullmzListBytes.length);
+                        
                         fullmzList = new double[fullmzListBytes.length / Double.BYTES];
                         
                         ByteBuffer buffer = ByteBuffer.wrap(fullmzListBytes);
+                        DoubleBuffer doubleBuffer = buffer.asDoubleBuffer();
+                        
+                        logger.log(Level.FINE, "First double is {0}", doubleBuffer.get(0));
                         
                         for(int i = 0; i < fullmzList.length; i++)
-                            fullmzList[i] = buffer.getDouble();
+                            fullmzList[i] = doubleBuffer.get(i);
+                        
+                        logger.log(Level.FINE, "First double in array is {0}", fullmzList[0]);
                     } catch (IOException ex) {
                         Logger.getLogger(ImzML.class.getName()).log(Level.SEVERE, null, ex);
                     }

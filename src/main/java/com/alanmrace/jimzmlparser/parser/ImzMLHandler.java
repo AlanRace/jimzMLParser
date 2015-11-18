@@ -134,6 +134,7 @@ public class ImzMLHandler extends MzMLHeaderHandler {
         ImzML imzML = (ImzML) mzML;
 
         imzML.setibdFile(ibdFile);
+        imzML.setDataStorage(dataStorage);
 
         return imzML;
     }

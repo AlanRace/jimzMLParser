@@ -20,13 +20,27 @@
                 </excludes>
             </resource>
         </resources>
+        <plugins>
+            <plugin>
+                <version>2.10</version>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <systemProperties>
+                        <property> 
+                            <name>java.util.logging.config.file</name>
+                            <value>src/test/resources/logging.properties</value>
+                        </property>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
     <dependencies>
         <dependency>
-		<groupId>com.sun.xml.security</groupId>
-		<artifactId>xml-security-impl</artifactId>
-		<version>1.0</version>
-	</dependency>
+            <groupId>com.sun.xml.security</groupId>
+            <artifactId>xml-security-impl</artifactId>
+            <version>1.0</version>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
