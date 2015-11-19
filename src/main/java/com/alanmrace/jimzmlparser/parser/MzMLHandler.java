@@ -1,5 +1,6 @@
 package com.alanmrace.jimzmlparser.parser;
 
+import com.alanmrace.jimzmlparser.exceptions.MzMLParseException;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -48,17 +49,18 @@ public class MzMLHandler extends MzMLHeaderHandler {
         temporaryFileStream = new DataOutputStream(new FileOutputStream(temporaryBinaryFile));
     }
 
-    public static MzML parsemzML(String filename) throws FileNotFoundException {
-        OBO obo = new OBO("imagingMS.obo");
-
-        File tmpFile = new File(filename.substring(0, filename.lastIndexOf('.')) + ".tmp");
-        tmpFile.deleteOnExit();
-
-        // Parse mzML
-        MzMLHandler handler = new MzMLHandler(obo, tmpFile);
-
-        SAXParserFactory spf = SAXParserFactory.newInstance();
+    public static MzML parsemzML(String filename) throws MzMLParseException {
         try {
+            OBO obo = new OBO("imagingMS.obo");
+
+            File tmpFile = new File(filename.substring(0, filename.lastIndexOf('.')) + ".tmp");
+            tmpFile.deleteOnExit();
+
+            // Parse mzML
+            MzMLHandler handler = new MzMLHandler(obo, tmpFile);
+
+            SAXParserFactory spf = SAXParserFactory.newInstance();
+
             //get a new instance of parser
             SAXParser sp = spf.newSAXParser();
 
@@ -67,13 +69,26 @@ public class MzMLHandler extends MzMLHeaderHandler {
             //parse the file and also register this class for call backs
             sp.parse(file, handler);
 
-        } catch (SAXException | ParserConfigurationException | IOException se) {
-            logger.log(Level.SEVERE, null, se);
+            handler.getmzML().setOBO(obo);
+
+            return handler.getmzML();
+        } catch (SAXException ex) {
+            logger.log(Level.SEVERE, null, ex);
+
+            throw new MzMLParseException("SAXException: " + ex);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(MzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
+
+            throw new MzMLParseException("File not found: " + filename);
+        } catch (IOException ex) {
+            Logger.getLogger(MzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
+
+            throw new MzMLParseException("IOException: " + ex);
+        } catch (ParserConfigurationException ex) {
+            Logger.getLogger(MzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
+
+            throw new MzMLParseException("ParserConfigurationException: " + ex);
         }
-
-        handler.getmzML().setOBO(obo);
-
-        return handler.getmzML();
     }
 
     public void deleteTemporaryFile() {

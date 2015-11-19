@@ -50,7 +50,7 @@ public class Activation extends MzMLContent {
      */
     @Override
     public ArrayList<OBOTermInclusion> getListOfRequiredCVParams() {
-        ArrayList<OBOTermInclusion> required = new ArrayList<>();
+        ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
         required.add(new OBOTermInclusion(dissociationMethodID, false, true, true));
 
         return required;
@@ -62,7 +62,7 @@ public class Activation extends MzMLContent {
      */
     @Override
     public ArrayList<OBOTermInclusion> getListOfOptionalCVParams() {
-        ArrayList<OBOTermInclusion> optional = new ArrayList<>();
+        ArrayList<OBOTermInclusion> optional = new ArrayList<OBOTermInclusion>();
         optional.add(new OBOTermInclusion(precursorActivationAttributeID, false, true, false));
 
         return optional;

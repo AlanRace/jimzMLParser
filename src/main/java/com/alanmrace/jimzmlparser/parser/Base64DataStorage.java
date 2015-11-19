@@ -5,12 +5,15 @@
  */
 package com.alanmrace.jimzmlparser.parser;
 
+import com.alanmrace.jimzmlparser.exceptions.MzMLParseException;
 import com.alanmrace.jimzmlparser.mzML.BinaryDataArray;
 import com.alanmrace.jimzmlparser.mzML.MzML;
 import com.alanmrace.jimzmlparser.mzML.Spectrum;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.bind.DatatypeConverter;
 
 /**
@@ -30,24 +33,30 @@ public class Base64DataStorage extends DataStorage {
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    public static void main(String[] args) throws IOException {
-	//String mzMLFile = "C:\\Users\\Alan\\Documents\\Work\\jimzMLParser\\src\\main\\resources\\imzMLConverterTestData_23.898, 29.745, 30.898, 41.766, 7.000, 0.100, 1_1.mzML";
-	String mzMLFile = "D:\\Test\\Data7_1_2011-acc0.1_cyc10_Sample001_1.mzML";
-        
-        MzML mzML = MzMLHeaderHandler.parsemzMLHeader(mzMLFile);
-        
-        Spectrum spectrum = mzML.getRun().getSpectrumList().getSpectrum(0);
-        BinaryDataArray bda = spectrum.getBinaryDataArrayList().getBinaryDataArray(0);
-        
-	System.out.println(spectrum.getmzArray()[0]);
-	
-	mzML = MzMLHandler.parsemzML(mzMLFile);
-	
-	spectrum = mzML.getRun().getSpectrumList().getSpectrum(0);
-	bda = spectrum.getBinaryDataArrayList().getBinaryDataArray(0);
-	
-	System.out.println(spectrum.getmzArray()[0]);
-	
+    public static void main(String[] args) {
+        try {
+            //String mzMLFile = "C:\\Users\\Alan\\Documents\\Work\\jimzMLParser\\src\\main\\resources\\imzMLConverterTestData_23.898, 29.745, 30.898, 41.766, 7.000, 0.100, 1_1.mzML";
+            String mzMLFile = "D:\\Test\\Data7_1_2011-acc0.1_cyc10_Sample001_1.mzML";
+            
+            MzML mzML = MzMLHeaderHandler.parsemzMLHeader(mzMLFile);
+            
+            Spectrum spectrum = mzML.getRun().getSpectrumList().getSpectrum(0);
+            BinaryDataArray bda = spectrum.getBinaryDataArrayList().getBinaryDataArray(0);
+            
+            System.out.println(spectrum.getmzArray()[0]);
+            
+            mzML = MzMLHandler.parsemzML(mzMLFile);
+            
+            spectrum = mzML.getRun().getSpectrumList().getSpectrum(0);
+            bda = spectrum.getBinaryDataArrayList().getBinaryDataArray(0);
+            
+            System.out.println(spectrum.getmzArray()[0]);
+            
 //        System.out.println(bda.getBinary().getData()[0]);
+        } catch (MzMLParseException ex) {
+            Logger.getLogger(Base64DataStorage.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Base64DataStorage.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

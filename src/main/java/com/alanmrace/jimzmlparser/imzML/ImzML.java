@@ -29,7 +29,7 @@ public class ImzML extends MzML {
      *
      */
     private static final long serialVersionUID = 1L;
-    
+
     private static final Logger logger = Logger.getLogger(ImzML.class.getName());
 
     private int width;
@@ -39,13 +39,13 @@ public class ImzML extends MzML {
     private File ibdFile;
 
     private double[] fullmzList;
-    
+
     private Spectrum[][][] spectrumGrid;
 
     private static double minMZ = Double.MAX_VALUE;
     private static double maxMZ = Double.MIN_VALUE;
 
-	// REMOVED - zero filling code because it caused more issues. Alternative 
+    // REMOVED - zero filling code because it caused more issues. Alternative 
     // (and faster) work around is to go to mzML and then to imzML.
     // Default to no zero indexing, however if we find a 0, then turn it on
 //	private boolean zeroIndexing = false;
@@ -63,34 +63,35 @@ public class ImzML extends MzML {
 
     public synchronized double[] getFullmzList() {
         logger.entering(ImzML.class.getName(), "getFullmzList");
-        
-        if(fullmzList == null) {
+
+        if (fullmzList == null) {
             Software imzMLConverter = this.getSoftwareList().getSoftware("imzMLConverter");
-            
+
             logger.log(Level.FINE, "Software found: {0}", imzMLConverter);
-            
-            if(imzMLConverter != null) {
+
+            if (imzMLConverter != null) {
                 CVParam offsetParam = imzMLConverter.getCVParam(BinaryDataArray.externalOffsetID);
                 CVParam encodedLengthParam = imzMLConverter.getCVParam(BinaryDataArray.externalEncodedLengthID);
 
                 logger.log(Level.FINE, "Found CVParams: {0}, {1}", new Object[]{offsetParam, encodedLengthParam});
-                
-                if(offsetParam != null) {
+
+                if (offsetParam != null) {
                     try {
                         byte[] fullmzListBytes = dataStorage.getData(offsetParam.getValueAsLong(), encodedLengthParam.getValueAsInteger());
-                        
+
                         logger.log(Level.FINE, "Read in {0} bytes", fullmzListBytes.length);
-                        
+
                         fullmzList = new double[fullmzListBytes.length / Double.BYTES];
-                        
+
                         ByteBuffer buffer = ByteBuffer.wrap(fullmzListBytes);
                         DoubleBuffer doubleBuffer = buffer.asDoubleBuffer();
-                        
+
                         logger.log(Level.FINE, "First double is {0}", doubleBuffer.get(0));
-                        
-                        for(int i = 0; i < fullmzList.length; i++)
+
+                        for (int i = 0; i < fullmzList.length; i++) {
                             fullmzList[i] = doubleBuffer.get(i);
-                        
+                        }
+
                         logger.log(Level.FINE, "First double in array is {0}", fullmzList[0]);
                     } catch (IOException ex) {
                         Logger.getLogger(ImzML.class.getName()).log(Level.SEVERE, null, ex);
@@ -98,10 +99,10 @@ public class ImzML extends MzML {
                 }
             }
         }
-        
+
         return fullmzList;
     }
-    
+
     public synchronized Spectrum getSpectrum(int x, int y) {
         return getSpectrum(x, y, 1);
     }
@@ -648,12 +649,17 @@ public class ImzML extends MzML {
     public void write(String filename) throws ImzMLWriteException {
         String encoding = "ISO-8859-1";
 
-        try (OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(filename), encoding);
-                BufferedWriter output = new BufferedWriter(out)) {
+        try {
+            OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(filename), encoding);
+            BufferedWriter output = new BufferedWriter(out);
+
             output.write("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>\n");
             outputXML(output, 0);
 
             output.flush();
+
+            output.close();
+            out.close();
         } catch (IOException e1) {
             throw new ImzMLWriteException("Error writing imzML file " + filename + ". " + e1.getLocalizedMessage());
         }

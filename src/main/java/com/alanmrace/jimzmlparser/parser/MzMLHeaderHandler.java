@@ -20,6 +20,7 @@ import com.alanmrace.jimzmlparser.mzML.*;
 import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 import com.alanmrace.jimzmlparser.exceptions.InvalidMzML;
+import com.alanmrace.jimzmlparser.exceptions.MzMLParseException;
 import java.util.logging.Level;
 
 import org.xml.sax.Attributes;
@@ -118,15 +119,16 @@ public class MzMLHeaderHandler extends DefaultHandler {
         }
     }
 
-    public static MzML parsemzMLHeader(String filename, boolean openDataFile) throws FileNotFoundException {
-        OBO obo = new OBO("imagingMS.obo");
-
-        // Parse mzML
-        MzMLHeaderHandler handler = new MzMLHeaderHandler(obo, new File(filename), openDataFile);
-        handler.setOpenDataStorage(openDataFile);
-
-        SAXParserFactory spf = SAXParserFactory.newInstance();
+    public static MzML parsemzMLHeader(String filename, boolean openDataFile) throws MzMLParseException {
         try {
+            OBO obo = new OBO("imagingMS.obo");
+
+            // Parse mzML
+            MzMLHeaderHandler handler = new MzMLHeaderHandler(obo, new File(filename), openDataFile);
+            handler.setOpenDataStorage(openDataFile);
+
+            SAXParserFactory spf = SAXParserFactory.newInstance();
+
             //get a new instance of parser
             SAXParser sp = spf.newSAXParser();
 
@@ -135,16 +137,29 @@ public class MzMLHeaderHandler extends DefaultHandler {
             //parse the file and also register this class for call backs
             sp.parse(file, handler);
 
-        } catch (SAXException | ParserConfigurationException | IOException se) {
-            logger.log(Level.SEVERE, null, se);
+            handler.getmzML().setOBO(obo);
+
+            return handler.getmzML();
+        } catch (SAXException ex) {
+            logger.log(Level.SEVERE, null, ex);
+
+            throw new MzMLParseException("SAXException: " + ex);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(MzMLHeaderHandler.class.getName()).log(Level.SEVERE, null, ex);
+
+            throw new MzMLParseException("File not found: " + filename);
+        } catch (IOException ex) {
+            Logger.getLogger(MzMLHeaderHandler.class.getName()).log(Level.SEVERE, null, ex);
+
+            throw new MzMLParseException("IOException: " + ex);
+        } catch (ParserConfigurationException ex) {
+            Logger.getLogger(MzMLHeaderHandler.class.getName()).log(Level.SEVERE, null, ex);
+
+            throw new MzMLParseException("ParserConfigurationException: " + ex);
         }
-
-        handler.getmzML().setOBO(obo);
-
-        return handler.getmzML();
     }
 
-    public static MzML parsemzMLHeader(String filename) throws FileNotFoundException {
+    public static MzML parsemzMLHeader(String filename) throws MzMLParseException {
         return parsemzMLHeader(filename, true);
     }
 
@@ -1075,73 +1090,62 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
-        switch (qName) {
-            case "spectrum":
+        if (qName.equals("spectrum")) {
+            processingSpectrum = false;
+        } else if (qName.equals("chromatogram")) {
+            processingChromatogram = false;
+        } else if (qName.equals("precursor")) {
+            processingPrecursor = false;
+        } else if (qName.equals("product")) {
+            processingProduct = false;
+        } else if (qName.equals("binaryDataArrayList")) {
+            currentBinaryDataArrayList.updatemzAndIntensityArray();
+        } else if (qName.equals("offset") || qName.equals("indexListOffset")) {
+            long offset = Long.parseLong(offsetData.toString());
+
+            MzMLDataContainer dataContainer = null;
+
+            // There is probably a better way to do this - store a HashMap of IDs and 
+            // locations, then at the end of the file, sort the HashMap by location
+            // and then assign the DataLocation
+            if (processingSpectrum) {
+                dataContainer = spectrumList.getSpectrum(previousOffsetIDRef);
+
+                if (dataContainer == null) {
+                    dataContainer = spectrumList.getSpectrum(spectrumList.size() - 1);
+                }
+            } else {
+                dataContainer = chromatogramList.getChromatogram(previousOffsetIDRef);
+
+                if (dataContainer == null) {
+                    dataContainer = chromatogramList.getChromatogram(chromatogramList.size() - 1);
+                }
+            }
+
+            if (processingSpectrum && processingChromatogram) {
                 processingSpectrum = false;
-                break;
-            case "chromatogram":
-                processingChromatogram = false;
-                break;
-            case "precursor":
-                processingPrecursor = false;
-                break;
-            case "product":
-                processingProduct = false;
-                break;
-            case "binaryDataArrayList":
-                currentBinaryDataArrayList.updatemzAndIntensityArray();
-                break;
-            case "offset":
-            case "indexListOffset":
-                //System.out.println("[" + offsetData.toString() + "] " + spectrumList.getSpectrum(currentOffsetIDRef));
+            }
 
-//		    System.out.println("OffsetData: " + offsetData);
-                long offset = Long.parseLong(offsetData.toString());
-
-                MzMLDataContainer dataContainer = null;
-
-                // There is probably a better way to do this - store a HashMap of IDs and 
-                // locations, then at the end of the file, sort the HashMap by location
-                // and then assign the DataLocation
-                if (processingSpectrum) {
-                    dataContainer = spectrumList.getSpectrum(previousOffsetIDRef);
-
-                    if (dataContainer == null) {
-                        dataContainer = spectrumList.getSpectrum(spectrumList.size() - 1);
-                    }
-                } else {
-                    dataContainer = chromatogramList.getChromatogram(previousOffsetIDRef);
-
-                    if (dataContainer == null) {
-                        dataContainer = chromatogramList.getChromatogram(chromatogramList.size() - 1);
-                    }
-                }
-
-                if (processingSpectrum && processingChromatogram) {
-                    processingSpectrum = false;
-                }
-
-                //System.out.println(previousOffset + " " + spectrum);		    
-                if (previousOffset != -1) {
-                    if (openDataStorage && dataContainer != null) {
-                        DataLocation dataLocation = new DataLocation(dataStorage, previousOffset, (int) (offset - previousOffset));
+            //System.out.println(previousOffset + " " + spectrum);		    
+            if (previousOffset != -1) {
+                if (openDataStorage && dataContainer != null) {
+                    DataLocation dataLocation = new DataLocation(dataStorage, previousOffset, (int) (offset - previousOffset));
 
 //                            if(dataContainer.getID().equals("TIC"))
 //                                System.out.println(dataLocation);
-                        //    System.out.println("DataLocation: " + dataLocation);
-                        dataContainer.setDataLocation(dataLocation);
-                    }
-
-                        //    System.out.println(previousOffsetIDRef + " " + dataLocation);
-                    //    System.out.println(spectrum.getDataLocation());
-                    //    System.out.println(spectrum.getBinaryDataArrayList().getBinaryDataArray(0));
-                    //    System.out.println(run.getSpectrumList().size());
-                    //    System.out.println(run.getSpectrumList().getSpectrum(0).getBinaryDataArrayList().getBinaryDataArray(0));
+                    //    System.out.println("DataLocation: " + dataLocation);
+                    dataContainer.setDataLocation(dataLocation);
                 }
 
-                previousOffset = offset;
-                processingOffset = false;
-                break;
+                //    System.out.println(previousOffsetIDRef + " " + dataLocation);
+                //    System.out.println(spectrum.getDataLocation());
+                //    System.out.println(spectrum.getBinaryDataArrayList().getBinaryDataArray(0));
+                //    System.out.println(run.getSpectrumList().size());
+                //    System.out.println(run.getSpectrumList().getSpectrum(0).getBinaryDataArrayList().getBinaryDataArray(0));
+            }
+
+            previousOffset = offset;
+            processingOffset = false;
 //                case "mzML":
 //                    for(Spectrum curSpectrum : spectrumList) {
 //                        System.out.println(curSpectrum.getDataLocation());
@@ -1153,7 +1157,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 //                    }
 //                    
 //                    break;
-            }
+        }
     }
 
 //	public int getSpectrumCount() {
@@ -1174,39 +1178,36 @@ public class MzMLHeaderHandler extends DefaultHandler {
             headerHandler = new MzMLHandler(obo, temporaryBinaryFile);
 
             SAXParserFactory sspf = SAXParserFactory.newInstance();
-            try {
 
-                //get a new instance of parser
-                SAXParser sp = sspf.newSAXParser();
+            //get a new instance of parser
+            SAXParser sp = sspf.newSAXParser();
 
-                //parse the file and also register this class for call backs
-                sp.parse(mzMLFile, headerHandler);
-            } catch (SAXException | ParserConfigurationException | IOException se) {
-                logger.log(Level.SEVERE, null, se);
-            }
+            //parse the file and also register this class for call backs
+            sp.parse(mzMLFile, headerHandler);
 
-            try {
-                String encoding = "ISO-8859-1";
+            String encoding = "ISO-8859-1";
 
-                OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream("RianTest.mzML"), encoding);
-                BufferedWriter output = new BufferedWriter(out);
+            OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream("RianTest.mzML"), encoding);
+            BufferedWriter output = new BufferedWriter(out);
 
                 //writer = new FileWriter(imzMLFilename + ".imzML");
-                //			System.out.println(out.getEncoding() + " - " + xo.getFormat().getEncoding());
-                //			xo.output(new Document(mzMLElement), out);
-                output.write("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>\n");
-                headerHandler.getmzML().outputXML(output, 0);
+            //			System.out.println(out.getEncoding() + " - " + xo.getFormat().getEncoding());
+            //			xo.output(new Document(mzMLElement), out);
+            output.write("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>\n");
+            headerHandler.getmzML().outputXML(output, 0);
 
-                output.flush();
-                output.close();
-
-            } catch (IOException ex) {
-                logger.log(Level.SEVERE, null, ex);
-            }
+            output.flush();
+            output.close();
 
             //temporaryBinaryFile.delete();
         } catch (FileNotFoundException e) {
             logger.log(Level.SEVERE, null, e);
+        } catch (SAXException ex) {
+            Logger.getLogger(MzMLHeaderHandler.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(MzMLHeaderHandler.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParserConfigurationException ex) {
+            Logger.getLogger(MzMLHeaderHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

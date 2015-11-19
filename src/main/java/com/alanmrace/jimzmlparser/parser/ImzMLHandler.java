@@ -1,5 +1,6 @@
 package com.alanmrace.jimzmlparser.parser;
 
+import com.alanmrace.jimzmlparser.exceptions.ImzMLParseException;
 import com.alanmrace.jimzmlparser.imzML.ImzML;
 
 import java.io.File;
@@ -23,7 +24,7 @@ import org.xml.sax.SAXException;
 public class ImzMLHandler extends MzMLHeaderHandler {
 
     private static final Logger logger = Logger.getLogger(ImzMLHandler.class.getName());
-    
+
     private File ibdFile;
 //    private BinaryDataStorage dataStorage;
     private long currentOffset;
@@ -37,25 +38,27 @@ public class ImzMLHandler extends MzMLHeaderHandler {
         super(obo);
 
         this.ibdFile = ibdFile;
-        
-        if(openDataStorage)
+
+        if (openDataStorage) {
             this.dataStorage = new BinaryDataStorage(ibdFile);
+        }
     }
 
-    public static ImzML parseimzML(String filename) throws FileNotFoundException {
+    public static ImzML parseimzML(String filename) throws ImzMLParseException {
         return parseimzML(filename, true);
     }
-        
-    public static ImzML parseimzML(String filename, boolean openDataStorage) throws FileNotFoundException {
-        OBO obo = new OBO("imagingMS.obo");
 
-        File ibdFile = new File(filename.substring(0, filename.lastIndexOf('.')) + ".ibd");
-
-        // Convert mzML header information -> imzML
-        ImzMLHandler handler = new ImzMLHandler(obo, ibdFile, openDataStorage);
-
-        SAXParserFactory spf = SAXParserFactory.newInstance();
+    public static ImzML parseimzML(String filename, boolean openDataStorage) throws ImzMLParseException {
         try {
+            OBO obo = new OBO("imagingMS.obo");
+
+            File ibdFile = new File(filename.substring(0, filename.lastIndexOf('.')) + ".ibd");
+
+            // Convert mzML header information -> imzML
+            ImzMLHandler handler = new ImzMLHandler(obo, ibdFile, openDataStorage);
+
+            SAXParserFactory spf = SAXParserFactory.newInstance();
+
             //get a new instance of parser
             SAXParser sp = spf.newSAXParser();
 
@@ -64,13 +67,26 @@ public class ImzMLHandler extends MzMLHeaderHandler {
             //parse the file and also register this class for call backs
             sp.parse(file, handler);
 
-        } catch (SAXException | ParserConfigurationException | IOException se) {
-            logger.log(Level.SEVERE, null, se);
+            handler.getimzML().setOBO(obo);
+
+            return handler.getimzML();
+        } catch (SAXException ex) {
+            logger.log(Level.SEVERE, null, ex);
+
+            throw new ImzMLParseException("SAXException: " + ex);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(MzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
+
+            throw new ImzMLParseException("File not found: " + filename);
+        } catch (IOException ex) {
+            Logger.getLogger(MzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
+
+            throw new ImzMLParseException("IOException: " + ex);
+        } catch (ParserConfigurationException ex) {
+            Logger.getLogger(MzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
+
+            throw new ImzMLParseException("ParserConfigurationException: " + ex);
         }
-
-        handler.getimzML().setOBO(obo);
-
-        return handler.getimzML();
     }
 
     @Override
@@ -81,14 +97,14 @@ public class ImzMLHandler extends MzMLHeaderHandler {
             if (accession.equals(BinaryDataArray.externalEncodedLengthID)) {
                 try {
                     currentNumBytes = Long.parseLong(attributes.getValue("value"));
-                } catch(NumberFormatException ex) {
-                    currentNumBytes = (long)Double.parseDouble(attributes.getValue("value"));
+                } catch (NumberFormatException ex) {
+                    currentNumBytes = (long) Double.parseDouble(attributes.getValue("value"));
                 }
             } else if (accession.equals(BinaryDataArray.externalOffsetID)) {
                 try {
                     currentOffset = Long.parseLong(attributes.getValue("value"));
-                } catch(NumberFormatException ex) {
-                    currentNumBytes = (long)Double.parseDouble(attributes.getValue("value"));
+                } catch (NumberFormatException ex) {
+                    currentNumBytes = (long) Double.parseDouble(attributes.getValue("value"));
                 }
             }
         }
@@ -142,7 +158,7 @@ public class ImzMLHandler extends MzMLHeaderHandler {
     public static void main(String args[]) {
         try {
             ImzML imzML = ImzMLHandler.parseimzML("D:\\2012_5_2_medium(120502,20h18m)_23.898, 29.745, 30.898, 41.766, 7.000, 0.100, 1_1.imzML");
-            
+
             double[] mzs;
             try {
                 mzs = imzML.getSpectrum(1, 1).getmzArray();
@@ -150,10 +166,10 @@ public class ImzMLHandler extends MzMLHeaderHandler {
             } catch (IOException ex) {
                 Logger.getLogger(ImzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
-        } catch (FileNotFoundException ex) {
+
+        } catch (ImzMLParseException ex) {
             Logger.getLogger(ImzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        } 
 
     }
 

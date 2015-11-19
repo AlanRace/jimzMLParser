@@ -5,6 +5,7 @@
  */
 package com.alanmrace.jimzmlparser.imzML;
 
+import com.alanmrace.jimzmlparser.exceptions.ImzMLParseException;
 import com.alanmrace.jimzmlparser.mzML.Spectrum;
 import com.alanmrace.jimzmlparser.parser.ImzMLHandler;
 import java.io.File;
@@ -48,9 +49,9 @@ public class ImzMLTest {
     public void setUp() {
         try {
             instance = ImzMLHandler.parseimzML(ImzMLTest.class.getResource(TEST_RESOURCE).getPath());
-        } catch (FileNotFoundException ex) {
+        } catch (ImzMLParseException ex) {
             Logger.getLogger(ImzMLTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("FileNotFoundException: " + ex);
+            fail("ImzMLParseException: " + ex);
         }
     }
     

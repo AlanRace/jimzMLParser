@@ -33,9 +33,9 @@ public class OBO implements Serializable {
     public OBO(String path) {
         this.path = path;
 
-        imports = new ArrayList<>();
+        imports = new ArrayList<OBO>();
 //		remarks = new ArrayList<String>();
-        terms = new HashMap<>();
+        terms = new HashMap<String, OBOTerm>();
 
 //		File oboFile = null;
 //		try {
@@ -95,7 +95,7 @@ public class OBO implements Serializable {
                     // TODO: Add in header information
                     int locationOfColon = curLine.indexOf(":");
                     String tag = curLine.substring(0, locationOfColon).trim();
-                    String value = curLine.substring(locationOfColon+1).trim();
+                    String value = curLine.substring(locationOfColon+1).trim().toLowerCase();
 
 //                    System.out.println("Tag: " + tag);
 //                    System.out.println("Value: " + value);
