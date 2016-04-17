@@ -12,7 +12,8 @@ public class CV extends MzMLContent  implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-
+        public static final String IMS_URI = "http://www.maldi-msi.org/download/imzml/imagingMS.obo";
+        
 	private String uri; 		// Required
 	private String fullName; 	// Required
 	private String id;			// Required
@@ -49,10 +50,11 @@ public class CV extends MzMLContent  implements Serializable {
 		return version;
 	}
 	
+        @Override
 	public void outputXML(BufferedWriter output, int indent) throws IOException {
 		MzMLContent.indent(output, indent);
 		output.write("<cv");
-		output.write(" uri=\"" + XMLHelper.ensureSafeXML(uri) + "\"");
+		output.write(" URI=\"" + XMLHelper.ensureSafeXML(uri) + "\"");
 		output.write(" fullName=\"" + XMLHelper.ensureSafeXML(fullName) + "\"");
 		output.write(" id=\"" + XMLHelper.ensureSafeXML(id) + "\"");
 		

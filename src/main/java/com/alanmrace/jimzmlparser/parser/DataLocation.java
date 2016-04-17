@@ -7,12 +7,16 @@ package com.alanmrace.jimzmlparser.parser;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Alan
  */
 public class DataLocation {
+    
+    private static final Logger logger = Logger.getLogger(DataLocation.class.getName());
 
     protected DataStorage dataStorage;
     protected long offset;
@@ -38,8 +42,9 @@ public class DataLocation {
     
     public byte[] getData() throws IOException {
         if(length <= 0) {
-            System.out.println("Index less than " + length);
-            System.out.println(Arrays.toString(Thread.currentThread().getStackTrace()));
+            logger.log(Level.FINER, "Data is of size {0}", length);
+//            System.out.println("Index less than " + length);
+//            System.out.println(Arrays.toString(Thread.currentThread().getStackTrace()));
             return new byte[0];
         }
         

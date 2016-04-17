@@ -39,11 +39,14 @@ public class ImzML extends MzML {
     private File ibdFile;
 
     private double[] fullmzList;
+    private double[][] ticImage;
 
     private Spectrum[][][] spectrumGrid;
 
     private static double minMZ = Double.MAX_VALUE;
     private static double maxMZ = Double.MIN_VALUE;
+
+    private int dimensionality = -1;
 
     // REMOVED - zero filling code because it caused more issues. Alternative 
     // (and faster) work around is to go to mzML and then to imzML.
@@ -103,6 +106,50 @@ public class ImzML extends MzML {
         return fullmzList;
     }
 
+    public int getSpatialDimensionality() {
+        int spatialDimensionality = 0; 
+        spatialDimensionality += (getWidth() > 1) ? 1 : 0;
+        spatialDimensionality += (getHeight() > 1) ? 1 : 0;
+        spatialDimensionality += (getDepth() > 1) ? 1 : 0;
+
+        return spatialDimensionality;
+    }
+
+    public int getDimensionality() {
+        // Determine the dimensionality of the data
+        if (dimensionality <= 0) {
+            dimensionality = 1; // At least 1 dimension from m/z 
+            dimensionality += getSpatialDimensionality();
+
+            // Check if we have MS/MS or mobility by looking to see if we have two or more spectra with same x, y location
+            Spectrum spectrum1 = getRun().getSpectrumList().getSpectrum(0);
+            Spectrum spectrum2 = getRun().getSpectrumList().getSpectrum(1);
+
+            if (spectrum1.getPixelLocation().equals(spectrum2.getPixelLocation())) {
+                dimensionality++;
+            }
+        }
+
+        return dimensionality;
+    }
+
+    public int getNumberOfSpectraPerPixel() {
+        Spectrum firstSpectrum = getRun().getSpectrumList().getSpectrum(0);
+        PixelLocation location = firstSpectrum.getPixelLocation();
+        
+        int numberOfSpectraPerPixel = 1;
+        
+        int numSpectra = getRun().getSpectrumList().size();
+        SpectrumList spectrumList = getRun().getSpectrumList();
+        
+        for(int i = 1; i < numSpectra; i++) {
+            if(spectrumList.getSpectrum(i).getPixelLocation().equals(location))
+                numberOfSpectraPerPixel++;
+        }
+        
+        return numberOfSpectraPerPixel;
+    }
+    
     public synchronized Spectrum getSpectrum(int x, int y) {
         return getSpectrum(x, y, 1);
     }
@@ -373,7 +420,7 @@ public class ImzML extends MzML {
         return getFileDescription().getFileContent().getCVParam(FileContent.binaryTypeContinuousID) != null;
     }
 
-    public double[] getBinnedmzList(double minMZ, double maxMZ, double binSize) {
+    public static double[] getBinnedmzList(double minMZ, double maxMZ, double binSize) {
         // Round the min m/z down to the next lowest bin, and the max m/z up to the next bin
         minMZ = minMZ - (minMZ % binSize);
         maxMZ = maxMZ + (binSize - (maxMZ % binSize));
@@ -431,41 +478,42 @@ public class ImzML extends MzML {
 //	}
 //	
     public double[][] generateTICImage() {
-        double[][] image = new double[getHeight()][getWidth()];
+        if(ticImage == null) {
+            ticImage = new double[getHeight()][getWidth()];
 
 //		RandomAccessFile raf = null;
-        for (Spectrum spectrum : getRun().getSpectrumList()) {
-            int x = spectrum.getScanList().getScan(0).getCVParam(Scan.positionXID).getValueAsInteger() - 1;
-            int y = spectrum.getScanList().getScan(0).getCVParam(Scan.positionYID).getValueAsInteger() - 1;
+            for (Spectrum spectrum : getRun().getSpectrumList()) {
+                int x = spectrum.getScanList().getScan(0).getCVParam(Scan.positionXID).getValueAsInteger() - 1;
+                int y = spectrum.getScanList().getScan(0).getCVParam(Scan.positionYID).getValueAsInteger() - 1;
 
-            try {
-                double tic = spectrum.getCVParam(Spectrum.totalIonCurrentID).getValueAsDouble();
-//				System.out.println(spectrum.getID());
-//				System.out.println(image.length + " - " + y);
-//				System.out.println("x -> " + image[y].length + " - " + x);
-                image[y][x] = tic;
-            } catch (NullPointerException ex) {
                 try {
-//					if(raf == null)
-//						raf = new RandomAccessFile(ibdFile, "r");
-
-                    double[] intensityArray = spectrum.getIntensityArray();
-
+                    double tic = spectrum.getCVParam(Spectrum.totalIonCurrentID).getValueAsDouble();
+    //				System.out.println(spectrum.getID());
+    //				System.out.println(image.length + " - " + y);
+    //				System.out.println("x -> " + image[y].length + " - " + x);
+                    ticImage[y][x] = tic;
+                } catch (NullPointerException ex) {
                     try {
-                        for (int i = 0; i < intensityArray.length; i++) {
-                            image[y][x] += intensityArray[i];
+    //					if(raf == null)
+    //						raf = new RandomAccessFile(ibdFile, "r");
+
+                        double[] intensityArray = spectrum.getIntensityArray();
+
+                        try {
+                            for (int i = 0; i < intensityArray.length; i++) {
+                                ticImage[y][x] += intensityArray[i];
+                            }
+                        } catch (NullPointerException exception) {
+                            // Do nothing - no data
                         }
-                    } catch (NullPointerException exception) {
-                        // Do nothing - no data
+                    } catch (FileNotFoundException e) {
+                        // TODO Auto-generated catch block
+                        Logger.getLogger(ImzML.class.getName()).log(Level.SEVERE, null, e);
+                    } catch (IOException ex1) {
+                        Logger.getLogger(ImzML.class.getName()).log(Level.SEVERE, null, ex1);
                     }
-                } catch (FileNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (IOException ex1) {
-                    Logger.getLogger(ImzML.class.getName()).log(Level.SEVERE, null, ex1);
                 }
             }
-        }
 
 //		if(raf != null) {
 //			try {
@@ -475,8 +523,11 @@ public class ImzML extends MzML {
 //				e.printStackTrace();
 //			}
 //		}
-        return image;
+        }
+        
+        return ticImage;
     }
+    
 //	
 //	public double[][] generateBasePeakMZImage() {
 //		double[][] image = new double[getHeight()][getWidth()];

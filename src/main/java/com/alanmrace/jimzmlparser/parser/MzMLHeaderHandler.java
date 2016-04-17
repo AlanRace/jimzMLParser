@@ -85,6 +85,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
     protected DataStorage dataStorage;
     protected boolean openDataStorage = true;
+    
+    protected int numberOfSpectra = 0;
 
     protected MzMLHeaderHandler(OBO obo) {
         this.obo = obo;
@@ -665,7 +667,9 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 }
 
                 if (dataProcessing != null) {
-                    spectrumList = new SpectrumList(Integer.parseInt(attributes.getValue("count")), dataProcessing);
+                    numberOfSpectra = Integer.parseInt(attributes.getValue("count"));
+                    
+                    spectrumList = new SpectrumList(numberOfSpectra, dataProcessing);
                 } else {
                     throw new InvalidMzML("Can't find defaultDataProcessingRef '" + defaultDataProcessingRef + "'.");
                 }

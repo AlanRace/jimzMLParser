@@ -1,6 +1,7 @@
 package com.alanmrace.jimzmlparser.parser;
 
 import com.alanmrace.jimzmlparser.exceptions.ImzMLParseException;
+import com.alanmrace.jimzmlparser.exceptions.ImzMLWriteException;
 import com.alanmrace.jimzmlparser.imzML.ImzML;
 
 import java.io.File;
@@ -14,6 +15,8 @@ import com.alanmrace.jimzmlparser.mzML.BinaryDataArray;
 import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.exceptions.InvalidImzML;
 import com.alanmrace.jimzmlparser.exceptions.InvalidMzML;
+import com.alanmrace.jimzmlparser.mzML.Scan;
+import com.alanmrace.jimzmlparser.mzML.Spectrum;
 import java.io.FileNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,6 +32,29 @@ public class ImzMLHandler extends MzMLHeaderHandler {
 //    private BinaryDataStorage dataStorage;
     private long currentOffset;
     private long currentNumBytes;
+
+    private boolean processingSCiLS3DData = false;
+    private int imageMaxX;
+    private int imageMaxY;
+    private int datasetMaxX;
+    private int datasetMaxY;
+
+    private int currentZ = 0;
+    private double current3DPositionZ = Double.POSITIVE_INFINITY;
+
+    private boolean haveDoneCheck = false;
+
+    private int numImagesX = 0;
+    private int numImagesY = 0;
+
+    private int maxImagesX;
+
+    private int previousMaxX = 0;
+    private int previousMaxY = 0;
+    private int currentMaxX = 0;
+    private int currentMaxY = 0;
+
+    private int count = 0;
 
     public ImzMLHandler(OBO obo) {
         super(obo);
@@ -75,15 +101,15 @@ public class ImzMLHandler extends MzMLHeaderHandler {
 
             throw new ImzMLParseException("SAXException: " + ex);
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(MzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ImzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
 
             throw new ImzMLParseException("File not found: " + filename);
         } catch (IOException ex) {
-            Logger.getLogger(MzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ImzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
 
             throw new ImzMLParseException("IOException: " + ex);
         } catch (ParserConfigurationException ex) {
-            Logger.getLogger(MzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ImzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
 
             throw new ImzMLParseException("ParserConfigurationException: " + ex);
         }
@@ -109,6 +135,51 @@ public class ImzMLHandler extends MzMLHeaderHandler {
             }
         }
 
+        if (qName.equals("userParam")) {
+            String name = attributes.getValue("name");
+
+            if (name.equals("3DPositionZ")) {
+                processingSCiLS3DData = true;
+
+                double z = Double.parseDouble(attributes.getValue("value"));
+
+                if (z != current3DPositionZ) {
+                    if (current3DPositionZ != Double.POSITIVE_INFINITY && !haveDoneCheck) {
+                        int imageSize = imageMaxX * imageMaxY;
+                        int numImagesGuess = (int) Math.ceil((numberOfSpectra * 1.0) / spectrumList.size());
+
+                        maxImagesX = (int) Math.ceil(Math.sqrt(numImagesGuess));
+
+                        Logger.getLogger(ImzMLHandler.class.getName()).log(Level.FINER, "Found image size {0} ({1}, {2})", new Object[]{imageSize, imageMaxX, imageMaxY});
+                        Logger.getLogger(ImzMLHandler.class.getName()).log(Level.FINER, "Guessing we have {0} images based on {1} spectra", new Object[]{numImagesGuess, spectrumList.size()});
+                        Logger.getLogger(ImzMLHandler.class.getName()).log(Level.FINER, "Putting {0} images in x", maxImagesX);
+
+                        haveDoneCheck = true;
+                    }
+
+                    numImagesX++;
+                    previousMaxX = currentMaxX;
+
+                    Logger.getLogger(ImzMLHandler.class.getName()).log(Level.FINEST, "Changing previousMaxX to {0}", currentMaxX);
+
+                    if (numImagesX > maxImagesX) {
+                        Logger.getLogger(ImzMLHandler.class.getName()).log(Level.FINEST, "Moving to next line");
+
+                        numImagesX = 0;
+                        numImagesY++;
+
+                        currentMaxX = 0;
+                        previousMaxX = 0;
+                        previousMaxY = currentMaxY;
+                    }
+
+                    current3DPositionZ = z;
+                    currentZ++;
+                }
+
+            }
+        }
+
         if (qName.equals("mzML")) {
             mzML = new ImzML(attributes.getValue("version"));
 
@@ -127,6 +198,21 @@ public class ImzMLHandler extends MzMLHeaderHandler {
                 throw new InvalidImzML(ex.getLocalizedMessage());
             }
         }
+
+//        if (processingSCiLS3DData) {
+//            // Modify the x, y, z coordinates to 
+//            if (qName.equals("cvParam")) {
+//                String accession = attributes.getValue("accession");
+//
+//                if (accession.equals(Scan.positionXID)) {
+//
+//                    //System.out.println("x = " + currentScan.getCVParam(Scan.positionXID).getValueAsString());
+//                } else if (accession.equals(Scan.positionYID)) {
+//
+//                    //System.out.println("y = " + currentScan.getCVParam(Scan.positionYID).getValueAsString());
+//                }
+//            }
+//        }
     }
 
     @Override
@@ -143,6 +229,59 @@ public class ImzMLHandler extends MzMLHeaderHandler {
 //			currentBinaryDataArray.setBinary(new Binary(dataStorage, currentOffset, currentNumBytes, dataType));
         }
 
+        if (qName.equals("scan") && processingSCiLS3DData) {
+            int x = currentScan.getCVParam(Scan.positionXID).getValueAsInteger();
+
+            if (x > imageMaxX) {
+                imageMaxX = x;
+            }
+
+            int newX = (previousMaxX + x);
+
+            if (newX > currentMaxX) {
+                currentMaxX = newX;
+            }
+            if (newX > datasetMaxX) {
+                datasetMaxX = newX;
+            }
+
+            if (currentScan.getCVParam(Scan.positionXID).getValueAsInteger() != x) {
+                System.out.println("BAD TIME");
+            }
+
+            currentScan.getCVParam(Scan.positionXID).setValueAsString("" + newX);
+
+            int y = currentScan.getCVParam(Scan.positionYID).getValueAsInteger();
+
+            if (y > imageMaxY) {
+                imageMaxY = y;
+            }
+
+            int newY = (previousMaxY + y);
+
+            if (newY > currentMaxY) {
+                currentMaxY = newY;
+            }
+            if (newY > datasetMaxY) {
+                datasetMaxY = newY;
+            }
+
+            if (currentScan.getCVParam(Scan.positionYID).getValueAsInteger() != y) {
+                System.out.println("BAD TIME");
+            }
+
+            currentScan.getCVParam(Scan.positionYID).setValueAsString("" + newY);
+            
+//            count++;
+        }
+
+        if (qName.equals("run") && processingSCiLS3DData) {
+            this.currentScanSettings.getCVParam("IMS:1000042").setValueAsString("" + this.datasetMaxX);
+            this.currentScanSettings.getCVParam("IMS:1000043").setValueAsString("" + this.datasetMaxY);
+
+//            System.out.println("Count = " + count);
+        }
+
         super.endElement(uri, localName, qName);
     }
 
@@ -157,19 +296,31 @@ public class ImzMLHandler extends MzMLHeaderHandler {
 
     public static void main(String args[]) {
         try {
-            ImzML imzML = ImzMLHandler.parseimzML("D:\\2012_5_2_medium(120502,20h18m)_23.898, 29.745, 30.898, 41.766, 7.000, 0.100, 1_1.imzML");
+            ImzML imzML = ImzMLHandler.parseimzML("F:\\Sample3D\\Microbe_Interaction_3D_Timecourse_LP.imzML");
+
+            try {
+                imzML.write("F:\\Sample3D\\test.imzML");
+            } catch (ImzMLWriteException ex) {
+                Logger.getLogger(ImzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            System.out.println("Size: " + imzML.getWidth() + " x " + imzML.getHeight());
 
             double[] mzs;
             try {
-                mzs = imzML.getSpectrum(1, 1).getmzArray();
-                System.out.println(mzs[0]);
+                Spectrum spectrum = imzML.getSpectrum(1, 1);
+
+                if (spectrum != null) {
+                    mzs = spectrum.getmzArray();
+                    System.out.println(mzs[0]);
+                }
             } catch (IOException ex) {
                 Logger.getLogger(ImzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         } catch (ImzMLParseException ex) {
             Logger.getLogger(ImzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
-        } 
+        }
 
     }
 

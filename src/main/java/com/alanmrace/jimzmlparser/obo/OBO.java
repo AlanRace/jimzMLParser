@@ -56,7 +56,7 @@ public class OBO implements Serializable {
             path = path.substring(path.lastIndexOf("/")+1).toLowerCase();
         }
         
-        logger.log(Level.FINE, "Parsing OBO /obo/{0}", path);
+        logger.log(Level.FINER, "Parsing OBO /obo/{0}", path);
         
         InputStream is = OBO.class.getResourceAsStream("/obo/" + path);
         

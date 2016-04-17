@@ -36,6 +36,14 @@ public class CVList extends MzMLContent  implements Serializable, Iterable<CV> {
 	public CV getCV(int index) {
 		return cvList.get(index);
 	}
+        
+        public CV getCV(String id) {
+            for(CV cv : cvList)
+                if(cv.getID().equals(id))
+                    return cv;
+            
+            return null;
+        }
 	
 	public int getIndexOf(CV cv) {
 		return cvList.indexOf(cv);
@@ -45,6 +53,7 @@ public class CVList extends MzMLContent  implements Serializable, Iterable<CV> {
 		return cvList.size();
 	}
 	
+        @Override
 	public void outputXML(BufferedWriter output, int indent) throws IOException {
 		MzMLContent.indent(output, indent);
 		output.write("<cvList");
@@ -58,6 +67,7 @@ public class CVList extends MzMLContent  implements Serializable, Iterable<CV> {
 		output.write("</cvList>\n");
 	}
 	
+        @Override
 	public String toString() {
 		return "cvList";
 	}
