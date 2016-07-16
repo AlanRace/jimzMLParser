@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.tree.TreeNode;
@@ -18,21 +20,30 @@ public class SpectrumList extends MzMLContent implements Iterable<Spectrum>, Ser
 	 */
 	private static final long serialVersionUID = 1L;
 
-	
+        // Store a map of all spectra to make recalling a spectrum from the ID much faster
+	private Map<String, Spectrum> spectrumMap;
 	private ArrayList<Spectrum> spectrumList;
 	private DataProcessing defaultDataProcessingRef;
 	
 	public SpectrumList(int count, DataProcessing defaultDataProcessingRef) {
 		spectrumList = new ArrayList<Spectrum>(count);
+                spectrumMap = new HashMap<String, Spectrum>(spectrumList.size());
 		this.defaultDataProcessingRef = defaultDataProcessingRef;
 	}
 	
 	public SpectrumList(SpectrumList spectrumList, ReferenceableParamGroupList rpgList, DataProcessingList dpList, 
 			SourceFileList sourceFileList, InstrumentConfigurationList icList) {
 		this.spectrumList = new ArrayList<Spectrum>(spectrumList.size());
+                this.spectrumMap = new HashMap<String, Spectrum>(spectrumList.size());
+                
 		
-		for(Spectrum spectrum : spectrumList) 
-			this.spectrumList.add(new Spectrum(spectrum, rpgList, dpList, sourceFileList, icList));
+		for(Spectrum spectrum : spectrumList) {
+                    Spectrum newSpectrum = new Spectrum(spectrum, rpgList, dpList, sourceFileList, icList);
+                    
+                    this.spectrumList.add(newSpectrum);
+                    this.spectrumMap.put(newSpectrum.getID(), newSpectrum);
+                }
+			
 		
 		if(spectrumList.defaultDataProcessingRef != null && dpList != null) {
 			for(DataProcessing dp : dpList) {
@@ -59,6 +70,7 @@ public class SpectrumList extends MzMLContent implements Iterable<Spectrum>, Ser
 		spectrum.setParent(this);
 		
 		spectrumList.add(spectrum);
+                spectrumMap.put(spectrum.getID(), spectrum);
 	}
 	
 	public Spectrum getSpectrum(int index) {
@@ -69,15 +81,18 @@ public class SpectrumList extends MzMLContent implements Iterable<Spectrum>, Ser
 	}
         
         public Spectrum getSpectrum(String id) {
-            for(Spectrum spectrum : spectrumList)
-                if(spectrum.getID().equals(id))
-                    return spectrum;
-            
-            return null;
+//            for(Spectrum spectrum : spectrumList)
+//                if (spectrum.getID().equals(id)) {
+//                    return spectrum;
+//                }
+//            
+//            return null;
+            return spectrumMap.get(id);
         }
 	
 	public void removeSpectrum(Spectrum spectrum) {
 		spectrumList.remove(spectrum);
+                spectrumMap.remove(spectrum.getID(), spectrum);
 	}
 	
 	public void outputXML(BufferedWriter output, int indent) throws IOException {

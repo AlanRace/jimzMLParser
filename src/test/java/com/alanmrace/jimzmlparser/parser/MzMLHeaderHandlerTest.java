@@ -25,7 +25,7 @@ public class MzMLHeaderHandlerTest {
     
     private static final Logger logger = Logger.getLogger(MzMLHeaderHandlerTest.class.getName());
     
-    private static String TEST_RESOURCE = "/2012_5_2_medium_81.mzML";
+    private static final String TEST_RESOURCE = "/2012_5_2_medium_81.mzML";
     
     public MzMLHeaderHandlerTest() {
     }
@@ -83,10 +83,12 @@ public class MzMLHeaderHandlerTest {
         
         assertNotNull("Test file missing", MzMLHeaderHandlerTest.class.getResource(TEST_RESOURCE));
         
-        String resourcePath = MzMLHeaderHandlerTest.class.getResource(TEST_RESOURCE).getPath();
+        String resourcePath = MzMLHeaderHandlerTest.class.getResource(TEST_RESOURCE).getPath(); //"D:\\Bristol\\141024_HM_02.mzML"; // // //
         
         boolean openDataFile = false;
         MzML result = MzMLHeaderHandler.parsemzMLHeader(resourcePath, openDataFile);
+        
+        result.write("test.mzML");
     }
 
     /**

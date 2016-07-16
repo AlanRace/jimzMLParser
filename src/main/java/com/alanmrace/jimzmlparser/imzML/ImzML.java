@@ -23,7 +23,7 @@ import java.nio.DoubleBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ImzML extends MzML {
+public class ImzML extends MzML implements MassSpectrometryImagingData {
 
     /**
      *
@@ -106,6 +106,7 @@ public class ImzML extends MzML {
         return fullmzList;
     }
 
+    @Override
     public int getSpatialDimensionality() {
         int spatialDimensionality = 0; 
         spatialDimensionality += (getWidth() > 1) ? 1 : 0;
@@ -115,6 +116,7 @@ public class ImzML extends MzML {
         return spatialDimensionality;
     }
 
+    @Override
     public int getDimensionality() {
         // Determine the dimensionality of the data
         if (dimensionality <= 0) {
@@ -133,6 +135,7 @@ public class ImzML extends MzML {
         return dimensionality;
     }
 
+    @Override
     public int getNumberOfSpectraPerPixel() {
         Spectrum firstSpectrum = getRun().getSpectrumList().getSpectrum(0);
         PixelLocation location = firstSpectrum.getPixelLocation();
@@ -150,10 +153,12 @@ public class ImzML extends MzML {
         return numberOfSpectraPerPixel;
     }
     
+    @Override
     public synchronized Spectrum getSpectrum(int x, int y) {
         return getSpectrum(x, y, 1);
     }
 
+    @Override
     public synchronized Spectrum getSpectrum(int x, int y, int z) {
         if (spectrumGrid == null) {
             spectrumGrid = new Spectrum[getWidth()][getHeight()][getDepth()];
@@ -217,6 +222,7 @@ public class ImzML extends MzML {
         return null;
     }
 
+    @Override
     public int getWidth() {
         if (width != 0) {
             return width;
@@ -239,6 +245,7 @@ public class ImzML extends MzML {
         return width;
     }
 
+    @Override
     public int getHeight() {
         if (height != 0) {
             return height;
@@ -261,6 +268,7 @@ public class ImzML extends MzML {
         return height;
     }
 
+    @Override
     public int getDepth() {
         if (depth != 0) {
             return depth;
@@ -290,6 +298,7 @@ public class ImzML extends MzML {
         return depth;
     }
 
+    @Override
     public double getMinimumDetectedmz() {
         if (minMZ != Double.MAX_VALUE) {
             return minMZ;
@@ -316,6 +325,7 @@ public class ImzML extends MzML {
         return minMZ;
     }
 
+    @Override
     public double getMaximumDetectedmz() {
         if (maxMZ != Double.MIN_VALUE) {
             return maxMZ;
@@ -412,10 +422,12 @@ public class ImzML extends MzML {
 //			e.printStackTrace();
 //		}
 //	}
+    @Override
     public boolean isProcessed() {
         return getFileDescription().getFileContent().getCVParam(FileContent.binaryTypeProcessedID) != null;
     }
 
+    @Override
     public boolean isContinuous() {
         return getFileDescription().getFileContent().getCVParam(FileContent.binaryTypeContinuousID) != null;
     }
@@ -477,6 +489,7 @@ public class ImzML extends MzML {
 //		return datacube;
 //	}
 //	
+    @Override
     public double[][] generateTICImage() {
         if(ticImage == null) {
             ticImage = new double[getHeight()][getWidth()];

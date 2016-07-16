@@ -41,6 +41,7 @@ public class SourceFile extends MzMLContent  implements Serializable {
 		this.name = sourceFile.name;
 	}
 	
+        @Override
 	public ArrayList<OBOTermInclusion> getListOfRequiredCVParams() {
 		ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
 		required.add(new OBOTermInclusion(nativeSpectrumIdentifierFormat, true, true, false));
@@ -53,6 +54,10 @@ public class SourceFile extends MzMLContent  implements Serializable {
 	public String getID() {
 		return id;
 	}
+        
+        public void setID(String id) {
+            this.id = id;
+        }
 	
 	public String getLocation() {
 		return location;

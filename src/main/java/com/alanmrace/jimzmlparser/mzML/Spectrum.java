@@ -333,6 +333,11 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
 //		return offset;
 //	}
     public void outputXML(BufferedWriter output, int indent, int index) throws IOException {
+        if(raf != null) {
+            output.flush();
+            this.setmzMLLocation(raf.getFilePointer());
+        }
+        
         MzMLContent.indent(output, indent);
         output.write("<spectrum");
         output.write(" defaultArrayLength=\"" + defaultArrayLength + "\"");

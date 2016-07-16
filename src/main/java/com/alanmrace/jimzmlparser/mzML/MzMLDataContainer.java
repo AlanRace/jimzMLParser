@@ -8,6 +8,7 @@ package com.alanmrace.jimzmlparser.mzML;
 import com.alanmrace.jimzmlparser.parser.DataLocation;
 import com.alanmrace.jimzmlparser.parser.MzMLSpectrumDataStorage;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 
 /**
  *
@@ -22,6 +23,9 @@ public class MzMLDataContainer extends MzMLContent {
     
     protected DataProcessing dataProcessingRef;
     
+    protected long mzMLLocation;
+    protected RandomAccessFile raf;
+    
     public MzMLDataContainer(MzMLContent mzMLContent, ReferenceableParamGroupList rpgList) {
         super(mzMLContent, rpgList);
     }
@@ -33,6 +37,19 @@ public class MzMLDataContainer extends MzMLContent {
     
     public String getID() {
         return id;
+    }
+    
+    // Functions to enable the setting of <index> in indexedmzML
+    protected void setRAF(RandomAccessFile raf) {
+        this.raf = raf;
+    }
+    
+    protected void setmzMLLocation(long mzMLLocation) {
+        this.mzMLLocation = mzMLLocation;
+    }
+    
+    protected long getmzMLLocation() {
+        return mzMLLocation;
     }
     
     public void setBinaryDataArrayList(BinaryDataArrayList binaryDataArrayList) {

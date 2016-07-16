@@ -85,7 +85,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
     protected DataStorage dataStorage;
     protected boolean openDataStorage = true;
-    
+
     protected int numberOfSpectra = 0;
 
     protected MzMLHeaderHandler(OBO obo) {
@@ -168,6 +168,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 
+        
+        
 //            System.out.println(locator.)
         // Most common attribute at the start to reduce the number of comparisons needed
         if (qName.equals("cvParam")) {
@@ -668,7 +670,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
                 if (dataProcessing != null) {
                     numberOfSpectra = Integer.parseInt(attributes.getValue("count"));
-                    
+
                     spectrumList = new SpectrumList(numberOfSpectra, dataProcessing);
                 } else {
                     throw new InvalidMzML("Can't find defaultDataProcessingRef '" + defaultDataProcessingRef + "'.");
@@ -1065,6 +1067,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
         } else if (qName.equals("offset") || qName.equals("indexListOffset")) {
             previousOffsetIDRef = currentOffsetIDRef;
 
+//            logger.log(Level.INFO, "Current qName: {0} - {1}", new String[] {qName, attributes.getValue("idRef")});
+            
             if (qName.equals("offset")) {
                 this.currentOffsetIDRef = attributes.getValue("idRef");
             }
@@ -1092,45 +1096,35 @@ public class MzMLHeaderHandler extends DefaultHandler {
         }
     }
 
-    @Override
-    public void endElement(String uri, String localName, String qName) throws SAXException {
-        if (qName.equals("spectrum")) {
-            processingSpectrum = false;
-        } else if (qName.equals("chromatogram")) {
-            processingChromatogram = false;
-        } else if (qName.equals("precursor")) {
-            processingPrecursor = false;
-        } else if (qName.equals("product")) {
-            processingProduct = false;
-        } else if (qName.equals("binaryDataArrayList")) {
-            currentBinaryDataArrayList.updatemzAndIntensityArray();
-        } else if (qName.equals("offset") || qName.equals("indexListOffset")) {
-            long offset = Long.parseLong(offsetData.toString());
-
-            MzMLDataContainer dataContainer = null;
+    protected MzMLDataContainer getDataContainer() {
+        MzMLDataContainer dataContainer = null;
 
             // There is probably a better way to do this - store a HashMap of IDs and 
-            // locations, then at the end of the file, sort the HashMap by location
-            // and then assign the DataLocation
-            if (processingSpectrum) {
-                dataContainer = spectrumList.getSpectrum(previousOffsetIDRef);
+        // locations, then at the end of the file, sort the HashMap by location
+        // and then assign the DataLocation
+        if (processingSpectrum) {
+            dataContainer = spectrumList.getSpectrum(previousOffsetIDRef);
 
-                if (dataContainer == null) {
-                    dataContainer = spectrumList.getSpectrum(spectrumList.size() - 1);
-                }
-            } else {
-                dataContainer = chromatogramList.getChromatogram(previousOffsetIDRef);
-
-                if (dataContainer == null) {
-                    dataContainer = chromatogramList.getChromatogram(chromatogramList.size() - 1);
-                }
+            if (dataContainer == null) {
+                dataContainer = spectrumList.getSpectrum(spectrumList.size() - 1);
             }
+        } else {
+            dataContainer = chromatogramList.getChromatogram(previousOffsetIDRef);
 
-            if (processingSpectrum && processingChromatogram) {
-                processingSpectrum = false;
+            if (dataContainer == null) {
+                dataContainer = chromatogramList.getChromatogram(chromatogramList.size() - 1);
             }
+        }
 
-            //System.out.println(previousOffset + " " + spectrum);		    
+        return dataContainer;
+    }
+    
+    protected long getOffset() {
+        return Long.parseLong(offsetData.toString());
+    }
+    
+    protected void setDataContainer(MzMLDataContainer dataContainer, long offset) {
+        //System.out.println(previousOffset + " " + spectrum);		    
             if (previousOffset != -1) {
                 if (openDataStorage && dataContainer != null) {
                     DataLocation dataLocation = new DataLocation(dataStorage, previousOffset, (int) (offset - previousOffset));
@@ -1147,6 +1141,30 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 //    System.out.println(run.getSpectrumList().size());
                 //    System.out.println(run.getSpectrumList().getSpectrum(0).getBinaryDataArrayList().getBinaryDataArray(0));
             }
+    }
+
+    @Override
+    public void endElement(String uri, String localName, String qName) throws SAXException {
+        if (qName.equals("spectrum")) {
+            processingSpectrum = false;
+        } else if (qName.equals("chromatogram")) {
+            processingChromatogram = false;
+        } else if (qName.equals("precursor")) {
+            processingPrecursor = false;
+        } else if (qName.equals("product")) {
+            processingProduct = false;
+        } else if (qName.equals("binaryDataArrayList")) {
+            currentBinaryDataArrayList.updatemzAndIntensityArray();
+        } else if (qName.equals("offset") || qName.equals("indexListOffset")) {
+            long offset = getOffset();
+
+            MzMLDataContainer dataContainer = getDataContainer();
+
+            if (processingSpectrum && processingChromatogram) {
+                processingSpectrum = false;
+            }
+
+            setDataContainer(dataContainer, offset);
 
             previousOffset = offset;
             processingOffset = false;
@@ -1194,7 +1212,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream("RianTest.mzML"), encoding);
             BufferedWriter output = new BufferedWriter(out);
 
-                //writer = new FileWriter(imzMLFilename + ".imzML");
+            //writer = new FileWriter(imzMLFilename + ".imzML");
             //			System.out.println(out.getEncoding() + " - " + xo.getFormat().getEncoding());
             //			xo.output(new Document(mzMLElement), out);
             output.write("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>\n");

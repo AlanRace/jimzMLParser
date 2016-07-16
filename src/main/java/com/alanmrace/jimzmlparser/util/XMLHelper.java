@@ -15,8 +15,12 @@ public class XMLHelper {
 		
 	if(input == null)
             return "";
-		
+	
+        input = input.replaceAll("&amp;", "&");
+        input = input.replaceAll("&", "&amp;");
+        
 	input = input.replaceAll("\"", "&quot;");
+        
 		
 	return input;
     }

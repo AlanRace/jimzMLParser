@@ -42,7 +42,7 @@ public abstract class MzMLContent implements Serializable { //, MutableTreeNode 
             }
         }
 
-        if (mzMLContent.cvParams != null) {
+        if (mzMLContent.cvParams != null && mzMLContent.cvParams.size() > 0) {
             cvParams = new ArrayList<CVParam>();
 
             for (CVParam cvParam : mzMLContent.cvParams) {

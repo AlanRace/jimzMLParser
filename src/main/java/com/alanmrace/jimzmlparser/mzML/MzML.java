@@ -14,6 +14,7 @@ import com.alanmrace.jimzmlparser.parser.DataLocation;
 import com.alanmrace.jimzmlparser.parser.DataStorage;
 import com.alanmrace.jimzmlparser.parser.MzMLSpectrumDataStorage;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
+import java.io.RandomAccessFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -328,11 +329,19 @@ public class MzML extends MzMLContent implements Serializable {
 //	public DataProcessing getDataProcessing(String dataProcessingRef) {
 //		return dataProcessingList.get(dataProcessingRef);
 //	}
+    
+    boolean outputIndex = false;
+    RandomAccessFile raf;
+    
     public void write(String filename) throws ImzMLWriteException {
 	try {
 	    String encoding = "ISO-8859-1";
 
-	    OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(filename), encoding);
+            raf = new RandomAccessFile(filename, "rw");
+            
+            outputIndex = true;
+            
+	    OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(raf.getFD()), encoding);
 	    BufferedWriter output = new BufferedWriter(out);
 
 	    output.write("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>\n");
@@ -347,6 +356,19 @@ public class MzML extends MzMLContent implements Serializable {
 
     @Override
     public void outputXML(BufferedWriter output, int indent) throws IOException {
+        if(outputIndex) {
+            MzMLContent.indent(output, indent);
+            output.write("<indexedmzML");
+            output.write("  xmlns=\"http://psi.hupo.org/ms/mzml\"");
+            output.write("  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
+            output.write("  xsi:schemaLocation=\"http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.2_idx.xsd\">\n");
+            
+            
+            for(Spectrum spectrum : run.getSpectrumList()) {
+                spectrum.setRAF(raf);
+            }
+        }
+        
 	MzMLContent.indent(output, indent);
 	output.write("<mzML");
 	// Set up namespaces
@@ -400,6 +422,31 @@ public class MzML extends MzMLContent implements Serializable {
 
 	MzMLContent.indent(output, indent);
 	output.write("</mzML>\n");
+        
+        if(outputIndex) {
+            output.flush();
+            long indexListOffset = raf.getFilePointer();
+            
+            MzMLContent.indent(output, indent+1);
+            output.write("<indexList count=\"1\">\n");
+            MzMLContent.indent(output, indent+2);
+            output.write("<index name=\"spectrum\">\n");
+
+            for(Spectrum spectrum : run.getSpectrumList()) {
+                MzMLContent.indent(output, indent+3);
+                output.write("<offset idRef=\"" + spectrum.getID() + "\">" + spectrum.getmzMLLocation() + "</offset>\n");
+            }
+
+            MzMLContent.indent(output, indent+2);
+            output.write("</index>\n");
+            MzMLContent.indent(output, indent+1);
+            output.write("</indexList>\n");
+            
+            output.write("<indexListOffset>" + indexListOffset + "</indexListOffset>\n");
+
+            MzMLContent.indent(output, indent);
+            output.write("</indexedmzML>\n");
+        }
     }
 
     // Need to include cvList, referenceableParamGroupList, etc..
