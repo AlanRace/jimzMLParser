@@ -537,8 +537,10 @@ public abstract class MzMLContent implements Serializable { //, MutableTreeNode 
 
         if (cvParams != null) {
             for (CVParam cvParam : cvParams) {
-                MzMLContent.indent(output, indent);
-                cvParam.outputXML(output);
+                if(cvParam != null) {
+                    MzMLContent.indent(output, indent);
+                    cvParam.outputXML(output);
+                }
             }
         }
 

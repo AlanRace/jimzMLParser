@@ -89,13 +89,15 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
                         ByteBuffer buffer = ByteBuffer.wrap(fullmzListBytes);
                         DoubleBuffer doubleBuffer = buffer.asDoubleBuffer();
 
-                        logger.log(Level.FINE, "First double is {0}", doubleBuffer.get(0));
+                        if(fullmzList.length > 0) {
+                            logger.log(Level.FINE, "First double is {0}", doubleBuffer.get(0));
 
-                        for (int i = 0; i < fullmzList.length; i++) {
-                            fullmzList[i] = doubleBuffer.get(i);
+                            for (int i = 0; i < fullmzList.length; i++) {
+                                fullmzList[i] = doubleBuffer.get(i);
+                            }
+
+                            logger.log(Level.FINE, "First double in array is {0}", fullmzList[0]);
                         }
-
-                        logger.log(Level.FINE, "First double in array is {0}", fullmzList[0]);
                     } catch (IOException ex) {
                         Logger.getLogger(ImzML.class.getName()).log(Level.SEVERE, null, ex);
                     }
