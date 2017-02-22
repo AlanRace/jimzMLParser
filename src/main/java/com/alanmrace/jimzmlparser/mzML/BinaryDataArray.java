@@ -411,7 +411,7 @@ public class BinaryDataArray extends MzMLContent implements Serializable {
                 convertedData[j] = buffer.getShort();
             }
         } else if (dataType.getTerm().getID().equals(BinaryDataArray.signed8bitIntegerID)) {
-            convertedData = new double[data.length / 4];
+            convertedData = new double[data.length];
 
             // Convert to double
             for (int j = 0; j < convertedData.length; j++) {
