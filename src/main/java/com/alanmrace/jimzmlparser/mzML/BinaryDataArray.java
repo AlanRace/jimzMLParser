@@ -51,11 +51,18 @@ public class BinaryDataArray extends MzMLContent implements Serializable {
      * Accession: m/z array (MS:1000514).
      */
     public static final String mzArrayID = "MS:1000514";
+    
+    public static final String mzArrayUnitsID = "MS:1000040";
 
     /**
      * Accession: Intensity array (MS:1000515).
      */
     public static final String intensityArrayID = "MS:1000515";
+    
+    public static final String intensityArrayUnitsNumberOfCountsID = "MS:1000131";
+    public static final String intensityArrayUnitsPercentOfBasepeakID = "MS:1000132";
+    public static final String intensityArrayUnitsCountsPerSecondID = "MS:1000814";
+    public static final String intensityArrayUnitsPercentOfBasepeakTimes100ID = "MS:1000905";
 
     /**
      * Accession: Double precision (MS:1000523).

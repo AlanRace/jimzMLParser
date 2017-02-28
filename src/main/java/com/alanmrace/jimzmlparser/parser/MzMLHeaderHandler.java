@@ -193,7 +193,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                         if (paramType.equals(CVParam.CVParamType.String)) {
                             cvParam = new StringCVParam(term, value, units);
                         } else if (paramType.equals(CVParam.CVParamType.Empty)) {
-                            cvParam = new EmptyCVParam(term);
+                            cvParam = new EmptyCVParam(term, units);
                         } else if (paramType.equals(CVParam.CVParamType.Long)) {
                             cvParam = new LongCVParam(term, Long.parseLong(value), units);
 

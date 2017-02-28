@@ -8,6 +8,11 @@ public class EmptyCVParam extends CVParam {
     public EmptyCVParam(OBOTerm term) throws CVParamAccessionNotFoundException {
         this.term = term;
     }
+    
+    public EmptyCVParam(OBOTerm term, OBOTerm units) throws CVParamAccessionNotFoundException {
+        this.term = term;
+        this.units = units;
+    }
 
     public EmptyCVParam(EmptyCVParam cvParam) {
         this.term = cvParam.term;
