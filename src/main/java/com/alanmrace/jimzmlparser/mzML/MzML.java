@@ -12,7 +12,6 @@ import java.io.Serializable;
 import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.parser.DataLocation;
 import com.alanmrace.jimzmlparser.parser.DataStorage;
-import com.alanmrace.jimzmlparser.parser.MzMLSpectrumDataStorage;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.RandomAccessFile;
 import java.util.logging.Level;

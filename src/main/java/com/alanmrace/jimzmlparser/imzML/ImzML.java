@@ -1,5 +1,6 @@
 package com.alanmrace.jimzmlparser.imzML;
 
+import com.alanmrace.jimzmlparser.exceptions.ImzMLParseException;
 import com.alanmrace.jimzmlparser.exceptions.ImzMLWriteException;
 import com.alanmrace.jimzmlparser.mzML.BinaryDataArray;
 import java.io.BufferedWriter;
@@ -18,8 +19,13 @@ import com.alanmrace.jimzmlparser.mzML.ScanSettingsList;
 import com.alanmrace.jimzmlparser.mzML.Software;
 import com.alanmrace.jimzmlparser.mzML.Spectrum;
 import com.alanmrace.jimzmlparser.mzML.SpectrumList;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -729,5 +735,100 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
         } catch (IOException e1) {
             throw new ImzMLWriteException("Error writing imzML file " + filename + ". " + e1.getLocalizedMessage());
         }
+    }
+    
+    public static String calculateSHA1(String filename) throws ImzMLParseException {
+        // Open the .ibd data stream
+        DataInputStream dataStream = null;
+        byte[] hash;
+
+        try {
+            dataStream = new DataInputStream(new FileInputStream(filename));
+        } catch (FileNotFoundException e2) {
+            throw new ImzMLParseException("Could not open file " + filename, e2);
+        }
+
+        try {
+            byte[] buffer = new byte[1024 * 1024];
+            int bytesRead = 0;
+
+            MessageDigest md = MessageDigest.getInstance("SHA-1");
+
+            do {
+                bytesRead = dataStream.read(buffer);
+
+                if (bytesRead > 0) {
+                    md.update(buffer, 0, bytesRead);
+                }
+            } while (bytesRead > 0);
+
+            dataStream.close();
+
+            hash = md.digest();
+        } catch (NoSuchAlgorithmException e) {
+            try {
+                dataStream.close();
+            } catch (IOException e1) {
+                throw new ImzMLParseException("Failed to close ibd file after trying to generate SHA-1 hash", e1);
+            }
+
+            throw new ImzMLParseException("Generation of SHA-1 hash failed. No SHA-1 algorithm. " + e.getLocalizedMessage(), e);
+        } catch (IOException e) {
+            throw new ImzMLParseException("Failed generating SHA-1 hash. Failed to read data from " + filename + e.getMessage(), e);
+        }
+
+        try {
+            dataStream.close();
+        } catch (IOException e) {
+            throw new ImzMLParseException("Failed to close ibd file after generating SHA-1 hash", e);
+        }
+
+        return byteArrayToHexString(hash);
+    }
+
+    public static byte[] hexStringToByteArray(String s) {
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                    + Character.digit(s.charAt(i + 1), 16));
+        }
+
+        return data;
+    }
+
+    public static String byteArrayToHexString(byte[] byteArray) {
+        StringBuilder sb = new StringBuilder(2 * byteArray.length);
+
+        byte[] Hexhars = {
+            '0', '1', '2', '3', '4', '5',
+            '6', '7', '8', '9', 'a', 'b',
+            'c', 'd', 'e', 'f'
+        };
+
+        for (int i = 0; i < byteArray.length; i++) {
+
+            int v = byteArray[i] & 0xff;
+
+            sb.append((char) Hexhars[v >> 4]);
+            sb.append((char) Hexhars[v & 0xf]);
+        }
+
+        return sb.toString();
+    }
+    
+    public static UUID byteArrayToUuid(byte[] bytes) {
+        ByteBuffer bb = ByteBuffer.wrap(bytes);
+        long firstLong = bb.getLong();
+        long secondLong = bb.getLong();
+        return new UUID(firstLong, secondLong);
+    }
+
+    public static byte[] uuidToByteArray(UUID uuid) {
+        ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
+        bb.putLong(uuid.getMostSignificantBits());
+        bb.putLong(uuid.getLeastSignificantBits());
+        return bb.array();
     }
 }

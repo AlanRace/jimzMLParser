@@ -10,8 +10,12 @@ package com.alanmrace.jimzmlparser.exceptions;
  * @author amr1
  */
 public class ImzMLParseException extends MzMLParseException {
-    
+
     public ImzMLParseException(String message) {
         super(message);
+    }
+
+    public ImzMLParseException(String message, Exception exception) {
+        super(message, exception);
     }
 }
