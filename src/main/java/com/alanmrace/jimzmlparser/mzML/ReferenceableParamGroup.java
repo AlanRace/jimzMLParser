@@ -65,4 +65,9 @@ public class ReferenceableParamGroup extends MzMLContent implements Serializable
     public String toString() {
         return "referenceableParamGroup: " + id;
     }
+
+    @Override
+    public String getTagName() {
+        return "referenceableParamGroup";
+    }
 }

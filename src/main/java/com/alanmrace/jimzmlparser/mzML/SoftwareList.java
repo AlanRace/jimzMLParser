@@ -1,9 +1,12 @@
 package com.alanmrace.jimzmlparser.mzML;
 
+import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
+import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 
 public class SoftwareList extends MzMLContent implements Iterable<Software>, Serializable {
@@ -22,7 +25,7 @@ public class SoftwareList extends MzMLContent implements Iterable<Software>, Ser
     public SoftwareList(SoftwareList softwareList, ReferenceableParamGroupList rpgList) {
         if (softwareList != null) {
             this.softwareList = new ArrayList<Software>(softwareList.size());
-            
+
             for (Software software : softwareList) {
                 this.softwareList.add(new Software(software, rpgList));
             }
@@ -61,6 +64,26 @@ public class SoftwareList extends MzMLContent implements Iterable<Software>, Ser
         return softwareList.size();
     }
 
+    @Override
+    protected Collection<MzMLContent> getTagSpecificElementsAtXPath(String fullXPath, String currentXPath) throws InvalidXPathException {
+        ArrayList<MzMLContent> elements = new ArrayList<MzMLContent>();
+
+        if (currentXPath.startsWith("/software")) {
+            if (softwareList == null) {
+                throw new UnfollowableXPathException("No softwareList exists, so cannot go to " + fullXPath);
+            }
+
+            for (Software software : softwareList) {
+                elements.addAll(software.getElementsAtXPath(fullXPath, currentXPath));
+            }
+
+            return elements;
+        }
+
+        return elements;
+    }
+    
+    @Override
     public void outputXML(BufferedWriter output, int indent) throws IOException {
         MzMLContent.indent(output, indent);
         output.write("<softwareList");
@@ -80,31 +103,13 @@ public class SoftwareList extends MzMLContent implements Iterable<Software>, Ser
         return softwareList.iterator();
     }
 
+    @Override
     public String toString() {
         return "softwareList";
     }
 
-//	@Override
-//	public int getChildCount() {
-//		// 
-//		return size();
-//	}
-//	
-//	@Override
-//	public int getIndex(TreeNode childNode) {
-//		return softwareList.indexOf(childNode);
-//	}
-//	
-//	@Override
-//	public TreeNode getChildAt(int index) {
-//		return softwareList.get(index);
-//	}
-//	
-//	@Override
-//	public Enumeration<TreeNode> children() {
-//		Vector<TreeNode> children = new Vector<TreeNode>();
-//		children.addAll(softwareList);
-//		
-//		return children.elements();
-//	}
+    @Override
+    public String getTagName() {
+        return "softwareList";
+    }
 }

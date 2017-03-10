@@ -69,7 +69,8 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
     public ImzML(MzML mzML) {
         super(mzML);
     }
-
+    
+    @Override
     public synchronized double[] getFullmzList() {
         logger.entering(ImzML.class.getName(), "getFullmzList");
 

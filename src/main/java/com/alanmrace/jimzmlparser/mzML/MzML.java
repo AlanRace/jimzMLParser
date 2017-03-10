@@ -2,6 +2,8 @@ package com.alanmrace.jimzmlparser.mzML;
 
 //import com.alanmrace.jimzmlparser.exceptions.ImzMLConversionException;
 import com.alanmrace.jimzmlparser.exceptions.ImzMLWriteException;
+import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
+import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -14,8 +16,11 @@ import com.alanmrace.jimzmlparser.parser.DataLocation;
 import com.alanmrace.jimzmlparser.parser.DataStorage;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import java.util.Collection;
 
 public class MzML extends MzMLContent implements Serializable {
 
@@ -29,7 +34,7 @@ public class MzML extends MzMLContent implements Serializable {
     public static String schemaLocation = "http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.0_idx.xsd";
 
     public static String currentVersion = "1.1.0";
-    
+
     protected DataStorage dataStorage;
 
     // Attributes
@@ -56,95 +61,95 @@ public class MzML extends MzMLContent implements Serializable {
     private OBO obo;
 
     public MzML(String version) {
-	this.version = version;
+        this.version = version;
     }
 
     public MzML(MzML mzML) {
-	this.accession = mzML.accession;
-	this.id = mzML.id;
-	this.version = mzML.version;
+        this.accession = mzML.accession;
+        this.id = mzML.id;
+        this.version = mzML.version;
 
-	this.obo = mzML.obo;
+        this.obo = mzML.obo;
 
-	if (mzML.referenceableParamGroupList != null) {
-	    referenceableParamGroupList = new ReferenceableParamGroupList(mzML.referenceableParamGroupList);
-	}
+        if (mzML.referenceableParamGroupList != null) {
+            referenceableParamGroupList = new ReferenceableParamGroupList(mzML.referenceableParamGroupList);
+        }
 
-	cvList = new CVList(mzML.cvList);
-	fileDescription = new FileDescription(mzML.fileDescription, referenceableParamGroupList);
+        cvList = new CVList(mzML.cvList);
+        fileDescription = new FileDescription(mzML.fileDescription, referenceableParamGroupList);
 
-	if (mzML.sampleList != null) {
-	    sampleList = new SampleList(mzML.sampleList, referenceableParamGroupList);
-	}
+        if (mzML.sampleList != null) {
+            sampleList = new SampleList(mzML.sampleList, referenceableParamGroupList);
+        }
 
-	softwareList = new SoftwareList(mzML.softwareList, referenceableParamGroupList);
+        softwareList = new SoftwareList(mzML.softwareList, referenceableParamGroupList);
 
-	if (mzML.scanSettingsList != null) {
-	    scanSettingsList = new ScanSettingsList(mzML.scanSettingsList, referenceableParamGroupList, fileDescription.getSourceFileList());
-	}
+        if (mzML.scanSettingsList != null) {
+            scanSettingsList = new ScanSettingsList(mzML.scanSettingsList, referenceableParamGroupList, fileDescription.getSourceFileList());
+        }
 
-	instrumentConfigurationList = new InstrumentConfigurationList(mzML.instrumentConfigurationList, referenceableParamGroupList, scanSettingsList, softwareList);
-	dataProcessingList = new DataProcessingList(mzML.dataProcessingList, referenceableParamGroupList, softwareList);
-	run = new Run(mzML.run, referenceableParamGroupList, instrumentConfigurationList,
-		fileDescription.getSourceFileList(), sampleList, dataProcessingList);
+        instrumentConfigurationList = new InstrumentConfigurationList(mzML.instrumentConfigurationList, referenceableParamGroupList, scanSettingsList, softwareList);
+        dataProcessingList = new DataProcessingList(mzML.dataProcessingList, referenceableParamGroupList, softwareList);
+        run = new Run(mzML.run, referenceableParamGroupList, instrumentConfigurationList,
+                fileDescription.getSourceFileList(), sampleList, dataProcessingList);
     }
 
     public void setDataStorage(DataStorage dataStorage) {
         this.dataStorage = dataStorage;
     }
-    
+
 //	@JsonIgnore
     public void setOBO(OBO obo) {
-	this.obo = obo;
+        this.obo = obo;
     }
 
 //	@JsonIgnore
     public OBO getOBO() {
-	return obo;
+        return obo;
     }
 
     public void setVersion(String version) {
-	this.version = version;
+        this.version = version;
     }
 
     public String getVersion() {
-	return version;
+        return version;
     }
 
     public void setAccession(String accession) {
-	this.accession = accession;
+        this.accession = accession;
     }
 
     public String accession() {
-	return accession;
+        return accession;
     }
 
     public void setID(String id) {
-	this.id = id;
+        this.id = id;
     }
 
     public String getID() {
-	return id;
+        return id;
     }
 
     public void setCVList(CVList cvList) {
-	cvList.setParent(this);
+        cvList.setParent(this);
 
-	this.cvList = cvList;
+        this.cvList = cvList;
     }
 
     public CVList getCVList() {
-	return cvList;
+        return cvList;
     }
 
     public void setFileDescription(FileDescription fd) {
-	fd.setParent(this);
+        fd.setParent(this);
 
-	this.fileDescription = fd;
+        this.fileDescription = fd;
     }
 
     public FileDescription getFileDescription() {
-	return fileDescription;
+        return fileDescription;
     }
 
 //	public void addReferenceableParamGroup(ReferenceableParamGroup rpg) {
@@ -159,17 +164,17 @@ public class MzML extends MzMLContent implements Serializable {
 //		return referenceableParamGroupList.getReferenceableParamGroup(index);
 //	}
     public void setReferenceableParamGroupList(ReferenceableParamGroupList referenceableParamGroupList) {
-	referenceableParamGroupList.setParent(this);
+        referenceableParamGroupList.setParent(this);
 
-	this.referenceableParamGroupList = referenceableParamGroupList;
+        this.referenceableParamGroupList = referenceableParamGroupList;
     }
 
     public ReferenceableParamGroupList getReferenceableParamGroupList() {
-	if (referenceableParamGroupList == null) {
-	    referenceableParamGroupList = new ReferenceableParamGroupList(0);
-	}
+        if (referenceableParamGroupList == null) {
+            referenceableParamGroupList = new ReferenceableParamGroupList(0);
+        }
 
-	return referenceableParamGroupList;
+        return referenceableParamGroupList;
     }
 
 //	public ReferenceableParamGroup getReferenceableParamGroup(String id) {
@@ -181,31 +186,31 @@ public class MzML extends MzMLContent implements Serializable {
 //	}
 //	
     public void setSampleList(SampleList sampleList) {
-	sampleList.setParent(this);
+        sampleList.setParent(this);
 
-	this.sampleList = sampleList;
+        this.sampleList = sampleList;
     }
 
     public SampleList getSampleList() {
-	if (sampleList == null) {
-	    sampleList = new SampleList(0);
-	}
+        if (sampleList == null) {
+            sampleList = new SampleList(0);
+        }
 
-	return sampleList;
+        return sampleList;
     }
 
     public void setSoftwareList(SoftwareList softwareList) {
-	softwareList.setParent(this);
+        softwareList.setParent(this);
 
-	this.softwareList = softwareList;
+        this.softwareList = softwareList;
     }
 
     public SoftwareList getSoftwareList() {
-	if (softwareList == null) {
-	    softwareList = new SoftwareList(0);
-	}
+        if (softwareList == null) {
+            softwareList = new SoftwareList(0);
+        }
 
-	return softwareList;
+        return softwareList;
     }
 
 //	public void addSoftware(Software sw) {
@@ -224,31 +229,31 @@ public class MzML extends MzMLContent implements Serializable {
 //		softwareList.remove(index);
 //	}
     public void setScanSettingsList(ScanSettingsList scanSettingsList) {
-	scanSettingsList.setParent(this);
+        scanSettingsList.setParent(this);
 
-	this.scanSettingsList = scanSettingsList;
+        this.scanSettingsList = scanSettingsList;
     }
 
     public ScanSettingsList getScanSettingsList() {
-	if (scanSettingsList == null) {
-	    scanSettingsList = new ScanSettingsList(0);
-	}
+        if (scanSettingsList == null) {
+            scanSettingsList = new ScanSettingsList(0);
+        }
 
-	return scanSettingsList;
+        return scanSettingsList;
     }
 
     public void setInstrumentConfigurationList(InstrumentConfigurationList instrumentConfigurationList) {
-	instrumentConfigurationList.setParent(this);
+        instrumentConfigurationList.setParent(this);
 
-	this.instrumentConfigurationList = instrumentConfigurationList;
+        this.instrumentConfigurationList = instrumentConfigurationList;
     }
 
     public InstrumentConfigurationList getInstrumentConfigurationList() {
-	if (instrumentConfigurationList == null) {
-	    instrumentConfigurationList = new InstrumentConfigurationList(0);
-	}
+        if (instrumentConfigurationList == null) {
+            instrumentConfigurationList = new InstrumentConfigurationList(0);
+        }
 
-	return instrumentConfigurationList;
+        return instrumentConfigurationList;
     }
 
 //	public void addInstrumentConfiguration(InstrumentConfiguration ic) {
@@ -262,18 +267,66 @@ public class MzML extends MzMLContent implements Serializable {
 //	public InstrumentConfiguration getInstrumentConfiguration(int index) {
 //		return instrumentConfigurationList.get(index);
 //	}
-    public void setDataProcessingList(DataProcessingList dataProcessingList) {
-	dataProcessingList.setParent(this);
+    @Override
+    public String getTagName() {
+        return "mzML";
+    }
 
-	this.dataProcessingList = dataProcessingList;
+    public Collection<MzMLContent> getElementsAtXPath(String xPath) throws InvalidXPathException {
+        return getElementsAtXPath(xPath, xPath);
+    }
+
+    @Override
+    protected Collection<MzMLContent> getTagSpecificElementsAtXPath(String fullXPath, String currentXPath) throws InvalidXPathException {
+        ArrayList<MzMLContent> elements = new ArrayList<MzMLContent>();
+
+        if (currentXPath.startsWith("/" + cvList.getTagName())) {
+            return cvList.getElementsAtXPath(fullXPath, currentXPath);
+        } else if (currentXPath.startsWith("/" + fileDescription.getTagName())) {
+            return fileDescription.getElementsAtXPath(fullXPath, currentXPath);
+        } else if (currentXPath.startsWith("/referenceableParamGroupList")) {
+            if (referenceableParamGroupList == null) {
+                throw new UnfollowableXPathException("No referenceableParamGroupList exists, so cannot go to " + fullXPath);
+            }
+
+            return referenceableParamGroupList.getElementsAtXPath(fullXPath, currentXPath);
+        } else if (currentXPath.startsWith("/sampleList")) {
+            if (sampleList == null) {
+                throw new UnfollowableXPathException("No sampleList exists, so cannot go to " + fullXPath);
+            }
+
+            return sampleList.getElementsAtXPath(fullXPath, currentXPath);
+        } else if (currentXPath.startsWith("/" + softwareList.getTagName())) {
+            return softwareList.getElementsAtXPath(fullXPath, currentXPath);
+        } else if (currentXPath.startsWith("/scanSettingsList")) {
+            if (scanSettingsList == null) {
+                throw new UnfollowableXPathException("No scanSettingsList exists, so cannot go to " + fullXPath);
+            }
+
+            return scanSettingsList.getElementsAtXPath(fullXPath, currentXPath);
+        } else if (currentXPath.startsWith("/" + instrumentConfigurationList.getTagName())) {
+            return instrumentConfigurationList.getElementsAtXPath(fullXPath, currentXPath);
+        } else if (currentXPath.startsWith("/" + dataProcessingList.getTagName())) {
+            return dataProcessingList.getElementsAtXPath(fullXPath, currentXPath);
+        } else if (currentXPath.startsWith("/" + run.getTagName())) {
+            return run.getElementsAtXPath(fullXPath, currentXPath);
+        }
+
+        return elements;
+    }
+
+    public void setDataProcessingList(DataProcessingList dataProcessingList) {
+        dataProcessingList.setParent(this);
+
+        this.dataProcessingList = dataProcessingList;
     }
 
     public DataProcessingList getDataProcessingList() {
-	if (dataProcessingList == null) {
-	    dataProcessingList = new DataProcessingList(0);
-	}
+        if (dataProcessingList == null) {
+            dataProcessingList = new DataProcessingList(0);
+        }
 
-	return dataProcessingList;
+        return dataProcessingList;
     }
 
 //	public void addDataProcessing(DataProcessing dp) {
@@ -292,13 +345,13 @@ public class MzML extends MzMLContent implements Serializable {
 //		dataProcessingList.remove(index);
 //	}
     public void setRun(Run run) {
-	run.setParent(this);
+        run.setParent(this);
 
-	this.run = run;
+        this.run = run;
     }
 
     public Run getRun() {
-	return run;
+        return run;
     }
 
 //	public Sample getSample(String sampleRef) {
@@ -328,119 +381,117 @@ public class MzML extends MzMLContent implements Serializable {
 //	public DataProcessing getDataProcessing(String dataProcessingRef) {
 //		return dataProcessingList.get(dataProcessingRef);
 //	}
-    
     boolean outputIndex = false;
     RandomAccessFile raf;
-    
+
     public void write(String filename) throws ImzMLWriteException {
-	try {
-	    String encoding = "ISO-8859-1";
+        try {
+            String encoding = "ISO-8859-1";
 
             raf = new RandomAccessFile(filename, "rw");
-            
+
             outputIndex = true;
-            
-	    OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(raf.getFD()), encoding);
-	    BufferedWriter output = new BufferedWriter(out);
 
-	    output.write("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>\n");
-	    outputXML(output, 0);
+            OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(raf.getFD()), encoding);
+            BufferedWriter output = new BufferedWriter(out);
 
-	    output.flush();
-	    output.close();
-	} catch (IOException e1) {
-	    throw new ImzMLWriteException("Error writing mzML file " + filename + ". " + e1.getLocalizedMessage());
-	}
+            output.write("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>\n");
+            outputXML(output, 0);
+
+            output.flush();
+            output.close();
+        } catch (IOException e1) {
+            throw new ImzMLWriteException("Error writing mzML file " + filename + ". " + e1.getLocalizedMessage());
+        }
     }
 
     @Override
     public void outputXML(BufferedWriter output, int indent) throws IOException {
-        if(outputIndex) {
+        if (outputIndex) {
             MzMLContent.indent(output, indent);
             output.write("<indexedmzML");
             output.write("  xmlns=\"http://psi.hupo.org/ms/mzml\"");
             output.write("  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
             output.write("  xsi:schemaLocation=\"http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.2_idx.xsd\">\n");
-            
-            
-            for(Spectrum spectrum : run.getSpectrumList()) {
+
+            for (Spectrum spectrum : run.getSpectrumList()) {
                 spectrum.setRAF(raf);
             }
         }
-        
-	MzMLContent.indent(output, indent);
-	output.write("<mzML");
-	// Set up namespaces
-	output.write(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
-	output.write(" xsi:schemaLocation=\"http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.0.xsd\"");
-	output.write(" xmlns=\"http://psi.hupo.org/ms/mzml\"");
-	// Attributes
-	output.write(" version=\"" + XMLHelper.ensureSafeXML(version) + "\"");
-	if (accession != null) {
-	    output.write(" accession=\"" + XMLHelper.ensureSafeXML(accession) + "\"");
-	}
-	if (id != null) {
-	    output.write(" id=\"" + XMLHelper.ensureSafeXML(id) + "\"");
-	}
-	output.write(">\n");
 
-	// TODO: This shouldn't be the case ...there should always be a cvList
-	if (cvList == null) {
-	    cvList = new CVList(0);
-	}
+        MzMLContent.indent(output, indent);
+        output.write("<mzML");
+        // Set up namespaces
+        output.write(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
+        output.write(" xsi:schemaLocation=\"http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.0.xsd\"");
+        output.write(" xmlns=\"http://psi.hupo.org/ms/mzml\"");
+        // Attributes
+        output.write(" version=\"" + XMLHelper.ensureSafeXML(version) + "\"");
+        if (accession != null) {
+            output.write(" accession=\"" + XMLHelper.ensureSafeXML(accession) + "\"");
+        }
+        if (id != null) {
+            output.write(" id=\"" + XMLHelper.ensureSafeXML(id) + "\"");
+        }
+        output.write(">\n");
 
-	cvList.outputXML(output, indent + 1);
+        // TODO: This shouldn't be the case ...there should always be a cvList
+        if (cvList == null) {
+            cvList = new CVList(0);
+        }
 
-	// FileDescription
-	fileDescription.outputXML(output, indent + 1);
+        cvList.outputXML(output, indent + 1);
 
-	if (referenceableParamGroupList != null && referenceableParamGroupList.size() > 0) {
-	    referenceableParamGroupList.outputXML(output, indent + 1);
-	}
+        // FileDescription
+        fileDescription.outputXML(output, indent + 1);
 
-	if (sampleList != null && sampleList.size() > 0) {
-	    sampleList.outputXML(output, indent + 1);
-	}
+        if (referenceableParamGroupList != null && referenceableParamGroupList.size() > 0) {
+            referenceableParamGroupList.outputXML(output, indent + 1);
+        }
 
-	// SoftwareList
-	softwareList.outputXML(output, indent + 1);
+        if (sampleList != null && sampleList.size() > 0) {
+            sampleList.outputXML(output, indent + 1);
+        }
 
-	// ScanSettingsList
-	if (scanSettingsList != null && scanSettingsList.size() > 0) {
-	    scanSettingsList.outputXML(output, indent + 1);
-	}
+        // SoftwareList
+        softwareList.outputXML(output, indent + 1);
 
-	// InstrumentConfigurationList
-	instrumentConfigurationList.outputXML(output, indent + 1);
+        // ScanSettingsList
+        if (scanSettingsList != null && scanSettingsList.size() > 0) {
+            scanSettingsList.outputXML(output, indent + 1);
+        }
 
-	// DataProcessingList
-	dataProcessingList.outputXML(output, indent + 1);
+        // InstrumentConfigurationList
+        instrumentConfigurationList.outputXML(output, indent + 1);
 
-	// Run
-	run.outputXML(output, indent + 1);
+        // DataProcessingList
+        dataProcessingList.outputXML(output, indent + 1);
 
-	MzMLContent.indent(output, indent);
-	output.write("</mzML>\n");
-        
-        if(outputIndex) {
+        // Run
+        run.outputXML(output, indent + 1);
+
+        MzMLContent.indent(output, indent);
+        output.write("</mzML>\n");
+
+        if (outputIndex) {
             output.flush();
             long indexListOffset = raf.getFilePointer();
-            
-            MzMLContent.indent(output, indent+1);
+
+            MzMLContent.indent(output, indent + 1);
             output.write("<indexList count=\"1\">\n");
-            MzMLContent.indent(output, indent+2);
+            MzMLContent.indent(output, indent + 2);
             output.write("<index name=\"spectrum\">\n");
 
-            for(Spectrum spectrum : run.getSpectrumList()) {
-                MzMLContent.indent(output, indent+3);
+            for (Spectrum spectrum : run.getSpectrumList()) {
+                MzMLContent.indent(output, indent + 3);
                 output.write("<offset idRef=\"" + spectrum.getID() + "\">" + spectrum.getmzMLLocation() + "</offset>\n");
             }
 
-            MzMLContent.indent(output, indent+2);
+            MzMLContent.indent(output, indent + 2);
             output.write("</index>\n");
-            MzMLContent.indent(output, indent+1);
+            MzMLContent.indent(output, indent + 1);
             output.write("</indexList>\n");
-            
+
             output.write("<indexListOffset>" + indexListOffset + "</indexListOffset>\n");
 
             MzMLContent.indent(output, indent);
@@ -448,226 +499,50 @@ public class MzML extends MzMLContent implements Serializable {
         }
     }
 
-    // Need to include cvList, referenceableParamGroupList, etc..
-    private int getAdditionalChildrenCount() {
-	int additionalChildren = ((cvList != null) ? 1 : 0)
-		+ ((fileDescription != null) ? 1 : 0)
-		+ ((referenceableParamGroupList != null) ? 1 : 0)
-		+ ((sampleList != null) ? 1 : 0)
-		+ ((softwareList != null) ? 1 : 0)
-		+ ((scanSettingsList != null) ? 1 : 0)
-		+ ((instrumentConfigurationList != null) ? 1 : 0)
-		+ ((dataProcessingList != null) ? 1 : 0)
-		+ ((run != null) ? 1 : 0);
-
-	return additionalChildren;
-    }
-
-//	@Override
-//	public int getChildCount() {
-//		return super.getChildCount() + getAdditionalChildrenCount();
-//	}
-//	
-//	@Override
-//	public Enumeration<TreeNode> children() {
-//		Vector<TreeNode> children = new Vector<TreeNode>();		
-//		Enumeration<TreeNode> superChildren = super.children();
-//		
-//		while(superChildren.hasMoreElements())
-//			children.add(superChildren.nextElement());
-//		
-//		if(cvList != null)
-//			children.add(cvList);
-//		if(fileDescription != null)
-//			children.add(fileDescription);
-//		if(referenceableParamGroupList != null)
-//			children.add(referenceableParamGroupList);
-//		if(sampleList != null)
-//			children.add(sampleList);
-//		if(softwareList != null)
-//			children.add(softwareList);
-//		if(scanSettingsList != null)
-//			children.add(scanSettingsList);
-//		if(instrumentConfigurationList != null)
-//			children.add(instrumentConfigurationList);
-//		if(dataProcessingList != null)
-//			children.add(dataProcessingList);
-//		if(run != null)
-//			children.add(run);
-//		
-//		return children.elements();
-//	}
-//	
-//	@Override
-//	public TreeNode getChildAt(int index) {
-//		if(index < super.getChildCount()) {
-//			return super.getChildAt(index);
-//		} else if(index < getChildCount()) {
-//			int counter = super.getChildCount();
-//			
-//			if(cvList != null) {
-//				if(counter == index)
-//					return cvList;
-//				
-//				counter++;
-//			}
-//			if(fileDescription != null) {
-//				if(counter == index)
-//					return fileDescription;
-//				
-//				counter++;
-//			}
-//			if(referenceableParamGroupList != null) {
-//				if(counter == index)
-//					return referenceableParamGroupList;
-//				
-//				counter++;
-//			}
-//			if(sampleList != null) {
-//				if(counter == index)
-//					return sampleList;
-//				
-//				counter++;
-//			}
-//			if(softwareList != null) {
-//				if(counter == index)
-//					return softwareList;
-//				
-//				counter++;
-//			}
-//			if(scanSettingsList != null) {
-//				if(counter == index)
-//					return scanSettingsList;
-//				
-//				counter++;
-//			}
-//			if(instrumentConfigurationList != null) {
-//				if(counter == index)
-//					return instrumentConfigurationList;
-//				
-//				counter++;
-//			}
-//			if(dataProcessingList != null) {
-//				if(counter == index)
-//					return dataProcessingList;
-//				
-//				counter++;
-//			}
-//			if(run != null) {
-//				if(counter == index)
-//					return run;
-//				
-//				counter++;
-//			}			
-//		}
-//				
-//		return null;
-//	}
-//	
-//	@Override
-//	public int getIndex(TreeNode childNode) {
-//		int counter = super.getChildCount();
-//			
-//		if(childNode instanceof CVParam)
-//			return counter;
-//		
-//		if(cvList != null)
-//			counter++;
-//		
-//		if(childNode instanceof FileDescription)
-//			return counter;
-//		
-//		if(fileDescription != null)
-//			counter++;
-//		
-//		if(childNode instanceof ReferenceableParamGroupList)
-//			return counter;
-//		
-//		if(referenceableParamGroupList != null)
-//			counter++;
-//			
-//		if(childNode instanceof SampleList)
-//			return counter;
-//		
-//		if(sampleList != null)
-//			counter++;
-//		
-//		if(childNode instanceof SoftwareList)
-//			return counter;
-//		
-//		if(softwareList != null)
-//			counter++;
-//		
-//		if(childNode instanceof ScanSettingsList)
-//			return counter;
-//		
-//		if(scanSettingsList != null)
-//			counter++;
-//		
-//		if(childNode instanceof InstrumentConfigurationList)
-//			return counter;
-//		
-//		if(instrumentConfigurationList != null)
-//			counter++;
-//			
-//		if(childNode instanceof DataProcessingList)
-//			return counter;
-//		
-//		if(dataProcessingList != null)
-//			counter++;
-//		
-//		if(childNode instanceof Run)
-//			return counter;
-//		
-//		if(run != null)
-//			counter++;
-//
-//		return super.getIndex(childNode);
-//	}
     @Override
     public String toString() {
-	return "mzML";
+        return "mzML";
     }
 
     // Clean up by closing any open DataStorage
-    public void close() {        
-        if(dataStorage != null) {
+    public void close() {
+        if (dataStorage != null) {
             try {
                 dataStorage.close();
             } catch (IOException ex) {
                 Logger.getLogger(MzML.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
-	SpectrumList spectrumList = getRun().getSpectrumList();
 
-	if (spectrumList.size() > 0) {
+        SpectrumList spectrumList = getRun().getSpectrumList();
+
+        if (spectrumList.size() > 0) {
             Spectrum spectrum = spectrumList.getSpectrum(0);
             //for(Spectrum spectrum : spectrumList) {
-                closeDataStorage(spectrum.getDataLocation());
-                
-                BinaryDataArrayList bdal = spectrum.getBinaryDataArrayList();
+            closeDataStorage(spectrum.getDataLocation());
 
-                if (bdal.size() > 0) {
-                    BinaryDataArray bda = bdal.getBinaryDataArray(0);
+            BinaryDataArrayList bdal = spectrum.getBinaryDataArrayList();
 
-                    closeDataStorage(bda.getDataLocation());
-                }
+            if (bdal.size() > 0) {
+                BinaryDataArray bda = bdal.getBinaryDataArray(0);
+
+                closeDataStorage(bda.getDataLocation());
+            }
             //}
-	}
+        }
     }
 
     protected static void closeDataStorage(DataLocation dataLocation) {
-	if (dataLocation != null) {
-	    DataStorage dataStorage = dataLocation.getDataStorage();
+        if (dataLocation != null) {
+            DataStorage dataStorage = dataLocation.getDataStorage();
 
-	    if (dataStorage != null) {
-		try {
-		    dataStorage.close();
-		} catch (IOException ex) {
-		    Logger.getLogger(MzML.class.getName()).log(Level.SEVERE, "Failed to close DataStorage", ex);
-		}
-	    }
-	}
+            if (dataStorage != null) {
+                try {
+                    dataStorage.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(MzML.class.getName()).log(Level.SEVERE, "Failed to close DataStorage", ex);
+                }
+            }
+        }
     }
 }

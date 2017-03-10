@@ -1,10 +1,13 @@
 package com.alanmrace.jimzmlparser.mzML;
 
+import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
+import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class Chromatogram extends MzMLDataContainer implements Serializable {
 
@@ -56,6 +59,7 @@ public class Chromatogram extends MzMLDataContainer implements Serializable {
         }
     }
 
+    @Override
     public ArrayList<OBOTermInclusion> getListOfRequiredCVParams() {
         ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
         required.add(new OBOTermInclusion(chromatogramTypeID, true, true, false));
@@ -63,6 +67,7 @@ public class Chromatogram extends MzMLDataContainer implements Serializable {
         return required;
     }
 
+    @Override
     public ArrayList<OBOTermInclusion> getListOfOptionalCVParams() {
         ArrayList<OBOTermInclusion> optional = new ArrayList<OBOTermInclusion>();
         optional.add(new OBOTermInclusion(chromatogramAttributeID, false, true, false));
@@ -70,12 +75,11 @@ public class Chromatogram extends MzMLDataContainer implements Serializable {
         return optional;
     }
 
-
     // Set optional attributes
 //    public void setDataProcessingRef(DataProcessing dataProcessingRef) {
 //        this.dataProcessingRef = dataProcessingRef;
 //    }
-
+    
     public DataProcessing getDataProcessingRef() {
         return dataProcessingRef;
     }
@@ -109,7 +113,34 @@ public class Chromatogram extends MzMLDataContainer implements Serializable {
 //    public BinaryDataArrayList getBinaryDataArrayList() {
 //        return binaryDataArrayList;
 //    }
+    
+    @Override
+    protected Collection<MzMLContent> getTagSpecificElementsAtXPath(String fullXPath, String currentXPath) throws InvalidXPathException {
+        ArrayList<MzMLContent> elements = new ArrayList<MzMLContent>();
 
+        if (currentXPath.startsWith("/precursor")) {
+            if (precursor == null) {
+                throw new UnfollowableXPathException("No precursor exists, so cannot go to " + fullXPath);
+            }
+
+            return precursor.getElementsAtXPath(fullXPath, currentXPath);
+        } else if (currentXPath.startsWith("/product")) {
+            if (product == null) {
+                throw new UnfollowableXPathException("No product exists, so cannot go to " + fullXPath);
+            }
+
+            return product.getElementsAtXPath(fullXPath, currentXPath);
+        } else if (currentXPath.startsWith("/binaryDataArrayList")) {
+            if (binaryDataArrayList == null) {
+                throw new UnfollowableXPathException("No binaryDataArrayList exists, so cannot go to " + fullXPath);
+            }
+
+            return binaryDataArrayList.getElementsAtXPath(fullXPath, currentXPath);
+        }
+
+        return elements;
+    }
+    
     public void outputXML(BufferedWriter output, int indent, int index) throws IOException {
         MzMLContent.indent(output, indent);
         output.write("<chromatogram");
@@ -139,93 +170,13 @@ public class Chromatogram extends MzMLDataContainer implements Serializable {
         output.write("</chromatogram>\n");
     }
 
+    @Override
     public String toString() {
         return "chromatogram: id=\"" + id + "\"";
     }
 
-    private int getAdditionalChildrenCount() {
-        int additionalChildren = ((precursor != null) ? 1 : 0)
-                + ((product != null) ? 1 : 0)
-                + ((binaryDataArrayList != null) ? 1 : 0);
-
-        return additionalChildren;
+    @Override
+    public String getTagName() {
+        return "chromatogram";
     }
-
-//	@Override
-//	public int getChildCount() {
-//		return super.getChildCount() + getAdditionalChildrenCount();
-//	}
-//	
-//	@Override
-//	public Enumeration<TreeNode> children() {
-//		Vector<TreeNode> children = new Vector<TreeNode>();		
-//		Enumeration<TreeNode> superChildren = super.children();
-//		
-//		while(superChildren.hasMoreElements())
-//			children.add(superChildren.nextElement());
-//		
-//		if(precursor != null)
-//			children.add(precursor);
-//		if(product != null)
-//			children.add(product);
-//		if(binaryDataArrayList != null)
-//			children.add(binaryDataArrayList);
-//		
-//		return children.elements();
-//	}
-//	
-//	@Override
-//	public TreeNode getChildAt(int index) {
-//		if(index < super.getChildCount()) {
-//			return super.getChildAt(index);
-//		} else if(index < getChildCount()) {			
-//			int counter = super.getChildCount();
-//			
-//			if(precursor != null) {
-//				if(counter == index)
-//					return precursor;
-//				
-//				counter++;
-//			}
-//			if(product != null) {
-//				if(counter == index)
-//					return product;
-//				
-//				counter++;
-//			}
-//			if(binaryDataArrayList != null) {
-//				if(counter == index)
-//					return binaryDataArrayList;
-//				
-//				counter++;
-//			}
-//		}
-//		
-//		return null;
-//	}
-//	
-//	@Override
-//	public int getIndex(TreeNode childNode) {
-//		int counter = super.getChildCount();
-//			
-//		if(childNode instanceof Precursor)
-//			return counter;
-//		
-//		if(precursor != null)
-//			counter++;
-//		
-//		if(childNode instanceof Product)
-//			return counter;
-//		
-//		if(product != null)
-//			counter++;
-//		
-//		if(childNode instanceof BinaryDataArrayList)
-//			return counter;
-//		
-//		if(binaryDataArrayList != null)
-//			counter++;
-//		
-//		return super.getIndex(childNode);
-//	}
 }

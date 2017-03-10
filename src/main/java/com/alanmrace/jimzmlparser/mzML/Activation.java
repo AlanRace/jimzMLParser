@@ -94,4 +94,9 @@ public class Activation extends MzMLContent {
     public String toString() {
         return "activation";
     }
+
+    @Override
+    public String getTagName() {
+        return "activation";
+    }
 }

@@ -1,5 +1,7 @@
 package com.alanmrace.jimzmlparser.mzML;
 
+import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
+import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -7,124 +9,150 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
+import java.util.Collection;
 
-public class Run extends MzMLContent  implements Serializable {
+public class Run extends MzMLContent implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-	public static String runAttributeID		= "MS:1000857";
-	
-	private InstrumentConfiguration defaultInstrumentConfigurationRef;	// Required
-	private SourceFile defaultSourceFileRef;							// Optional
-	private String id;													// Required
-	private Sample sampleRef;											// Optional
-	private Date startTimeStamp;										// Optional
-	
+    public static String runAttributeID = "MS:1000857";
+
+    private InstrumentConfiguration defaultInstrumentConfigurationRef;	// Required
+    private SourceFile defaultSourceFileRef;							// Optional
+    private String id;													// Required
+    private Sample sampleRef;											// Optional
+    private Date startTimeStamp;										// Optional
+
 //	// defaultDataProcessingRef is for spectrumList
 //	protected DataProcessing defaultDataProcessingRef;
-	private SpectrumList spectrumList;
-	private ChromatogramList chromatogramList;
-	
-	public Run(String id, InstrumentConfiguration defaultInstrumentConfigurationRef) {
-		this.id = id;
-		this.defaultInstrumentConfigurationRef = defaultInstrumentConfigurationRef;
-	}
-	
-	public Run(Run run, ReferenceableParamGroupList rpgList, InstrumentConfigurationList icList, 
-			SourceFileList sourceFileList, SampleList sampleList, DataProcessingList dpList) {
-		super(run, rpgList);
-		
-		this.id = run.id;
-		
-		if(run.startTimeStamp != null)
-			this.startTimeStamp = new Date(run.startTimeStamp.getTime());
-		
-		if(run.defaultInstrumentConfigurationRef != null && icList != null) {
-			for(InstrumentConfiguration ic : icList) {
-				if(run.defaultInstrumentConfigurationRef.getID().equals(ic.getID())) {
-					defaultInstrumentConfigurationRef = ic;
-				
-					break;
-				}
-			}
-		}
+    private SpectrumList spectrumList;
+    private ChromatogramList chromatogramList;
 
-		if(run.defaultSourceFileRef != null && sourceFileList != null) {
-			for(SourceFile sourceFile : sourceFileList) {
-				if(run.defaultSourceFileRef.getID().equals(sourceFile.getID())) {
-					defaultSourceFileRef = sourceFile;
-					
-					break;
-				}
-			}
-		}
-		
-		if(run.sampleRef != null && sampleList != null) {
-			for(Sample sample : sampleList) {
-				if(run.sampleRef.getID().equals(sample.getID())) {
-					sampleRef = sample;
-					
-					break;
-				}
-			}
-		}
-		
-		if(run.spectrumList != null)
-			spectrumList = new SpectrumList(run.spectrumList, rpgList, dpList, sourceFileList, icList);
-		if(run.chromatogramList != null)
-			chromatogramList = new ChromatogramList(run.chromatogramList, rpgList, dpList, sourceFileList);
-	}
-	
-	public ArrayList<OBOTermInclusion> getListOfOptionalCVParams() {
-		ArrayList<OBOTermInclusion> optional = new ArrayList<OBOTermInclusion>();
-		optional.add(new OBOTermInclusion(runAttributeID, true, true, false));
-		
-		return optional;
-	}
-	
-	public void setDefaultSourceFileRef(SourceFile defaultSourceFileRef) {
-		this.defaultSourceFileRef = defaultSourceFileRef;
-	}
-	
-	public String getID() {
-		return id;
-	}
-	
-	public void setSampleRef(Sample sampleRef) {
-		this.sampleRef = sampleRef;
-	}
-	
-	public void setStartTimeStamp(Date startTimeStamp) {
-		this.startTimeStamp = startTimeStamp;
-	}
-	
-	public void setSpectrumList(SpectrumList spectrumList) {
-		spectrumList.setParent(this);
-		
-		this.spectrumList = spectrumList;
-	}
-	
-	public InstrumentConfiguration getDefaultInstrumentConfiguration() {
-		return defaultInstrumentConfigurationRef;
-	}
-	
-	public SpectrumList getSpectrumList() {
-		return spectrumList;
-	}
-	
-	public void setChromatogramList(ChromatogramList chromatogramList) {
-		chromatogramList.setParent(this);
-		
-		this.chromatogramList = chromatogramList;
-	}
-	
-	public ChromatogramList getChromatogramList() {
-		return chromatogramList;
-	}
-	
+    public Run(String id, InstrumentConfiguration defaultInstrumentConfigurationRef) {
+        this.id = id;
+        this.defaultInstrumentConfigurationRef = defaultInstrumentConfigurationRef;
+    }
+
+    public Run(Run run, ReferenceableParamGroupList rpgList, InstrumentConfigurationList icList,
+            SourceFileList sourceFileList, SampleList sampleList, DataProcessingList dpList) {
+        super(run, rpgList);
+
+        this.id = run.id;
+
+        if (run.startTimeStamp != null) {
+            this.startTimeStamp = new Date(run.startTimeStamp.getTime());
+        }
+
+        if (run.defaultInstrumentConfigurationRef != null && icList != null) {
+            for (InstrumentConfiguration ic : icList) {
+                if (run.defaultInstrumentConfigurationRef.getID().equals(ic.getID())) {
+                    defaultInstrumentConfigurationRef = ic;
+
+                    break;
+                }
+            }
+        }
+
+        if (run.defaultSourceFileRef != null && sourceFileList != null) {
+            for (SourceFile sourceFile : sourceFileList) {
+                if (run.defaultSourceFileRef.getID().equals(sourceFile.getID())) {
+                    defaultSourceFileRef = sourceFile;
+
+                    break;
+                }
+            }
+        }
+
+        if (run.sampleRef != null && sampleList != null) {
+            for (Sample sample : sampleList) {
+                if (run.sampleRef.getID().equals(sample.getID())) {
+                    sampleRef = sample;
+
+                    break;
+                }
+            }
+        }
+
+        if (run.spectrumList != null) {
+            spectrumList = new SpectrumList(run.spectrumList, rpgList, dpList, sourceFileList, icList);
+        }
+        if (run.chromatogramList != null) {
+            chromatogramList = new ChromatogramList(run.chromatogramList, rpgList, dpList, sourceFileList);
+        }
+    }
+
+    @Override
+    public ArrayList<OBOTermInclusion> getListOfOptionalCVParams() {
+        ArrayList<OBOTermInclusion> optional = new ArrayList<OBOTermInclusion>();
+        optional.add(new OBOTermInclusion(runAttributeID, true, true, false));
+
+        return optional;
+    }
+
+    public void setDefaultSourceFileRef(SourceFile defaultSourceFileRef) {
+        this.defaultSourceFileRef = defaultSourceFileRef;
+    }
+
+    public String getID() {
+        return id;
+    }
+
+    public void setSampleRef(Sample sampleRef) {
+        this.sampleRef = sampleRef;
+    }
+
+    public void setStartTimeStamp(Date startTimeStamp) {
+        this.startTimeStamp = startTimeStamp;
+    }
+
+    public void setSpectrumList(SpectrumList spectrumList) {
+        spectrumList.setParent(this);
+
+        this.spectrumList = spectrumList;
+    }
+
+    public InstrumentConfiguration getDefaultInstrumentConfiguration() {
+        return defaultInstrumentConfigurationRef;
+    }
+
+    public SpectrumList getSpectrumList() {
+        return spectrumList;
+    }
+
+    public void setChromatogramList(ChromatogramList chromatogramList) {
+        chromatogramList.setParent(this);
+
+        this.chromatogramList = chromatogramList;
+    }
+
+    public ChromatogramList getChromatogramList() {
+        return chromatogramList;
+    }
+
+    @Override
+    protected Collection<MzMLContent> getTagSpecificElementsAtXPath(String fullXPath, String currentXPath) throws InvalidXPathException {
+        ArrayList<MzMLContent> elements = new ArrayList<MzMLContent>();
+
+        if (currentXPath.startsWith("/spectrumList")) {
+            if (spectrumList == null) {
+                throw new UnfollowableXPathException("No spectrumList exists, so cannot go to " + fullXPath);
+            }
+
+            return spectrumList.getElementsAtXPath(fullXPath, currentXPath);
+        } else if (currentXPath.startsWith("/chromatogramList")) {
+            if (chromatogramList == null) {
+                throw new UnfollowableXPathException("No chromatogramList exists, so cannot go to " + fullXPath);
+            }
+
+            return chromatogramList.getElementsAtXPath(fullXPath, currentXPath);
+        }
+
+        return elements;
+    }
+
 //	public void setDefaultInstrumentConfiguration(InstrumentConfiguration defaultInstrumentConfigurationRef) {
 //		this.defaultInstrumentConfigurationRef = defaultInstrumentConfigurationRef;
 //	}
@@ -132,7 +160,6 @@ public class Run extends MzMLContent  implements Serializable {
 //	public InstrumentConfiguration getDefaultInstrumentConfiguration() {
 //		return defaultInstrumentConfigurationRef;
 //	}
-	
 //	public void addSpectrum(Spectrum spectrum) {
 //		spectrumList.add(spectrum);
 //	}
@@ -144,7 +171,6 @@ public class Run extends MzMLContent  implements Serializable {
 //	public Spectrum getSpectrum(int index) {
 //		return spectrumList.get(index);
 //	}
-	
 //	// This method looks at the scan start times and if the differences between them are over 1.5 times larger 
 //	// than the smallest difference then it is assumed that missing pixels feature 
 //	public void replaceMissingSpectra(OBO obo, int numberOfSpectraToExpect, int experimentsPerPixel) {
@@ -239,11 +265,9 @@ public class Run extends MzMLContent  implements Serializable {
 //			spectrumList.add(i, spectrum);
 //		}
 //	}
-	
 //	public void setDefaultDataProcessing(DataProcessing defaultDataProcessingRef) {
 //		this.defaultDataProcessingRef = defaultDataProcessingRef;
 //	}
-	
 //	public void addChromatogram(Chromatogram chromatogram) {
 //		chromatogramList.add(chromatogram);
 //	}
@@ -255,111 +279,50 @@ public class Run extends MzMLContent  implements Serializable {
 //	public Chromatogram getChromatogram(int index) {
 //		return chromatogramList.get(index);
 //	}
-	
-	public void outputXML(BufferedWriter output, int indent) throws IOException {
-		MzMLContent.indent(output, indent);
-		output.write("<run");
-		output.write(" defaultInstrumentConfigurationRef=\"" + XMLHelper.ensureSafeXML(defaultInstrumentConfigurationRef.getID()) + "\"");
-		if(defaultSourceFileRef != null)
-			output.write(" defaultSourceFileRef=\"" + XMLHelper.ensureSafeXML(defaultSourceFileRef.getID()) + "\"");		
-		output.write(" id=\"" + XMLHelper.ensureSafeXML(id) + "\"");
-		if(sampleRef != null)
-			output.write(" sampleRef=\"" + XMLHelper.ensureSafeXML(sampleRef.getID()) + "\"");
-		if(startTimeStamp != null)
-			output.write(" startTimeStamp=\"" + XMLHelper.ensureSafeXML(startTimeStamp.toString()) + "\"");
-		output.write(">\n");
-		
-		super.outputXML(output, indent+1);
-		
-		// spectrumList
-		if(spectrumList != null && spectrumList.size() > 0) 
-			spectrumList.outputXML(output, indent+1);
-		
-		// chromatogramList
-		if(chromatogramList != null && chromatogramList.size() > 0)
-			chromatogramList.outputXML(output, indent+1);
-		
-		MzMLContent.indent(output, indent);
-		output.write("</run>\n");
-	}
-	
-	public String toString() {
-		return "run: defaultInstrumentConfigurationRef=\"" + defaultInstrumentConfigurationRef.getID() + "\"" + 
-			((defaultSourceFileRef != null)? (" defaultSourceFileRef=\"" + defaultSourceFileRef.getID() + "\"") : "") +
-			" id=\"" + id + "\"" + 
-			((sampleRef != null)? (" sampleRef=\"" + sampleRef.getID() + "\"") : "") + 
-			((startTimeStamp != null)? (" startTimeStamp=\"" + startTimeStamp.toString() + "\"") : "");
-	}
-	
-	private int getAdditionalChildrenCount() {
-		int additionalChildren = ((spectrumList != null)? 1 : 0) + 
-				((chromatogramList != null)? 1 : 0);
-		
-		return additionalChildren;
-	}
-	
-//	@Override
-//	public int getChildCount() {
-//		return super.getChildCount() + getAdditionalChildrenCount();
-//	}
-//	
-//	@Override
-//	public Enumeration<TreeNode> children() {
-//		Vector<TreeNode> children = new Vector<TreeNode>();		
-//		Enumeration<TreeNode> superChildren = super.children();
-//		
-//		while(superChildren.hasMoreElements())
-//			children.add(superChildren.nextElement());
-//		
-//		if(spectrumList != null)
-//			children.add(spectrumList);
-//		if(chromatogramList != null)
-//			children.add(chromatogramList);
-//		
-//		return children.elements();
-//	}
-//	
-//	@Override
-//	public TreeNode getChildAt(int index) {
-//		if(index < super.getChildCount()) {
-//			return super.getChildAt(index);
-//		} else if(index < getChildCount()) {			
-//			int counter = super.getChildCount();
-//			
-//			if(spectrumList != null) {
-//				if(counter == index)
-//					return spectrumList;
-//				
-//				counter++;
-//			}
-//			if(chromatogramList != null) {
-//				if(counter == index)
-//					return chromatogramList;
-//				
-//				counter++;
-//			}
-//		}
-//		
-//		return null;
-//	}
-//	
-//	@Override
-//	public int getIndex(TreeNode childNode) {
-//		int counter = super.getChildCount();
-//			
-//		if(childNode instanceof SpectrumList)
-//			return counter;
-//		
-//		if(spectrumList != null)
-//			counter++;
-//		
-//		if(childNode instanceof ChromatogramList)
-//			return counter;
-//		
-//		if(chromatogramList != null)
-//			counter++;
-//		
-//		return super.getIndex(childNode);
-//	}
-	
+    @Override
+    public void outputXML(BufferedWriter output, int indent) throws IOException {
+        MzMLContent.indent(output, indent);
+        output.write("<run");
+        output.write(" defaultInstrumentConfigurationRef=\"" + XMLHelper.ensureSafeXML(defaultInstrumentConfigurationRef.getID()) + "\"");
+        if (defaultSourceFileRef != null) {
+            output.write(" defaultSourceFileRef=\"" + XMLHelper.ensureSafeXML(defaultSourceFileRef.getID()) + "\"");
+        }
+        output.write(" id=\"" + XMLHelper.ensureSafeXML(id) + "\"");
+        if (sampleRef != null) {
+            output.write(" sampleRef=\"" + XMLHelper.ensureSafeXML(sampleRef.getID()) + "\"");
+        }
+        if (startTimeStamp != null) {
+            output.write(" startTimeStamp=\"" + XMLHelper.ensureSafeXML(startTimeStamp.toString()) + "\"");
+        }
+        output.write(">\n");
+
+        super.outputXML(output, indent + 1);
+
+        // spectrumList
+        if (spectrumList != null && spectrumList.size() > 0) {
+            spectrumList.outputXML(output, indent + 1);
+        }
+
+        // chromatogramList
+        if (chromatogramList != null && chromatogramList.size() > 0) {
+            chromatogramList.outputXML(output, indent + 1);
+        }
+
+        MzMLContent.indent(output, indent);
+        output.write("</run>\n");
+    }
+
+    @Override
+    public String toString() {
+        return "run: defaultInstrumentConfigurationRef=\"" + defaultInstrumentConfigurationRef.getID() + "\""
+                + ((defaultSourceFileRef != null) ? (" defaultSourceFileRef=\"" + defaultSourceFileRef.getID() + "\"") : "")
+                + " id=\"" + id + "\""
+                + ((sampleRef != null) ? (" sampleRef=\"" + sampleRef.getID() + "\"") : "")
+                + ((startTimeStamp != null) ? (" startTimeStamp=\"" + startTimeStamp.toString() + "\"") : "");
+    }
+
+    @Override
+    public String getTagName() {
+        return "run";
+    }
 }

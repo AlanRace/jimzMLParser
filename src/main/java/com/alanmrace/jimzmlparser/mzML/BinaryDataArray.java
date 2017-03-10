@@ -725,6 +725,7 @@ public class BinaryDataArray extends MzMLContent implements Serializable {
     /* (non-Javadoc)
      * @see mzML.MzMLContent#outputXML(java.io.BufferedWriter, int)
      */
+    @Override
     public void outputXML(BufferedWriter output, int indent) throws IOException {
         MzMLContent.indent(output, indent);
         output.write("<binaryDataArray");
@@ -750,7 +751,13 @@ public class BinaryDataArray extends MzMLContent implements Serializable {
         output.write("</binaryDataArray>\n");
     }
 
+    @Override
     public String toString() {
         return "binaryDataArray: " + dataLocation;
+    }
+
+    @Override
+    public String getTagName() {
+        return "binaryDataArray";
     }
 }

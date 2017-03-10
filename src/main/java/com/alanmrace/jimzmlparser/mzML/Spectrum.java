@@ -1,13 +1,15 @@
 package com.alanmrace.jimzmlparser.mzML;
 
+import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
+import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
 import com.alanmrace.jimzmlparser.imzML.PixelLocation;
-import com.alanmrace.jimzmlparser.parser.DataLocation;
 import com.alanmrace.jimzmlparser.parser.MzMLSpectrumDataStorage;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class Spectrum extends MzMLDataContainer implements Serializable {
 
@@ -32,7 +34,7 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
     public static final String positiveScanID = "MS:1000130";	// EmptyCVParam
     public static final String profileSpectrumID = "MS:1000128"; // EmptyCVParam
 
- //   private DataProcessing dataProcessingRef;
+    //   private DataProcessing dataProcessingRef;
 //	private int index;
     private SourceFile sourceFileRef;
     private String spotID;
@@ -40,7 +42,7 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
     private ScanList scanList;
     private PrecursorList precursorList;
     private ProductList productList;
-    
+
     private PixelLocation pixelLocation;
 
 //	public Spectrum() {
@@ -130,7 +132,7 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
 
     public void setSpotID(String spotID) {
         this.spotID = spotID;
-    }    
+    }
 
     public ScanList getScanList() {
         return scanList;
@@ -161,28 +163,28 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
     public ProductList getProductList() {
         return productList;
     }
-    
+
     public PixelLocation getPixelLocation() {
-        if(pixelLocation == null) {
+        if (pixelLocation == null) {
             // 
-            for(Scan scan : scanList) {
+            for (Scan scan : scanList) {
                 CVParam xValue = scan.getCVParam(Scan.positionXID);
                 CVParam yValue = scan.getCVParam(Scan.positionYID);
                 CVParam zValue = scan.getCVParam(Scan.positionZID);
-                
-                if(xValue != null && yValue != null) {
+
+                if (xValue != null && yValue != null) {
                     int x = xValue.getValueAsInteger();
                     int y = yValue.getValueAsInteger();
-                    
-                    int z = (zValue != null)? zValue.getValueAsInteger() : 1;
-                    
+
+                    int z = (zValue != null) ? zValue.getValueAsInteger() : 1;
+
                     pixelLocation = new PixelLocation(x, y, z);
-                    
+
                     break;
                 }
             }
         }
-        
+
         return pixelLocation;
     }
 
@@ -332,12 +334,53 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
 //		
 //		return offset;
 //	}
+    @Override
+    protected Collection<MzMLContent> getTagSpecificElementsAtXPath(String fullXPath, String currentXPath) throws InvalidXPathException {
+        ArrayList<MzMLContent> elements = new ArrayList<MzMLContent>();
+
+        if (currentXPath.startsWith("/scanList")) {
+            if (scanList == null) {
+                throw new UnfollowableXPathException("No scanList exists, so cannot go to " + fullXPath);
+            }
+
+            elements.addAll(scanList.getElementsAtXPath(fullXPath, currentXPath));
+
+            return elements;
+        } else if (currentXPath.startsWith("/precursorList")) {
+            if (precursorList == null) {
+                throw new UnfollowableXPathException("No precursorList exists, so cannot go to " + fullXPath);
+            }
+
+            elements.addAll(precursorList.getElementsAtXPath(fullXPath, currentXPath));
+
+            return elements;
+        } else if (currentXPath.startsWith("/productList")) {
+            if (productList == null) {
+                throw new UnfollowableXPathException("No productList exists, so cannot go to " + fullXPath);
+            }
+
+            elements.addAll(productList.getElementsAtXPath(fullXPath, currentXPath));
+
+            return elements;
+        } else if (currentXPath.startsWith("/binaryDataArrayList")) {
+            if (binaryDataArrayList == null) {
+                throw new UnfollowableXPathException("No binaryDataArrayList exists, so cannot go to " + fullXPath);
+            }
+
+            elements.addAll(binaryDataArrayList.getElementsAtXPath(fullXPath, currentXPath));
+
+            return elements;
+        }
+
+        return elements;
+    }
+
     public void outputXML(BufferedWriter output, int indent, int index) throws IOException {
-        if(raf != null) {
+        if (raf != null) {
             output.flush();
             this.setmzMLLocation(raf.getFilePointer());
         }
-        
+
         MzMLContent.indent(output, indent);
         output.write("<spectrum");
         output.write(" defaultArrayLength=\"" + defaultArrayLength + "\"");
@@ -387,6 +430,7 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
         output.write("</spectrum>\n");
     }
 
+    @Override
     public String toString() {
         return "spectrum:"
                 + " id=\"" + id + "\""
@@ -396,104 +440,8 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
                         + ((spotID != null && !spotID.isEmpty()) ? (" spotID=\"" + spotID + "\"") : ""));
     }
 
-    private int getAdditionalChildrenCount() {
-        int additionalChildren = ((scanList != null) ? 1 : 0)
-                + ((precursorList != null) ? 1 : 0)
-                + ((productList != null) ? 1 : 0)
-                + ((binaryDataArrayList != null) ? 1 : 0);
-
-        return additionalChildren;
+    @Override
+    public String getTagName() {
+        return "spectrum";
     }
-
-//	@Override
-//	public int getChildCount() {
-//		return super.getChildCount() + getAdditionalChildrenCount();
-//	}
-//	
-//	@Override
-//	public Enumeration<TreeNode> children() {
-//		Vector<TreeNode> children = new Vector<TreeNode>();		
-//		Enumeration<TreeNode> superChildren = super.children();
-//		
-//		while(superChildren.hasMoreElements())
-//			children.add(superChildren.nextElement());
-//		
-//		if(scanList != null)
-//			children.add(scanList);
-//		if(precursorList != null)
-//			children.add(precursorList);
-//		if(productList != null)
-//			children.add(productList);
-//		if(binaryDataArrayList != null)
-//			children.add(binaryDataArrayList);
-//		
-//		return children.elements();
-//	}
-//	
-//	@Override
-//	public TreeNode getChildAt(int index) {
-//		if(index < super.getChildCount()) {
-//			return super.getChildAt(index);
-//		} else if(index < getChildCount()) {			
-//			int counter = super.getChildCount();
-//			
-//			if(scanList != null) {
-//				if(counter == index)
-//					return scanList;
-//				
-//				counter++;
-//			}
-//			if(precursorList != null) {
-//				if(counter == index)
-//					return precursorList;
-//				
-//				counter++;
-//			}
-//			if(productList != null) {
-//				if(counter == index)
-//					return productList;
-//				
-//				counter++;
-//			}
-//			if(binaryDataArrayList != null) {
-//				if(counter == index)
-//					return binaryDataArrayList;
-//				
-//				counter++;
-//			}
-//		}
-//		
-//		return null;
-//	}
-//	
-//	@Override
-//	public int getIndex(TreeNode childNode) {
-//		int counter = super.getChildCount();
-//			
-//		if(childNode instanceof ScanList)
-//			return counter;
-//		
-//		if(scanList != null)
-//			counter++;
-//		
-//		if(childNode instanceof PrecursorList)
-//			return counter;
-//		
-//		if(precursorList != null)
-//			counter++;
-//		
-//		if(childNode instanceof ProductList)
-//			return counter;
-//		
-//		if(productList != null)
-//			counter++;
-//		
-//		if(childNode instanceof BinaryDataArrayList)
-//			return counter;
-//		
-//		if(binaryDataArrayList != null)
-//			counter++;
-//		
-//		return super.getIndex(childNode);
-//	}
 }

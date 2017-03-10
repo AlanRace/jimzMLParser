@@ -14,7 +14,7 @@ import java.io.RandomAccessFile;
  *
  * @author amr1
  */
-public class MzMLDataContainer extends MzMLContent {
+public abstract class MzMLDataContainer extends MzMLContent {
     protected DataLocation dataLocation;
     protected BinaryDataArrayList binaryDataArrayList;
     

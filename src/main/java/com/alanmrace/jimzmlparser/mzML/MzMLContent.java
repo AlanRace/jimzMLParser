@@ -1,9 +1,11 @@
 package com.alanmrace.jimzmlparser.mzML;
 
+import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 
 //import com.fasterxml.jackson.annotation.JsonIgnore;
 public abstract class MzMLContent implements Serializable { //, MutableTreeNode {
@@ -81,6 +83,53 @@ public abstract class MzMLContent implements Serializable { //, MutableTreeNode 
             }
         }
     }
+
+    //public abstract MzMLContent getElementAtXPath(String xPath) throws InvalidXPathException;
+    public abstract String getTagName();
+
+//    public Collection<MzMLContent> getElementsAtXPath(String fullXPath, String currentXPath) throws InvalidXPathException {
+//        ArrayList<MzMLContent> elements = new ArrayList<MzMLContent>();
+//
+//        if (currentXPath.equals("/" + getTagName())) {
+//            elements.add(this);
+//
+//            return elements;
+//        } else if(currentXPath.startsWith("/" + getTagName() + "/cvParam")) {
+////            for(CVParam cvParam : cvParams) {
+////                elements.add(cvParam.)
+////            }
+//        }
+//
+//        throw new InvalidXPathException("Not implemented sub-XPath (" + currentXPath + ") as part of " + fullXPath);
+//    }
+    
+    protected Collection<MzMLContent> getTagSpecificElementsAtXPath(String fullXPath, String currentXPath) throws InvalidXPathException {
+        return new ArrayList<MzMLContent>();
+    }
+    
+    public final Collection<MzMLContent> getElementsAtXPath(String fullXPath, String currentXPath) throws InvalidXPathException {
+        ArrayList<MzMLContent> elements = new ArrayList<MzMLContent>();
+
+        if (currentXPath.startsWith("/" + getTagName())) {
+            currentXPath = currentXPath.replaceFirst("/" + getTagName(), "");
+
+            if (currentXPath.isEmpty()) {
+                elements.add(this);
+
+                return elements;
+            }
+
+            elements.addAll(getTagSpecificElementsAtXPath(fullXPath, currentXPath));
+
+            if(elements.isEmpty())
+                throw new InvalidXPathException("Invalid sub-XPath (" + currentXPath + ") in XPath " + fullXPath);
+        } else {
+            throw new InvalidXPathException("XPath does not start with /" + getTagName() + " in sub-XPath [" + currentXPath + "] of [" + fullXPath + "]");
+        }
+        
+        return elements;
+    }
+    
 
 //	@JsonIgnore
     protected ArrayList<ReferenceableParamGroupRef> getReferenceableParamGroupRefList() {
@@ -169,16 +218,17 @@ public abstract class MzMLContent implements Serializable { //, MutableTreeNode 
 //		rpg.setParent(this);
 
         boolean exists = false;
-        
-        for(ReferenceableParamGroupRef ref : getReferenceableParamGroupRefList()) {
-            if(ref.getRef().getID().equals(rpg.getRef().getID())) {
+
+        for (ReferenceableParamGroupRef ref : getReferenceableParamGroupRefList()) {
+            if (ref.getRef().getID().equals(rpg.getRef().getID())) {
                 exists = true;
                 break;
             }
         }
-        
-        if(!exists)
+
+        if (!exists) {
             getReferenceableParamGroupRefList().add(rpg);
+        }
     }
 
     public int getReferenceableParamGroupRefCount() {
@@ -518,7 +568,7 @@ public abstract class MzMLContent implements Serializable { //, MutableTreeNode 
             }
         }
 
-		// TODO: userParams
+        // TODO: userParams
         return children;
     }
 
@@ -537,7 +587,7 @@ public abstract class MzMLContent implements Serializable { //, MutableTreeNode 
 
         if (cvParams != null) {
             for (CVParam cvParam : cvParams) {
-                if(cvParam != null) {
+                if (cvParam != null) {
                     MzMLContent.indent(output, indent);
                     cvParam.outputXML(output);
                 }
@@ -583,127 +633,7 @@ public abstract class MzMLContent implements Serializable { //, MutableTreeNode 
 //	}
     public void setParent(MzMLContent parent) {
         // This is a dummy function only included to allow the removal
-    }
 
-//	@Override
-//	@JsonIgnore
-//	public Enumeration<TreeNode> children() {
-//		Vector<TreeNode> children = new Vector<TreeNode>();
-//		children.addAll(referenceableParamGroupRefs);
-//		children.addAll(cvParams);
-//		children.addAll(userParams);
-//		
-//		return children.elements();
-//	}
-//
-////	public void setParent(TreeNode parent) {
-////		this.parentTreeNode = (MutableTreeNode) parent;
-////	}
-//	
-//	@Override
-//	@JsonIgnore
-//	public boolean getAllowsChildren() {
-//		return true;
-//	}
-//
-//	@Override
-//	@JsonIgnore
-//	public TreeNode getChildAt(int index) {
-//		if(index < referenceableParamGroupRefs.size()) {
-//			return referenceableParamGroupRefs.get(index);
-//		} else if(index < (referenceableParamGroupRefs.size() + cvParams.size())) {
-//			return cvParams.get(index - referenceableParamGroupRefs.size());
-//		} else if(index < getChildCount()) {
-//			return userParams.get(index - (referenceableParamGroupRefs.size() + cvParams.size()));
-//		}
-//				
-//		return null;
-//	}
-//
-//	@Override
-//	@JsonIgnore
-//	public int getChildCount() {
-//		// 
-//		return referenceableParamGroupRefs.size() + cvParams.size() + userParams.size();
-//	}
-//
-//	@Override
-//	@JsonIgnore
-//	public int getIndex(TreeNode childNode) {
-//		if(childNode instanceof ReferenceableParamGroup) {
-//			return referenceableParamGroupRefs.indexOf(childNode);
-//		} else if(childNode instanceof CVParam) {
-//			return cvParams.indexOf(childNode) + referenceableParamGroupRefs.size();
-//		} else if(childNode instanceof UserParam) {
-//			return userParams.indexOf(childNode) + referenceableParamGroupRefs.size() + cvParams.size();
-//		}
-//
-//		return 0;
-//	}
-//
-//	@Override
-//	@JsonIgnore
-//	public TreeNode getParent() {
-//		return parentTreeNode;
-//	}
-//
-//	@Override
-//	@JsonIgnore
-//	public boolean isLeaf() {
-//		// Check if any children exist
-//		return getChildCount() == 0;
-//	}
-//	
-//	@Override
-//	@JsonIgnore
-//	public void setParent(MutableTreeNode parent) {
-//		this.parentTreeNode = parent;
-//	}
-//	
-//	@Override
-//	@JsonIgnore
-//	public void insert(MutableTreeNode child, int index) {
-//		child.setParent(this);
-//		
-//		if(child instanceof ReferenceableParamGroupRef) {
-//			referenceableParamGroupRefs.add(index, (ReferenceableParamGroupRef) child);
-//		} else if(child instanceof CVParam) {
-//			cvParams.add(index - referenceableParamGroupRefs.size(), (CVParam) child);
-//		} else if(child instanceof UserParam) {
-//			userParams.add(index - (referenceableParamGroupRefs.size() + cvParams.size()), (UserParam) child);
-//		}
-//	}
-//	
-//	@Override
-//	@JsonIgnore
-//	public void remove(int index) {
-//		TreeNode child = getChildAt(index);
-//		
-//		remove((MutableTreeNode) child);
-//	}
-//	
-//	@Override
-//	@JsonIgnore
-//	public void remove(MutableTreeNode child) {
-//		child.setParent(null);
-//		
-//		if(child instanceof ReferenceableParamGroup) {
-//			referenceableParamGroupRefs.remove(child);
-//		} else if(child instanceof CVParam) {
-//			cvParams.remove(child);
-//		} else if(child instanceof UserParam) {
-//			userParams.remove(child);
-//		}
-//	}
-//	
-//	@Override
-//	@JsonIgnore
-//	public void removeFromParent() {
-//		parentTreeNode.remove(this);
-//	}
-//	
-//	@Override
-//	public void setUserObject(Object object) {
-//		System.out.println("NEED TO IMPLEMENT setUserObject for: " + this);
-//	}
+        // TODO:
+    }
 }
