@@ -335,44 +335,32 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
 //		return offset;
 //	}
     @Override
-    protected Collection<MzMLContent> getTagSpecificElementsAtXPath(String fullXPath, String currentXPath) throws InvalidXPathException {
-        ArrayList<MzMLContent> elements = new ArrayList<MzMLContent>();
-
+    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/scanList")) {
             if (scanList == null) {
-                throw new UnfollowableXPathException("No scanList exists, so cannot go to " + fullXPath);
+                throw new UnfollowableXPathException("No scanList exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
             }
 
-            elements.addAll(scanList.getElementsAtXPath(fullXPath, currentXPath));
-
-            return elements;
+            scanList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         } else if (currentXPath.startsWith("/precursorList")) {
             if (precursorList == null) {
-                throw new UnfollowableXPathException("No precursorList exists, so cannot go to " + fullXPath);
+                throw new UnfollowableXPathException("No precursorList exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
             }
 
-            elements.addAll(precursorList.getElementsAtXPath(fullXPath, currentXPath));
-
-            return elements;
+            precursorList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         } else if (currentXPath.startsWith("/productList")) {
             if (productList == null) {
-                throw new UnfollowableXPathException("No productList exists, so cannot go to " + fullXPath);
+                throw new UnfollowableXPathException("No productList exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
             }
 
-            elements.addAll(productList.getElementsAtXPath(fullXPath, currentXPath));
-
-            return elements;
+            productList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         } else if (currentXPath.startsWith("/binaryDataArrayList")) {
             if (binaryDataArrayList == null) {
-                throw new UnfollowableXPathException("No binaryDataArrayList exists, so cannot go to " + fullXPath);
+                throw new UnfollowableXPathException("No binaryDataArrayList exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
             }
 
-            elements.addAll(binaryDataArrayList.getElementsAtXPath(fullXPath, currentXPath));
-
-            return elements;
+            binaryDataArrayList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         }
-
-        return elements;
     }
 
     public void outputXML(BufferedWriter output, int indent, int index) throws IOException {

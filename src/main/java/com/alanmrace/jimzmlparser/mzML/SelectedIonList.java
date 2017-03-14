@@ -45,22 +45,16 @@ public class SelectedIonList extends MzMLContent implements Serializable, Iterab
     }
 
     @Override
-    protected Collection<MzMLContent> getTagSpecificElementsAtXPath(String fullXPath, String currentXPath) throws InvalidXPathException {
-        ArrayList<MzMLContent> elements = new ArrayList<MzMLContent>();
-
+    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/selectedIon")) {
             if (selectedIonList == null) {
-                throw new UnfollowableXPathException("No selectedIonList exists, so cannot go to " + fullXPath);
+                throw new UnfollowableXPathException("No selectedIonList exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
             }
 
             for (SelectedIon selectedIon : selectedIonList) {
-                elements.addAll(selectedIon.getElementsAtXPath(fullXPath, currentXPath));
+                selectedIon.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
             }
-
-            return elements;
         }
-
-        return elements;
     }
     
     @Override

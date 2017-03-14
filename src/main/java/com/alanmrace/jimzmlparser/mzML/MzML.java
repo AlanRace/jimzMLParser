@@ -272,47 +272,43 @@ public class MzML extends MzMLContent implements Serializable {
         return "mzML";
     }
 
-    public Collection<MzMLContent> getElementsAtXPath(String xPath) throws InvalidXPathException {
-        return getElementsAtXPath(xPath, xPath);
+    public void addElementsAtXPathToCollection(Collection<MzMLContent> elements, String xPath) throws InvalidXPathException {
+        addElementsAtXPathToCollection(elements, xPath, xPath);
     }
 
     @Override
-    protected Collection<MzMLContent> getTagSpecificElementsAtXPath(String fullXPath, String currentXPath) throws InvalidXPathException {
-        ArrayList<MzMLContent> elements = new ArrayList<MzMLContent>();
-
+    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/" + cvList.getTagName())) {
-            return cvList.getElementsAtXPath(fullXPath, currentXPath);
+            cvList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         } else if (currentXPath.startsWith("/" + fileDescription.getTagName())) {
-            return fileDescription.getElementsAtXPath(fullXPath, currentXPath);
+            fileDescription.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         } else if (currentXPath.startsWith("/referenceableParamGroupList")) {
             if (referenceableParamGroupList == null) {
-                throw new UnfollowableXPathException("No referenceableParamGroupList exists, so cannot go to " + fullXPath);
+                throw new UnfollowableXPathException("No referenceableParamGroupList exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
             }
 
-            return referenceableParamGroupList.getElementsAtXPath(fullXPath, currentXPath);
+            referenceableParamGroupList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         } else if (currentXPath.startsWith("/sampleList")) {
             if (sampleList == null) {
-                throw new UnfollowableXPathException("No sampleList exists, so cannot go to " + fullXPath);
+                throw new UnfollowableXPathException("No sampleList exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
             }
 
-            return sampleList.getElementsAtXPath(fullXPath, currentXPath);
+            sampleList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         } else if (currentXPath.startsWith("/" + softwareList.getTagName())) {
-            return softwareList.getElementsAtXPath(fullXPath, currentXPath);
+            softwareList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         } else if (currentXPath.startsWith("/scanSettingsList")) {
             if (scanSettingsList == null) {
-                throw new UnfollowableXPathException("No scanSettingsList exists, so cannot go to " + fullXPath);
+                throw new UnfollowableXPathException("No scanSettingsList exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
             }
 
-            return scanSettingsList.getElementsAtXPath(fullXPath, currentXPath);
+            scanSettingsList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         } else if (currentXPath.startsWith("/" + instrumentConfigurationList.getTagName())) {
-            return instrumentConfigurationList.getElementsAtXPath(fullXPath, currentXPath);
+            instrumentConfigurationList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         } else if (currentXPath.startsWith("/" + dataProcessingList.getTagName())) {
-            return dataProcessingList.getElementsAtXPath(fullXPath, currentXPath);
+            dataProcessingList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         } else if (currentXPath.startsWith("/" + run.getTagName())) {
-            return run.getElementsAtXPath(fullXPath, currentXPath);
+            run.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         }
-
-        return elements;
     }
 
     public void setDataProcessingList(DataProcessingList dataProcessingList) {

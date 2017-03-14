@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 
 public class ComponentList extends MzMLContent implements Serializable {
 
@@ -92,42 +93,32 @@ public class ComponentList extends MzMLContent implements Serializable {
     }
 
     @Override
-    protected Collection<MzMLContent> getTagSpecificElementsAtXPath(String fullXPath, String currentXPath) throws InvalidXPathException {
-        ArrayList<MzMLContent> elements = new ArrayList<MzMLContent>();
-
+    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/source")) {
             if (sources == null) {
-                throw new UnfollowableXPathException("No source exists, so cannot go to " + fullXPath);
+                throw new UnfollowableXPathException("No source exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
             }
 
             for (Source source : sources) {
-                elements.addAll(source.getElementsAtXPath(fullXPath, currentXPath));
+                source.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
             }
-
-            return elements;
         } else if (currentXPath.startsWith("/analyzer")) {
             if (analysers == null) {
-                throw new UnfollowableXPathException("No analyzer exists, so cannot go to " + fullXPath);
+                throw new UnfollowableXPathException("No analyzer exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
             }
 
             for (Analyser analyser : analysers) {
-                elements.addAll(analyser.getElementsAtXPath(fullXPath, currentXPath));
+                analyser.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
             }
-
-            return elements;
         } else if (currentXPath.startsWith("/detector")) {
             if (detectors == null) {
-                throw new UnfollowableXPathException("No detector exists, so cannot go to " + fullXPath);
+                throw new UnfollowableXPathException("No detector exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
             }
 
             for (Detector detector : detectors) {
-                elements.addAll(detector.getElementsAtXPath(fullXPath, currentXPath));
+                detector.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
             }
-
-            return elements;
         }
-
-        return elements;
     }
 
     @Override

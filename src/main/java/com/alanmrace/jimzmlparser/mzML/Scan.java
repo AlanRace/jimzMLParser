@@ -171,18 +171,14 @@ public class Scan extends MzMLContent implements Serializable {
 //	}
     
     @Override
-    protected Collection<MzMLContent> getTagSpecificElementsAtXPath(String fullXPath, String currentXPath) throws InvalidXPathException {
-        ArrayList<MzMLContent> elements = new ArrayList<MzMLContent>();
-        
+    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/scanWindowList")) {
             if (scanWindowList == null) {
-                throw new UnfollowableXPathException("No scanWindowList exists, so cannot go to " + fullXPath);
+                throw new UnfollowableXPathException("No scanWindowList exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
             }
 
-            elements.addAll(scanWindowList.getElementsAtXPath(fullXPath, currentXPath));
+            scanWindowList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         }
-        
-        return elements;
     }
 
     @Override

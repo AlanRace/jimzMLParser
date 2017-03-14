@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 public class DataProcessingList extends MzMLContent implements Iterable<DataProcessing>, Serializable {
 
@@ -60,22 +61,16 @@ public class DataProcessingList extends MzMLContent implements Iterable<DataProc
     }
 
     @Override
-    protected Collection<MzMLContent> getTagSpecificElementsAtXPath(String fullXPath, String currentXPath) throws InvalidXPathException {
-        ArrayList<MzMLContent> elements = new ArrayList<MzMLContent>();
-
+    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/dataProcessing")) {
             if (dataProcessingList == null) {
-                throw new UnfollowableXPathException("No dataProcessingList exists, so cannot go to " + fullXPath);
+                throw new UnfollowableXPathException("No dataProcessingList exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
             }
 
             for (DataProcessing dataProcessing : dataProcessingList) {
-                elements.addAll(dataProcessing.getElementsAtXPath(fullXPath, currentXPath));
+                dataProcessing.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
             }
-
-            return elements;
         }
-
-        return elements;
     }
 
     @Override

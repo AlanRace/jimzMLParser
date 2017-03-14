@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 public class ChromatogramList extends MzMLContent implements Serializable, Iterable<Chromatogram> {
 
@@ -73,22 +74,16 @@ public class ChromatogramList extends MzMLContent implements Serializable, Itera
     }
 
     @Override
-    protected Collection<MzMLContent> getTagSpecificElementsAtXPath(String fullXPath, String currentXPath) throws InvalidXPathException {
-        ArrayList<MzMLContent> elements = new ArrayList<MzMLContent>();
-
+    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/chromatogram")) {
             if (chromatogramList == null) {
-                throw new UnfollowableXPathException("No chromatogramList exists, so cannot go to " + fullXPath);
+                throw new UnfollowableXPathException("No chromatogramList exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
             }
 
             for (Chromatogram chromatogram : chromatogramList) {
-                elements.addAll(chromatogram.getElementsAtXPath(fullXPath, currentXPath));
+                chromatogram.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
             }
-
-            return elements;
         }
-
-        return elements;
     }
     
     @Override

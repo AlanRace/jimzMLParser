@@ -45,22 +45,16 @@ public class ScanWindowList extends MzMLContent implements Serializable, Iterabl
     }
 
     @Override
-    protected Collection<MzMLContent> getTagSpecificElementsAtXPath(String fullXPath, String currentXPath) throws InvalidXPathException {
-        ArrayList<MzMLContent> elements = new ArrayList<MzMLContent>();
-
+    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/scanWindow")) {
             if (scanWindowList == null) {
-                throw new UnfollowableXPathException("No scanWindow exists, so cannot go to " + fullXPath);
+                throw new UnfollowableXPathException("No scanWindow exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
             }
 
             for (ScanWindow scanWindow : scanWindowList) {
-                elements.addAll(scanWindow.getElementsAtXPath(fullXPath, currentXPath));
+                scanWindow.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
             }
-
-            return elements;
         }
-
-        return elements;
     }
     
     @Override

@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 //import com.fasterxml.jackson.annotation.JsonIgnore;
 public abstract class MzMLContent implements Serializable { //, MutableTreeNode {
@@ -103,31 +105,27 @@ public abstract class MzMLContent implements Serializable { //, MutableTreeNode 
 //        throw new InvalidXPathException("Not implemented sub-XPath (" + currentXPath + ") as part of " + fullXPath);
 //    }
     
-    protected Collection<MzMLContent> getTagSpecificElementsAtXPath(String fullXPath, String currentXPath) throws InvalidXPathException {
-        return new ArrayList<MzMLContent>();
+    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
+        
     }
     
-    public final Collection<MzMLContent> getElementsAtXPath(String fullXPath, String currentXPath) throws InvalidXPathException {
-        ArrayList<MzMLContent> elements = new ArrayList<MzMLContent>();
-
+    public final void addElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/" + getTagName())) {
             currentXPath = currentXPath.replaceFirst("/" + getTagName(), "");
 
             if (currentXPath.isEmpty()) {
                 elements.add(this);
 
-                return elements;
+                return;
             }
 
-            elements.addAll(getTagSpecificElementsAtXPath(fullXPath, currentXPath));
+            addTagSpecificElementsAtXPathToCollection(elements, fullXPath, currentXPath);
 
             if(elements.isEmpty())
-                throw new InvalidXPathException("Invalid sub-XPath (" + currentXPath + ") in XPath " + fullXPath);
+                throw new InvalidXPathException("Invalid sub-XPath (" + currentXPath + ") in XPath " + fullXPath, fullXPath);
         } else {
-            throw new InvalidXPathException("XPath does not start with /" + getTagName() + " in sub-XPath [" + currentXPath + "] of [" + fullXPath + "]");
+            throw new InvalidXPathException("XPath does not start with /" + getTagName() + " in sub-XPath [" + currentXPath + "] of [" + fullXPath + "]", fullXPath);
         }
-        
-        return elements;
     }
     
 
@@ -141,7 +139,7 @@ public abstract class MzMLContent implements Serializable { //, MutableTreeNode 
     }
 
 //	@JsonIgnore
-    protected ArrayList<CVParam> getCVParamList() {
+    protected List<CVParam> getCVParamList() {
         if (cvParams == null) {
             cvParams = new ArrayList<CVParam>();
         }
@@ -174,12 +172,12 @@ public abstract class MzMLContent implements Serializable { //, MutableTreeNode 
     }
 
 //	@JsonIgnore
-    public ArrayList<OBOTermInclusion> getListOfRequiredCVParams() {
+    public List<OBOTermInclusion> getListOfRequiredCVParams() {
         return null;
     }
 
 //	@JsonIgnore
-    public ArrayList<OBOTermInclusion> getListOfOptionalCVParams() {
+    public List<OBOTermInclusion> getListOfOptionalCVParams() {
         return null;
     }
 
@@ -351,7 +349,7 @@ public abstract class MzMLContent implements Serializable { //, MutableTreeNode 
             return;
         }
 
-        ArrayList<CVParam> children = getChildrenOf(id);
+        List<CVParam> children = getChildrenOf(id);
 
         for (CVParam cvParam : children) {
 //			cvParam.setParent(null);
@@ -488,7 +486,7 @@ public abstract class MzMLContent implements Serializable { //, MutableTreeNode 
                     return cvParam;
                 }
 
-                ArrayList<CVParam> children = ref.getRef().getChildrenOf(id);
+                List<CVParam> children = ref.getRef().getChildrenOf(id);
 
                 if (children.size() > 0) {
                     return children.get(0);
@@ -504,7 +502,7 @@ public abstract class MzMLContent implements Serializable { //, MutableTreeNode 
             }
         }
 
-        ArrayList<CVParam> children = getChildrenOf(id);
+        List<CVParam> children = getChildrenOf(id);
 
         if (children.size() > 0) {
             return children.get(0);
@@ -547,8 +545,8 @@ public abstract class MzMLContent implements Serializable { //, MutableTreeNode 
         return userParams.get(index);
     }
 
-    public ArrayList<CVParam> getChildrenOf(String id) {
-        ArrayList<CVParam> children = new ArrayList<CVParam>();
+    public List<CVParam> getChildrenOf(String id) {
+        List<CVParam> children = new LinkedList<CVParam>();
 
         if (referenceableParamGroupRefs != null) {
             for (ReferenceableParamGroupRef ref : referenceableParamGroupRefs) {

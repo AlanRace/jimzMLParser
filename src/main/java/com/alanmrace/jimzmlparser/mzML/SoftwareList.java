@@ -65,22 +65,16 @@ public class SoftwareList extends MzMLContent implements Iterable<Software>, Ser
     }
 
     @Override
-    protected Collection<MzMLContent> getTagSpecificElementsAtXPath(String fullXPath, String currentXPath) throws InvalidXPathException {
-        ArrayList<MzMLContent> elements = new ArrayList<MzMLContent>();
-
+    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/software")) {
             if (softwareList == null) {
-                throw new UnfollowableXPathException("No softwareList exists, so cannot go to " + fullXPath);
+                throw new UnfollowableXPathException("No softwareList exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
             }
 
             for (Software software : softwareList) {
-                elements.addAll(software.getElementsAtXPath(fullXPath, currentXPath));
+                software.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
             }
-
-            return elements;
         }
-
-        return elements;
     }
     
     @Override

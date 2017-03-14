@@ -1,9 +1,12 @@
 package com.alanmrace.jimzmlparser.mzML;
 
+import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
+import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 
 public class ScanSettingsList extends MzMLContent implements Iterable<ScanSettings>, Serializable {
@@ -53,6 +56,19 @@ public class ScanSettingsList extends MzMLContent implements Iterable<ScanSettin
         }
 
         return scanSettingsList.get(index);
+    }
+    
+    @Override
+    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
+        if (currentXPath.startsWith("/scanSettings")) {
+            if (scanSettingsList == null) {
+                throw new UnfollowableXPathException("No scanSettingsList exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
+            }
+
+            for (ScanSettings scanSettings : scanSettingsList) {
+                scanSettings.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
+            }
+        }
     }
 
     @Override

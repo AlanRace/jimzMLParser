@@ -11,11 +11,15 @@ package com.alanmrace.jimzmlparser.exceptions;
  */
 public class InvalidXPathException extends Exception {
     
-    public InvalidXPathException(String message) {
+    protected String XPath;
+    
+    public InvalidXPathException(String message, String XPath) {
         super(message);
+        
+        this.XPath = XPath;
     }
-
-    public InvalidXPathException(String message, Exception exception) {
-        super(message, exception);
+    
+    public String getXPath() {
+        return XPath;
     }
 }

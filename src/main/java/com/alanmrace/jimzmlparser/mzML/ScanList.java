@@ -64,22 +64,16 @@ public class ScanList extends MzMLContent implements Iterable<Scan>, Serializabl
 //		return -1;
 //	}
     @Override
-    protected Collection<MzMLContent> getTagSpecificElementsAtXPath(String fullXPath, String currentXPath) throws InvalidXPathException {
-        ArrayList<MzMLContent> elements = new ArrayList<MzMLContent>();
-
+    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/scan")) {
             if (scanList == null) {
-                throw new UnfollowableXPathException("No scanList exists, so cannot go to " + fullXPath);
+                throw new UnfollowableXPathException("No scanList exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
             }
 
             for (Scan scan : scanList) {
-                elements.addAll(scan.getElementsAtXPath(fullXPath, currentXPath));
+                scan.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
             }
-
-            return elements;
         }
-
-        return elements;
     }
 
     @Override

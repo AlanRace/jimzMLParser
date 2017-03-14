@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 
 public class FileDescription extends MzMLContent implements Serializable {
 
@@ -84,24 +85,24 @@ public class FileDescription extends MzMLContent implements Serializable {
     }
 
     @Override
-    protected Collection<MzMLContent> getTagSpecificElementsAtXPath(String fullXPath, String currentXPath) throws InvalidXPathException {
-        ArrayList<MzMLContent> elements = new ArrayList<MzMLContent>();
-
+    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/fileContent")) {
-            return fileContent.getElementsAtXPath(fullXPath, currentXPath);
+            fileContent.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
+        } else if(currentXPath.startsWith("/sourceFileList")) {
+            if (sourceFileList == null) {
+                throw new UnfollowableXPathException("No sourceFileList exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
+            }
+
+            sourceFileList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         } else if (currentXPath.startsWith("/contact")) {
             if (contacts == null || contacts.isEmpty()) {
-                throw new UnfollowableXPathException("No contact exists, so cannot go to " + fullXPath);
+                throw new UnfollowableXPathException("No contact exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
             }
 
             for (Contact contact : contacts) {
-                elements.addAll(contact.getElementsAtXPath(fullXPath, currentXPath));
+                contact.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
             }
-
-            return elements;
         }
-
-        return elements;
     }
 
     @Override

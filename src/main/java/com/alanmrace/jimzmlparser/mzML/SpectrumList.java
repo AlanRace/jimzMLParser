@@ -94,22 +94,16 @@ public class SpectrumList extends MzMLContent implements Iterable<Spectrum>, Ser
     }
 
     @Override
-    protected Collection<MzMLContent> getTagSpecificElementsAtXPath(String fullXPath, String currentXPath) throws InvalidXPathException {
-        ArrayList<MzMLContent> elements = new ArrayList<MzMLContent>();
-
+    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/spectrum")) {
             if (spectrumList == null) {
-                throw new UnfollowableXPathException("No spectrumList exists, so cannot go to " + fullXPath);
+                throw new UnfollowableXPathException("No spectrumList exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
             }
 
             for (Spectrum spectrum : spectrumList) {
-                elements.addAll(spectrum.getElementsAtXPath(fullXPath, currentXPath));
+                spectrum.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
             }
-
-            return elements;
         }
-
-        return elements;
     }
 
     @Override

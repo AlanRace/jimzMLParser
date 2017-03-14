@@ -45,22 +45,16 @@ public class PrecursorList extends MzMLContent implements Serializable, Iterable
     }
 
     @Override
-    protected Collection<MzMLContent> getTagSpecificElementsAtXPath(String fullXPath, String currentXPath) throws InvalidXPathException {
-        ArrayList<MzMLContent> elements = new ArrayList<MzMLContent>();
-
+    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/precursor")) {
             if (precursorList == null) {
-                throw new UnfollowableXPathException("No precursorList exists, so cannot go to " + fullXPath);
+                throw new UnfollowableXPathException("No precursorList exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
             }
 
             for (Precursor precursor : precursorList) {
-                elements.addAll(precursor.getElementsAtXPath(fullXPath, currentXPath));
+                precursor.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
             }
-
-            return elements;
         }
-
-        return elements;
     }
     
     @Override

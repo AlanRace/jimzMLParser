@@ -65,22 +65,16 @@ public class InstrumentConfigurationList extends MzMLContent implements Iterable
     }
 
     @Override
-    protected Collection<MzMLContent> getTagSpecificElementsAtXPath(String fullXPath, String currentXPath) throws InvalidXPathException {
-        ArrayList<MzMLContent> elements = new ArrayList<MzMLContent>();
-
+    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/instrumentConfiguration")) {
             if (instrumentConfigurationList == null || instrumentConfigurationList.isEmpty()) {
-                throw new UnfollowableXPathException("No instrumentConfigurationList exists, so cannot go to " + fullXPath);
+                throw new UnfollowableXPathException("No instrumentConfigurationList exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
             }
 
             for (InstrumentConfiguration ic : instrumentConfigurationList) {
-                elements.addAll(ic.getElementsAtXPath(fullXPath, currentXPath));
+                ic.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
             }
-
-            return elements;
         }
-
-        return elements;
     }
 
     @Override

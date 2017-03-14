@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 
 public class Chromatogram extends MzMLDataContainer implements Serializable {
 
@@ -115,30 +116,26 @@ public class Chromatogram extends MzMLDataContainer implements Serializable {
 //    }
     
     @Override
-    protected Collection<MzMLContent> getTagSpecificElementsAtXPath(String fullXPath, String currentXPath) throws InvalidXPathException {
-        ArrayList<MzMLContent> elements = new ArrayList<MzMLContent>();
-
+    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/precursor")) {
             if (precursor == null) {
-                throw new UnfollowableXPathException("No precursor exists, so cannot go to " + fullXPath);
+                throw new UnfollowableXPathException("No precursor exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
             }
 
-            return precursor.getElementsAtXPath(fullXPath, currentXPath);
+            precursor.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         } else if (currentXPath.startsWith("/product")) {
             if (product == null) {
-                throw new UnfollowableXPathException("No product exists, so cannot go to " + fullXPath);
+                throw new UnfollowableXPathException("No product exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
             }
 
-            return product.getElementsAtXPath(fullXPath, currentXPath);
+            product.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         } else if (currentXPath.startsWith("/binaryDataArrayList")) {
             if (binaryDataArrayList == null) {
-                throw new UnfollowableXPathException("No binaryDataArrayList exists, so cannot go to " + fullXPath);
+                throw new UnfollowableXPathException("No binaryDataArrayList exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
             }
 
-            return binaryDataArrayList.getElementsAtXPath(fullXPath, currentXPath);
+            binaryDataArrayList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         }
-
-        return elements;
     }
     
     public void outputXML(BufferedWriter output, int indent, int index) throws IOException {

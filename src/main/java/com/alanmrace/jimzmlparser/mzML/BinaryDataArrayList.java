@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 /**
  * BinaryDataArrayList tag.
@@ -113,22 +114,16 @@ public class BinaryDataArrayList extends MzMLContent implements Iterable<BinaryD
     }
 
     @Override
-    protected Collection<MzMLContent> getTagSpecificElementsAtXPath(String fullXPath, String currentXPath) throws InvalidXPathException {
-        ArrayList<MzMLContent> elements = new ArrayList<MzMLContent>();
-
+    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/binaryDataArray")) {
             if (binaryDataArrayList == null) {
-                throw new UnfollowableXPathException("No binaryDataArrayList exists, so cannot go to " + fullXPath);
+                throw new UnfollowableXPathException("No binaryDataArrayList exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
             }
 
             for (BinaryDataArray binaryDataArray : binaryDataArrayList) {
-                elements.addAll(binaryDataArray.getElementsAtXPath(fullXPath, currentXPath));
+                binaryDataArray.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
             }
-
-            return elements;
         }
-
-        return elements;
     }
     
     /* (non-Javadoc)

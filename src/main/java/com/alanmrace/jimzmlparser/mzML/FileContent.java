@@ -1,12 +1,10 @@
 package com.alanmrace.jimzmlparser.mzML;
 
-import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
-import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 public class FileContent extends MzMLContent implements Serializable {
 
@@ -75,7 +73,7 @@ public class FileContent extends MzMLContent implements Serializable {
         this.addCVParam(dataFileContent);
     }
 
-    public ArrayList<CVParam> getDataFileContents() {
+    public List<CVParam> getDataFileContents() {
         return getChildrenOf(dataFileContentID);
     }
 

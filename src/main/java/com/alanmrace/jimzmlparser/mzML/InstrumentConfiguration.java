@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 
 public class InstrumentConfiguration extends MzMLContent implements Serializable {
 
@@ -136,20 +137,14 @@ public class InstrumentConfiguration extends MzMLContent implements Serializable
     }
 
     @Override
-    protected Collection<MzMLContent> getTagSpecificElementsAtXPath(String fullXPath, String currentXPath) throws InvalidXPathException {
-        ArrayList<MzMLContent> elements = new ArrayList<MzMLContent>();
-
+    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/componentList")) {
             if (componentList == null) {
-                throw new UnfollowableXPathException("No componentList exists, so cannot go to " + fullXPath);
+                throw new UnfollowableXPathException("No componentList exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
             }
 
-            elements.addAll(componentList.getElementsAtXPath(fullXPath, currentXPath));
-
-            return elements;
+            componentList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         }
-
-        return elements;
     }
 
     @Override

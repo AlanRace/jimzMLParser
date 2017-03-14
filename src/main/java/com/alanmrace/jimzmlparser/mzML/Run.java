@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import java.util.Collection;
+import java.util.LinkedList;
 
 public class Run extends MzMLContent implements Serializable {
 
@@ -133,24 +134,20 @@ public class Run extends MzMLContent implements Serializable {
     }
 
     @Override
-    protected Collection<MzMLContent> getTagSpecificElementsAtXPath(String fullXPath, String currentXPath) throws InvalidXPathException {
-        ArrayList<MzMLContent> elements = new ArrayList<MzMLContent>();
-
+    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/spectrumList")) {
             if (spectrumList == null) {
-                throw new UnfollowableXPathException("No spectrumList exists, so cannot go to " + fullXPath);
+                throw new UnfollowableXPathException("No spectrumList exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
             }
 
-            return spectrumList.getElementsAtXPath(fullXPath, currentXPath);
+            spectrumList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         } else if (currentXPath.startsWith("/chromatogramList")) {
             if (chromatogramList == null) {
-                throw new UnfollowableXPathException("No chromatogramList exists, so cannot go to " + fullXPath);
+                throw new UnfollowableXPathException("No chromatogramList exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
             }
 
-            return chromatogramList.getElementsAtXPath(fullXPath, currentXPath);
+            chromatogramList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         }
-
-        return elements;
     }
 
 //	public void setDefaultInstrumentConfiguration(InstrumentConfiguration defaultInstrumentConfigurationRef) {
