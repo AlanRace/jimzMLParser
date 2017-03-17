@@ -48,7 +48,7 @@
                             <goal>wget</goal>
                         </goals>
                         <configuration>
-                            <url>http://www.imzml.org/download/imzml/imagingMS.obo</url>
+                            <url>http://www.imzml.org/imagingMS.obo</url>
                             <overwrite>true</overwrite>
                             <!--<skipCache>true</skipCache>-->
                             <outputDirectory>src/main/resources/obo</outputDirectory>
@@ -74,7 +74,7 @@
                             <goal>wget</goal>
                         </goals>
                         <configuration>
-                            <url>http://pato.googlecode.com/svn/trunk/quality.obo</url>
+                            <url>http://obo.cvs.sourceforge.net/viewvc/obo/obo/ontology/phenotype/quality.obo</url>
                             <overwrite>true</overwrite>
                             <!--<skipCache>true</skipCache>-->
                             <outputDirectory>src/main/resources/obo</outputDirectory>
@@ -87,7 +87,20 @@
                             <goal>wget</goal>
                         </goals>
                         <configuration>
-                            <url>http://unit-ontology.googlecode.com/svn/trunk/unit.obo</url>
+                            <url>http://obo.cvs.sourceforge.net/viewvc/obo/obo/ontology/phenotype/unit.obo</url>
+                            <overwrite>true</overwrite>
+                            <!--<skipCache>true</skipCache>-->
+                            <outputDirectory>src/main/resources/obo</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>update-pato-obo</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://raw.githubusercontent.com/pato-ontology/pato/master/pato.obo</url>
                             <overwrite>true</overwrite>
                             <!--<skipCache>true</skipCache>-->
                             <outputDirectory>src/main/resources/obo</outputDirectory>
