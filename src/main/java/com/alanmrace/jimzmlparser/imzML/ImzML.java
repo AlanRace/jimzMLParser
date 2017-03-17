@@ -738,7 +738,7 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
         }
     }
     
-    public static String calculateSHA1(String filename) throws ImzMLParseException {
+    public static String calculateChecksum(String filename, String algorithm) throws ImzMLParseException {
         // Open the .ibd data stream
         DataInputStream dataStream = null;
         byte[] hash;
@@ -753,7 +753,7 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
             byte[] buffer = new byte[1024 * 1024];
             int bytesRead = 0;
 
-            MessageDigest md = MessageDigest.getInstance("SHA-1");
+            MessageDigest md = MessageDigest.getInstance(algorithm); //"SHA-1");
 
             do {
                 bytesRead = dataStream.read(buffer);
@@ -770,23 +770,31 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
             try {
                 dataStream.close();
             } catch (IOException e1) {
-                throw new ImzMLParseException("Failed to close ibd file after trying to generate SHA-1 hash", e1);
+                throw new ImzMLParseException("Failed to close ibd file after trying to generate " + algorithm + " hash", e1);
             }
 
-            throw new ImzMLParseException("Generation of SHA-1 hash failed. No SHA-1 algorithm. " + e.getLocalizedMessage(), e);
+            throw new ImzMLParseException("Generation of " + algorithm + " hash failed. No " + algorithm + " algorithm. " + e.getLocalizedMessage(), e);
         } catch (IOException e) {
-            throw new ImzMLParseException("Failed generating SHA-1 hash. Failed to read data from " + filename + e.getMessage(), e);
+            throw new ImzMLParseException("Failed generating " + algorithm + " hash. Failed to read data from " + filename + e.getMessage(), e);
         }
 
         try {
             dataStream.close();
         } catch (IOException e) {
-            throw new ImzMLParseException("Failed to close ibd file after generating SHA-1 hash", e);
+            throw new ImzMLParseException("Failed to close ibd file after generating " + algorithm + " hash", e);
         }
 
         return byteArrayToHexString(hash);
     }
+    
+    public static String calculateSHA1(String filename) throws ImzMLParseException {
+        return calculateChecksum(filename, "SHA-1");
+    }
 
+    public static String calculateMD5(String filename) throws ImzMLParseException {
+        return calculateChecksum(filename, "MD5");
+    }
+    
     public static byte[] hexStringToByteArray(String s) {
         int len = s.length();
         byte[] data = new byte[len / 2];

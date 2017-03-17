@@ -16,7 +16,6 @@ import com.alanmrace.jimzmlparser.parser.DataLocation;
 import com.alanmrace.jimzmlparser.parser.DataStorage;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.RandomAccessFile;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
