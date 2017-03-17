@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 
 public class TargetList extends MzMLContent implements Serializable, Iterable<Target> {
@@ -65,5 +66,13 @@ public class TargetList extends MzMLContent implements Serializable, Iterable<Ta
     @Override
     public String getTagName() {
         return "targetList";
+    }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        if(targetList != null)
+            children.addAll(targetList);
+        
+        super.addChildrenToCollection(children);
     }
 }

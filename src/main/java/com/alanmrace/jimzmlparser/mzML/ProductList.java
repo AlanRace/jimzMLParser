@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 
 public class ProductList extends MzMLContent implements Serializable, Iterable<Product> {
@@ -70,5 +71,13 @@ public class ProductList extends MzMLContent implements Serializable, Iterable<P
     @Override
     public String getTagName() {
         return "productList";
+    }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        if(productList != null)
+            children.addAll(productList);
+        
+        super.addChildrenToCollection(children);
     }
 }

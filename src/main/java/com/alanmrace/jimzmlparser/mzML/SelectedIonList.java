@@ -86,4 +86,12 @@ public class SelectedIonList extends MzMLContent implements Serializable, Iterab
     public String getTagName() {
         return "selectedIonList";
     }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        if(selectedIonList != null)
+            children.addAll(selectedIonList);
+        
+        super.addChildrenToCollection(children);
+    }
 }

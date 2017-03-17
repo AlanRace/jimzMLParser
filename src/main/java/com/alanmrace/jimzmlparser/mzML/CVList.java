@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 
 public class CVList extends MzMLContent implements Serializable, Iterable<CV> {
@@ -83,5 +84,13 @@ public class CVList extends MzMLContent implements Serializable, Iterable<CV> {
     @Override
     public String getTagName() {
         return "cvList";
+    }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        if(cvList != null)
+            children.addAll(cvList);
+        
+        super.addChildrenToCollection(children);
     }
 }

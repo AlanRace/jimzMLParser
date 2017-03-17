@@ -3,8 +3,9 @@ package com.alanmrace.jimzmlparser.mzML;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Collection;
 
-public class SoftwareRef implements Serializable { //, MutableTreeNode {
+public class SoftwareRef implements Serializable, MzMLTag { //, MutableTreeNode {
 
     /**
      *
@@ -30,5 +31,15 @@ public class SoftwareRef implements Serializable { //, MutableTreeNode {
     @Override
     public String toString() {
         return "softwareRef: " + ref.getID();
+    }
+
+    @Override
+    public String getTagName() {
+        return "softwareRef";
+    }
+
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        // No children to add
     }
 }

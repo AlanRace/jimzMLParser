@@ -100,4 +100,13 @@ public class SourceFileList extends MzMLContent implements Serializable, Iterabl
     public String getTagName() {
         return "sourceFileList";
     }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        if(sourceFileList != null)
+            children.addAll(sourceFileList);
+        
+        super.addChildrenToCollection(children);
+    }
+    
 }

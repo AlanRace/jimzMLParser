@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 
 public class ReferenceableParamGroupList extends MzMLContent implements Iterable<ReferenceableParamGroup>, Serializable {
@@ -94,5 +95,13 @@ public class ReferenceableParamGroupList extends MzMLContent implements Iterable
     @Override
     public String getTagName() {
         return "referenceableParamGroupList";
+    }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        if(referenceableParamGroupList != null)
+            children.addAll(referenceableParamGroupList);
+        
+        super.addChildrenToCollection(children);
     }
 }

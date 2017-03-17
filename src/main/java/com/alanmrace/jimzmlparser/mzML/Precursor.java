@@ -4,6 +4,7 @@ import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Collection;
 
 public class Precursor extends MzMLContent implements Serializable {
 
@@ -133,5 +134,17 @@ public class Precursor extends MzMLContent implements Serializable {
     @Override
     public String getTagName() {
         return "precursor";
+    }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        if(isolationWindow != null)
+            children.add(isolationWindow);
+        if(selectedIonList != null)
+            children.add(selectedIonList);
+        if(activation != null)
+            children.add(activation);
+        
+        super.addChildrenToCollection(children);
     }
 }

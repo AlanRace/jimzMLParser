@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 
 public class ComponentList extends MzMLContent implements Serializable {
 
@@ -153,5 +152,17 @@ public class ComponentList extends MzMLContent implements Serializable {
     @Override
     public String getTagName() {
         return "componentList";
+    }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        if(sources != null)
+            children.addAll(sources);
+        if(analysers != null)
+            children.addAll(analysers);
+        if(detectors != null)
+            children.addAll(detectors);
+        
+        super.addChildrenToCollection(children);
     }
 }

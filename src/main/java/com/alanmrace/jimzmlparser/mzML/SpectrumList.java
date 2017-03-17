@@ -138,4 +138,12 @@ public class SpectrumList extends MzMLContent implements Iterable<Spectrum>, Ser
     public String getTagName() {
         return "spectrumList";
     }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        if(spectrumList != null)
+            children.addAll(spectrumList);
+        
+        super.addChildrenToCollection(children);
+    }
 }

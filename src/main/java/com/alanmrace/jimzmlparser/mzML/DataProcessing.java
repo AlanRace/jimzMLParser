@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 
 public class DataProcessing extends MzMLContent implements Serializable {
 
@@ -106,5 +105,13 @@ public class DataProcessing extends MzMLContent implements Serializable {
     @Override
     public String getTagName() {
         return "dataProcessing";
+    }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        if(processingMethods != null)
+            children.addAll(processingMethods);
+        
+        super.addChildrenToCollection(children);
     }
 }

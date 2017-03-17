@@ -100,4 +100,12 @@ public class ScanSettingsList extends MzMLContent implements Iterable<ScanSettin
     public String getTagName() {
         return "scanSettingsList";
     }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        if(scanSettingsList != null)
+            children.addAll(scanSettingsList);
+        
+        super.addChildrenToCollection(children);
+    }
 }

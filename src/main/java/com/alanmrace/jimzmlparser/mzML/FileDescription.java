@@ -133,4 +133,16 @@ public class FileDescription extends MzMLContent implements Serializable {
     public String getTagName() {
         return "fileDescription";
     }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        if(fileContent != null)
+            children.add(fileContent);
+        if(sourceFileList != null)
+            children.add(sourceFileList);
+        if(contacts != null)
+            children.addAll(contacts);
+        
+        super.addChildrenToCollection(children);
+    }
 }

@@ -9,7 +9,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
 
 public class ChromatogramList extends MzMLContent implements Serializable, Iterable<Chromatogram> {
 
@@ -117,5 +116,13 @@ public class ChromatogramList extends MzMLContent implements Serializable, Itera
     @Override
     public String getTagName() {
         return "chromatogramList";
+    }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        if(chromatogramList != null)
+            children.addAll(chromatogramList);
+        
+        super.addChildrenToCollection(children);
     }
 }

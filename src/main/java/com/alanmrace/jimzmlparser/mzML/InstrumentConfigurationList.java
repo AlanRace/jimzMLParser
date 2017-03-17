@@ -106,4 +106,12 @@ public class InstrumentConfigurationList extends MzMLContent implements Iterable
     public String getTagName() {
         return "instrumentConfigurationList";
     }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        if(instrumentConfigurationList != null)
+            children.addAll(instrumentConfigurationList);
+        
+        super.addChildrenToCollection(children);
+    }
 }

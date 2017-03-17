@@ -106,4 +106,12 @@ public class SoftwareList extends MzMLContent implements Iterable<Software>, Ser
     public String getTagName() {
         return "softwareList";
     }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        if(softwareList != null)
+            children.addAll(softwareList);
+        
+        super.addChildrenToCollection(children);
+    }
 }

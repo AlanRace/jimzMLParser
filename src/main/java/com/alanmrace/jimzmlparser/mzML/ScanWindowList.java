@@ -86,4 +86,12 @@ public class ScanWindowList extends MzMLContent implements Serializable, Iterabl
     public String getTagName() {
         return "scanWindowList";
     }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        if(scanWindowList != null)
+            children.addAll(scanWindowList);
+        
+        super.addChildrenToCollection(children);
+    }
 }

@@ -9,15 +9,13 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-//import com.fasterxml.jackson.annotation.JsonIgnore;
-public abstract class MzMLContent implements Serializable { //, MutableTreeNode {
+public abstract class MzMLContent implements Serializable, MzMLTag { 
 
     /**
      *
      */
     private static final long serialVersionUID = 1L;
 
-//	private MutableTreeNode parentTreeNode;
     private ArrayList<ReferenceableParamGroupRef> referenceableParamGroupRefs;
 
     // Store different parameters differently to save on memory
@@ -126,6 +124,16 @@ public abstract class MzMLContent implements Serializable { //, MutableTreeNode 
         } else {
             throw new InvalidXPathException("XPath does not start with /" + getTagName() + " in sub-XPath [" + currentXPath + "] of [" + fullXPath + "]", fullXPath);
         }
+    }
+        
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        if(referenceableParamGroupRefs != null)
+            children.addAll(referenceableParamGroupRefs);
+        if(cvParams != null)
+            children.addAll(cvParams);
+        if(userParams != null)
+            children.addAll(userParams);
     }
     
 

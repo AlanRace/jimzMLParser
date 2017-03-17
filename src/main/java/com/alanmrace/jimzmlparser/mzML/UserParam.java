@@ -6,8 +6,9 @@ import java.io.Serializable;
 
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
+import java.util.Collection;
 
-public class UserParam implements Serializable { //, MutableTreeNode {
+public class UserParam implements Serializable, MzMLTag { //, MutableTreeNode {
 
     /**
      *
@@ -95,5 +96,15 @@ public class UserParam implements Serializable { //, MutableTreeNode {
     @Override
     public String toString() {
         return "userParam: " + name + ((value != null && !value.isEmpty()) ? (" - " + value) : "");
+    }
+
+    @Override
+    public String getTagName() {
+        return "userParam";
+    }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        // No children to add
     }
 }

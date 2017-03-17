@@ -13,6 +13,7 @@ import java.util.zip.Deflater;
 
 import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
+import java.util.Collection;
 
 /**
  * Binary tag. When an mzML file is parsed the data is output into a temporary
@@ -20,7 +21,7 @@ import com.sun.org.apache.xml.internal.security.utils.Base64;
  *
  * @author Alan Race
  */
-public class Binary implements Serializable {
+public class Binary implements Serializable, MzMLTag {
 
     /**
      *
@@ -41,6 +42,16 @@ public class Binary implements Serializable {
      * Number of bytes of data.
      */
     private long numBytes;
+
+    @Override
+    public String getTagName() {
+        return "binary";
+    }
+
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        // No children
+    }
 
     public enum DataType {
         doublePrecision,

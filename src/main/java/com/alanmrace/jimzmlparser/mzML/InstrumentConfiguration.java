@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 
 public class InstrumentConfiguration extends MzMLContent implements Serializable {
 
@@ -183,5 +182,15 @@ public class InstrumentConfiguration extends MzMLContent implements Serializable
     @Override
     public String getTagName() {
         return "instrumentConfiguration";
+    }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        if(componentList != null)
+            children.add(componentList);
+        if(softwareRef != null)
+            children.add(softwareRef);
+        
+        super.addChildrenToCollection(children);
     }
 }

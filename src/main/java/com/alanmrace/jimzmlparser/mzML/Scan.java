@@ -222,4 +222,12 @@ public class Scan extends MzMLContent implements Serializable {
     public String getTagName() {
         return "scan";
     }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        if(scanWindowList != null)
+            children.add(scanWindowList);
+        
+        super.addChildrenToCollection(children);
+    }
 }

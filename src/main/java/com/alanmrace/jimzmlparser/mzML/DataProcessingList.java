@@ -102,4 +102,12 @@ public class DataProcessingList extends MzMLContent implements Iterable<DataProc
     public String getTagName() {
         return "dataProcessingList";
     }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        if(dataProcessingList != null)
+            children.addAll(dataProcessingList);
+        
+        super.addChildrenToCollection(children);
+    }
 }

@@ -86,4 +86,12 @@ public class PrecursorList extends MzMLContent implements Serializable, Iterable
     public String getTagName() {
         return "precursorList";
     }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        if(precursorList != null)
+            children.addAll(precursorList);
+        
+        super.addChildrenToCollection(children);
+    }
 }

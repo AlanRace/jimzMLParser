@@ -3,8 +3,9 @@ package com.alanmrace.jimzmlparser.mzML;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Collection;
 
-public class ReferenceableParamGroupRef implements Serializable { //, MutableTreeNode {
+public class ReferenceableParamGroupRef implements Serializable, MzMLTag { //, MutableTreeNode {
 
     /**
      *
@@ -30,5 +31,15 @@ public class ReferenceableParamGroupRef implements Serializable { //, MutableTre
     @Override
     public String toString() {
         return "referenceableParamGroupRef: " + ref.getID();
+    }
+
+    @Override
+    public String getTagName() {
+        return "referenceableParamGroupRef";
+    }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        // No children to add
     }
 }

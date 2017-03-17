@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class ScanSettings extends MzMLContent implements Serializable {
 
@@ -156,5 +157,15 @@ public class ScanSettings extends MzMLContent implements Serializable {
     @Override
     public String getTagName() {
         return "scanSettings";
+    }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        if(sourceFileRefList != null)
+            children.add(sourceFileRefList);
+        if(targetList != null)
+            children.add(targetList);
+        
+        super.addChildrenToCollection(children);
     }
 }

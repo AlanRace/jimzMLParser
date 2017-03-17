@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import java.util.Collection;
-import java.util.LinkedList;
 
 public class Run extends MzMLContent implements Serializable {
 
@@ -321,5 +320,15 @@ public class Run extends MzMLContent implements Serializable {
     @Override
     public String getTagName() {
         return "run";
+    }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        if(spectrumList != null)
+            children.add(spectrumList);
+        if(chromatogramList != null)
+            children.add(chromatogramList);
+        
+        super.addChildrenToCollection(children);
     }
 }

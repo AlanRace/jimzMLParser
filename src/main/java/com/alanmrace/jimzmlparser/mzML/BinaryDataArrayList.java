@@ -158,4 +158,12 @@ public class BinaryDataArrayList extends MzMLContent implements Iterable<BinaryD
     public String getTagName() {
         return "binaryDataArrayList";
     }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        if(binaryDataArrayList != null)
+            children.addAll(binaryDataArrayList);
+        
+        super.addChildrenToCollection(children);
+    }
 }

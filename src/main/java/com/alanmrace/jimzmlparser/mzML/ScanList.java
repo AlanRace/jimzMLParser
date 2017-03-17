@@ -107,4 +107,12 @@ public class ScanList extends MzMLContent implements Iterable<Scan>, Serializabl
     public String getTagName() {
         return "scanList";
     }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        if(scanList != null)
+            children.addAll(scanList);
+        
+        super.addChildrenToCollection(children);
+    }
 }

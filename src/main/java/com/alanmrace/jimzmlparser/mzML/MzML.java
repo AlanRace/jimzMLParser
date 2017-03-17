@@ -270,6 +270,30 @@ public class MzML extends MzMLContent implements Serializable {
     public String getTagName() {
         return "mzML";
     }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        if(cvList != null)
+            children.add(cvList);
+        if(fileDescription != null)
+            children.add(fileDescription);
+        if(referenceableParamGroupList != null)
+            children.add(referenceableParamGroupList);
+        if(sampleList != null)
+            children.add(sampleList);
+        if(softwareList != null)
+            children.add(softwareList);
+        if(scanSettingsList != null)
+            children.add(scanSettingsList);
+        if(instrumentConfigurationList != null)
+            children.add(instrumentConfigurationList);
+        if(dataProcessingList != null)
+            children.add(dataProcessingList);
+        if(run != null)
+            children.add(run);
+        
+        super.addChildrenToCollection(children);
+    }
 
     public void addElementsAtXPathToCollection(Collection<MzMLContent> elements, String xPath) throws InvalidXPathException {
         addElementsAtXPathToCollection(elements, xPath, xPath);

@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 
 public class Chromatogram extends MzMLDataContainer implements Serializable {
 
@@ -175,5 +174,17 @@ public class Chromatogram extends MzMLDataContainer implements Serializable {
     @Override
     public String getTagName() {
         return "chromatogram";
+    }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        if(precursor != null)
+            children.add(precursor);
+        if(product != null)
+            children.add(product);
+        if(binaryDataArrayList != null)
+            children.add(binaryDataArrayList);
+        
+        super.addChildrenToCollection(children);
     }
 }

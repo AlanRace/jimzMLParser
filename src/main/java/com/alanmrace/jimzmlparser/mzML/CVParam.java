@@ -8,8 +8,9 @@ import java.util.HashMap;
 
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
+import java.util.Collection;
 
-public abstract class CVParam implements Serializable { //, MutableTreeNode {
+public abstract class CVParam implements Serializable, MzMLTag { //, MutableTreeNode {
 
     /**
      *
@@ -36,8 +37,29 @@ public abstract class CVParam implements Serializable { //, MutableTreeNode {
     }
 
     @Override
+    public String getTagName() {
+        return "cvParam";
+    }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        // No children to add
+    }
+    
+    @Override
     public String toString() {
-        return "(" + term.getID() + ") " + term.getName() + getValueAsString(); //((value != null) ? " - " : "" ) + value;
+        String description = "(" + term.getID() + ") " + term.getName();
+        String value = getValueAsString();
+        
+        if(!value.isEmpty()) {
+            description += ": " +  getValueAsString();
+            
+            if(units != null) {
+                description += " " + units.getName();
+            }
+        }        
+        
+        return description;
     }
 
     public abstract String getValueAsString();

@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 
 public class SourceFileRefList extends MzMLContent implements Serializable, Iterable<SourceFileRef> {
@@ -70,5 +71,13 @@ public class SourceFileRefList extends MzMLContent implements Serializable, Iter
     @Override
     public String getTagName() {
         return "sourceFileRefList";
+    }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        if(sourceFileRefList != null)
+            children.addAll(sourceFileRefList);
+        
+        super.addChildrenToCollection(children);
     }
 }

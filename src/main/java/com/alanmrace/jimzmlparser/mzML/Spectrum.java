@@ -432,4 +432,18 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
     public String getTagName() {
         return "spectrum";
     }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        if(scanList != null)
+            children.add(scanList);
+        if(precursorList != null)
+            children.add(precursorList);
+        if(productList != null)
+            children.add(productList);
+        if(binaryDataArrayList != null)
+            children.add(binaryDataArrayList);
+        
+        super.addChildrenToCollection(children);
+    }
 }

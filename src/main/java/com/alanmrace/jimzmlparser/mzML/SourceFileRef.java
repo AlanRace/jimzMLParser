@@ -3,10 +3,11 @@ package com.alanmrace.jimzmlparser.mzML;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Collection;
 
 import javax.swing.tree.MutableTreeNode;
 
-public class SourceFileRef implements Serializable { //, MutableTreeNode {
+public class SourceFileRef implements Serializable, MzMLTag { //, MutableTreeNode {
 
     /**
      *
@@ -34,5 +35,15 @@ public class SourceFileRef implements Serializable { //, MutableTreeNode {
     @Override
     public String toString() {
         return "sourceFileRef: " + ref.getID();
+    }
+
+    @Override
+    public String getTagName() {
+        return "sourceFileRef";
+    }
+
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        // No children to add
     }
 }

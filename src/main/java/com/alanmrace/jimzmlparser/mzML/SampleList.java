@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 
 public class SampleList extends MzMLContent implements Iterable<Sample>, Serializable {
@@ -84,5 +85,13 @@ public class SampleList extends MzMLContent implements Iterable<Sample>, Seriali
     @Override
     public String getTagName() {
         return "sampleList";
+    }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        if(sampleList != null)
+            children.addAll(sampleList);
+        
+        super.addChildrenToCollection(children);
     }
 }

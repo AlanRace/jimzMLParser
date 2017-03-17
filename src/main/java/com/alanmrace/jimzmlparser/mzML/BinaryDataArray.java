@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
@@ -759,5 +760,13 @@ public class BinaryDataArray extends MzMLContent implements Serializable {
     @Override
     public String getTagName() {
         return "binaryDataArray";
+    }
+    
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        if(binary != null)
+            children.add(binary);
+        
+        super.addChildrenToCollection(children);
     }
 }
