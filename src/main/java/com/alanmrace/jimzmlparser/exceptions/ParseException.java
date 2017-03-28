@@ -7,15 +7,14 @@ package com.alanmrace.jimzmlparser.exceptions;
 
 /**
  *
- * @author amr1
+ * @author Alan
  */
-public class MzMLParseException extends ParseException {
-
-    public MzMLParseException(String message) {
+public class ParseException extends Exception {
+    public ParseException(String message) {
         super(message);
     }
 
-    public MzMLParseException(String message, Exception exception) {
+    public ParseException(String message, Exception exception) {
         super(message, exception);
     }
 }

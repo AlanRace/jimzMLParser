@@ -21,6 +21,9 @@ import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 import com.alanmrace.jimzmlparser.exceptions.InvalidMzML;
 import com.alanmrace.jimzmlparser.exceptions.MzMLParseException;
+import com.alanmrace.jimzmlparser.exceptions.NonFatalParseException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.xml.sax.Attributes;
@@ -87,6 +90,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
     protected boolean openDataStorage = true;
 
     protected int numberOfSpectra = 0;
+    
+    protected List<ParserListener> listeners;
 
     protected MzMLHeaderHandler(OBO obo) {
         this.obo = obo;
@@ -98,6 +103,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
         // Create a string buffer for storing the character offsets stored in indexed mzML
         offsetData = new StringBuffer();
+        
+        listeners = new LinkedList<ParserListener>();
     }
 
     @Override
@@ -119,6 +126,15 @@ public class MzMLHeaderHandler extends DefaultHandler {
         if (openDataFile) {
             this.dataStorage = new MzMLSpectrumDataStorage(mzMLFile);
         }
+    }
+    
+    public void registerParserListener(ParserListener listener) {
+        this.listeners.add(listener);
+    }
+    
+    protected void notifyParserListeners(com.alanmrace.jimzmlparser.exceptions.ParseException issue) {
+        for(ParserListener listener : listeners)
+            listener.issueFound(issue);
     }
 
     public static MzML parsemzMLHeader(String filename, boolean openDataFile) throws MzMLParseException {
@@ -190,39 +206,58 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 OBOTerm term = obo.getTerm(accession);
 
                 if (term == null) {
-                    System.err.println("CV Param with accession '" + attributes.getValue("accession") + "' not found in any OBO.");
+                    notifyParserListeners(new NonFatalParseException("CV Param with accession '" + attributes.getValue("accession") + "' not found in any OBO."));
                 }
 
                 try {
-                    CVParam.CVParamType paramType = CVParam.getCVParamType(accession);
-                    CVParam cvParam;
-
-                    String value = attributes.getValue("value");
-                    OBOTerm units = obo.getTerm(attributes.getValue("unitAccession"));
-
                     try {
-                        if (paramType.equals(CVParam.CVParamType.String)) {
-                            cvParam = new StringCVParam(term, value, units);
-                        } else if (paramType.equals(CVParam.CVParamType.Empty)) {
-                            cvParam = new EmptyCVParam(term, units);
-                        } else if (paramType.equals(CVParam.CVParamType.Long)) {
-                            cvParam = new LongCVParam(term, Long.parseLong(value), units);
+                        CVParam.CVParamType paramType = CVParam.getCVParamType(term);
+                        //System.out.println(term + " " + paramType);
+                        //CVParam.CVParamType paramType = CVParam.getCVParamType(accession);
+                        CVParam cvParam;
 
-//							currentContent.addLongCVParam(cvParam);
-                        } else if (paramType.equals(CVParam.CVParamType.Double)) {
-                            cvParam = new DoubleCVParam(term, Double.parseDouble(value), units);
+                        String value = attributes.getValue("value");
+                        OBOTerm units = obo.getTerm(attributes.getValue("unitAccession"));
 
-//							currentContent.addDoubleCVParam(cvParam);
-                        } else {
+                        try {
+                            if (paramType.equals(CVParam.CVParamType.String)) {
+                                cvParam = new StringCVParam(term, value, units);
+                            } else if (paramType.equals(CVParam.CVParamType.Empty)) {
+                                cvParam = new EmptyCVParam(term, units);
+                            } else if (paramType.equals(CVParam.CVParamType.Long)) {
+                                cvParam = new LongCVParam(term, Long.parseLong(value), units);
+
+    //							currentContent.addLongCVParam(cvParam);
+                            } else if (paramType.equals(CVParam.CVParamType.Double)) {
+                                cvParam = new DoubleCVParam(term, Double.parseDouble(value), units);
+
+    //							currentContent.addDoubleCVParam(cvParam);
+                            //} else if(paramType )
+                            } else if(paramType.equals(CVParam.CVParamType.Boolean)) {
+                                cvParam = new BooleanCVParam(term, Boolean.parseBoolean(value), units);
+                            } else if(paramType.equals(CVParam.CVParamType.Integer)) {
+                                cvParam = new IntegerCVParam(term, Integer.parseInt(value), units);
+                            } else {
+                                notifyParserListeners(new NonFatalParseException("No such CVParam type implemented " + paramType));
+                                
+                                cvParam = new StringCVParam(term, attributes.getValue("value"), obo.getTerm(attributes.getValue("unitAccession")));
+                            }
+                        } catch (NumberFormatException nfe) {
+                            notifyParserListeners(new NonFatalParseException("Failed value conversion " + nfe, nfe));
+                            
                             cvParam = new StringCVParam(term, attributes.getValue("value"), obo.getTerm(attributes.getValue("unitAccession")));
                         }
-                    } catch (NumberFormatException nfe) {
-                        cvParam = new StringCVParam(term, attributes.getValue("value"), obo.getTerm(attributes.getValue("unitAccession")));
-                    }
 
-                    currentContent.addCVParam(cvParam);
+                        currentContent.addCVParam(cvParam);
+                    } catch (NonFatalParseException ex) {
+                        Logger.getLogger(MzMLHeaderHandler.class.getName()).log(Level.SEVERE, null, ex);
+                        
+                        notifyParserListeners(ex);
+                    }
+                    
                 } catch (CVParamAccessionNotFoundException notFound) {
-                    System.err.println("Couldn't find " + term + " in OBO. Changing to UserParam instead.");
+                    //System.err.println("Couldn't find " + term + " in OBO. Changing to UserParam instead.");
+                    notifyParserListeners(new NonFatalParseException("Couldn't find " + term + " in OBO. Changing to UserParam instead."));
 
                     UserParam userParam = new UserParam(attributes.getValue("accession"), attributes.getValue("value"), obo.getTerm(attributes.getValue("unitAccession")));
                     currentContent.addUserParam(userParam);

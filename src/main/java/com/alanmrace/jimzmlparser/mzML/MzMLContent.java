@@ -386,7 +386,7 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
 //		if(id.equals("MS:1000514"))
 //			System.out.println("RPGR: " + referenceableParamGroupRefs);
 
-        CVParam.CVParamType paramType = CVParam.getCVParamType(id);
+//        CVParam.CVParamType paramType = CVParam.getCVParamType(id);
 
         if (referenceableParamGroupRefs != null) {
             for (ReferenceableParamGroupRef ref : referenceableParamGroupRefs) {

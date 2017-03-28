@@ -75,6 +75,10 @@ public class ImzMLHandler extends MzMLHeaderHandler {
     }
 
     public static ImzML parseimzML(String filename, boolean openDataStorage) throws ImzMLParseException {
+        return parseimzML(filename, openDataStorage, null);
+    }
+    
+    public static ImzML parseimzML(String filename, boolean openDataStorage, ParserListener listener) throws ImzMLParseException {
         try {
             OBO obo = new OBO("imagingMS.obo");
 
@@ -83,6 +87,9 @@ public class ImzMLHandler extends MzMLHeaderHandler {
             // Convert mzML header information -> imzML
             ImzMLHandler handler = new ImzMLHandler(obo, ibdFile, openDataStorage);
 
+            if(listener != null)
+                handler.registerParserListener(listener);
+            
             SAXParserFactory spf = SAXParserFactory.newInstance();
 
             //get a new instance of parser
