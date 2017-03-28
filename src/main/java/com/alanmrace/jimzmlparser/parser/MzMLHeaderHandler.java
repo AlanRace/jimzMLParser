@@ -165,11 +165,22 @@ public class MzMLHeaderHandler extends DefaultHandler {
         return parsemzMLHeader(filename, true);
     }
 
+    protected int getCountAttribute(Attributes attributes) {
+        String countString = attributes.getValue("count");
+        int count;
+
+        if (countString == null) {
+            count = 0;
+        } else {
+            count = Integer.parseInt(countString);
+        }
+
+        return count;
+    }
+
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 
-        
-        
 //            System.out.println(locator.)
         // Most common attribute at the start to reduce the number of comparisons needed
         if (qName.equals("cvParam")) {
@@ -319,7 +330,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
             currentContent = contact;
         } else if (qName.equals("referenceableParamGroupList")) {
-            referenceableParamGroupList = new ReferenceableParamGroupList(Integer.parseInt(attributes.getValue("count")));
+            referenceableParamGroupList = new ReferenceableParamGroupList(getCountAttribute(attributes));
 
             try {
                 mzML.setReferenceableParamGroupList(referenceableParamGroupList);
@@ -337,7 +348,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 throw new InvalidMzML("<referenceableParamGroupList> tag not defined prior to defining <referenceableParamGroup> tag.");
             }
         } else if (qName.equals("sampleList")) {
-            sampleList = new SampleList(Integer.parseInt(attributes.getValue("count")));
+            sampleList = new SampleList(getCountAttribute(attributes));
 
             try {
                 mzML.setSampleList(sampleList);
@@ -359,7 +370,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
             currentContent = sample;
         } else if (qName.equals("softwareList")) {
-            softwareList = new SoftwareList(Integer.parseInt(attributes.getValue("count")));
+            softwareList = new SoftwareList(getCountAttribute(attributes));
 
             try {
                 mzML.setSoftwareList(softwareList);
@@ -436,7 +447,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
             currentContent = target;
         } else if (qName.equals("instrumentConfigurationList")) {
-            instrumentConfigurationList = new InstrumentConfigurationList(Integer.parseInt(attributes.getValue("count")));
+            instrumentConfigurationList = new InstrumentConfigurationList(getCountAttribute(attributes));
 
             try {
                 mzML.setInstrumentConfigurationList(instrumentConfigurationList);
@@ -527,7 +538,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 //throw new InvalidMzML("Can't find softwareRef '" + softwareRef + "' in instrumentConfiguration '" + currentInstrumentConfiguration.getID() + "'");
             }
         } else if (qName.equals("dataProcessingList")) {
-            dataProcessingList = new DataProcessingList(Integer.parseInt(attributes.getValue("count")));
+            dataProcessingList = new DataProcessingList(getCountAttribute(attributes));
 
             try {
                 mzML.setDataProcessingList(dataProcessingList);
@@ -567,7 +578,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
                 currentContent = pm;
             } else {
-                logger.warning("Invalid mzML file - could not find softwareRef '" + softwareRef + "'. Attempting to continue...");
+                logger.log(Level.WARNING, "Invalid mzML file - could not find softwareRef ''{0}''. Attempting to continue...", softwareRef);
 
                 // TODO: reininstate these checks
                 //throw new InvalidMzML("Can't find softwareRef '" + softwareRef + "'");
@@ -577,10 +588,12 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
             InstrumentConfiguration instrumentConfiguration = null;
 
-            try {
-                instrumentConfiguration = instrumentConfigurationList.getInstrumentConfiguration(instrumentConfigurationRef);
-            } catch (NullPointerException ex) {
-                throw new InvalidMzML("<instrumentConfigurationList> tag not defined prior to defining <run> tag.");
+            if(instrumentConfigurationRef != null && !instrumentConfigurationRef.isEmpty()) {
+                try {
+                    instrumentConfiguration = instrumentConfigurationList.getInstrumentConfiguration(instrumentConfigurationRef);
+                } catch (NullPointerException ex) {
+                    throw new InvalidMzML("<instrumentConfigurationList> tag not defined prior to defining <run> tag.");
+                }
             }
 
             if (instrumentConfiguration != null) {
@@ -590,11 +603,14 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 // the defaultInstrumentConfigurationRef is auto-incremented in every raster
                 // line file but the instrumentConfiguration id remains as 'instrumentConfiguration1'					
                 if (currentInstrumentConfiguration != null) {
-                    logger.warning("Invalid mzML file - could not find instrumentConfigurationRef '" + instrumentConfigurationRef + "'. Attempting to continue...");
+                    logger.log(Level.WARNING, "Invalid mzML file - could not find instrumentConfigurationRef ''{0}''. Attempting to continue...", instrumentConfigurationRef);
 
                     run = new Run(attributes.getValue("id"), currentInstrumentConfiguration);
                 } else {
-                    throw new InvalidMzML("Can't find instrumentConfigurationRef '" + instrumentConfigurationRef + "'");
+                    logger.log(Level.WARNING, "Invalid mzML file - could not find instrumentConfigurationRef ''{0}''. Attempting to continue...", instrumentConfigurationRef);
+                    
+                    run = new Run(attributes.getValue("id"), null);
+                    //throw new InvalidMzML("Can't find instrumentConfigurationRef '" + instrumentConfigurationRef + "'");
                 }
             }
 
@@ -1068,7 +1084,6 @@ public class MzMLHeaderHandler extends DefaultHandler {
             previousOffsetIDRef = currentOffsetIDRef;
 
 //            logger.log(Level.INFO, "Current qName: {0} - {1}", new String[] {qName, attributes.getValue("idRef")});
-            
             if (qName.equals("offset")) {
                 this.currentOffsetIDRef = attributes.getValue("idRef");
             }
@@ -1099,7 +1114,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
     protected MzMLDataContainer getDataContainer() {
         MzMLDataContainer dataContainer = null;
 
-            // There is probably a better way to do this - store a HashMap of IDs and 
+        // There is probably a better way to do this - store a HashMap of IDs and 
         // locations, then at the end of the file, sort the HashMap by location
         // and then assign the DataLocation
         if (processingSpectrum) {
@@ -1118,29 +1133,29 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
         return dataContainer;
     }
-    
+
     protected long getOffset() {
         return Long.parseLong(offsetData.toString());
     }
-    
+
     protected void setDataContainer(MzMLDataContainer dataContainer, long offset) {
         //System.out.println(previousOffset + " " + spectrum);		    
-            if (previousOffset != -1) {
-                if (openDataStorage && dataContainer != null) {
-                    DataLocation dataLocation = new DataLocation(dataStorage, previousOffset, (int) (offset - previousOffset));
+        if (previousOffset != -1) {
+            if (openDataStorage && dataContainer != null) {
+                DataLocation dataLocation = new DataLocation(dataStorage, previousOffset, (int) (offset - previousOffset));
 
 //                            if(dataContainer.getID().equals("TIC"))
 //                                System.out.println(dataLocation);
-                    //    System.out.println("DataLocation: " + dataLocation);
-                    dataContainer.setDataLocation(dataLocation);
-                }
-
-                //    System.out.println(previousOffsetIDRef + " " + dataLocation);
-                //    System.out.println(spectrum.getDataLocation());
-                //    System.out.println(spectrum.getBinaryDataArrayList().getBinaryDataArray(0));
-                //    System.out.println(run.getSpectrumList().size());
-                //    System.out.println(run.getSpectrumList().getSpectrum(0).getBinaryDataArrayList().getBinaryDataArray(0));
+                //    System.out.println("DataLocation: " + dataLocation);
+                dataContainer.setDataLocation(dataLocation);
             }
+
+            //    System.out.println(previousOffsetIDRef + " " + dataLocation);
+            //    System.out.println(spectrum.getDataLocation());
+            //    System.out.println(spectrum.getBinaryDataArrayList().getBinaryDataArray(0));
+            //    System.out.println(run.getSpectrumList().size());
+            //    System.out.println(run.getSpectrumList().getSpectrum(0).getBinaryDataArrayList().getBinaryDataArray(0));
+        }
     }
 
     @Override

@@ -16,14 +16,14 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
      */
     private static final long serialVersionUID = 1L;
 
-    private ArrayList<ReferenceableParamGroupRef> referenceableParamGroupRefs;
+    private List<ReferenceableParamGroupRef> referenceableParamGroupRefs;
 
     // Store different parameters differently to save on memory
-    private ArrayList<CVParam> cvParams;
+    private List<CVParam> cvParams;
 //	private ArrayList<CVParam<Long>> longCVParams;
 //	private ArrayList<CVParam<Double>> doubleCVParams;
 
-    private ArrayList<UserParam> userParams;
+    private List<UserParam> userParams;
 
     public MzMLContent() {
     }
@@ -138,7 +138,7 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
     
 
 //	@JsonIgnore
-    protected ArrayList<ReferenceableParamGroupRef> getReferenceableParamGroupRefList() {
+    protected List<ReferenceableParamGroupRef> getReferenceableParamGroupRefList() {
         if (referenceableParamGroupRefs == null) {
             referenceableParamGroupRefs = new ArrayList<ReferenceableParamGroupRef>();
         }
@@ -147,7 +147,7 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
     }
 
 //	@JsonIgnore
-    protected List<CVParam> getCVParamList() {
+    public List<CVParam> getCVParamList() {
         if (cvParams == null) {
             cvParams = new ArrayList<CVParam>();
         }
@@ -171,7 +171,7 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
 //		return doubleCVParams;
 //	}
 //	@JsonIgnore
-    protected ArrayList<UserParam> getUserParamList() {
+    public List<UserParam> getUserParamList() {
         if (userParams == null) {
             userParams = new ArrayList<UserParam>();
         }

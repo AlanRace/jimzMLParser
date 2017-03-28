@@ -275,6 +275,10 @@ public class OBOTerm implements Serializable {
 
         return allParents;
     }
+    
+    public boolean hasParent(OBOTerm term) {
+        return getAllParents().contains(term);
+    }
 
 //	@JsonIgnore
     private void getAllParents(ArrayList<OBOTerm> allParents) {
@@ -356,26 +360,6 @@ public class OBOTerm implements Serializable {
         return "(" + id + ") " + name;
     }
 
-//    public void outputXML(BufferedWriter output, String value) throws IOException {
-//        output.write("<cvParam");
-//
-//        output.write(" cvRef=\"" + XMLHelper.ensureSafeXML(namespace) + "\"");
-//        output.write(" accession=\"" + XMLHelper.ensureSafeXML(id) + "\"");
-//        output.write(" name=\"" + XMLHelper.ensureSafeXML(name) + "\"");
-//
-//        if (value != null) {
-//            output.write(" value=\"" + XMLHelper.ensureSafeXML(value) + "\"");
-//        }
-//
-//        if (getUnits() != null) {
-//            output.write(" unitCvRef=\"" + getUnits().getNamespace() + "\"");
-//            output.write(" unitAccession=\"" + getUnits().getID() + "\"");
-//            output.write(" unitName=\"" + getUnits().getName() + "\"");
-//        }
-//
-//        output.write("/>\n");
-//    }
-
     @Override
     public boolean equals(Object o) {
         if (o == this) {
@@ -391,91 +375,10 @@ public class OBOTerm implements Serializable {
         return term.getID().equals(id) && term.getNamespace().equals(namespace);
     }
 
-//	@Override
-//	@JsonIgnore
-//	public Enumeration<TreeNode> children() {
-//		Vector<TreeNode> child = new Vector<TreeNode>();
-//		child.addAll(children);
-//		
-//		return child.elements();
-//	}
-//
-//	@Override
-////	@JsonIgnore
-//	public boolean getAllowsChildren() {
-//		return true;
-//	}
-//
-//	@Override
-////	@JsonIgnore
-//	public TreeNode getChildAt(int index) {
-//		return children.get(index);
-//	}
-//
-//	@Override
-////	@JsonIgnore
-//	public int getChildCount() {
-//		return children.size();
-//	}
-//
-//	@Override
-////	@JsonIgnore
-//	public int getIndex(TreeNode child) {
-//		return children.indexOf(child);
-//	}
-//
-//	@Override
-////	@JsonIgnore
-//	public TreeNode getParent() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-////	@JsonIgnore
-//	public boolean isLeaf() {
-//		return (children.size() == 0);
-//	}
-//
-//	@Override
-////	@JsonIgnore
-//	public void insert(MutableTreeNode child, int index) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//
-//	@Override
-////	@JsonIgnore
-//	public void remove(int index) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//
-//	@Override
-////	@JsonIgnore
-//	public void remove(MutableTreeNode node) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//
-//	@Override
-////	@JsonIgnore
-//	public void removeFromParent() {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//
-//	@Override
-////	@JsonIgnore
-//	public void setParent(MutableTreeNode newParent) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//
-//	@Override
-////	@JsonIgnore
-//	public void setUserObject(Object object) {
-//		// TODO Auto-generated method stub
-//		
-//	}
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 23 * hash + (this.id != null ? this.id.hashCode() : 0);
+        return hash;
+    }
 }

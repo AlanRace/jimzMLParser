@@ -303,7 +303,7 @@ public class MzML extends MzMLContent implements Serializable {
     protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/" + cvList.getTagName())) {
             cvList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
-        } else if (currentXPath.startsWith("/" + fileDescription.getTagName())) {
+        } else if (currentXPath.startsWith("/fileDescription")) {
             fileDescription.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         } else if (currentXPath.startsWith("/referenceableParamGroupList")) {
             if (referenceableParamGroupList == null) {
@@ -317,7 +317,7 @@ public class MzML extends MzMLContent implements Serializable {
             }
 
             sampleList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
-        } else if (currentXPath.startsWith("/" + softwareList.getTagName())) {
+        } else if (currentXPath.startsWith("/softwareList")) {
             softwareList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         } else if (currentXPath.startsWith("/scanSettingsList")) {
             if (scanSettingsList == null) {
@@ -325,11 +325,11 @@ public class MzML extends MzMLContent implements Serializable {
             }
 
             scanSettingsList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
-        } else if (currentXPath.startsWith("/" + instrumentConfigurationList.getTagName())) {
+        } else if (currentXPath.startsWith("/instrumentConfigurationList")) {
             instrumentConfigurationList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
-        } else if (currentXPath.startsWith("/" + dataProcessingList.getTagName())) {
+        } else if (currentXPath.startsWith("/dataProcessingList")) {
             dataProcessingList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
-        } else if (currentXPath.startsWith("/" + run.getTagName())) {
+        } else if (currentXPath.startsWith("/run")) {
             run.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         }
     }
