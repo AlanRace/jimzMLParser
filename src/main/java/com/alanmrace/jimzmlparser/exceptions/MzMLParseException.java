@@ -9,7 +9,7 @@ package com.alanmrace.jimzmlparser.exceptions;
  *
  * @author amr1
  */
-public class MzMLParseException extends ParseException {
+public class MzMLParseException extends FatalParseException {
 
     public MzMLParseException(String message) {
         super(message);

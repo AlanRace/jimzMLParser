@@ -1,11 +1,11 @@
 package com.alanmrace.jimzmlparser.mzML;
 
 //import com.alanmrace.jimzmlparser.exceptions.CVParamAccessionNotFoundException;
+import com.alanmrace.jimzmlparser.exceptions.InvalidFormatIssue;
 import com.alanmrace.jimzmlparser.exceptions.NonFatalParseException;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.HashMap;
 
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
@@ -133,7 +133,7 @@ public abstract class CVParam implements Serializable, MzMLTag { //, MutableTree
                 type = CVParamType.Long;
                 break;
             default:
-                throw new NonFatalParseException("Unknown CVParamType for XMLType " + term.getValueType());
+                throw new InvalidFormatIssue(term, term.getValueType());
         }
         
         return type;

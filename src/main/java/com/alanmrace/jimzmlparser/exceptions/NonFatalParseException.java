@@ -5,18 +5,49 @@
  */
 package com.alanmrace.jimzmlparser.exceptions;
 
+import com.alanmrace.jimzmlparser.mzML.MzMLContent;
+
 /**
  *
  * @author Alan
  */
-public class NonFatalParseException extends ParseException {
+public class NonFatalParseException extends Exception implements ParseIssue {
+
+    protected MzMLContent location; 
     
-    public NonFatalParseException(String message) {
-        super(message);
+    protected boolean attemptedFix = false;
+    protected String fixMessage;
+    
+    public void setIssueLocation(MzMLContent location) {
+        this.location = location;
     }
     
-    public NonFatalParseException(String message, Exception exception) {
-        super(message, exception);
+    public boolean hasFixBeenAttempted() {
+        return attemptedFix;
     }
+    
+    public void fixAttempted(String fixMessage) {
+        this.fixMessage = fixMessage;
+    }
+    
+    protected String getFixMessage() {
+        return fixMessage;
+    }
+    
+    @Override
+    public String getIssueTitle() {
+        return "[NonFatalParseException] - Temporary Title";
+    }
+
+    @Override
+    public String getIssueMessage() {
+        return "[NonFatalParseException] - Temporary Message";
+    }
+
+    @Override
+    public IssueLevel getIssueLevel() {
+        return IssueLevel.SEVERE;
+    }
+    
     
 }

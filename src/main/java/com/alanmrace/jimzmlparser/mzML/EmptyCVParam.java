@@ -1,15 +1,14 @@
 package com.alanmrace.jimzmlparser.mzML;
 
-import com.alanmrace.jimzmlparser.exceptions.CVParamAccessionNotFoundException;
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 
 public class EmptyCVParam extends CVParam {
 
-    public EmptyCVParam(OBOTerm term) throws CVParamAccessionNotFoundException {
+    public EmptyCVParam(OBOTerm term) {
         this.term = term;
     }
 
-    public EmptyCVParam(OBOTerm term, OBOTerm units) throws CVParamAccessionNotFoundException {
+    public EmptyCVParam(OBOTerm term, OBOTerm units) {
         this.term = term;
         this.units = units;
     }

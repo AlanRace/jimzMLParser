@@ -1,6 +1,8 @@
 package com.alanmrace.jimzmlparser.parser;
 
 import com.alanmrace.jimzmlparser.exceptions.CVParamAccessionNotFoundException;
+import com.alanmrace.jimzmlparser.exceptions.InvalidFormatIssue;
+import com.alanmrace.jimzmlparser.exceptions.MissingReferenceIssue;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,8 +22,11 @@ import com.alanmrace.jimzmlparser.mzML.*;
 import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 import com.alanmrace.jimzmlparser.exceptions.InvalidMzML;
+import com.alanmrace.jimzmlparser.exceptions.Issue;
 import com.alanmrace.jimzmlparser.exceptions.MzMLParseException;
 import com.alanmrace.jimzmlparser.exceptions.NonFatalParseException;
+import com.alanmrace.jimzmlparser.exceptions.ObsoleteTermUsed;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -90,7 +95,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
     protected boolean openDataStorage = true;
 
     protected int numberOfSpectra = 0;
-    
+
     protected List<ParserListener> listeners;
 
     protected MzMLHeaderHandler(OBO obo) {
@@ -103,7 +108,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
         // Create a string buffer for storing the character offsets stored in indexed mzML
         offsetData = new StringBuffer();
-        
+
         listeners = new LinkedList<ParserListener>();
     }
 
@@ -127,14 +132,15 @@ public class MzMLHeaderHandler extends DefaultHandler {
             this.dataStorage = new MzMLSpectrumDataStorage(mzMLFile);
         }
     }
-    
+
     public void registerParserListener(ParserListener listener) {
         this.listeners.add(listener);
     }
-    
-    protected void notifyParserListeners(com.alanmrace.jimzmlparser.exceptions.ParseException issue) {
-        for(ParserListener listener : listeners)
+
+    protected void notifyParserListeners(Issue issue) {
+        for (ParserListener listener : listeners) {
             listener.issueFound(issue);
+        }
     }
 
     public static MzML parsemzMLHeader(String filename, boolean openDataFile) throws MzMLParseException {
@@ -197,7 +203,6 @@ public class MzMLHeaderHandler extends DefaultHandler {
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 
-//            System.out.println(locator.)
         // Most common attribute at the start to reduce the number of comparisons needed
         if (qName.equals("cvParam")) {
             if (currentContent != null) {
@@ -205,11 +210,25 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
                 OBOTerm term = obo.getTerm(accession);
 
+                // If the term does not exist within any OBO, convert to UserParam for the sake of continuing parsing
+                // Notify listeners of the fact that an issue occured and we attempted to resolve it
                 if (term == null) {
-                    notifyParserListeners(new NonFatalParseException("CV Param with accession '" + attributes.getValue("accession") + "' not found in any OBO."));
-                }
+                    UserParam userParam = new UserParam(attributes.getValue("accession"), attributes.getValue("value"), obo.getTerm(attributes.getValue("unitAccession")));
+                    currentContent.addUserParam(userParam);
 
-                try {
+                    CVParamAccessionNotFoundException notFound = new CVParamAccessionNotFoundException(attributes.getValue("accession"));
+                    notFound.fixAttempted(userParam);
+                    notFound.setIssueLocation(currentContent);
+
+                    notifyParserListeners(notFound);
+                } else {
+                    if(term.isObsolete()) {
+                        ObsoleteTermUsed obsoleteIssue = new ObsoleteTermUsed(term);
+                        obsoleteIssue.setIssueLocation(currentContent);
+
+                        notifyParserListeners(obsoleteIssue);
+                    }
+                    
                     try {
                         CVParam.CVParamType paramType = CVParam.getCVParamType(term);
                         //System.out.println(term + " " + paramType);
@@ -224,52 +243,77 @@ public class MzMLHeaderHandler extends DefaultHandler {
                                 cvParam = new StringCVParam(term, value, units);
                             } else if (paramType.equals(CVParam.CVParamType.Empty)) {
                                 cvParam = new EmptyCVParam(term, units);
+                                
+                                if(value != null) {
+                                    InvalidFormatIssue formatIssue = new InvalidFormatIssue(term, attributes.getValue("value"));
+                                    formatIssue.setIssueLocation(currentContent);
+
+                                    notifyParserListeners(formatIssue);
+                                }
                             } else if (paramType.equals(CVParam.CVParamType.Long)) {
                                 cvParam = new LongCVParam(term, Long.parseLong(value), units);
-
-    //							currentContent.addLongCVParam(cvParam);
                             } else if (paramType.equals(CVParam.CVParamType.Double)) {
                                 cvParam = new DoubleCVParam(term, Double.parseDouble(value), units);
-
-    //							currentContent.addDoubleCVParam(cvParam);
-                            //} else if(paramType )
-                            } else if(paramType.equals(CVParam.CVParamType.Boolean)) {
+                            } else if (paramType.equals(CVParam.CVParamType.Boolean)) {
                                 cvParam = new BooleanCVParam(term, Boolean.parseBoolean(value), units);
-                            } else if(paramType.equals(CVParam.CVParamType.Integer)) {
+                            } else if (paramType.equals(CVParam.CVParamType.Integer)) {
                                 cvParam = new IntegerCVParam(term, Integer.parseInt(value), units);
                             } else {
-                                notifyParserListeners(new NonFatalParseException("No such CVParam type implemented " + paramType));
-                                
                                 cvParam = new StringCVParam(term, attributes.getValue("value"), obo.getTerm(attributes.getValue("unitAccession")));
+
+                                InvalidFormatIssue formatIssue = new InvalidFormatIssue(term, paramType);
+                                formatIssue.fixAttemptedByChangingType((StringCVParam) cvParam);
+                                formatIssue.setIssueLocation(currentContent);
+
+                                notifyParserListeners(formatIssue);
+
                             }
                         } catch (NumberFormatException nfe) {
-                            notifyParserListeners(new NonFatalParseException("Failed value conversion " + nfe, nfe));
-                            
                             cvParam = new StringCVParam(term, attributes.getValue("value"), obo.getTerm(attributes.getValue("unitAccession")));
+
+//                            notifyParserListeners(new NonFatalParseException("Failed value conversion " + nfe, nfe));                          
+                            InvalidFormatIssue formatIssue = new InvalidFormatIssue(term, attributes.getValue("value"));
+                            formatIssue.fixAttemptedByChangingType((StringCVParam) cvParam);
+                            formatIssue.setIssueLocation(currentContent);
+
+                            notifyParserListeners(formatIssue);
                         }
 
                         currentContent.addCVParam(cvParam);
                     } catch (NonFatalParseException ex) {
-                        Logger.getLogger(MzMLHeaderHandler.class.getName()).log(Level.SEVERE, null, ex);
-                        
-                        notifyParserListeners(ex);
-                    }
-                    
-                } catch (CVParamAccessionNotFoundException notFound) {
-                    //System.err.println("Couldn't find " + term + " in OBO. Changing to UserParam instead.");
-                    notifyParserListeners(new NonFatalParseException("Couldn't find " + term + " in OBO. Changing to UserParam instead."));
+                        ex.setIssueLocation(currentContent);
 
-                    UserParam userParam = new UserParam(attributes.getValue("accession"), attributes.getValue("value"), obo.getTerm(attributes.getValue("unitAccession")));
-                    currentContent.addUserParam(userParam);
+                        notifyParserListeners(ex);
+
+                        Logger.getLogger(MzMLHeaderHandler.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             } else {
                 throw new InvalidMzML("<cvParam> tag without a parent.");
             }
         } else if (qName.equals("referenceableParamGroupRef")) {
-            ReferenceableParamGroupRef ref = new ReferenceableParamGroupRef(referenceableParamGroupList.getReferenceableParamGroup(attributes.getValue("ref")));
+            boolean foundReference = false;
 
-            if (currentContent != null) {
-                currentContent.addReferenceableParamGroupRef(ref);
+            if (referenceableParamGroupList != null) {
+                ReferenceableParamGroup group = referenceableParamGroupList.getReferenceableParamGroup(attributes.getValue("ref"));
+
+                if (group != null) {
+                    ReferenceableParamGroupRef ref = new ReferenceableParamGroupRef(group);
+
+                    if (currentContent != null) {
+                        foundReference = true;
+
+                        currentContent.addReferenceableParamGroupRef(ref);
+                    }
+                }
+            }
+
+            if (!foundReference) {
+                MissingReferenceIssue missingRefIssue = new MissingReferenceIssue(attributes.getValue("ref"), "referenceableParamGroupRef", "ref");
+                missingRefIssue.setIssueLocation(currentContent);
+                missingRefIssue.fixAttemptedByRemovingReference();
+
+                notifyParserListeners(missingRefIssue);
             }
         } else if (qName.equals("userParam")) {
             if (currentContent != null) {
@@ -450,18 +494,24 @@ public class MzMLHeaderHandler extends DefaultHandler {
         } else if (qName.equals("sourceFileRef")) {
             String ref = attributes.getValue("ref");
 
-            SourceFile sourceFile = null;
+            boolean foundReference = false;
 
-            try {
-                sourceFile = sourceFileList.getSourceFile(ref);
-            } catch (NullPointerException ex) {
-                throw new InvalidMzML("<sourceFileList> tag not defined prior to defining <sourceFile> tag.");
+            if (sourceFileList != null) {
+                SourceFile sourceFile = sourceFileList.getSourceFile(ref);
+
+                if (sourceFile != null) {
+                    currentSourceFileRefList.addSourceFileRef(new SourceFileRef(sourceFile));
+
+                    foundReference = true;
+                }
             }
 
-            if (sourceFile != null) {
-                currentSourceFileRefList.addSourceFileRef(new SourceFileRef(sourceFile));
-            } else {
-                throw new InvalidMzML("Can't find sourceFileRef '" + ref + "' in sourceFileList");
+            if (!foundReference) {
+                MissingReferenceIssue missingRefIssue = new MissingReferenceIssue(attributes.getValue("ref"), "sourceFileRef", "ref");
+                missingRefIssue.setIssueLocation(currentContent);
+                missingRefIssue.fixAttemptedByRemovingReference();
+
+                notifyParserListeners(missingRefIssue);
             }
         } else if (qName.equals("targetList")) {
             currentTargetList = new TargetList(Integer.parseInt(attributes.getValue("count")));
@@ -500,7 +550,13 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 if (scanSettings != null) {
                     currentInstrumentConfiguration.setScanSettingsRef(scanSettings);
                 } else {
-                    throw new InvalidMzML("Can't find scanSettingsRef '" + scanSettingsRef + "' on instrumentConfiguration '" + currentInstrumentConfiguration.getID() + "'");
+                    //throw new InvalidMzML("Can't find scanSettingsRef '" + scanSettingsRef + "' on instrumentConfiguration '" + currentInstrumentConfiguration.getID() + "'");
+
+                    MissingReferenceIssue missingRefIssue = new MissingReferenceIssue(scanSettingsRef, "instrumentConfiguration", "scanSettingsRef");
+                    missingRefIssue.setIssueLocation(currentContent);
+                    missingRefIssue.fixAttemptedByRemovingReference();
+
+                    notifyParserListeners(missingRefIssue);
                 }
             }
 
@@ -552,23 +608,26 @@ public class MzMLHeaderHandler extends DefaultHandler {
         } else if (qName.equals("softwareRef")) {
             String softwareRef = attributes.getValue("ref");
 
-            Software software = null;
+            boolean foundReference = false;
 
-            try {
-                software = softwareList.getSoftware(softwareRef);
-            } catch (NullPointerException ex) {
-                throw new InvalidMzML("<softwareList> tag not defined prior to defining <softwareRef> tag.");
+            if (softwareList != null && currentInstrumentConfiguration != null) {
+                Software software = softwareList.getSoftware(softwareRef);
+
+                if (software != null) {
+                    foundReference = true;
+
+                    currentInstrumentConfiguration.setSoftwareRef(new SoftwareRef(software));
+                }
             }
 
-            if (currentInstrumentConfiguration == null) {
-                throw new InvalidMzML("<instrumentConfiguration> tag not defined prior to defining <softwareRef> tag.");
-            }
+            if (!foundReference) {
+                MissingReferenceIssue missingRefIssue = new MissingReferenceIssue(softwareRef, "softwareRef", "ref");
+                missingRefIssue.setIssueLocation(currentContent);
+                missingRefIssue.fixAttemptedByRemovingReference();
 
-            if (software != null) {
-                currentInstrumentConfiguration.setSoftwareRef(new SoftwareRef(software));
-            } else {
-                logger.log(Level.WARNING, "Invalid mzML file - could not find softwareRef ''{0}''. Attempting to continue...", softwareRef);
+                notifyParserListeners(missingRefIssue);
 
+                //logger.log(Level.WARNING, "Invalid mzML file - could not find softwareRef ''{0}''. Attempting to continue...", softwareRef);
                 // TODO: Reinstate these checks
                 //throw new InvalidMzML("Can't find softwareRef '" + softwareRef + "' in instrumentConfiguration '" + currentInstrumentConfiguration.getID() + "'");
             }
@@ -623,7 +682,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
             InstrumentConfiguration instrumentConfiguration = null;
 
-            if(instrumentConfigurationRef != null && !instrumentConfigurationRef.isEmpty()) {
+            if (instrumentConfigurationRef != null && !instrumentConfigurationRef.isEmpty()) {
                 try {
                     instrumentConfiguration = instrumentConfigurationList.getInstrumentConfiguration(instrumentConfigurationRef);
                 } catch (NullPointerException ex) {
@@ -634,54 +693,71 @@ public class MzMLHeaderHandler extends DefaultHandler {
             if (instrumentConfiguration != null) {
                 run = new Run(attributes.getValue("id"), instrumentConfiguration);
             } else {
+                MissingReferenceIssue missingRefIssue = new MissingReferenceIssue(instrumentConfigurationRef, "run", "defaultInstrumentConfigurationRef");
+                missingRefIssue.setIssueLocation(currentContent);
+
                 // TODO: Workaround only in place because of ABSciex converter bug where 
                 // the defaultInstrumentConfigurationRef is auto-incremented in every raster
                 // line file but the instrumentConfiguration id remains as 'instrumentConfiguration1'					
                 if (currentInstrumentConfiguration != null) {
-                    logger.log(Level.WARNING, "Invalid mzML file - could not find instrumentConfigurationRef ''{0}''. Attempting to continue...", instrumentConfigurationRef);
+                    //logger.log(Level.WARNING, "Invalid mzML file - could not find instrumentConfigurationRef ''{0}''. Attempting to continue...", instrumentConfigurationRef);
+                    missingRefIssue.fixAttemptedByChangingReference(currentInstrumentConfiguration);
 
                     run = new Run(attributes.getValue("id"), currentInstrumentConfiguration);
                 } else {
-                    logger.log(Level.WARNING, "Invalid mzML file - could not find instrumentConfigurationRef ''{0}''. Attempting to continue...", instrumentConfigurationRef);
-                    
+                    //logger.log(Level.WARNING, "Invalid mzML file - could not find instrumentConfigurationRef ''{0}''. Attempting to continue...", instrumentConfigurationRef);
+                    missingRefIssue.fixAttemptedByRemovingReference();
+
                     run = new Run(attributes.getValue("id"), null);
                     //throw new InvalidMzML("Can't find instrumentConfigurationRef '" + instrumentConfigurationRef + "'");
                 }
+
+                notifyParserListeners(missingRefIssue);
             }
 
             String defaultSourceFileRef = attributes.getValue("defaultSourceFileRef");
 
             if (defaultSourceFileRef != null) {
-                SourceFile sourceFile = null;
+                boolean foundRef = false;
 
-                try {
-                    sourceFile = sourceFileList.getSourceFile(defaultSourceFileRef);
-                } catch (NullPointerException ex) {
-                    throw new InvalidMzML("<sourceFileList> tag not defined prior to defining <run> tag.");
+                if (sourceFileList != null) {
+                    SourceFile sourceFile = sourceFileList.getSourceFile(defaultSourceFileRef);
+
+                    if (sourceFile != null) {
+                        run.setDefaultSourceFileRef(sourceFile);
+                        foundRef = true;
+                    }
                 }
 
-                if (sourceFile != null) {
-                    run.setDefaultSourceFileRef(sourceFile);
-                } else {
-                    throw new InvalidMzML("Can't find defaultSourceFileRef '" + defaultSourceFileRef + "'.");
+                if (!foundRef) {
+                    MissingReferenceIssue missingRefIssue = new MissingReferenceIssue(defaultSourceFileRef, "run", "defaultSourceFileRef");
+                    missingRefIssue.setIssueLocation(currentContent);
+                    missingRefIssue.fixAttemptedByRemovingReference();
+
+                    notifyParserListeners(missingRefIssue);
                 }
             }
 
             String sampleRef = attributes.getValue("sampleRef");
 
             if (sampleRef != null) {
-                Sample sample = null;
+                boolean foundRef = false;
 
-                try {
-                    sample = sampleList.getSample(sampleRef);
-                } catch (NullPointerException ex) {
-                    throw new InvalidMzML("<sampleList> tag not defined prior to defining <run> tag.");
+                if (sampleList != null) {
+                    Sample sample = sampleList.getSample(sampleRef);
+
+                    if (sample != null) {
+                        foundRef = true;
+                        run.setSampleRef(sample);
+                    }
                 }
 
-                if (sample != null) {
-                    run.setSampleRef(sample);
-                } else {
-                    throw new InvalidMzML("Can't find sampleRef '" + sampleRef + "'.");
+                if (!foundRef) {
+                    MissingReferenceIssue missingRefIssue = new MissingReferenceIssue(sampleRef, "run", "sampleRef");
+                    missingRefIssue.setIssueLocation(currentContent);
+                    missingRefIssue.fixAttemptedByRemovingReference();
+
+                    notifyParserListeners(missingRefIssue);
                 }
             }
 
@@ -697,6 +773,10 @@ public class MzMLHeaderHandler extends DefaultHandler {
                     run.setStartTimeStamp(parsed);
                 } catch (ParseException pe) {
                     //throw new IllegalArgumentException();
+                    InvalidFormatIssue formatIssue = new InvalidFormatIssue("startTimeStamp", "yyyy-MM-dd'T'HH:mm:ss", startTimeStamp);
+                    formatIssue.setIssueLocation(currentContent);
+
+                    notifyParserListeners(formatIssue);
                 }
             }
 
@@ -709,71 +789,84 @@ public class MzMLHeaderHandler extends DefaultHandler {
             currentContent = run;
         } else if (qName.equals("spectrumList")) {
             String defaultDataProcessingRef = attributes.getValue("defaultDataProcessingRef");
-
-            if (defaultDataProcessingRef != null) {
-                DataProcessing dataProcessing = null;
-
-                try {
-                    dataProcessing = dataProcessingList.getDataProcessing(defaultDataProcessingRef);
-                } catch (NullPointerException ex) {
-                    throw new InvalidMzML("<dataProcessingList> tag not defined prior to defining <spectrumList> tag.");
-                }
+            DataProcessing dataProcessing = null;
+            
+            boolean foundRef = false;
+            
+            if (defaultDataProcessingRef != null && dataProcessingList != null) {
+                dataProcessing = dataProcessingList.getDataProcessing(defaultDataProcessingRef);
 
                 if (dataProcessing != null) {
                     numberOfSpectra = Integer.parseInt(attributes.getValue("count"));
-
-                    spectrumList = new SpectrumList(numberOfSpectra, dataProcessing);
-                } else {
-                    throw new InvalidMzML("Can't find defaultDataProcessingRef '" + defaultDataProcessingRef + "'.");
+                    foundRef = true;
                 }
-            } else {
-                // msconvert doesn't include default data processing so try and fix it
-                throw new InvalidMzML("No defaultProcessingRef attribute in spectrumList.");
+            }
+            
+            if(!foundRef) {
+                MissingReferenceIssue refIssue = new MissingReferenceIssue(defaultDataProcessingRef, "spectrumList", "defaultDataProcessingRef");
+                refIssue.setIssueLocation(currentContent);
+                refIssue.fixAttemptedByRemovingReference();
 
+                notifyParserListeners(refIssue);
+
+                // msconvert doesn't include default data processing so try and fix it
+                //throw new InvalidMzML("No defaultProcessingRef attribute in spectrumList.");
                 //spectrumList = new SpectrumList(Integer.parseInt(attributes.getValue("count")), dataProcessingList.getDataProcessing(0));
             }
+            
+            spectrumList = new SpectrumList(numberOfSpectra, dataProcessing);
 
-            try {
-                run.setSpectrumList(spectrumList);
-            } catch (NullPointerException ex) {
+            if (run == null) {
                 throw new InvalidMzML("<run> tag not defined prior to defining <spectrumList> tag.");
             }
+
+            run.setSpectrumList(spectrumList);
         } else if (qName.equals("spectrum")) {
             currentSpectrum = new Spectrum(attributes.getValue("id"), Integer.parseInt(attributes.getValue("defaultArrayLength")), Integer.parseInt(attributes.getValue("index")));
 
             String dataProcessingRef = attributes.getValue("dataProcessingRef");
-
+            
             if (dataProcessingRef != null) {
-                DataProcessing dataProcessing = null;
+                boolean foundRef = false;
+                
+                if(dataProcessingList != null) {
+                    DataProcessing dataProcessing = dataProcessingList.getDataProcessing(dataProcessingRef);
 
-                try {
-                    dataProcessing = dataProcessingList.getDataProcessing(dataProcessingRef);
-                } catch (NullPointerException ex) {
-                    throw new InvalidMzML("<dataProcessingList> tag not defined prior to defining <spectrum> tag.");
+                    if (dataProcessing != null) {
+                        currentSpectrum.setDataProcessingRef(dataProcessing);
+                        foundRef = true;
+                    }
                 }
+                
+                if(!foundRef) {
+                    MissingReferenceIssue refIssue = new MissingReferenceIssue(dataProcessingRef, "spectrum", "dataProcessingRef");
+                    refIssue.setIssueLocation(currentContent);
+                    refIssue.fixAttemptedByRemovingReference();
 
-                if (dataProcessing != null) {
-                    currentSpectrum.setDataProcessingRef(dataProcessing);
-                } else {
-                    throw new InvalidMzML("Can't find dataProcessingRef '" + dataProcessingRef + "' referenced in spectrum '" + currentSpectrum.getID() + "'");
+                    notifyParserListeners(refIssue);
                 }
             }
 
             String sourceFileRef = attributes.getValue("sourceFileRef");
 
             if (sourceFileRef != null) {
-                SourceFile sourceFile = null;
+                boolean foundRef = false;
+                
+                if(sourceFileList != null) {
+                    SourceFile sourceFile = sourceFileList.getSourceFile(sourceFileRef);
 
-                try {
-                    sourceFile = sourceFileList.getSourceFile(sourceFileRef);
-                } catch (NullPointerException ex) {
-                    throw new InvalidMzML("<sourceFileList> tag not defined prior to defining <spectrum> tag.");
+                    if (sourceFile != null) {
+                        currentSpectrum.setSourceFileRef(sourceFile);
+                        foundRef = true;
+                    }
                 }
+                
+                if(!foundRef) {
+                    MissingReferenceIssue refIssue = new MissingReferenceIssue(sourceFileRef, "spectrum", "sourceFileRef");
+                    refIssue.setIssueLocation(currentContent);
+                    refIssue.fixAttemptedByRemovingReference();
 
-                if (sourceFile != null) {
-                    currentSpectrum.setSourceFileRef(sourceFile);
-                } else {
-                    throw new InvalidMzML("Can't find sourceFileRef '" + sourceFileRef + "' referenced in spectrum '" + currentSpectrum.getID() + "'");
+                    notifyParserListeners(refIssue);
                 }
             }
 
@@ -821,14 +914,21 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 if (instrumentConfiguration != null) {
                     currentScan.setInstrumentConfigurationRef(instrumentConfiguration);
                 } else {
+                    MissingReferenceIssue refIssue = new MissingReferenceIssue(instrumentConfigurationRef, "scan", "instrumentConfigurationRef");
+                    refIssue.setIssueLocation(currentContent);
+                    
                     // TODO: Workaround only in place because of ABSciex converter bug where 
                     // the defaultInstrumentConfigurationRef is auto-incremented in every raster
                     // line file but the instrumentConfiguration id remains as 'instrumentConfiguration1'					
                     if (currentInstrumentConfiguration != null) {
                         currentScan.setInstrumentConfigurationRef(currentInstrumentConfiguration);
+                        refIssue.fixAttemptedByChangingReference(currentInstrumentConfiguration);
                     } else {
-                        throw new InvalidMzML("Can't find instrumentConfigurationRef '" + instrumentConfigurationRef + "' referenced in scan.");
+                        refIssue.fixAttemptedByRemovingReference();
+                        //throw new InvalidMzML("Can't find instrumentConfigurationRef '" + instrumentConfigurationRef + "' referenced in scan.");
                     }
+                    
+                    notifyParserListeners(refIssue);
                 }
             } else {
                 InstrumentConfiguration defaultIC = run.getDefaultInstrumentConfiguration();
@@ -841,18 +941,23 @@ public class MzMLHeaderHandler extends DefaultHandler {
             String sourceFileRef = attributes.getValue("sourceFileRef");
 
             if (sourceFileRef != null) {
-                SourceFile sourceFile = null;
+                boolean foundRef = false;
+                
+                if(sourceFileList != null) {
+                    SourceFile sourceFile = sourceFileList.getSourceFile(sourceFileRef);
 
-                try {
-                    sourceFile = sourceFileList.getSourceFile(sourceFileRef);
-                } catch (NullPointerException ex) {
-                    throw new InvalidMzML("<sourceFileList> tag not defined prior to defining <scan> tag.");
+                    if (sourceFile != null) {
+                        currentScan.setSourceFileRef(sourceFile);
+                        foundRef = true;
+                    }
                 }
+                
+                if(!foundRef) {
+                    MissingReferenceIssue refIssue = new MissingReferenceIssue(sourceFileRef, "scan", "sourceFileRef");
+                    refIssue.setIssueLocation(currentContent);
+                    refIssue.fixAttemptedByRemovingReference();
 
-                if (sourceFile != null) {
-                    currentScan.setSourceFileRef(sourceFile);
-                } else {
-                    throw new InvalidMzML("Can't find sourceFileRef '" + sourceFileRef + "' referenced in scan.");
+                    notifyParserListeners(refIssue);
                 }
             }
 
@@ -904,18 +1009,23 @@ public class MzMLHeaderHandler extends DefaultHandler {
             String sourceFileRef = attributes.getValue("sourceFileRef");
 
             if (sourceFileRef != null) {
-                SourceFile sourceFile = null;
+                boolean foundRef = false;
+                
+                if(sourceFileList != null) {
+                    SourceFile sourceFile = sourceFileList.getSourceFile(sourceFileRef);
 
-                try {
-                    sourceFile = sourceFileList.getSourceFile(sourceFileRef);
-                } catch (NullPointerException ex) {
-                    throw new InvalidMzML("<sourceFileList> tag not defined prior to defining <precursor> tag.");
+                    if (sourceFile != null) {
+                        foundRef = true;
+                        currentPrecursor.setSourceFileRef(sourceFile);
+                    }
                 }
+                
+                if(!foundRef) {
+                    MissingReferenceIssue refIssue = new MissingReferenceIssue(sourceFileRef, "precursor", "sourceFileRef");
+                    refIssue.setIssueLocation(currentContent);
+                    refIssue.fixAttemptedByRemovingReference();
 
-                if (sourceFile != null) {
-                    currentPrecursor.setSourceFileRef(sourceFile);
-                } else {
-                    throw new InvalidMzML("Can't find sourceFileRef '" + sourceFileRef + "' referenced in precursor.");
+                    notifyParserListeners(refIssue);
                 }
             }
 
@@ -1033,18 +1143,24 @@ public class MzMLHeaderHandler extends DefaultHandler {
             String dataProcessingRef = attributes.getValue("dataProcessingRef");
 
             if (dataProcessingRef != null) {
+                boolean foundRef = false;
                 DataProcessing dataProcessing = null;
 
-                try {
+                if(dataProcessingList != null) {
                     dataProcessing = dataProcessingList.getDataProcessing(dataProcessingRef);
-                } catch (NullPointerException ex) {
-                    throw new InvalidMzML("<dataProcessingList> tag not defined prior to defining <binaryDataArray> tag.");
-                }
 
-                if (dataProcessing != null) {
-                    currentBinaryDataArray.setDataProcessingRef(dataProcessing);
-                } else {
-                    throw new InvalidMzML("Can't find dataProcessingRef '" + dataProcessingRef + "' referenced by binaryDataArray.");
+                    if (dataProcessing != null) {
+                        foundRef = true;
+                        currentBinaryDataArray.setDataProcessingRef(dataProcessing);
+                    }
+                }
+                
+                if(!foundRef) {
+                    MissingReferenceIssue refIssue = new MissingReferenceIssue(dataProcessingRef, "binaryDataArray", "dataProcessingRef");
+                    refIssue.setIssueLocation(currentContent);
+                    refIssue.fixAttemptedByRemovingReference();
+
+                    notifyParserListeners(refIssue);
                 }
             }
 

@@ -9,12 +9,6 @@ package com.alanmrace.jimzmlparser.exceptions;
  *
  * @author Alan
  */
-public class ParseException extends Exception {
-    public ParseException(String message) {
-        super(message);
-    }
-
-    public ParseException(String message, Exception exception) {
-        super(message, exception);
-    }
+public interface ParseIssue extends Issue {
+    
 }

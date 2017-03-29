@@ -5,12 +5,12 @@
  */
 package com.alanmrace.jimzmlparser.parser;
 
-import com.alanmrace.jimzmlparser.exceptions.ParseException;
+import com.alanmrace.jimzmlparser.exceptions.Issue;
 
 /**
  *
  * @author Alan
  */
 public interface ParserListener {
-    void issueFound(ParseException exception);
+    void issueFound(Issue exception);
 }
