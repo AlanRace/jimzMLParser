@@ -447,14 +447,14 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
 
     public static double[] getBinnedmzList(double minMZ, double maxMZ, double binSize) {
         // Round the min m/z down to the next lowest bin, and the max m/z up to the next bin
-        minMZ = minMZ - (minMZ % binSize);
-        maxMZ = maxMZ + (binSize - (maxMZ % binSize));
+        double minMZRounded = minMZ - (minMZ % binSize);
+        double maxMZRounded = maxMZ + (binSize - (maxMZ % binSize));
 
-        int numBins = (int) Math.ceil((maxMZ - minMZ) / binSize);
+        int numBins = (int) Math.ceil((maxMZRounded - minMZRounded) / binSize);
         double[] mzs = new double[numBins];
 
         for (int i = 0; i < numBins; i++) {
-            mzs[i] = minMZ + (i * binSize);
+            mzs[i] = minMZRounded + (i * binSize);
         }
 
         return mzs;

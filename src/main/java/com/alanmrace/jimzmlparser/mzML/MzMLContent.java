@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class MzMLContent implements Serializable, MzMLTag { 
+public abstract class MzMLContent implements Serializable, MzMLTag {
 
     /**
      *
@@ -85,6 +85,7 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
     }
 
     //public abstract MzMLContent getElementAtXPath(String xPath) throws InvalidXPathException;
+    @Override
     public abstract String getTagName();
 
 //    public Collection<MzMLContent> getElementsAtXPath(String fullXPath, String currentXPath) throws InvalidXPathException {
@@ -102,11 +103,10 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
 //
 //        throw new InvalidXPathException("Not implemented sub-XPath (" + currentXPath + ") as part of " + fullXPath);
 //    }
-    
     protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
-        
+
     }
-    
+
     public final void addElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/" + getTagName())) {
             currentXPath = currentXPath.replaceFirst("/" + getTagName(), "");
@@ -119,23 +119,26 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
 
             addTagSpecificElementsAtXPathToCollection(elements, fullXPath, currentXPath);
 
-            if(elements.isEmpty())
+            if (elements.isEmpty()) {
                 throw new InvalidXPathException("Invalid sub-XPath (" + currentXPath + ") in XPath " + fullXPath, fullXPath);
+            }
         } else {
             throw new InvalidXPathException("XPath does not start with /" + getTagName() + " in sub-XPath [" + currentXPath + "] of [" + fullXPath + "]", fullXPath);
         }
     }
-        
+
     @Override
     public void addChildrenToCollection(Collection<MzMLTag> children) {
-        if(referenceableParamGroupRefs != null)
+        if (referenceableParamGroupRefs != null) {
             children.addAll(referenceableParamGroupRefs);
-        if(cvParams != null)
+        }
+        if (cvParams != null) {
             children.addAll(cvParams);
-        if(userParams != null)
+        }
+        if (userParams != null) {
             children.addAll(userParams);
+        }
     }
-    
 
 //	@JsonIgnore
     protected List<ReferenceableParamGroupRef> getReferenceableParamGroupRefList() {
@@ -191,10 +194,10 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
 
     public static class OBOTermInclusion {
 
-        String id;
-        boolean childrenAllowed;
-        boolean onlyOnce;
-        boolean parentIncluded;
+        protected String id;
+        protected boolean childrenAllowed;
+        protected boolean onlyOnce;
+        protected boolean parentIncluded;
 
         public OBOTermInclusion(String id, boolean onlyOnce, boolean childrenAllowed, boolean parentIncluded) {
             this.id = id;
@@ -377,7 +380,7 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
             return;
         }
 
-        UserParam removed = userParams.remove(index);
+        userParams.remove(index);
 
 //		removed.setParent(null);
     }
@@ -387,7 +390,6 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
 //			System.out.println("RPGR: " + referenceableParamGroupRefs);
 
 //        CVParam.CVParamType paramType = CVParam.getCVParamType(id);
-
         if (referenceableParamGroupRefs != null) {
             for (ReferenceableParamGroupRef ref : referenceableParamGroupRefs) {
                 if (ref == null) {

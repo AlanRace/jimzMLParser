@@ -42,17 +42,7 @@ public class Binary implements Serializable, MzMLTag {
      * Number of bytes of data.
      */
     private long numBytes;
-
-    @Override
-    public String getTagName() {
-        return "binary";
-    }
-
-    @Override
-    public void addChildrenToCollection(Collection<MzMLTag> children) {
-        // No children
-    }
-
+    
     public enum DataType {
         doublePrecision,
         singlePrecision,
@@ -73,6 +63,9 @@ public class Binary implements Serializable, MzMLTag {
     private CompressionType compression;
 
     private double[] data;
+
+
+    
 
     /**
      * Instantiates a new binary tag.
@@ -109,6 +102,17 @@ public class Binary implements Serializable, MzMLTag {
         this(data, DataType.doublePrecision, CompressionType.noCompression);
     }
 
+
+    @Override
+    public String getTagName() {
+        return "binary";
+    }
+
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        // No children
+    }
+    
     public static DataType getDataTypeFromCV(CVParam cvParam) {
         String term = cvParam.getTerm().getID();
 
@@ -216,7 +220,17 @@ public class Binary implements Serializable, MzMLTag {
 //	public long copyDataToDataStream(DataOutputStream binaryDataStream, long offset, boolean compress) {
 //		return copyDataToDataStream(binaryDataStream, offset, compress, cvDataType);
 //	}
-    private void convertDataType(byte[] inputBytes, CVParam newDataType, CVParam oldDataType) throws IOException {
+    
+    /**
+     * Convert data type
+     * 
+     * @param inputBytes
+     * @param newDataType
+     * @param oldDataType
+     * @return 
+     * @throws IOException 
+     */
+    private byte[] convertDataType(byte[] inputBytes, CVParam newDataType, CVParam oldDataType) throws IOException {
         if (!newDataType.equals(oldDataType)) {
             ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
             DataOutputStream byteStream = new DataOutputStream(byteArrayStream);
@@ -314,8 +328,12 @@ public class Binary implements Serializable, MzMLTag {
                 }
             }
 
-            inputBytes = byteArrayStream.toByteArray();
+            //inputBytes = 
+            
+            return byteArrayStream.toByteArray();
         }
+        
+        return inputBytes;
     }
 
 //	private void skipOffset(BufferedInputStream reader) throws IOException {
