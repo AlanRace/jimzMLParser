@@ -10,7 +10,7 @@ before_install:
   - ~/jpm/bin/jpm install com.codacy:codacy-coverage-reporter:assembly
     
 after_success:
-  - mvn clean test jacoco:report coveralls:report
+  - mvn clean test jacoco:report
   - bash <(curl -s https://codecov.io/bash)
   - ~/jpm/bin/codacy-coverage-reporter -l Java -r build/reports/jacoco/test/jacocoTestReport.xml
   - python <(curl -s https://raw.githubusercontent.com/TouK/sputnik-ci/master/sputnik-ci.py) 
