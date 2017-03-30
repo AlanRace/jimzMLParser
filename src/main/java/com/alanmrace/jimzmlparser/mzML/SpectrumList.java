@@ -90,7 +90,10 @@ public class SpectrumList extends MzMLContent implements Iterable<Spectrum>, Ser
 
     public void removeSpectrum(Spectrum spectrum) {
         spectrumList.remove(spectrum);
-        spectrumMap.remove(spectrum.getID(), spectrum);
+        
+        spectrumMap.remove(spectrum.getID());
+        // Below method only included in Java 1.8
+//        spectrumMap.remove(spectrum.getID(), spectrum);
     }
 
     @Override

@@ -91,7 +91,11 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
 
                         logger.log(Level.FINE, "Read in {0} bytes", fullmzListBytes.length);
 
-                        fullmzList = new double[fullmzListBytes.length / Double.BYTES];
+                        int numBytesPerDouble = Double.SIZE / Byte.SIZE;
+                        // The below is only available in Java 1.8
+                        //Double.BYTES
+                        
+                        fullmzList = new double[fullmzListBytes.length / numBytesPerDouble];
 
                         ByteBuffer buffer = ByteBuffer.wrap(fullmzListBytes);
                         DoubleBuffer doubleBuffer = buffer.asDoubleBuffer();
