@@ -26,25 +26,6 @@ public class MzMLHeaderHandlerTest {
     private static final Logger logger = Logger.getLogger(MzMLHeaderHandlerTest.class.getName());
     
     private static final String TEST_RESOURCE = "/2012_5_2_medium_81.mzML";
-    
-    public MzMLHeaderHandlerTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
-    }
 
     /**
      * Test of setDocumentLocator method, of class MzMLHeaderHandler.

@@ -5,10 +5,6 @@
  */
 package com.alanmrace.jimzmlparser.imzML;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
@@ -19,24 +15,6 @@ import org.junit.Ignore;
  */
 public class PixelLocationTest {
     
-    public PixelLocationTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
-    }
 
     /**
      * Test of getX method, of class PixelLocation.

@@ -58,6 +58,10 @@ public class MzML extends MzMLContent implements Serializable {
     private Run run;
 
     private OBO obo;
+    
+    private boolean outputIndex = false;
+    private RandomAccessFile raf;
+
 
     public MzML(String version) {
         this.version = version;
@@ -97,12 +101,10 @@ public class MzML extends MzMLContent implements Serializable {
         this.dataStorage = dataStorage;
     }
 
-//	@JsonIgnore
     public void setOBO(OBO obo) {
         this.obo = obo;
     }
 
-//	@JsonIgnore
     public OBO getOBO() {
         return obo;
     }
@@ -151,17 +153,6 @@ public class MzML extends MzMLContent implements Serializable {
         return fileDescription;
     }
 
-//	public void addReferenceableParamGroup(ReferenceableParamGroup rpg) {
-//		referenceableParamGroupList.add(rpg);
-//	}
-//	
-//	public int getReferenceableParamGroupCount() {
-//		return referenceableParamGroupList.size();
-//	}
-//	
-//	public ReferenceableParamGroup getReferenceableParamGroup(int index) {
-//		return referenceableParamGroupList.getReferenceableParamGroup(index);
-//	}
     public void setReferenceableParamGroupList(ReferenceableParamGroupList referenceableParamGroupList) {
         referenceableParamGroupList.setParent(this);
 
@@ -176,14 +167,6 @@ public class MzML extends MzMLContent implements Serializable {
         return referenceableParamGroupList;
     }
 
-//	public ReferenceableParamGroup getReferenceableParamGroup(String id) {
-//		return referenceableParamGroupList.getReferenceableParamGroup(id);
-//	}
-//	
-//	public void removeReferenceableParamGroup(int index) {
-//		referenceableParamGroupList.remove(index);
-//	}
-//	
     public void setSampleList(SampleList sampleList) {
         sampleList.setParent(this);
 
@@ -212,21 +195,6 @@ public class MzML extends MzMLContent implements Serializable {
         return softwareList;
     }
 
-//	public void addSoftware(Software sw) {
-//		softwareList.add(sw);
-//	}
-//	
-//	public int getSoftwareCount() {
-//		return softwareList.size();
-//	}
-//	
-//	public Software getSoftware(int index) {
-//		return softwareList.get(index);
-//	}
-//	
-//	public void removeSoftware(int index) {
-//		softwareList.remove(index);
-//	}
     public void setScanSettingsList(ScanSettingsList scanSettingsList) {
         scanSettingsList.setParent(this);
 
@@ -255,17 +223,6 @@ public class MzML extends MzMLContent implements Serializable {
         return instrumentConfigurationList;
     }
 
-//	public void addInstrumentConfiguration(InstrumentConfiguration ic) {
-//		instrumentConfigurationList.add(ic);
-//	}
-//	
-//	public int getInstrumentConfigurationCount() {
-//		return instrumentConfigurationList.size();
-//	}
-//	
-//	public InstrumentConfiguration getInstrumentConfiguration(int index) {
-//		return instrumentConfigurationList.get(index);
-//	}
     @Override
     public String getTagName() {
         return "mzML";
@@ -348,21 +305,6 @@ public class MzML extends MzMLContent implements Serializable {
         return dataProcessingList;
     }
 
-//	public void addDataProcessing(DataProcessing dp) {
-//		dataProcessingList.add(dp);
-//	}
-//	
-//	public int getDataProcessingCount() {
-//		return dataProcessingList.size();
-//	}
-//	
-//	public DataProcessing getDataProcessing(int index) {
-//		return dataProcessingList.get(index);
-//	}
-//	
-//	public void removeDataProcessing(int index) {
-//		dataProcessingList.remove(index);
-//	}
     public void setRun(Run run) {
         run.setParent(this);
 
@@ -372,36 +314,6 @@ public class MzML extends MzMLContent implements Serializable {
     public Run getRun() {
         return run;
     }
-
-//	public Sample getSample(String sampleRef) {
-//		for(Sample sample : sampleList)
-//			if(sample.getID().equals(sampleRef))
-//				return sample;
-//		
-//		return null;
-//	}
-//	
-//	public Software getSoftware(String softwareRef) {
-//		for(Software software : softwareList)
-//			if(software.getID().equals(softwareRef))
-//				return software;
-//		
-//		return null;
-//	}
-//	
-//	public InstrumentConfiguration getInstrumentConfiguration(String instrumentConfigurationRef) {
-//		for(InstrumentConfiguration ic : instrumentConfigurationList)
-//			if(ic.getID().equals(instrumentConfigurationRef))
-//				return ic;
-//		
-//		return null;
-//	}
-//
-//	public DataProcessing getDataProcessing(String dataProcessingRef) {
-//		return dataProcessingList.get(dataProcessingRef);
-//	}
-    boolean outputIndex = false;
-    RandomAccessFile raf;
 
     public void write(String filename) throws ImzMLWriteException {
         try {

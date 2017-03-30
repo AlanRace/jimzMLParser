@@ -9,9 +9,9 @@ public class CVParamAccessionNotFoundException extends NonFatalParseException {
      */
     private static final long serialVersionUID = 1470705281628394244L;
 
-    String accession;
+    private final String accession;
     
-    UserParam userParam;
+    private UserParam userParam;
 
     public CVParamAccessionNotFoundException(String accession) {
         this.accession = accession;

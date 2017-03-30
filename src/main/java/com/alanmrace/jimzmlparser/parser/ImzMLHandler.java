@@ -282,7 +282,7 @@ public class ImzMLHandler extends MzMLHeaderHandler {
 //            count++;
         }
 
-        if (qName.equals("run") && processingSCiLS3DData) {
+        if ("run".equals(qName) && processingSCiLS3DData) {
             this.currentScanSettings.getCVParam("IMS:1000042").setValueAsString("" + this.datasetMaxX);
             this.currentScanSettings.getCVParam("IMS:1000043").setValueAsString("" + this.datasetMaxY);
 

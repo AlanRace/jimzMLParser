@@ -1,8 +1,5 @@
 package com.alanmrace.jimzmlparser.obo;
 
-import com.alanmrace.jimzmlparser.util.XMLHelper;
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -110,63 +107,63 @@ public class OBOTerm implements Serializable {
             value = value.substring(0, indexOfExclaimation).trim();
         }
 
-        if (tag.equals("name")) {
+        if ("name".equals(tag)) {
             this.name = value;
-        } else if (tag.equals("namespace")) {
+        } else if ("namespace".equals(tag)) {
             this.namespace = value;
-        } else if (tag.equals("def")) {
+        } else if ("def".equals(tag)) {
 //			this.def = value;
-        } else if (tag.equals("comment")) {
+        } else if ("comment".equals(tag)) {
 //			this.comment = value;
-        } else if (tag.equals("relationship")) {
+        } else if ("relationship".equals(tag)) {
             int indexOfSpace = value.indexOf(" ");
             String relationshipTag = value.substring(0, indexOfSpace).trim();
             String relationshipValue = value.substring(indexOfSpace + 1).trim();
 
-            if (relationshipTag.equals("is_a")) {
+            if ("is_a".equals(relationshipTag)) {
                 is_a.add(relationshipValue);
-            } else if (relationshipTag.equals("has_units")) {
+            } else if ("has_units".equals(relationshipTag)) {
                 unitName = relationshipValue;
-            } else if (relationshipTag.equals("part_of")) {
+            } else if ("part_of".equals(relationshipTag)) {
                 part_of.add(relationshipValue);
             } else {
                 //System.out.println("INFO: Relationship tag not implemented '" + relationshipTag + "'");
             }
-        } else if (tag.equals("is_a")) {
+        } else if ("is_a".equals(tag)) {
             is_a.add(value);
-        } else if (tag.equals("is_obsolete")) {
+        } else if ("is_obsolete".equals(tag)) {
             is_obsolete = Boolean.parseBoolean(value);
-        } else if (tag.equals("xref")) {
+        } else if ("xref".equals(tag)) {
             if(value.contains("value-type:xsd\\:")) {
                 String[] substrings = value.replace("value-type:xsd\\:", "").split("\\s");
                 
-                if(substrings[0].equals("string")) {
+                if("string".equals(substrings[0])) {
                     valueType = XMLType.String;
-                } else if(substrings[0].equals("integer")) {
+                } else if("integer".equals(substrings[0])) {
                     valueType = XMLType.Integer;
-                } else if(substrings[0].equals("int")) {
+                } else if("int".equals(substrings[0])) {
                     valueType = XMLType.Int;
-                } else if(substrings[0].equals("decimal")) {
+                } else if("decimal".equals(substrings[0])) {
                     valueType = XMLType.Decimal;
-                } else if(substrings[0].equals("negativeInteger")) {
+                } else if("negativeInteger".equals(substrings[0])) {
                     valueType = XMLType.NegativeInteger;
-                } else if(substrings[0].equals("positiveInteger")) {
+                } else if("positiveInteger".equals(substrings[0])) {
                     valueType = XMLType.PositiveInteger;
-                } else if(substrings[0].equals("nonNegativeInteger")) {
+                } else if("nonNegativeInteger".equals(substrings[0])) {
                     valueType = XMLType.NonNegativeInteger;
-                } else if(substrings[0].equals("boolean")) {
+                } else if("boolean".equals(substrings[0])) {
                     valueType = XMLType.Boolean;
-                } else if(substrings[0].equals("date")) {
+                } else if("date".equals(substrings[0])) {
                     valueType = XMLType.Date;
-                } else if(substrings[0].equals("float")) {
+                } else if("float".equals(substrings[0])) {
                     valueType = XMLType.Float; 
-                } else if(substrings[0].equals("nonNegativeFloat")) {
+                } else if("nonNegativeFloat".equals(substrings[0])) {
                     valueType = XMLType.NonNegativeFloat;
-                } else if(substrings[0].equals("nonNegativeDouble")) {
+                } else if("nonNegativeDouble".equals(substrings[0])) {
                     valueType = XMLType.NonNegativeDouble;
-                } else if(substrings[0].equals("double")) {
+                } else if("double".equals(substrings[0])) {
                     valueType = XMLType.Double;  
-                } else if(substrings[0].equals("anyURI")) {
+                } else if("anyURI".equals(substrings[0])) {
                     valueType = XMLType.AnyURI;
                 } else {
                     logger.log(Level.INFO, "INFO: Unknown value-type encountered ''{0}'' @ {1}", new Object[] {value, id});
@@ -179,18 +176,6 @@ public class OBOTerm implements Serializable {
         }
     }
 
-//	private void addParentChildRelationship(OBO currentOBO, String id) {
-//		// TODO: Implement is_a
-//		OBOTerm term = currentOBO.getTerm(id);
-//		
-//		if(term == null) {
-//			System.err.println("Haven't found " + id);
-//		} else {
-//			term.addChild(this);
-//			is_a.add(term);
-//		}
-//	}
-//	@JsonIgnore
     public void addChild(OBOTerm child) {
 //		System.out.println("INFO: Adding child " + child.getID() + " to " + getID());
         children.add(child);
@@ -205,12 +190,10 @@ public class OBOTerm implements Serializable {
         return is_obsolete;
     }
     
-//	@JsonIgnore
     public void addParent(OBOTerm parent) {
         parents.add(parent);
     }
 
-//	@JsonIgnore
     public boolean isParentOf(String id) {
         if (this.id.equals(id)) {
             return true;
@@ -225,7 +208,6 @@ public class OBOTerm implements Serializable {
         return false;
     }
 
-//	@JsonIgnore
     public boolean isChildOf(String id) {
         if (this.id.equals(id)) {
             return true;
@@ -240,12 +222,10 @@ public class OBOTerm implements Serializable {
         return false;
     }
 
-//	@JsonIgnore
     public Collection<OBOTerm> getChildren() {
         return children;
     }
 
-//	@JsonIgnore
     public Collection<OBOTerm> getAllChildren() {
         ArrayList<OBOTerm> allChildren = new ArrayList<OBOTerm>();
 
@@ -256,7 +236,6 @@ public class OBOTerm implements Serializable {
         return allChildren;
     }
 
-//	@JsonIgnore
     private void getAllChildren(ArrayList<OBOTerm> allChildren) {
         allChildren.add(this);
 
@@ -265,7 +244,6 @@ public class OBOTerm implements Serializable {
         }
     }
 
-//	@JsonIgnore
     public Collection<OBOTerm> getAllParents() {
         ArrayList<OBOTerm> allParents = new ArrayList<OBOTerm>();
 
@@ -280,7 +258,6 @@ public class OBOTerm implements Serializable {
         return getAllParents().contains(term);
     }
 
-//	@JsonIgnore
     private void getAllParents(ArrayList<OBOTerm> allParents) {
         allParents.add(this);
 
@@ -289,7 +266,6 @@ public class OBOTerm implements Serializable {
         }
     }
 
-//	@JsonIgnore
     public Collection<String> getAllChildNames() {
         ArrayList<String> allChildren = new ArrayList<String>();
 
@@ -300,7 +276,6 @@ public class OBOTerm implements Serializable {
         return allChildren;
     }
 
-//	@JsonIgnore
     private void getAllChildNames(ArrayList<String> allChildren, int indent) {
         String indented = "";
 
@@ -315,12 +290,10 @@ public class OBOTerm implements Serializable {
         }
     }
 
-//	@JsonIgnore
     public Collection<String> getIsA() {
         return is_a;
     }
 
-//	@JsonIgnore
     public Collection<String> getPartOf() {
         return part_of;
     }
