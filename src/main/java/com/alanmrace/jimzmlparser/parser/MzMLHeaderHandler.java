@@ -222,13 +222,13 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
                     notifyParserListeners(notFound);
                 } else {
-                    if(term.isObsolete()) {
+                    if (term.isObsolete()) {
                         ObsoleteTermUsed obsoleteIssue = new ObsoleteTermUsed(term);
                         obsoleteIssue.setIssueLocation(currentContent);
 
                         notifyParserListeners(obsoleteIssue);
                     }
-                    
+
                     try {
                         CVParam.CVParamType paramType = CVParam.getCVParamType(term);
                         //System.out.println(term + " " + paramType);
@@ -243,8 +243,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
                                 cvParam = new StringCVParam(term, value, units);
                             } else if (paramType.equals(CVParam.CVParamType.Empty)) {
                                 cvParam = new EmptyCVParam(term, units);
-                                
-                                if(value != null) {
+
+                                if (value != null) {
                                     InvalidFormatIssue formatIssue = new InvalidFormatIssue(term, attributes.getValue("value"));
                                     formatIssue.setIssueLocation(currentContent);
 
@@ -790,9 +790,9 @@ public class MzMLHeaderHandler extends DefaultHandler {
         } else if ("spectrumList".equals(qName)) {
             String defaultDataProcessingRef = attributes.getValue("defaultDataProcessingRef");
             DataProcessing dataProcessing = null;
-            
+
             boolean foundRef = false;
-            
+
             if (defaultDataProcessingRef != null && dataProcessingList != null) {
                 dataProcessing = dataProcessingList.getDataProcessing(defaultDataProcessingRef);
 
@@ -801,8 +801,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
                     foundRef = true;
                 }
             }
-            
-            if(!foundRef) {
+
+            if (!foundRef) {
                 MissingReferenceIssue refIssue = new MissingReferenceIssue(defaultDataProcessingRef, "spectrumList", "defaultDataProcessingRef");
                 refIssue.setIssueLocation(currentContent);
                 refIssue.fixAttemptedByRemovingReference();
@@ -813,7 +813,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 //throw new InvalidMzML("No defaultProcessingRef attribute in spectrumList.");
                 //spectrumList = new SpectrumList(Integer.parseInt(attributes.getValue("count")), dataProcessingList.getDataProcessing(0));
             }
-            
+
             spectrumList = new SpectrumList(numberOfSpectra, dataProcessing);
 
             if (run == null) {
@@ -825,11 +825,11 @@ public class MzMLHeaderHandler extends DefaultHandler {
             currentSpectrum = new Spectrum(attributes.getValue("id"), Integer.parseInt(attributes.getValue("defaultArrayLength")), Integer.parseInt(attributes.getValue("index")));
 
             String dataProcessingRef = attributes.getValue("dataProcessingRef");
-            
+
             if (dataProcessingRef != null) {
                 boolean foundRef = false;
-                
-                if(dataProcessingList != null) {
+
+                if (dataProcessingList != null) {
                     DataProcessing dataProcessing = dataProcessingList.getDataProcessing(dataProcessingRef);
 
                     if (dataProcessing != null) {
@@ -837,8 +837,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
                         foundRef = true;
                     }
                 }
-                
-                if(!foundRef) {
+
+                if (!foundRef) {
                     MissingReferenceIssue refIssue = new MissingReferenceIssue(dataProcessingRef, "spectrum", "dataProcessingRef");
                     refIssue.setIssueLocation(currentContent);
                     refIssue.fixAttemptedByRemovingReference();
@@ -851,8 +851,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
             if (sourceFileRef != null) {
                 boolean foundRef = false;
-                
-                if(sourceFileList != null) {
+
+                if (sourceFileList != null) {
                     SourceFile sourceFile = sourceFileList.getSourceFile(sourceFileRef);
 
                     if (sourceFile != null) {
@@ -860,8 +860,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
                         foundRef = true;
                     }
                 }
-                
-                if(!foundRef) {
+
+                if (!foundRef) {
                     MissingReferenceIssue refIssue = new MissingReferenceIssue(sourceFileRef, "spectrum", "sourceFileRef");
                     refIssue.setIssueLocation(currentContent);
                     refIssue.fixAttemptedByRemovingReference();
@@ -916,7 +916,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 } else {
                     MissingReferenceIssue refIssue = new MissingReferenceIssue(instrumentConfigurationRef, "scan", "instrumentConfigurationRef");
                     refIssue.setIssueLocation(currentContent);
-                    
+
                     // TODO: Workaround only in place because of ABSciex converter bug where 
                     // the defaultInstrumentConfigurationRef is auto-incremented in every raster
                     // line file but the instrumentConfiguration id remains as 'instrumentConfiguration1'					
@@ -927,7 +927,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                         refIssue.fixAttemptedByRemovingReference();
                         //throw new InvalidMzML("Can't find instrumentConfigurationRef '" + instrumentConfigurationRef + "' referenced in scan.");
                     }
-                    
+
                     notifyParserListeners(refIssue);
                 }
             } else {
@@ -942,8 +942,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
             if (sourceFileRef != null) {
                 boolean foundRef = false;
-                
-                if(sourceFileList != null) {
+
+                if (sourceFileList != null) {
                     SourceFile sourceFile = sourceFileList.getSourceFile(sourceFileRef);
 
                     if (sourceFile != null) {
@@ -951,8 +951,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
                         foundRef = true;
                     }
                 }
-                
-                if(!foundRef) {
+
+                if (!foundRef) {
                     MissingReferenceIssue refIssue = new MissingReferenceIssue(sourceFileRef, "scan", "sourceFileRef");
                     refIssue.setIssueLocation(currentContent);
                     refIssue.fixAttemptedByRemovingReference();
@@ -1010,8 +1010,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
             if (sourceFileRef != null) {
                 boolean foundRef = false;
-                
-                if(sourceFileList != null) {
+
+                if (sourceFileList != null) {
                     SourceFile sourceFile = sourceFileList.getSourceFile(sourceFileRef);
 
                     if (sourceFile != null) {
@@ -1019,8 +1019,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
                         currentPrecursor.setSourceFileRef(sourceFile);
                     }
                 }
-                
-                if(!foundRef) {
+
+                if (!foundRef) {
                     MissingReferenceIssue refIssue = new MissingReferenceIssue(sourceFileRef, "precursor", "sourceFileRef");
                     refIssue.setIssueLocation(currentContent);
                     refIssue.fixAttemptedByRemovingReference();
@@ -1146,7 +1146,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 boolean foundRef = false;
                 DataProcessing dataProcessing = null;
 
-                if(dataProcessingList != null) {
+                if (dataProcessingList != null) {
                     dataProcessing = dataProcessingList.getDataProcessing(dataProcessingRef);
 
                     if (dataProcessing != null) {
@@ -1154,8 +1154,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
                         currentBinaryDataArray.setDataProcessingRef(dataProcessing);
                     }
                 }
-                
-                if(!foundRef) {
+
+                if (!foundRef) {
                     MissingReferenceIssue refIssue = new MissingReferenceIssue(dataProcessingRef, "binaryDataArray", "dataProcessingRef");
                     refIssue.setIssueLocation(currentContent);
                     refIssue.fixAttemptedByRemovingReference();
@@ -1290,22 +1290,10 @@ public class MzMLHeaderHandler extends DefaultHandler {
     }
 
     protected void setDataContainer(MzMLDataContainer dataContainer, long offset) {
-        //System.out.println(previousOffset + " " + spectrum);		    
-        if (previousOffset != -1) {
-            if (openDataStorage && dataContainer != null) {
-                DataLocation dataLocation = new DataLocation(dataStorage, previousOffset, (int) (offset - previousOffset));
+        if (previousOffset != -1 && openDataStorage && dataContainer != null) {
+            DataLocation dataLocation = new DataLocation(dataStorage, previousOffset, (int) (offset - previousOffset));
 
-//                            if(dataContainer.getID().equals("TIC"))
-//                                System.out.println(dataLocation);
-                //    System.out.println("DataLocation: " + dataLocation);
-                dataContainer.setDataLocation(dataLocation);
-            }
-
-            //    System.out.println(previousOffsetIDRef + " " + dataLocation);
-            //    System.out.println(spectrum.getDataLocation());
-            //    System.out.println(spectrum.getBinaryDataArrayList().getBinaryDataArray(0));
-            //    System.out.println(run.getSpectrumList().size());
-            //    System.out.println(run.getSpectrumList().getSpectrum(0).getBinaryDataArrayList().getBinaryDataArray(0));
+            dataContainer.setDataLocation(dataLocation);
         }
     }
 

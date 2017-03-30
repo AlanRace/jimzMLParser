@@ -16,12 +16,12 @@ public class XMLHelper {
 	if(input == null)
             return "";
 	
-        input = input.replaceAll("&amp;", "&");
-        input = input.replaceAll("&", "&amp;");
+        String output = input.replaceAll("&amp;", "&");
+        output = output.replaceAll("&", "&amp;");
         
-	input = input.replaceAll("\"", "&quot;");
+	output = output.replaceAll("\"", "&quot;");
         
 		
-	return input;
+	return output;
     }
 }

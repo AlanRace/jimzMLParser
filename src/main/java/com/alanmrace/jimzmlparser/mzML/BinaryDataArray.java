@@ -246,53 +246,33 @@ public class BinaryDataArray extends MzMLContent implements Serializable {
     public boolean isSinglePrecision() {
         CVParam dataType = getCVParam(singlePrecisionID);
 
-        if (dataType == null) {
-            return false;
-        }
-
-        return true;
+        return dataType != null;
     }
 
     public boolean isSigned8BitInteger() {
         CVParam dataType = getCVParam(signed8bitIntegerID);
 
-        if (dataType == null) {
-            return false;
-        }
-
-        return true;
+        return dataType != null;
     }
 
     public boolean isSigned16BitInteger() {
         CVParam dataType = getCVParam(signed16bitIntegerID);
 
-        if (dataType == null) {
-            return false;
-        }
-
-        return true;
+        return dataType != null;
     }
 
     public boolean isSigned32BitInteger() {
         CVParam dataType = getCVParam(signed32bitIntegerID);
         CVParam imsDataType = getCVParam(imsSigned32bitIntegerID);
 
-        if (dataType == null && imsDataType == null) {
-            return false;
-        }
-
-        return true;
+        return !(dataType == null && imsDataType == null);
     }
 
     public boolean isSigned64BitInteger() {
         CVParam dataType = getCVParam(signed64bitIntegerID);
         CVParam imsDataType = getCVParam(imsSigned64bitIntegerID);
 
-        if (dataType == null && imsDataType == null) {
-            return false;
-        }
-
-        return true;
+        return !(dataType == null && imsDataType == null);
     }
 
     public boolean isCompressed() {

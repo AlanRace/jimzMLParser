@@ -13,7 +13,7 @@ import com.alanmrace.jimzmlparser.obo.OBOTerm;
  */
 public class ObsoleteTermUsed extends NonFatalParseException {
     
-    OBOTerm term;
+    private OBOTerm term;
     
     public ObsoleteTermUsed(OBOTerm term) {
         this.term = term;

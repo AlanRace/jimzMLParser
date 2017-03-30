@@ -26,14 +26,14 @@ public class OBO implements Serializable {
         terms = new HashMap<String, OBOTerm>();
 
         // Strip off the URL details if they exist
-        if(path.contains("http://")) {
-            path = path.substring(path.lastIndexOf("/")+1).toLowerCase();
+        if (path.contains("http://")) {
+            path = path.substring(path.lastIndexOf("/") + 1).toLowerCase();
         }
-        
+
         logger.log(Level.FINER, "Parsing OBO /obo/{0}", path);
-        
+
         InputStream is = OBO.class.getResourceAsStream("/obo/" + path);
-        
+
         InputStreamReader isr = new InputStreamReader(is);
         BufferedReader in = new BufferedReader(isr);
 
@@ -69,34 +69,18 @@ public class OBO implements Serializable {
                     // TODO: Add in header information
                     int locationOfColon = curLine.indexOf(":");
                     String tag = curLine.substring(0, locationOfColon).trim();
-                    String value = curLine.substring(locationOfColon+1).trim().toLowerCase();
+                    String value = curLine.substring(locationOfColon + 1).trim().toLowerCase();
 
-//                    System.out.println("Tag: " + tag);
-//                    System.out.println("Value: " + value);
-                    
-                    if (tag != null && value != null) {
-//                        String tag = splitLine[0].trim();
-//                        String value = splitLine[1].trim();
+                    if (tag != null && value != null
+                            && "import".equals(tag)) {
 
-                        if (tag.equals("import")) {
-//							if(!value.contains("\\")) {
-//								String parent = oboFile.getParent();
-//								
-//								if(parent != null)
-//									value = parent + File.separator + value;
-//							}
-
-							//System.out.println(value);
-                            
-                            
-                            imports.add(new OBO(value));
-                        }
+                        imports.add(new OBO(value));
                     }
                 }
             }
         } catch (IOException ex) {
             Logger.getLogger(OBO.class.getName()).log(Level.SEVERE, null, ex);
-        } 
+        }
 
         // Process relationships
         for (OBOTerm term : terms.values()) {

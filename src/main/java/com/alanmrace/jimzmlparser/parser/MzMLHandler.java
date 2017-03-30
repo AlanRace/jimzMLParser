@@ -30,15 +30,14 @@ public class MzMLHandler extends MzMLHeaderHandler {
     protected boolean processingBinary;
 
     protected File temporaryBinaryFile;
-//    protected BinaryDataStorage dataStorage;
+
     protected DataOutputStream temporaryFileStream;
     protected StringBuffer binaryData;
     protected long offset = 0;
 
-    byte[] temp;
-    ArrayList<Byte> uncompressedData;
+    private byte[] temp;
+    private ArrayList<Byte> uncompressedData;
 
-//	private int[] order;
     public MzMLHandler(OBO obo, File temporaryBinaryFile) throws FileNotFoundException {
         super(obo);
 
@@ -102,18 +101,9 @@ public class MzMLHandler extends MzMLHeaderHandler {
         temporaryBinaryFile.delete();
     }
 
-//	public void setPixelOrder(int[] order) {
-//		this.order = order;
-//	}
-//	
-//	public void setIBDStream(DataOutputStream ibdStream, long offset) {
-//		this.ibdStream = ibdStream;
-//		this.offset = offset;
-//	}
-    //Event Handlers
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-        if (qName.equals("binary")) {
+        if ("binary".equals(qName)) {
             binaryData.setLength(0);
 
             processingBinary = true;
@@ -133,7 +123,7 @@ public class MzMLHandler extends MzMLHeaderHandler {
 
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
-        if (qName.equals("binary")) {
+        if ("binary".equals(qName)) {
             // Convert the data from base 64
             byte[] processedData = DatatypeConverter.parseBase64Binary(binaryData.toString());
 
@@ -169,7 +159,6 @@ public class MzMLHandler extends MzMLHeaderHandler {
                         logger.log(Level.SEVERE, null, ex);
                     }
 
-                    //lengthToWrite += uncompressed;
                 } while (uncompressed != 0);
 
                 if (processedData.length < lengthToWrite) {
@@ -179,7 +168,7 @@ public class MzMLHandler extends MzMLHeaderHandler {
                 for (int i = 0; i < lengthToWrite; i++) {
                     processedData[i] = uncompressedData.get(i);
                 }
-                //System.out.println("Processed: " + length);
+                
                 decompressor.end();
             }
 
@@ -191,24 +180,10 @@ public class MzMLHandler extends MzMLHeaderHandler {
 
             currentBinaryDataArray.setDataLocation(new DataLocation(dataStorage, offset, lengthToWrite));
 
-//                        if(true)
-//                            throw new RuntimeException("Removed code - won't work");
-//			Binary binary = new Binary(dataStorage, offset, lengthToWrite, currentBinaryDataArray.getCVParamOrChild(BinaryDataArray.dataTypeID));
-//			currentBinaryDataArray.setBinary(binary);
             offset += lengthToWrite;
             processingBinary = false;
         } else {
             super.endElement(uri, localName, qName);
         }
-//		} else if(qName.equals("mzML"))
-//			if(binaryDataStream != null) {
-//				try {
-//					binaryDataStream.close();
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//			}
-
     }
 }

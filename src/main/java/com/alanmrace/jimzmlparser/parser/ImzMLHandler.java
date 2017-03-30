@@ -142,10 +142,10 @@ public class ImzMLHandler extends MzMLHeaderHandler {
             }
         }
 
-        if (qName.equals("userParam")) {
+        if ("userParam".equals(qName)) {
             String name = attributes.getValue("name");
 
-            if (name.equals("3DPositionZ")) {
+            if ("3DPositionZ".equals(name)) {
                 processingSCiLS3DData = true;
 
                 double z = Double.parseDouble(attributes.getValue("value"));
@@ -187,7 +187,7 @@ public class ImzMLHandler extends MzMLHeaderHandler {
             }
         }
 
-        if (qName.equals("mzML")) {
+        if ("mzML".equals(qName)) {
             mzML = new ImzML(attributes.getValue("version"));
 
             // Add optional attributes
