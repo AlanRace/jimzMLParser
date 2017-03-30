@@ -236,7 +236,7 @@ public class ImzMLHandler extends MzMLHeaderHandler {
 //			currentBinaryDataArray.setBinary(new Binary(dataStorage, currentOffset, currentNumBytes, dataType));
         }
 
-        if (qName.equals("scan") && processingSCiLS3DData) {
+        if ("scan".equals(qName) && processingSCiLS3DData) {
             int x = currentScan.getCVParam(Scan.positionXID).getValueAsInteger();
 
             if (x > imageMaxX) {

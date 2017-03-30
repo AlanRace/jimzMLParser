@@ -1,17 +1,10 @@
 package com.alanmrace.jimzmlparser.mzML;
 
-import com.alanmrace.jimzmlparser.parser.DataStorage;
 import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.ArrayList;
-import java.util.zip.Deflater;
-
-import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
 import java.util.Collection;
 
@@ -27,11 +20,6 @@ public class Binary implements Serializable, MzMLTag {
      *
      */
     private static final long serialVersionUID = 1L;
-
-    /**
-     * Number of bytes of data.
-     */
-    private long numBytes;
     
     public enum DataType {
         doublePrecision,

@@ -12,11 +12,11 @@ import com.alanmrace.jimzmlparser.mzML.MzMLContent;
  * @author Alan
  */
 public class MissingReferenceIssue extends NonFatalParseException {
-    String reference;
-    String tagName;
-    String attributeName;
+    private String reference;
+    private String tagName;
+    private String attributeName;
     
-    MzMLContent newReference;
+    private MzMLContent newReference;
     
     public MissingReferenceIssue(String reference, String tagName, String attributeName) {
         this.reference = reference;

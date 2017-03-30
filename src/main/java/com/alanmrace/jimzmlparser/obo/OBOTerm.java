@@ -111,9 +111,9 @@ public class OBOTerm implements Serializable {
             this.name = value;
         } else if ("namespace".equals(tag)) {
             this.namespace = value;
-        } else if ("def".equals(tag)) {
+//        } else if ("def".equals(tag)) {
 //			this.def = value;
-        } else if ("comment".equals(tag)) {
+//        } else if ("comment".equals(tag)) {
 //			this.comment = value;
         } else if ("relationship".equals(tag)) {
             int indexOfSpace = value.indexOf(" ");

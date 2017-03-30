@@ -9,7 +9,6 @@ import com.alanmrace.jimzmlparser.exceptions.ImzMLParseException;
 import com.alanmrace.jimzmlparser.mzML.Spectrum;
 import com.alanmrace.jimzmlparser.parser.ImzMLHandler;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.After;
@@ -30,21 +29,15 @@ public class ImzMLTest {
     
     public static final String TEST_RESOURCE = "/MatrixTests_N2.imzML"; // "/2012_5_2_medium(120502,20h18m).wiff"; 
     
-    ImzML instance;
+    private ImzML instance;
     
-    public ImzMLTest() {
-    }
-    
+       
     @BeforeClass
     public static void setUpClass() {
         System.out.println("Setting up MzMLToImzMLConverterTest");
         assertNotNull("Test file missing", ImzMLTest.class.getResource(TEST_RESOURCE));
     }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
+
     @Before
     public void setUp() {
         try {
@@ -53,10 +46,6 @@ public class ImzMLTest {
             Logger.getLogger(ImzMLTest.class.getName()).log(Level.SEVERE, null, ex);
             fail("ImzMLParseException: " + ex);
         }
-    }
-    
-    @After
-    public void tearDown() {
     }
 
     /**

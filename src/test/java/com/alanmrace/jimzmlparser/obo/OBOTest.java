@@ -5,10 +5,6 @@
  */
 package com.alanmrace.jimzmlparser.obo;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
@@ -22,31 +18,12 @@ public class OBOTest {
             
     protected OBO obo;
     
-    public OBOTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-//        obo = new OBO(OBOTest.class.getResource(IMAGING_MS_OBO).getPath());
-    }
-    
-    @After
-    public void tearDown() {
-    }
-
     /**
      * Test of getOBO method, of class OBO.
      */
     @Test
     public void testGetOBO() {
+//        obo = new OBO(OBOTest.class.getResource(IMAGING_MS_OBO).getPath());        
         System.out.println("getOBO");
         
         OBO obo = OBO.getOBO();

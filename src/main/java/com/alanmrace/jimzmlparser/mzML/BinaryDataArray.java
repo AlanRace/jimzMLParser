@@ -298,11 +298,7 @@ public class BinaryDataArray extends MzMLContent implements Serializable {
     public boolean isCompressed() {
         CVParam compression = getCVParam(noCompressionID);
 
-        if (compression == null) {
-            return true;
-        }
-
-        return false;
+        return compression == null;
     }
 
     public static int getDataTypeInBytes(CVParam dataType) {
@@ -536,35 +532,28 @@ public class BinaryDataArray extends MzMLContent implements Serializable {
         decompressor.setInput(data);
 
         ArrayList<Byte> uncompressedData = new ArrayList<Byte>();
-//				int length = 0;
         int uncompressed = 0;
 
         do {
             byte[] temp = new byte[BYTE_BUFFER_SIZE]; // 2^20
 
-//					try {
             uncompressed = decompressor.inflate(temp);
 
             for (int i = 0; i < uncompressed; i++) {
                 uncompressedData.add(temp[i]);
             }
-//					} catch (DataFormatException e1) {
-//						// TODO Auto-generated catch block
-//						e1.printStackTrace();
-//					}
-
-//					length += uncompressed;
+            
         } while (uncompressed != 0);
 
-        data = new byte[uncompressedData.size()];
+        byte[] uncompressedBytes = new byte[uncompressedData.size()];
 
         for (int i = 0; i < uncompressedData.size(); i++) {
-            data[i] = uncompressedData.get(i);
+            uncompressedBytes[i] = uncompressedData.get(i);
         }
 
         decompressor.end();
 
-        return data;
+        return uncompressedBytes;
     }
 
     public static byte[] compress(byte[] data, CVParam compressionCVParam) {
