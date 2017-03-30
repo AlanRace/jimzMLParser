@@ -84,7 +84,7 @@ public class InvalidFormatIssue extends NonFatalParseException {
             if(value == null)
                 message += " but the value attribute was ommited";
             else
-                message += " but got value " + value;
+                message += " but got value \"" + value + "\"";
         }
         
         return message;
