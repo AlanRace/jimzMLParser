@@ -54,7 +54,7 @@ public class ImzMLHandler extends MzMLHeaderHandler {
     private int currentMaxX = 0;
     private int currentMaxY = 0;
 
-    private int count = 0;
+//    private int count = 0;
 
     public ImzMLHandler(OBO obo) {
         super(obo);

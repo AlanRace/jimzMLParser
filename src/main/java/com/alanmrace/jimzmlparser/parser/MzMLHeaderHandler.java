@@ -35,13 +35,30 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+/**
+ * SAX parser for mzML files, only focusing on metadata.
+ * 
+ * <p> All metadata are parsed, however the data is ignored. This allows a lower 
+ * memory usage for loading metadata, while also allowing code reuse for both 
+ * MzML and ImzML files.
+ *
+ * @author Alan Race
+ */
 public class MzMLHeaderHandler extends DefaultHandler {
 
+    /** Class logger. */
     private static final Logger logger = Logger.getLogger(MzMLHeaderHandler.class.getName());
 
+    /** 
+     * SAX document locator. 
+     * TODO: Why is it used?
+     */
     protected Locator locator;
 
+    /** OBO ontology used to match and check cvParam tags. */
     protected OBO obo;
+    
+    /** MzML currently being built by the SAX parser. */
     protected MzML mzML;
 
     protected CVList cvList;
@@ -575,7 +592,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 throw new InvalidMzML("<instrumentConfiguration> tag not defined prior to defining <componentList> tag.");
             }
         } else if ("source".equals(qName)) {
-            Source source = new Source(Integer.parseInt(attributes.getValue("order")));
+            Source source = new Source();
 
             try {
                 currentComponentList.addSource(source);
@@ -585,7 +602,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
             currentContent = source;
         } else if ("analyzer".equals(qName)) {
-            Analyser analyser = new Analyser(Integer.parseInt(attributes.getValue("order")));
+            Analyser analyser = new Analyser();
 
             try {
                 currentComponentList.addAnalyser(analyser);
@@ -595,7 +612,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
             currentContent = analyser;
         } else if ("detector".equals(qName)) {
-            Detector detector = new Detector(Integer.parseInt(attributes.getValue("order")));
+            Detector detector = new Detector();
 
             try {
                 currentComponentList.addDetector(detector);
@@ -661,7 +678,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             }
 
             if (software != null) {
-                ProcessingMethod pm = new ProcessingMethod(Integer.parseInt(attributes.getValue("order")), software);
+                ProcessingMethod pm = new ProcessingMethod(software);
 
                 try {
                     currentDataProcessing.addProcessingMethod(pm);
@@ -821,7 +838,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
             run.setSpectrumList(spectrumList);
         } else if ("spectrum".equals(qName)) {
-            currentSpectrum = new Spectrum(attributes.getValue("id"), Integer.parseInt(attributes.getValue("defaultArrayLength")), Integer.parseInt(attributes.getValue("index")));
+            currentSpectrum = new Spectrum(attributes.getValue("id"), Integer.parseInt(attributes.getValue("defaultArrayLength")));
 
             String dataProcessingRef = attributes.getValue("dataProcessingRef");
 
@@ -1203,7 +1220,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             }
         } else if ("chromatogram".equals(qName)) {
             processingChromatogram = true;
-            currentChromatogram = new Chromatogram(attributes.getValue("id"), Integer.parseInt(attributes.getValue("defaultArrayLength")), Integer.parseInt(attributes.getValue("index")));
+            currentChromatogram = new Chromatogram(attributes.getValue("id"), Integer.parseInt(attributes.getValue("defaultArrayLength")));
 
             String dataProcessingRef = attributes.getValue("dataProcessingRef");
 

@@ -18,11 +18,9 @@ public class ProcessingMethod extends MzMLContent implements Serializable {
 
     public static String fileFormatConversionID = "MS:1000530";
 
-//	private int order;
     private Software softwareRef;
 
-    public ProcessingMethod(int order, Software softwareRef) {
-//		this.order = order;
+    public ProcessingMethod(Software softwareRef) {
         this.softwareRef = softwareRef;
     }
 

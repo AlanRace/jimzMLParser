@@ -271,41 +271,17 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
     }
 
     public void addCVParam(CVParam cvParam) {
-//		cvParam.setParent(this);
-
         getCVParamList().add(cvParam);
     }
 
-//	public void addLongCVParam(CVParam<Long> cvParam) {
-//		getLongCVParamList().add(cvParam);
-//	}
-//	
-//	public void addDoubleCVParam(CVParam<Double> cvParam) {
-//		getDoubleCVParamList().add(cvParam);
-//	}
     public void removeCVParam(int index) {
         if (cvParams == null) {
             return;
         }
 
-        CVParam removed = getCVParamList().remove(index);
-
-//		removed.setParent(null);
+        getCVParamList().remove(index);
     }
 
-//	public void removeLongCVParam(int index) {
-//		if(longCVParams == null)
-//			return;
-//		
-//		getLongCVParamList().remove(index);
-//	}
-//	
-//	public void removeDoubleCVParam(int index) {
-//		if(doubleCVParams == null)
-//			return;
-//		
-//		getDoubleCVParamList().remove(index);
-//	}
     public void removeCVParam(String id) {
         if (cvParams == null) {
             return;
@@ -320,41 +296,10 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
         }
 
         for (CVParam cvParam : cvParamList) {
-//			cvParam.setParent(null);
-
             cvParams.remove(cvParam);
         }
     }
 
-//	public void removeLongCVParam(String id) {
-//		if(longCVParams == null)
-//			return;
-//		
-//		ArrayList<CVParam<Long>> cvParamList = new ArrayList<CVParam<Long>>();
-//		
-//		for(CVParam<Long> cvParam : longCVParams)
-//			if(cvParam.getTerm().getID().equals(id))
-//				cvParamList.add(cvParam);
-//		
-//		for(CVParam<Long> cvParam : cvParamList) {
-//			cvParams.remove(cvParam);
-//		}
-//	}
-//	
-//	public void removeDoubleCVParam(String id) {
-//		if(doubleCVParams == null)
-//			return;
-//		
-//		ArrayList<CVParam<Double>> cvParamList = new ArrayList<CVParam<Double>>();
-//		
-//		for(CVParam<Double> cvParam : doubleCVParams)
-//			if(cvParam.getTerm().getID().equals(id))
-//				cvParamList.add(cvParam);
-//		
-//		for(CVParam<Double> cvParam : cvParamList) {
-//			cvParams.remove(cvParam);
-//		}
-//	}
     public void removeChildOfCVParam(String id) {
         if (cvParams == null) {
             return;
@@ -363,15 +308,11 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
         List<CVParam> children = getChildrenOf(id);
 
         for (CVParam cvParam : children) {
-//			cvParam.setParent(null);
-
             cvParams.remove(cvParam);
         }
     }
 
     public void addUserParam(UserParam userParam) {
-//		userParam.setParent(this);
-
         getUserParamList().add(userParam);
     }
 
@@ -381,15 +322,9 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
         }
 
         userParams.remove(index);
-
-//		removed.setParent(null);
     }
 
     public CVParam getCVParam(String id) {
-//		if(id.equals("MS:1000514"))
-//			System.out.println("RPGR: " + referenceableParamGroupRefs);
-
-//        CVParam.CVParamType paramType = CVParam.getCVParamType(id);
         if (referenceableParamGroupRefs != null) {
             for (ReferenceableParamGroupRef ref : referenceableParamGroupRefs) {
                 if (ref == null) {
@@ -398,7 +333,6 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
 
                 CVParam cvParam = ref.getRef().getCVParam(id);
 
-//				System.out.println("id: " + id + " | " + cvParam);
                 if (cvParam != null) {
                     return cvParam;
                 }
@@ -416,57 +350,6 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
         return null;
     }
 
-//	public CVParam<Long> getLongCVParam(String id) {
-//		//if(longCVParams == null)
-//		//	return null;
-//		
-//		//System.out.println(id);
-//		
-//		if(referenceableParamGroupRefs != null) {
-//			for(ReferenceableParamGroupRef ref : referenceableParamGroupRefs) {
-//				if(ref == null)
-//					continue;
-//				
-//				CVParam<Long> cvParam = ref.getRef().getLongCVParam(id);
-//					
-//				if(cvParam != null)
-//					return cvParam;
-//			}
-//		}
-//		
-//		if(longCVParams != null)
-//			for(CVParam<Long> cvParam : longCVParams)
-//				if(cvParam.getTerm().getID().equals(id))
-//					return cvParam;				
-//		
-//		return null;
-//	}
-//	
-//	public CVParam<Double> getDoubleCVParam(String id) {
-//		//if(doubleCVParams == null)
-//		//	return null;
-//		
-//		//System.out.println(id);
-//		
-//		if(referenceableParamGroupRefs != null) {
-//			for(ReferenceableParamGroupRef ref : referenceableParamGroupRefs) {
-//				if(ref == null)
-//					continue;
-//				
-//				CVParam<Double> cvParam = ref.getRef().getDoubleCVParam(id);
-//					
-//				if(cvParam != null)
-//					return cvParam;
-//			}
-//		}
-//		
-//		if(doubleCVParams != null)
-//			for(CVParam<Double> cvParam : doubleCVParams)
-//				if(cvParam.getTerm().getID().equals(id))
-//					return cvParam;				
-//		
-//		return null;
-//	}
     public CVParam getCVParam(int index) {
         if (cvParams == null) {
             return null;
@@ -629,16 +512,6 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
         }
     }
 
-//	public static String ensureSafeXML(String input) {
-//		// TODO: Remove invalid characters such as '<' and '>'
-//		
-//		if(input == null)
-//			return "";
-//		
-//		input = input.replaceAll("\"", "&quot;");
-//		
-//		return input;
-//	}
     public void setParent(MzMLContent parent) {
         // This is a dummy function only included to allow the removal
 

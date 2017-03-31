@@ -18,9 +18,7 @@ public class Source extends MzMLContent implements Serializable {
     public static String inletTypeID = "MS:1000007";
     public static String sampleStageID = "IMS:1000002";
 
-//	private int order;
-    public Source(int order) {
-//		this.order = order;
+    public Source() {
     }
 
     public Source(Source source, ReferenceableParamGroupList rpgList) {

@@ -27,8 +27,8 @@ public class Chromatogram extends MzMLDataContainer implements Serializable {
     private Product product;
 //	private BinaryDataArrayList binaryDataArrayList;
 
-    public Chromatogram(String id, int defaultArrayLength, int index) {
-        super(id, defaultArrayLength, index);
+    public Chromatogram(String id, int defaultArrayLength) {
+        super(id, defaultArrayLength);
     }
 
     public Chromatogram(Chromatogram chromatogram, ReferenceableParamGroupList rpgList, DataProcessingList dpList,

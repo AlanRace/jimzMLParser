@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class ComponentList extends MzMLContent implements Serializable {
 
@@ -15,9 +16,9 @@ public class ComponentList extends MzMLContent implements Serializable {
      */
     private static final long serialVersionUID = 1L;
 
-    private ArrayList<Source> sources;
-    private ArrayList<Analyser> analysers;
-    private ArrayList<Detector> detectors;
+    private List<Source> sources;
+    private List<Analyser> analysers;
+    private List<Detector> detectors;
 
     public ComponentList() {
         sources = new ArrayList<Source>();
@@ -50,7 +51,7 @@ public class ComponentList extends MzMLContent implements Serializable {
 
         sources.add(source);
     }
-
+    
     public void addAnalyser(Analyser analyser) {
         analyser.setParent(this);
 
@@ -62,7 +63,7 @@ public class ComponentList extends MzMLContent implements Serializable {
 
         detectors.add(detector);
     }
-
+    
     public int getSourceCount() {
         return sources.size();
     }

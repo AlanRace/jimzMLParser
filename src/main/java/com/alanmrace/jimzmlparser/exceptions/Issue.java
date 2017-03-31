@@ -12,12 +12,14 @@ package com.alanmrace.jimzmlparser.exceptions;
 public interface Issue {
     
     /**
-     * The severity level of the issue, SEVERE, ERROR or WARNING
-     * 
+     * The severity level of the issue, SEVERE, ERROR or WARNING. 
      */
     public enum IssueLevel {
+        /** Severe failure that probably prevents continuation. */
         SEVERE,
+        /** Error, but possible to attempt to continue. */
         ERROR,
+        /** No functionality should be affected. */
         WARNING
     }
     

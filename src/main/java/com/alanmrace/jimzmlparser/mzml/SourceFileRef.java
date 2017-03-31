@@ -5,9 +5,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collection;
 
-import javax.swing.tree.MutableTreeNode;
-
-public class SourceFileRef implements Serializable, MzMLTag { //, MutableTreeNode {
+public class SourceFileRef implements Serializable, MzMLTag {
 
     /**
      *
@@ -15,8 +13,6 @@ public class SourceFileRef implements Serializable, MzMLTag { //, MutableTreeNod
     private static final long serialVersionUID = 1L;
 
     private SourceFile ref;
-
-    private MutableTreeNode parentTreeNode;
 
     public SourceFileRef(SourceFile ref) {
         this.ref = ref;

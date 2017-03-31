@@ -10,7 +10,7 @@ import java.io.RandomAccessFile;
 
 /**
  *
- * @author amr1
+ * @author Alan Race
  */
 public abstract class MzMLDataContainer extends MzMLContent {
     protected DataLocation dataLocation;
@@ -28,7 +28,7 @@ public abstract class MzMLDataContainer extends MzMLContent {
         super(mzMLContent, rpgList);
     }
     
-    public MzMLDataContainer(String id, int defaultArrayLength, int index) {
+    public MzMLDataContainer(String id, int defaultArrayLength) { //, int index
         this.id = id;
         this.defaultArrayLength = defaultArrayLength;
     }

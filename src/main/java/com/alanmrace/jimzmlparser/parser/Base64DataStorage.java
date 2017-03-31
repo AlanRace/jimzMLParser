@@ -16,7 +16,7 @@ import javax.xml.bind.DatatypeConverter;
 
 /**
  *
- * @author Alan
+ * @author Alan Race
  */
 public class Base64DataStorage extends DataStorage {
     public Base64DataStorage(File dataFile) throws FileNotFoundException {

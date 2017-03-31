@@ -31,16 +31,9 @@ public class Analyser extends MzMLContent implements Serializable {
     public static String analyserAttributeID = "MS:1000480";
 
     /**
-     * Order in which the components are encountered from source to detector.
-     */
-//	private int order;
-    /**
      * Instantiates a new analyser attribute.
-     *
-     * @param order order of the component
      */
-    public Analyser(int order) {
-//		this.order = order;
+    public Analyser() {
     }
 
     public Analyser(Analyser analyser, ReferenceableParamGroupList rpgList) {

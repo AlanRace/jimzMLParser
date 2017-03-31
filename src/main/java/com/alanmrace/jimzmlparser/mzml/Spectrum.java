@@ -61,8 +61,8 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
 //		this.id = id;
 //		this.defaultArrayLength = defaultArrayLength;
 //	}
-    public Spectrum(String id, int defaultArrayLength, int index) {
-        super(id, defaultArrayLength, index);
+    public Spectrum(String id, int defaultArrayLength) {
+        super(id, defaultArrayLength);
 //        this.id = id;
 //        this.defaultArrayLength = defaultArrayLength;
 //		this.index = index;

@@ -6,7 +6,7 @@ package com.alanmrace.jimzmlparser.exceptions;
 /**
  * ParseIssue interface.
  * 
- * When the parser has encountered an issue, this interface will be used as a base.
+ * <p>When the parser has encountered an issue, this interface will be used as a base.
  * 
  * @author Alan Race
  */

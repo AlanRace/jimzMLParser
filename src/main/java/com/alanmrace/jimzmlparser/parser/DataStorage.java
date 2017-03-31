@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * 
  */
 package com.alanmrace.jimzmlparser.parser;
 
@@ -15,18 +13,16 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Alan
+ * @author Alan Race
  */
 public abstract class DataStorage {
     private static final Logger logger = Logger.getLogger(DataStorage.class.getName());
     
     protected File dataFile;
     
-//    protected FileInputStream fileInputStream;
     protected final RandomAccessFile randomAccessFile;
     protected boolean fileStreamOpen = false;
     
-//    public abstract byte[] getData(long offset, int length) throws IOException;
     
     public DataStorage(File dataFile) throws FileNotFoundException {
         this.dataFile = dataFile;
@@ -34,7 +30,6 @@ public abstract class DataStorage {
         randomAccessFile = new RandomAccessFile(dataFile, "r");
 
 	logger.log(Level.FINER, MessageFormat.format("[Opened] {0} ({1})", new Object[]{dataFile, randomAccessFile}));
-//        logger.log(Level.FINEST, Arrays.toString(Thread.currentThread().getStackTrace()));
 	
         fileStreamOpen = true;
     }
@@ -59,8 +54,6 @@ public abstract class DataStorage {
         }
 	
 	return buffer;
-		
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     public void close() throws IOException {

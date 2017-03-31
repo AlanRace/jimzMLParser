@@ -17,9 +17,7 @@ public class Detector extends MzMLContent implements Serializable {
     public static String detectorAttributeID = "MS:1000481";
     public static String detectorAcquisitionModeID = "MS:1000027";
 
-//	private int order;
-    public Detector(int order) {
-//		this.order = order;
+    public Detector() {
     }
 
     public Detector(Detector detector, ReferenceableParamGroupList rpgList) {
