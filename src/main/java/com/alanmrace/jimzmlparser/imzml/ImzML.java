@@ -192,10 +192,6 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
                         curZ = zPosCVParam.getValueAsInteger();
                     }
 
-//					if(curY <= 0 || curX <= 0) {
-//						zeroIndexing = true;
-//						break;
-//					}
                     if (curX - 1 < 0 || curX - 1 > spectrumGrid.length || curY - 1 < 0 || curY - 1 > spectrumGrid[0].length || curZ - 1 < 0 || curZ - 1 > spectrumGrid[0][0].length) {
                         return null;
                     }
@@ -203,39 +199,14 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
                     spectrumGrid[curX - 1][curY - 1][curZ - 1] = spectrum;
                 }
             }
-
-//			if(zeroIndexing) {
-//				for(int i = 0; i < getWidth(); i++)
-//					for(int j = 0; j < getHeight(); j++)
-//						spectrumGrid[i][j] = null;
-//				
-//				for(Spectrum spectrum : getRun().getSpectrumList())
-//					for(Scan curScan : spectrum.getScanList()) {
-//						int curX = Integer.parseInt(curScan.getCVParam(Scan.positionXID).getValue());
-//						int curY = Integer.parseInt(curScan.getCVParam(Scan.positionYID).getValue());
-//						
-//						spectrumGrid[curX][curY] = spectrum;
-//					}
-//			}
         }
 
-//		if(zeroIndexing) {
-//			if(spectrumGrid.length >= 1 && x < spectrumGrid.length && (y) < spectrumGrid[0].length) {
-//				return spectrumGrid[x][y];
-//			}
-//		} else {
-        if (spectrumGrid.length >= 1 && (x - 1) < spectrumGrid.length && (y - 1) < spectrumGrid[0].length && (z - 1) < spectrumGrid[0][0].length) {
+        if (spectrumGrid.length >= 1 && (x - 1) < spectrumGrid.length && x >= 1 &&
+                (y - 1) < spectrumGrid[0].length && y >= 1 &&
+                (z - 1) < spectrumGrid[0][0].length && z >= 1) {
             return spectrumGrid[x - 1][y - 1][z - 1];
         }
-//		}
-
-//		for(Spectrum spectrum : getRun().getSpectrumList()) {
-//			for(Scan curScan : spectrum.getScanList())
-//				if(Integer.parseInt(curScan.getCVParam(Scan.positionXID).getValue()) == x && 
-//						Integer.parseInt(curScan.getCVParam(Scan.positionYID).getValue()) == y)
-//					return spectrum;
-//		}
-        // Can't find the spectrum
+        
         return null;
     }
 

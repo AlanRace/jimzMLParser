@@ -17,7 +17,7 @@ import org.junit.Ignore;
 
 /**
  *
- * @author amr1
+ * @author Alan Race
  */
 public class ImzMLTest {
     
@@ -51,7 +51,6 @@ public class ImzMLTest {
     public void testGetFullmzList() {
         System.out.println("getFullmzList");
         
-//        double[] expResult = null;
         double[] result = instance.getFullmzList();
         
         assertNotNull(result);
@@ -61,88 +60,82 @@ public class ImzMLTest {
         
         
 //        assertArrayEquals(expResult, result, 0.01);
-        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
     }
 
     /**
      * Test of getSpectrum method, of class ImzML.
      */
     @Test
-    @Ignore
-    public void testGetSpectrum_int_int() {
+    public void testGetSpectrumIntInt() {
         System.out.println("getSpectrum");
         int x = 0;
         int y = 0;
-        ImzML instance = null;
+        
         Spectrum expResult = null;
         Spectrum result = instance.getSpectrum(x, y);
+        
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
+        result = instance.getSpectrum(1, 1);
+        
+        assertNotNull(result);
     }
 
     /**
      * Test of getSpectrum method, of class ImzML.
      */
     @Test
-    @Ignore
-    public void testGetSpectrum_3args() {
+    public void testGetSpectrum3args() {
         System.out.println("getSpectrum");
+        
         int x = 0;
         int y = 0;
         int z = 0;
-        ImzML instance = null;
+        
         Spectrum expResult = null;
         Spectrum result = instance.getSpectrum(x, y, z);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
+        result = instance.getSpectrum(1, 1, 1);
+        
+        assertNotNull(result);
     }
 
     /**
      * Test of getWidth method, of class ImzML.
      */
     @Test
-    @Ignore
     public void testGetWidth() {
         System.out.println("getWidth");
-        ImzML instance = null;
-        int expResult = 0;
+        
+        int expResult = 1;
         int result = instance.getWidth();
+        
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
      * Test of getHeight method, of class ImzML.
      */
     @Test
-    @Ignore
     public void testGetHeight() {
         System.out.println("getHeight");
-        ImzML instance = null;
-        int expResult = 0;
+        
+        int expResult = 4;
         int result = instance.getHeight();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
      * Test of getDepth method, of class ImzML.
      */
     @Test
-    @Ignore
     public void testGetDepth() {
         System.out.println("getDepth");
-        ImzML instance = null;
-        int expResult = 0;
+        
+        int expResult = 1;
         int result = instance.getDepth();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -152,12 +145,10 @@ public class ImzMLTest {
     @Ignore
     public void testGetMinimumDetectedmz() {
         System.out.println("getMinimumDetectedmz");
-        ImzML instance = null;
+        
         double expResult = 0.0;
         double result = instance.getMinimumDetectedmz();
         assertEquals(expResult, result, 0.0);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -167,57 +158,46 @@ public class ImzMLTest {
     @Ignore
     public void testGetMaximumDetectedmz() {
         System.out.println("getMaximumDetectedmz");
-        ImzML instance = null;
+        
         double expResult = 0.0;
         double result = instance.getMaximumDetectedmz();
         assertEquals(expResult, result, 0.0);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
      * Test of getIBDFile method, of class ImzML.
      */
     @Test
-    @Ignore
     public void testGetIBDFile() {
         System.out.println("getIBDFile");
-        ImzML instance = null;
-        File expResult = null;
+        
         File result = instance.getIBDFile();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
+        assertNotNull(result);
     }
 
     /**
      * Test of isProcessed method, of class ImzML.
      */
     @Test
-    @Ignore
     public void testIsProcessed() {
         System.out.println("isProcessed");
-        ImzML instance = null;
-        boolean expResult = false;
+        
+        boolean expResult = true;
         boolean result = instance.isProcessed();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
      * Test of isContinuous method, of class ImzML.
      */
     @Test
-    @Ignore
     public void testIsContinuous() {
         System.out.println("isContinuous");
-        ImzML instance = null;
+        
         boolean expResult = false;
         boolean result = instance.isContinuous();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**

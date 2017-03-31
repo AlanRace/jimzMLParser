@@ -9,6 +9,7 @@
       <cvParam cvRef="MS" accession="MS:1000579" name="MS1 spectrum" value=""/>
       <cvParam cvRef="IMS" accession="IMS:1000080" name="universally unique identifier" value="197940487ca0400885cc7b19ffd3b532"/>
       <cvParam cvRef="IMS" accession="IMS:1000091" name="ibd SHA-1" value="05f81ab633868c60a60ffe15a980c8a9f6727438"/>
+      <cvParam cvRef="IMS" accession="IMS:1000031" name="processed" value=""/>
     </fileContent>
     <sourceFileList count="5">
       <sourceFile id="WF1" location="file:///D:/GitProjects/jimzMLConverter/jimzMLConverter/target/test-classes" name="MatrixTests_N2.wiff">
