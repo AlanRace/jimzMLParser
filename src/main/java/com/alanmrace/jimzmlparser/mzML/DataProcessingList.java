@@ -1,4 +1,4 @@
-package com.alanmrace.jimzmlparser.mzML;
+package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
@@ -8,7 +8,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
 
 public class DataProcessingList extends MzMLContent implements Iterable<DataProcessing>, Serializable {
 

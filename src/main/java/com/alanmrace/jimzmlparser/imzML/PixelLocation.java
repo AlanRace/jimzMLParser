@@ -1,4 +1,4 @@
-package com.alanmrace.jimzmlparser.imzML;
+package com.alanmrace.jimzmlparser.imzml;
 
 import java.io.Serializable;
 

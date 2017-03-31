@@ -1,4 +1,4 @@
-package com.alanmrace.jimzmlparser.mzML;
+package com.alanmrace.jimzmlparser.mzml;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

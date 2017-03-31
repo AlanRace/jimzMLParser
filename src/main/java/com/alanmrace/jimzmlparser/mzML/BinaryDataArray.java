@@ -1,4 +1,4 @@
-package com.alanmrace.jimzmlparser.mzML;
+package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 import com.alanmrace.jimzmlparser.parser.DataLocation;

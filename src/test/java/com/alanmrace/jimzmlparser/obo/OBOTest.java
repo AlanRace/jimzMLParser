@@ -17,7 +17,7 @@ public class OBOTest {
     public static final String IMAGING_MS_OBO = "/obo/imagingMS.obo"; 
             
     protected OBO obo;
-    
+        
     /**
      * Test of getOBO method, of class OBO.
      */

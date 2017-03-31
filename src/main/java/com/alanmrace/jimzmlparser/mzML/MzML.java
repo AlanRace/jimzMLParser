@@ -1,4 +1,4 @@
-package com.alanmrace.jimzmlparser.mzML;
+package com.alanmrace.jimzmlparser.mzml;
 
 //import com.alanmrace.jimzmlparser.exceptions.ImzMLConversionException;
 import com.alanmrace.jimzmlparser.exceptions.ImzMLWriteException;

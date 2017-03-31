@@ -5,7 +5,7 @@
  */
 package com.alanmrace.jimzmlparser.parser;
 
-import com.alanmrace.jimzmlparser.mzML.MzML;
+import com.alanmrace.jimzmlparser.mzml.MzML;
 import java.util.logging.Logger;
 import org.junit.Test;
 import static org.junit.Assert.*;

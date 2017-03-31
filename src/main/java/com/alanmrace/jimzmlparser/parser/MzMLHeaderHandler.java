@@ -18,7 +18,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import com.alanmrace.jimzmlparser.mzML.*;
+import com.alanmrace.jimzmlparser.mzml.*;
 import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 import com.alanmrace.jimzmlparser.exceptions.InvalidMzML;
@@ -26,7 +26,6 @@ import com.alanmrace.jimzmlparser.exceptions.Issue;
 import com.alanmrace.jimzmlparser.exceptions.MzMLParseException;
 import com.alanmrace.jimzmlparser.exceptions.NonFatalParseException;
 import com.alanmrace.jimzmlparser.exceptions.ObsoleteTermUsed;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;

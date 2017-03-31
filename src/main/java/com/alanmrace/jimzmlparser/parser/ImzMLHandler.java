@@ -2,7 +2,7 @@ package com.alanmrace.jimzmlparser.parser;
 
 import com.alanmrace.jimzmlparser.exceptions.ImzMLParseException;
 import com.alanmrace.jimzmlparser.exceptions.ImzMLWriteException;
-import com.alanmrace.jimzmlparser.imzML.ImzML;
+import com.alanmrace.jimzmlparser.imzml.ImzML;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,12 +11,12 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import com.alanmrace.jimzmlparser.mzML.BinaryDataArray;
+import com.alanmrace.jimzmlparser.mzml.BinaryDataArray;
 import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.exceptions.InvalidImzML;
 import com.alanmrace.jimzmlparser.exceptions.InvalidMzML;
-import com.alanmrace.jimzmlparser.mzML.Scan;
-import com.alanmrace.jimzmlparser.mzML.Spectrum;
+import com.alanmrace.jimzmlparser.mzml.Scan;
+import com.alanmrace.jimzmlparser.mzml.Spectrum;
 import java.io.FileNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;

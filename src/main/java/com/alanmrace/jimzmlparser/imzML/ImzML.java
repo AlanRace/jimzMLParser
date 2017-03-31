@@ -1,8 +1,8 @@
-package com.alanmrace.jimzmlparser.imzML;
+package com.alanmrace.jimzmlparser.imzml;
 
 import com.alanmrace.jimzmlparser.exceptions.ImzMLParseException;
 import com.alanmrace.jimzmlparser.exceptions.ImzMLWriteException;
-import com.alanmrace.jimzmlparser.mzML.BinaryDataArray;
+import com.alanmrace.jimzmlparser.mzml.BinaryDataArray;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,15 +10,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
-import com.alanmrace.jimzmlparser.mzML.CVParam;
-import com.alanmrace.jimzmlparser.mzML.FileContent;
-import com.alanmrace.jimzmlparser.mzML.MzML;
-import com.alanmrace.jimzmlparser.mzML.Scan;
-import com.alanmrace.jimzmlparser.mzML.ScanSettings;
-import com.alanmrace.jimzmlparser.mzML.ScanSettingsList;
-import com.alanmrace.jimzmlparser.mzML.Software;
-import com.alanmrace.jimzmlparser.mzML.Spectrum;
-import com.alanmrace.jimzmlparser.mzML.SpectrumList;
+import com.alanmrace.jimzmlparser.mzml.CVParam;
+import com.alanmrace.jimzmlparser.mzml.FileContent;
+import com.alanmrace.jimzmlparser.mzml.MzML;
+import com.alanmrace.jimzmlparser.mzml.Scan;
+import com.alanmrace.jimzmlparser.mzml.ScanSettings;
+import com.alanmrace.jimzmlparser.mzml.ScanSettingsList;
+import com.alanmrace.jimzmlparser.mzml.Software;
+import com.alanmrace.jimzmlparser.mzml.Spectrum;
+import com.alanmrace.jimzmlparser.mzml.SpectrumList;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.nio.ByteBuffer;
@@ -29,6 +29,10 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ *
+ * @author Alan Race
+ */
 public class ImzML extends MzML implements MassSpectrometryImagingData {
 
     /**
@@ -755,7 +759,7 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
 
         try {
             byte[] buffer = new byte[1024 * 1024];
-            int bytesRead = 0;
+            int bytesRead;
 
             MessageDigest md = MessageDigest.getInstance(algorithm); //"SHA-1");
 

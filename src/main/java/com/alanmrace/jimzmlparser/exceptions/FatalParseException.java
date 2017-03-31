@@ -1,15 +1,13 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * 
  */
 package com.alanmrace.jimzmlparser.exceptions;
 
 /**
  *
- * @author Alan
+ * @author Alan Race
  */
-public class FatalParseException extends Exception implements ParseIssue{
+public class FatalParseException extends Exception implements ParseIssue {
 
     public FatalParseException(String message) {
         super(message);

@@ -3,16 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.alanmrace.jimzmlparser.imzML;
+package com.alanmrace.jimzmlparser.imzml;
 
 import com.alanmrace.jimzmlparser.exceptions.ImzMLParseException;
-import com.alanmrace.jimzmlparser.mzML.Spectrum;
+import com.alanmrace.jimzmlparser.mzml.Spectrum;
 import com.alanmrace.jimzmlparser.parser.ImzMLHandler;
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;

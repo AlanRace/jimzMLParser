@@ -5,9 +5,9 @@
  */
 package com.alanmrace.jimzmlparser.exceptions;
 
-import com.alanmrace.jimzmlparser.mzML.CVParam;
-import com.alanmrace.jimzmlparser.mzML.MzMLContent;
-import com.alanmrace.jimzmlparser.mzML.StringCVParam;
+import com.alanmrace.jimzmlparser.mzml.CVParam;
+import com.alanmrace.jimzmlparser.mzml.MzMLContent;
+import com.alanmrace.jimzmlparser.mzml.StringCVParam;
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 import com.alanmrace.jimzmlparser.obo.OBOTerm.XMLType;
 

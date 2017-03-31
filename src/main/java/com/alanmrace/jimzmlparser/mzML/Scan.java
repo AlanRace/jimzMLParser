@@ -1,4 +1,4 @@
-package com.alanmrace.jimzmlparser.mzML;
+package com.alanmrace.jimzmlparser.mzml;
 
 //import imzMLConverter.OBO;
 //import imzMLConverter.OBOTermValue;

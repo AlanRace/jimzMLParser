@@ -1,20 +1,28 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * 
  */
 package com.alanmrace.jimzmlparser.exceptions;
 
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 
 /**
- *
- * @author Alan
+ * Exception signalling that an OBOTerm was used which has been marked as obsolete.
+ *  
+ * @author Alan Race
  */
 public class ObsoleteTermUsed extends NonFatalParseException {
     
-    private OBOTerm term;
+    /**
+     * The obsolete term which was used.
+     */
+    private final OBOTerm term;
     
+    /**
+     * Create an exception with the specified OBOTerm term.
+     * 
+     * @param term Obsolete OBOTerm that was used.
+     * @see OBOTerm
+     */
     public ObsoleteTermUsed(OBOTerm term) {
         this.term = term;
     }

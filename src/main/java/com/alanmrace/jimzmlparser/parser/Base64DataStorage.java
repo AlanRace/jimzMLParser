@@ -1,14 +1,12 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * 
  */
 package com.alanmrace.jimzmlparser.parser;
 
 import com.alanmrace.jimzmlparser.exceptions.MzMLParseException;
-import com.alanmrace.jimzmlparser.mzML.BinaryDataArray;
-import com.alanmrace.jimzmlparser.mzML.MzML;
-import com.alanmrace.jimzmlparser.mzML.Spectrum;
+import com.alanmrace.jimzmlparser.mzml.BinaryDataArray;
+import com.alanmrace.jimzmlparser.mzml.MzML;
+import com.alanmrace.jimzmlparser.mzml.Spectrum;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;

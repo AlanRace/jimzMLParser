@@ -1,6 +1,6 @@
 package com.alanmrace.jimzmlparser.exceptions;
 
-import com.alanmrace.jimzmlparser.mzML.UserParam;
+import com.alanmrace.jimzmlparser.mzml.UserParam;
 
 public class CVParamAccessionNotFoundException extends NonFatalParseException {
 

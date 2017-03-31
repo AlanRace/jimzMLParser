@@ -15,7 +15,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import com.alanmrace.jimzmlparser.mzML.MzML;
+import com.alanmrace.jimzmlparser.mzml.MzML;
 import com.alanmrace.jimzmlparser.obo.OBO;
 import java.util.logging.Level;
 import java.util.logging.Logger;

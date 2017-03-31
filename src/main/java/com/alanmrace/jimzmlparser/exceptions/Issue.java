@@ -1,16 +1,20 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ *
  */
 package com.alanmrace.jimzmlparser.exceptions;
 
 /**
- *
- * @author Alan
+ * Issue interface.
+ * 
+ * 
+ * @author Alan Race
  */
 public interface Issue {
     
+    /**
+     * The severity level of the issue, SEVERE, ERROR or WARNING
+     * 
+     */
     public enum IssueLevel {
         SEVERE,
         ERROR,
@@ -33,5 +37,11 @@ public interface Issue {
      */
     public String getIssueMessage();
     
+    /**
+     * Provides the assigned severity level of the issue.
+     * 
+     * @return IssueLevel of the issue
+     * @see IssueLevel
+     */
     public IssueLevel getIssueLevel();
 }
