@@ -1,6 +1,3 @@
-/*
- * 
- */
 package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.parser.DataLocation;
@@ -28,7 +25,7 @@ public abstract class MzMLDataContainer extends MzMLContent {
         super(mzMLContent, rpgList);
     }
     
-    public MzMLDataContainer(String id, int defaultArrayLength) { //, int index
+    public MzMLDataContainer(String id, int defaultArrayLength) { 
         this.id = id;
         this.defaultArrayLength = defaultArrayLength;
     }
@@ -117,12 +114,6 @@ public abstract class MzMLDataContainer extends MzMLContent {
         }
         
         dataLocation = null;
-
-//		System.out.println("Data: ");
-//		System.out.println(spectrumData);
-        // Create Base64DataStorage with the calculated offsets
-        // Add the new DataStorage to the corresponding BinaryDataArray
-//		throw new UnsupportedOperationException("Not yet supported");
     }
     
     public double[] getIntensityArray() throws IOException {

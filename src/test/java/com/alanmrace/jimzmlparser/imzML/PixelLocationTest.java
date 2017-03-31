@@ -5,6 +5,7 @@
  */
 package com.alanmrace.jimzmlparser.imzml;
 
+import static org.hamcrest.CoreMatchers.not;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
@@ -72,12 +73,18 @@ public class PixelLocationTest {
         boolean expResult = true;
         boolean result = instance.equals(other);
         assertEquals(expResult, result);
+
+        // Check that the hash code matches
+        assertEquals(other.hashCode(), instance.hashCode());
         
         other = new PixelLocation(3, 2, 1);
         instance = new PixelLocation(1, 2, 3);
         expResult = false;
         result = instance.equals(other);
         assertEquals(expResult, result);
+        
+        // Check that the hash code does not match
+        assertThat(other.hashCode(), not(instance.hashCode()));
     }
 
     /**

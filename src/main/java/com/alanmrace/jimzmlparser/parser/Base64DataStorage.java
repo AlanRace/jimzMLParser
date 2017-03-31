@@ -1,6 +1,3 @@
-/*
- * 
- */
 package com.alanmrace.jimzmlparser.parser;
 
 import com.alanmrace.jimzmlparser.exceptions.MzMLParseException;
@@ -28,7 +25,6 @@ public class Base64DataStorage extends DataStorage {
 	byte[] buffer = super.getData(offset, length);
 	
 	return DatatypeConverter.parseBase64Binary(new String(buffer));
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     public static void main(String[] args) {

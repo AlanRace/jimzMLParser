@@ -5,8 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Class containing details regarding the location of stored data, stored in a 
- * subclass of {@link DataStorage}.
+ * The location of specific data within a {@link DataStorage}.
  * 
  * @author Alan Race
  */

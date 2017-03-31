@@ -4,21 +4,41 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Class to store an ontology database (including dependents) loaded from OBO format.
+ * 
+ * @author Alan Race
+ */
 public class OBO implements Serializable {
 
+    /** Class logger. */
     private static final Logger logger = Logger.getLogger(OBO.class.getName());
 
+    /** Serial version ID. */
     private static final long serialVersionUID = 1L;
 
+    /** Path to the OBO file. */
     private String path;
 
-    private ArrayList<OBO> imports;
+    /** List of imported ontologies. */
+    private List<OBO> imports;
 
-    private HashMap<String, OBOTerm> terms;
+    /** Dictionary of ontology terms, using their ID as the key. */
+    private Map<String, OBOTerm> terms;
 
+    /**
+     * Generate ontology database from the specified .obo file. 
+     * If the obo file specifies imports, then load those imports from resources
+     * associated with the project. The path of the import is ignored, with only 
+     * the final name considered as the location of the resource.
+     * 
+     * @param path Location of the .obo file to load the ontology from.
+     */
     public OBO(String path) {
         this.path = path;
 
@@ -117,10 +137,22 @@ public class OBO implements Serializable {
         }
     }
 
+    /**
+     * Static function to load in the imagingMS.obo file stored as a project resource.
+     * 
+     * @return Loaded ontology
+     */
     public static OBO getOBO() {
         return new OBO("imagingMS.obo");
     }
 
+    /**
+     * Get the term from the ontology with the ID id.
+     * If no term is found with exactly the id specified, then return null.
+     * 
+     * @param id ID of the ontology term
+     * @return Ontology term if found, null otherwise
+     */
     public OBOTerm getTerm(String id) {
         if (id == null) {
             return null;
@@ -141,61 +173,7 @@ public class OBO implements Serializable {
         return term;
     }
 
-//	@Override
-//	@JsonIgnore
-//	public Enumeration<TreeNode> children() {
-//		Vector<TreeNode> child = new Vector<TreeNode>();
-//		child.addAll(imports);
-//		child.addAll(terms.values());
-//		
-//		return child.elements();
-//	}
-//
-//	@Override
-//	@JsonIgnore
-//	public boolean getAllowsChildren() {
-//		return true;
-//	}
-//
-//	@Override
-//	@JsonIgnore
-//	public TreeNode getChildAt(int childIndex) {
-//		if(childIndex < imports.size())
-//			return imports.get(childIndex);
-//		
-//		return (TreeNode) terms.values().toArray()[childIndex - imports.size()];
-//	}
-//
-//	@Override
-//	@JsonIgnore
-//	public int getChildCount() {
-//		return imports.size() + terms.size();
-//	}
-//
-//	@Override
-//	@JsonIgnore
-//	public int getIndex(TreeNode node) {
-//		if(node instanceof OBO)
-//			return imports.indexOf(node);
-//		
-//		// TODO:
-//		
-//		return 0;
-//	}
-//
-//	@Override
-//	@JsonIgnore
-//	public TreeNode getParent() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	@JsonIgnore
-//	public boolean isLeaf() {
-//		// TODO Auto-generated method stub
-//		return ((imports.size() + terms.size()) == 0);
-//	}
+    @Override
     public String toString() {
         return path;
     }

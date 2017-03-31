@@ -1,6 +1,3 @@
-/*
- * 
- */
 package com.alanmrace.jimzmlparser.parser;
 
 import java.io.File;
@@ -8,7 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
- *
+ * Access to binary data stored in Base64 within an MzML file.
+ *  
  * @author Alan Race
  */
 public class MzMLSpectrumDataStorage extends DataStorage {

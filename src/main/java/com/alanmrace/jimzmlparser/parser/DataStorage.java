@@ -1,6 +1,3 @@
-/*
- * 
- */
 package com.alanmrace.jimzmlparser.parser;
 
 import java.io.File;
@@ -12,18 +9,31 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Access to a dataset.
+ *  
  * @author Alan Race
+ * @see Base64DataStorage
+ * @see BinaryDataStorage
+ * @see MzMLSpectrumDataStorage
  */
 public abstract class DataStorage {
+    /** Class logger. */
     private static final Logger logger = Logger.getLogger(DataStorage.class.getName());
     
+    /** File containing the data. */
     protected File dataFile;
     
+    /** Random access to the file. */
     protected final RandomAccessFile randomAccessFile;
+    /** Boolean to determine whether the RandomAccessFile is open or not. */
     protected boolean fileStreamOpen = false;
     
-    
+    /**
+     * Define a data storage by specifying the File containing the data.
+     * 
+     * @param dataFile File where the data is stored
+     * @throws FileNotFoundException
+     */
     public DataStorage(File dataFile) throws FileNotFoundException {
         this.dataFile = dataFile;
         
@@ -34,11 +44,27 @@ public abstract class DataStorage {
         fileStreamOpen = true;
     }
     
+    /**
+     * Get the File where the data is stored.
+     * 
+     * @return File where the data is stored
+     */
     public File getFile() {
 	return dataFile;
     }
     
-    
+    /**
+     * Get the data from the dataStorage at the specified offset with the specified length.
+     * Reading of data is synchronized to allow multithreaded access.
+     * 
+     * <p>If the randomAccessFile has not been opened successfully (in the constructor) then
+     * this will return an empty byte array.
+     * 
+     * @param offset Offset in bytes within the dataStorage
+     * @param length Length of the data in bytes
+     * @return byte[] containing data
+     * @throws IOException
+     */
     public byte[] getData(long offset, int length) throws IOException {
 	if(!fileStreamOpen) {
 	    logger.log(Level.SEVERE, MessageFormat.format("Trying to access data from a closed stream ({0})", randomAccessFile));
@@ -56,6 +82,11 @@ public abstract class DataStorage {
 	return buffer;
     }
     
+    /**
+     * Close the randomAccessFile if it is open.
+     * 
+     * @throws IOException
+     */
     public void close() throws IOException {
         if(fileStreamOpen){
             randomAccessFile.close();

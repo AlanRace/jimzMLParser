@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Alan
+ * @author Alan Race
  */
 public class BinaryDataStorage extends DataStorage {
 
@@ -21,11 +21,6 @@ public class BinaryDataStorage extends DataStorage {
         super(dataFile);
     }
 
-//    @Override
-//    public byte[] getData(long offset, int length) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
-    
     
     public static void main(String[] args) {
         try {
