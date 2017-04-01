@@ -56,6 +56,11 @@ public class DataLocation {
         this.length = length;
     }
     
+    /**
+     * Get the data storage.
+     * 
+     * @return DataStorage
+     */
     public DataStorage getDataStorage() {
         return dataStorage;
     }

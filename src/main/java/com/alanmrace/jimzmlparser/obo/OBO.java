@@ -45,14 +45,16 @@ public class OBO implements Serializable {
         imports = new ArrayList<OBO>();
         terms = new HashMap<String, OBOTerm>();
 
+        String resourcePath = path;
+        
         // Strip off the URL details if they exist
-        if (path.contains("http://")) {
-            path = path.substring(path.lastIndexOf("/") + 1).toLowerCase();
+        if (resourcePath.contains("http://")) {
+            resourcePath = resourcePath.substring(resourcePath.lastIndexOf("/") + 1).toLowerCase();
         }
 
-        logger.log(Level.FINER, "Parsing OBO /obo/{0}", path);
+        logger.log(Level.FINER, "Parsing OBO /obo/{0}", resourcePath);
 
-        InputStream is = OBO.class.getResourceAsStream("/obo/" + path);
+        InputStream is = OBO.class.getResourceAsStream("/obo/" + resourcePath);
 
         InputStreamReader isr = new InputStreamReader(is);
         BufferedReader in = new BufferedReader(isr);

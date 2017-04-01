@@ -11,8 +11,9 @@ import static org.junit.Assert.*;
 import org.junit.Ignore;
 
 /**
- *
- * @author amr1
+ * Tests for {@link PixelLocation}.
+ * 
+ * @author Alan Race
  */
 public class PixelLocationTest {
     

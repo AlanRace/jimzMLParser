@@ -28,7 +28,7 @@ public interface MzMLTag {
     
     /**
      * Format the contents of the class into XML at a specified number of tab
-     * indents and output to a BufferedReader
+     * indents and output to a BufferedReader.
      * 
      * @param output BufferedReader to output the XML to
      * @param indent Number of tabs to indent each tag in the XML

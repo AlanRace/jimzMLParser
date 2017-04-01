@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.alanmrace.jimzmlparser.mzml;
 
 import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
@@ -18,12 +13,15 @@ import static org.junit.Assert.*;
 import org.junit.Ignore;
 
 /**
- *
- * @author Alan
+ * Tests for Binary class.
+ * 
+ * @author Alan Race
  */
 public class BinaryTest {
     
-
+    /**
+     * Test the binary data conversion.
+     */
     @Test
     public void testBinaryConversion() {
         try {
@@ -152,6 +150,8 @@ public class BinaryTest {
 
     /**
      * Test of outputXML method, of class Binary.
+     * 
+     * @throws Exception IOException if failing to write
      */
     @Test
     @Ignore

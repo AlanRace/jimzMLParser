@@ -898,7 +898,7 @@ public class BinaryDataArray extends MzMLContent implements Serializable {
     }
 
     /**
-     * Check if the binary data array is an m/z array
+     * Check if the binary data array is an m/z array.
      * 
      * @return true if is m/z array, false otherwise
      */
@@ -907,7 +907,7 @@ public class BinaryDataArray extends MzMLContent implements Serializable {
     }
 
     /**
-     * Check if the binary data array is an intensity array
+     * Check if the binary data array is an intensity array.
      * 
      * @return true if is intensity array, false otherwise
      */

@@ -10,12 +10,20 @@ import static org.junit.Assert.*;
 import org.junit.Ignore;
 
 /**
- *
- * @author Alan
+ * Tests for the ontology class OBO.
+ * 
+ * @author Alan Race
  */
 public class OBOTest {
+
+    /**
+     * Location of the MS imaging ontology as a resource.
+     */
     public static final String IMAGING_MS_OBO = "/obo/imagingMS.obo"; 
             
+    /**
+     * OBO ontology to test.
+     */
     protected OBO obo;
         
     /**

@@ -17,7 +17,7 @@ import java.util.Iterator;
 public class BinaryDataArrayList extends MzMLContent implements Iterable<BinaryDataArray>, Serializable {
 
     /**
-     *
+     * Serialisation version ID.
      */
     private static final long serialVersionUID = 1L;
 

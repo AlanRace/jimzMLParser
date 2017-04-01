@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.alanmrace.jimzmlparser.parser;
 
 import com.alanmrace.jimzmlparser.mzml.MzML;
@@ -14,13 +9,20 @@ import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 
 /**
- *
- * @author amr1
+ * Tests for MzMLHeaderHandler.
+ * 
+ * @author Alan Race
  */
 public class MzMLHeaderHandlerTest {
     
+    /**
+     * Class logger.
+     */
     private static final Logger logger = Logger.getLogger(MzMLHeaderHandlerTest.class.getName());
     
+    /**
+     * Resource mzML file for testing.
+     */
     private static final String TEST_RESOURCE = "/2012_5_2_medium_81.mzML";
 
     /**
@@ -53,6 +55,8 @@ public class MzMLHeaderHandlerTest {
 
     /**
      * Test of parsemzMLHeader method, of class MzMLHeaderHandler.
+     * 
+     * @throws Exception ParseException thrown if invalid mzML or file missing
      */
     @Test
     public void testParsemzMLHeader_String_boolean() throws Exception {
@@ -70,6 +74,8 @@ public class MzMLHeaderHandlerTest {
 
     /**
      * Test of parsemzMLHeader method, of class MzMLHeaderHandler.
+     * 
+     * @throws Exception ParseException thrown if invalid mzML or file missing
      */
     @Test
     public void testParsemzMLHeader_String() throws Exception {
@@ -85,6 +91,8 @@ public class MzMLHeaderHandlerTest {
 
     /**
      * Test of startElement method, of class MzMLHeaderHandler.
+     * 
+     * @throws Exception ParseException thrown if invalid mzML or file missing
      */
     @Test
     @Ignore
@@ -102,6 +110,8 @@ public class MzMLHeaderHandlerTest {
 
     /**
      * Test of characters method, of class MzMLHeaderHandler.
+     * 
+     * @throws Exception ParseException thrown if invalid mzML or file missing
      */
     @Test
     @Ignore
@@ -118,6 +128,8 @@ public class MzMLHeaderHandlerTest {
 
     /**
      * Test of endElement method, of class MzMLHeaderHandler.
+     * 
+     * @throws Exception ParseException thrown if invalid mzML or file missing
      */
     @Test
     @Ignore

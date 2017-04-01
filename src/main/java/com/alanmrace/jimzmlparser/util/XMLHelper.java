@@ -1,15 +1,19 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.alanmrace.jimzmlparser.util;
 
 /**
- *
- * @author Alan
+ * Helper static functions for ensuring safe XML.
+ * 
+ * @author Alan Race
  */
 public class XMLHelper {
+
+    /**
+     * Escape all characters that would result in invalid XML when exporting the 
+     * input as an attribute value in an XML tag.
+     * 
+     * @param input Text to escape
+     * @return Safe text to include within XML attributes
+     */
     public static String ensureSafeXML(String input) {
 	// TODO: Remove invalid characters such as '<' and '>'
 		

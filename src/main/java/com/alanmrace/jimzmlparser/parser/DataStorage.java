@@ -32,7 +32,7 @@ public abstract class DataStorage {
      * Define a data storage by specifying the File containing the data.
      * 
      * @param dataFile File where the data is stored
-     * @throws FileNotFoundException
+     * @throws FileNotFoundException Could not find the file specified
      */
     public DataStorage(File dataFile) throws FileNotFoundException {
         this.dataFile = dataFile;
@@ -63,7 +63,7 @@ public abstract class DataStorage {
      * @param offset Offset in bytes within the dataStorage
      * @param length Length of the data in bytes
      * @return byte[] containing data
-     * @throws IOException
+     * @throws IOException Exception thrown when trying to read data
      */
     public byte[] getData(long offset, int length) throws IOException {
 	if(!fileStreamOpen) {
@@ -85,7 +85,7 @@ public abstract class DataStorage {
     /**
      * Close the randomAccessFile if it is open.
      * 
-     * @throws IOException
+     * @throws IOException Exception thrown when trying to close randomAccessFile
      */
     public void close() throws IOException {
         if(fileStreamOpen){

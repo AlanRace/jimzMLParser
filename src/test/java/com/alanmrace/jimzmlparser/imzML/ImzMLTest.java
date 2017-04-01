@@ -16,24 +16,39 @@ import static org.junit.Assert.*;
 import org.junit.Ignore;
 
 /**
- *
+ * Tests for ImzML.
+ * 
  * @author Alan Race
  */
 public class ImzMLTest {
     
+    /**
+     * Class logger.
+     */
     private static final Logger logger = Logger.getLogger(ImzMLTest.class.getName());
     
+    /**
+     * Resource imzML file for testing.
+     */
     public static final String TEST_RESOURCE = "/MatrixTests_N2.imzML"; // "/2012_5_2_medium(120502,20h18m).wiff"; 
     
+    /**
+     * Instance of ImzML to test, created from the test resource.
+     */
     private ImzML instance;
     
-       
+    /**
+     * Set up the class by testing if the imzML resource is present.
+     */
     @BeforeClass
     public static void setUpClass() {
         System.out.println("Setting up MzMLToImzMLConverterTest");
         assertNotNull("Test file missing", ImzMLTest.class.getResource(TEST_RESOURCE));
     }
 
+    /**
+     * Create the ImzML instance form the test resource.
+     */
     @Before
     public void setUp() {
         try {
@@ -249,6 +264,8 @@ public class ImzMLTest {
 
     /**
      * Test of write method, of class ImzML.
+     * 
+     * @throws Exception IOException if issue with writing 
      */
     @Test
     @Ignore
@@ -262,6 +279,8 @@ public class ImzMLTest {
 
     /**
      * Test of write method, of class ImzML.
+     * 
+     * @throws Exception IOException if issue with writing 
      */
     @Test
     @Ignore

@@ -1,6 +1,3 @@
-/*
- * 
- */
 package com.alanmrace.jimzmlparser.exceptions;
 
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
