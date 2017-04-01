@@ -11,63 +11,128 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * Class describing a {@literal <spectrum>} tag, with additional methods for 
+ * handling a pixel location for imaging data.
+ * 
+ * @author Alan Race
+ */
 public class Spectrum extends MzMLDataContainer implements Serializable {
 
     /**
-     *
+     * Serialisation version ID.
      */
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Accession: scan polarity (MS:1000465).
+     */
     public static final String scanPolarityID = "MS:1000465";
+
+    /**
+     * Accession: spectrum type (MS:1000559).
+     */
     public static final String spectrumTypeID = "MS:1000559";
+
+    /**
+     * Accession: spectrum representation (MS:1000525).
+     */
     public static final String spectrumRepresentationID = "MS:1000525";
+
+    /**
+     * Accession: spectrum attribute (MS:1000499).
+     */
     public static final String spectrumAttributeID = "MS:1000499";
 
+    /**
+     * Accession: total ion current (MS:1000285).
+     */
     public static final String totalIonCurrentID = "MS:1000285";
+
+    /**
+     * Accession: base peak m/z (MS:1000504).
+     */
     public static final String basePeakMZID = "MS:1000504";
+
+    /**
+     * Accession: base peak intensity (MS:1000505).
+     */
     public static final String basePeakIntensityID = "MS:1000505";
 
+    /**
+     * Accession: lowest observed m/z (MS:1000528).
+     */
     public static final String lowestObservedmzID = "MS:1000528";
+
+    /**
+     * Accession: highest observed m/z (MS:1000527).
+     */
     public static final String highestObservedmzID = "MS:1000527";
 
+    /**
+     * Accession: MS1 spectrum (MS:1000579).
+     */
     public static final String MS1Spectrum = "MS:1000579"; // EmptyCVParam
+
+    /**
+     * Accession: positive scan (MS:1000130).
+     */
     public static final String positiveScanID = "MS:1000130";	// EmptyCVParam
+
+    /**
+     * Accession: profile spectrum (MS:1000128).
+     */
     public static final String profileSpectrumID = "MS:1000128"; // EmptyCVParam
 
-    //   private DataProcessing dataProcessingRef;
-//	private int index;
+    /**
+     * SourceFileRef: SourceFile reference.
+     */
     private SourceFile sourceFileRef;
+
+    /**
+     * XML attribute spotID.
+     */
     private String spotID;
 
+    /**
+     * ScanList for the spectrum.
+     */
     private ScanList scanList;
+
+    /**
+     * PrecursorList for the spectrum.
+     */
     private PrecursorList precursorList;
+
+    /**
+     * ProductList for the spectrum.
+     */
     private ProductList productList;
 
+    /**
+     * Relative pixel location of the spectrum with respect to the whole MzML file.
+     */
     private PixelLocation pixelLocation;
 
-//	public Spectrum() {
-//		super();
-//		
-//		id = "Spectrum="+spectrumID++;
-//		
-//		scanList = new ScanList();
-//		binaryDataArray = new ArrayList<BinaryDataArray>();
-//	}
-//	
-//
-//	public Spectrum(String id, int defaultArrayLength) {
-//		this();
-//		
-//		this.id = id;
-//		this.defaultArrayLength = defaultArrayLength;
-//	}
+    /**
+     * Create Spectrum with required attributes from XML tag.
+     * 
+     * @param id Unique ID for the spectrum
+     * @param defaultArrayLength The default length of the data array(s) that make up the spectrum
+     */
     public Spectrum(String id, int defaultArrayLength) {
         super(id, defaultArrayLength);
-//        this.id = id;
-//        this.defaultArrayLength = defaultArrayLength;
-//		this.index = index;
     }
 
+    /**
+     * Copy constructor, requiring new versions of lists to match old references to.
+     * 
+     * @param spectrum Spectrum to copy
+     * @param rpgList New ReferenceableParamGroupList
+     * @param dpList New DataProcessingList
+     * @param sourceFileList New SourceFileList
+     * @param icList New InstrumentConfigurationList
+     */
     public Spectrum(Spectrum spectrum, ReferenceableParamGroupList rpgList, DataProcessingList dpList,
             SourceFileList sourceFileList, InstrumentConfigurationList icList) {
         super(spectrum, rpgList);
@@ -126,44 +191,91 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
         return optional;
     }
 
+    /**
+     * Set SourceFileRef.
+     * 
+     * @param sourceFileRef
+     */
     public void setSourceFileRef(SourceFile sourceFileRef) {
         this.sourceFileRef = sourceFileRef;
     }
 
+    /**
+     * Set spotID attribute for spectrum XML tag.
+     * 
+     * @param spotID
+     */
     public void setSpotID(String spotID) {
         this.spotID = spotID;
     }
 
+    /**
+     * Get ScanList.
+     * 
+     * @return
+     */
     public ScanList getScanList() {
         return scanList;
     }
 
+    /**
+     * Set ScanList.
+     * 
+     * @param scanList
+     */
     public void setScanList(ScanList scanList) {
         scanList.setParent(this);
 
         this.scanList = scanList;
     }
 
+    /**
+     * Set PrecursorList.
+     * 
+     * @param precursorList
+     */
     public void setPrecursorList(PrecursorList precursorList) {
         precursorList.setParent(this);
 
         this.precursorList = precursorList;
     }
 
+    /**
+     * Get PrecursorList.
+     * 
+     * @return
+     */
     public PrecursorList getPrecursorList() {
         return precursorList;
     }
 
+    /**
+     * Set ProductList.
+     * 
+     * @param productList
+     */
     public void setProductList(ProductList productList) {
         productList.setParent(this);
 
         this.productList = productList;
     }
 
+    /**
+     * Get ProductList.
+     * 
+     * @return
+     */
     public ProductList getProductList() {
         return productList;
     }
 
+    /**
+     * Get the pixel location of the spectrum, or null if one cannot be determined.
+     * The first Scan within the ScanList which contains cvParams for both x and y 
+     * position determines the spectrum location.
+     * 
+     * @return
+     */
     public PixelLocation getPixelLocation() {
         if (pixelLocation == null) {
             // 
@@ -188,10 +300,24 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
         return pixelLocation;
     }
 
+    /**
+     * Get the m/z array of the spectrum as a double[].
+     * 
+     * @return m/z array
+     * @throws IOException
+     */
     public double[] getmzArray() throws IOException {
         return getmzArray(false);
     }
 
+    /**
+     * Get the m/z array of the spectrum as a double[] and optionally keep the 
+     * array within memory.
+     * 
+     * @param keepInMemory true to keep the data within memory, false otherwise
+     * @return
+     * @throws IOException
+     */
     public double[] getmzArray(boolean keepInMemory) throws IOException {
 //	    System.out.println(dataLocation);
 
@@ -206,134 +332,6 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
         return binaryDataArrayList.getmzArray().getDataAsDouble(keepInMemory);
     }
 
-//	private double[] getDoubleData(RandomAccessFile ibdFile, BinaryDataArray bda) {
-//		byte[] data = null;
-//		
-//		try {
-//			data = bda.getBinary().getData(ibdFile, bda.isCompressed());
-//		} catch (DataFormatException ex) {
-//			try {
-//				data = bda.getBinary().getData(ibdFile, false);
-//			} catch (DataFormatException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
-//
-//		int length = 0;
-//		
-//		if(bda.isDoublePrecision() || bda.isSigned64BitInteger())
-//			length = data.length / 8;
-//		else if(bda.isSinglePrecision() || bda.isSigned32BitInteger())
-//			length = data.length / 4;
-//		else if(bda.isSigned16BitInteger())
-//			length = data.length / 2;
-//		else if(bda.isSigned8BitInteger())
-//			length = data.length;
-//		
-//		double[] convertedData = new double[length];
-//		
-//		ByteBuffer buffer = ByteBuffer.wrap(data);
-//		buffer.order(ByteOrder.LITTLE_ENDIAN);
-//		
-//		// Convert 
-//		if(bda.isDoublePrecision())
-//			for(int j = 0; j < length; j++)
-//				convertedData[j] = buffer.getDouble();
-//		else if(bda.isSinglePrecision())
-//			for(int j = 0; j < length; j++)
-//				convertedData[j] = buffer.getFloat();
-//		else if(bda.isSigned64BitInteger())
-//			for(int j = 0; j < length; j++)
-//				convertedData[j] = buffer.getLong();
-//		else if(bda.isSigned32BitInteger())
-//			for(int j = 0; j < length; j++)
-//				convertedData[j] = buffer.getInt();
-//		else if(bda.isSigned16BitInteger())
-//			for(int j = 0; j < length; j++)
-//				convertedData[j] = buffer.getShort();
-//		else if(bda.isSigned8BitInteger())
-//			for(int j = 0; j < length; j++)
-//				convertedData[j] = buffer.get();
-//		
-//		return convertedData;
-//	}
-//	
-//	public double[] getmzArray(RandomAccessFile ibdFile) {
-////		for(BinaryDataArray bda : getBinaryDataArrayList()) {
-////			if(bda.getCVParam(BinaryDataArray.mzArrayID) != null) {
-////				return getDoubleData(ibdFile, bda);
-////			}
-////		}
-//		BinaryDataArray mzArray = getBinaryDataArrayList().getmzArray();
-//
-//		if(mzArray != null)
-//			return getDoubleData(ibdFile, mzArray);
-//		
-//		return null;
-//	}
-//	
-//	public double[] getmzArray() {
-//		return getmzArray(null);
-//	}
-//	
-//	public double[] getIntensityArray() {
-//		return getIntensityArray(null);
-//	}
-//	
-//	public double[] getIntensityArray(RandomAccessFile ibdFile) {
-////		for(BinaryDataArray bda : getBinaryDataArrayList()) {
-////			if(bda.getCVParam(BinaryDataArray.intensityArrayID) != null) {
-////				return getDoubleData(ibdFile, bda);
-////			}
-////		}
-//		BinaryDataArray intensityArray = getBinaryDataArrayList().getIntensityArray();
-//		
-//		if(intensityArray != null)
-//			return getDoubleData(ibdFile, intensityArray);
-//		
-//		return null;
-//	}
-//	public void addBinaryDataArray(BinaryDataArray bda) {
-//		this.binaryDataArray.add(bda);
-//	}
-//	
-//	public int getBinaryDataArrayCount() {
-//		return binaryDataArray.size();
-//	}
-//	
-//	public BinaryDataArray getBinaryDataArray(int index) {
-//		return binaryDataArray.get(index);
-//	}
-//	public void setXYPosition(OBO obo, int x, int y) {
-//		if(scanList.getScanCount() < 1)
-//			scanList.addScan(new Scan());
-//		
-//		scanList.getScan(0).setXYPosition(obo, x, y);
-//	}
-//	
-//	// TODO: Check all scans, rather than just the first one
-//	public int getXPosition() {
-//		return scanList.getScan(0).getXPosition();
-//	}
-//	
-//	public int getYPosition() {
-//		return scanList.getScan(0).getYPosition();
-//	}
-//	
-//	public long outputDataFromTemp(OBO obo, DataOutputStream binaryDataStream, long offset) {
-//		for(BinaryDataArray bda : binaryDataArray)
-//			offset = bda.outputDataFromTemp(obo, binaryDataStream, offset);
-//		
-//		return offset;
-//	}
-//	
-//	public long outputData(OBO obo, DataOutputStream binaryDataStream, long offset) {
-//		for(BinaryDataArray bda : binaryDataArray)
-//			offset = bda.outputData(obo, binaryDataStream, offset);
-//		
-//		return offset;
-//	}
     @Override
     protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/scanList")) {
@@ -363,6 +361,14 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
         }
     }
 
+    /**
+     * Output this MzMLContent in formatted XML.
+     * 
+     * @param output    
+     * @param indent    Number of indents to make for this tag
+     * @param index     Spectrum index to include as an attribute
+     * @throws IOException
+     */
     public void outputXML(BufferedWriter output, int indent, int index) throws IOException {
         if (raf != null) {
             output.flush();

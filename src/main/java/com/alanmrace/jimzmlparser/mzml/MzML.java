@@ -1,6 +1,5 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-//import com.alanmrace.jimzmlparser.exceptions.ImzMLConversionException;
 import com.alanmrace.jimzmlparser.exceptions.ImzMLWriteException;
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
@@ -10,7 +9,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Serializable;
 
-//import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.parser.DataLocation;
 import com.alanmrace.jimzmlparser.parser.DataStorage;
@@ -21,52 +19,130 @@ import java.util.logging.Logger;
 
 import java.util.Collection;
 
+/**
+ * Class capturing {@literal <mzML>} tag within an MzML file.
+ * 
+ * @author Alan Race
+ */
 public class MzML extends MzMLContent implements Serializable {
 
     /**
-     *
+     * Serialisaiton version ID.
      */
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Default XML namespace for an mzML file.
+     */
     public static String namespace = "http://psi.hupo.org/ms/mzml";
+
+    /**
+     * Default XML schema instance (XSI) for an mzML file.
+     */
     public static String xsi = "http://www.w3.org/2001/XMLSchema-instance";
+
+    /**
+     * Default XML schema location for an mzML file.
+     */
     public static String schemaLocation = "http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.0_idx.xsd";
 
+    /**
+     * Current mzML version.
+     */
     public static String currentVersion = "1.1.0";
 
+    /**
+     * Storage for accessing mzML data.
+     */
     protected DataStorage dataStorage;
 
     // Attributes
-    private String accession;	// Optional
-    private String id;			// Optional
-    private String version;		// Required
+
+    /**
+     * Accession attribute from the mzML tag [Optional].
+     */
+    private String accession;
+
+    /**
+     * ID attribute from the mzML tag [Optional].
+     */
+    private String id;		
+
+    /**
+     * Version attribute from the mzML tag [Required].
+     */
+    private String version;		
 
     // Sub-elements
     // Required
+
+    /**
+     * CVList containing the included ontologies for this mzML [Required].
+     */
     private CVList cvList;
+
+    /**
+     * FileDescription describing the mzML file [Required].
+     */
     private FileDescription fileDescription;
-    // Optional
+    
+    /**
+     * ReferenceableParamGroupList for mzML file [Optional].
+     */
     private ReferenceableParamGroupList referenceableParamGroupList;
+
+    /**
+     * SampleList for the mzML file [Optional].
+     */
     private SampleList sampleList;
-    // Required
+    
+    /**
+     * SoftwareList for the mzML file [Required].
+     */
     private SoftwareList softwareList;
-    // Optional
+
+    /**
+     * ScanSettingsList for the mzML file [Optional].
+     */
     private ScanSettingsList scanSettingsList;
-    // Required
+
+    /**
+     * InstrumentConfigurationList for the mzML file [Required].
+     */
     private InstrumentConfigurationList instrumentConfigurationList;
+
+    /**
+     * DataProcessingList for the mzML file [Required].
+     */
     private DataProcessingList dataProcessingList;
+
+    /**
+     * Run for the mzML file [Required].
+     */
     private Run run;
 
+    /**
+     * Ontology dictionary used to link cvParams to.
+     */
     private OBO obo;
     
     private boolean outputIndex = false;
     private RandomAccessFile raf;
 
-
+    /**
+     * Constructor with the minimal required information (mzML version).
+     * 
+     * @param version mzML version
+     */
     public MzML(String version) {
         this.version = version;
     }
 
+    /**
+     * Copy constructor.
+     * 
+     * @param mzML Old MzML to copy
+     */
     public MzML(MzML mzML) {
         this.accession = mzML.accession;
         this.id = mzML.id;
@@ -97,68 +173,144 @@ public class MzML extends MzMLContent implements Serializable {
                 fileDescription.getSourceFileList(), sampleList, dataProcessingList);
     }
 
+    /**
+     * Set the storage style for the data within the mzML file.
+     * 
+     * @param dataStorage
+     */
     public void setDataStorage(DataStorage dataStorage) {
         this.dataStorage = dataStorage;
     }
 
+    /**
+     * Set the ontology dictionary to use for matching cvParams.
+     * 
+     * @param obo Ontology dictionary
+     */
     public void setOBO(OBO obo) {
         this.obo = obo;
     }
 
+    /**
+     * Get the ontology dictionary used for this mzML file.
+     * 
+     * @return Ontology dictionary
+     */
     public OBO getOBO() {
         return obo;
     }
 
+    /**
+     * Set the mzML version.
+     * 
+     * @param version
+     */
     public void setVersion(String version) {
         this.version = version;
     }
 
+    /**
+     * Get the mzML version.
+     * 
+     * @return
+     */
     public String getVersion() {
         return version;
     }
 
+    /**
+     * Set the accession for the mzML tag for when exporting to XML.
+     * 
+     * @param accession
+     */
     public void setAccession(String accession) {
         this.accession = accession;
     }
 
+    /**
+     * Get the accession set within the mzML XML.
+     * 
+     * @return
+     */
     public String accession() {
         return accession;
     }
 
+    /**
+     * Set the id attribute for the mzML tag for exporting to XML.
+     * 
+     * @param id
+     */
     public void setID(String id) {
         this.id = id;
     }
 
+    /**
+     * Get the id attribute set within the mzML tag in the XML file.
+     * 
+     * @return
+     */
     public String getID() {
         return id;
     }
 
+    /**
+     * Set the CVList for the mzML.
+     * 
+     * @param cvList
+     */
     public void setCVList(CVList cvList) {
         cvList.setParent(this);
 
         this.cvList = cvList;
     }
 
+    /**
+     * Get the CVList.
+     * 
+     * @return
+     */
     public CVList getCVList() {
         return cvList;
     }
 
+    /**
+     * Set the FileDescription for the mzML.
+     * 
+     * @param fd
+     */
     public void setFileDescription(FileDescription fd) {
         fd.setParent(this);
 
         this.fileDescription = fd;
     }
 
+    /**
+     * Get the FileDescription.
+     * 
+     * @return
+     */
     public FileDescription getFileDescription() {
         return fileDescription;
     }
 
+    /**
+     * Set the ReferenceableParamGroupList.
+     * 
+     * @param referenceableParamGroupList
+     */
     public void setReferenceableParamGroupList(ReferenceableParamGroupList referenceableParamGroupList) {
         referenceableParamGroupList.setParent(this);
 
         this.referenceableParamGroupList = referenceableParamGroupList;
     }
 
+    /**
+     * Get the ReferenceableParamGroupList. If it does not exist, then create an 
+     * empty list.
+     * 
+     * @return
+     */
     public ReferenceableParamGroupList getReferenceableParamGroupList() {
         if (referenceableParamGroupList == null) {
             referenceableParamGroupList = new ReferenceableParamGroupList(0);
@@ -167,12 +319,22 @@ public class MzML extends MzMLContent implements Serializable {
         return referenceableParamGroupList;
     }
 
+    /**
+     * Set the SampleList.
+     * 
+     * @param sampleList
+     */
     public void setSampleList(SampleList sampleList) {
         sampleList.setParent(this);
 
         this.sampleList = sampleList;
     }
 
+    /**
+     * Get the SampleList. If it does not exist, then create an empty list.
+     * 
+     * @return
+     */
     public SampleList getSampleList() {
         if (sampleList == null) {
             sampleList = new SampleList(0);
@@ -181,12 +343,22 @@ public class MzML extends MzMLContent implements Serializable {
         return sampleList;
     }
 
+    /**
+     * Set the SoftwareList.
+     * 
+     * @param softwareList
+     */
     public void setSoftwareList(SoftwareList softwareList) {
         softwareList.setParent(this);
 
         this.softwareList = softwareList;
     }
 
+    /**
+     * Get the SoftwareList. If it does not exist, then create an empty list.
+     * 
+     * @return
+     */
     public SoftwareList getSoftwareList() {
         if (softwareList == null) {
             softwareList = new SoftwareList(0);
@@ -195,12 +367,22 @@ public class MzML extends MzMLContent implements Serializable {
         return softwareList;
     }
 
+    /**
+     * Set ScanSettingsList.
+     * 
+     * @param scanSettingsList
+     */
     public void setScanSettingsList(ScanSettingsList scanSettingsList) {
         scanSettingsList.setParent(this);
 
         this.scanSettingsList = scanSettingsList;
     }
 
+    /**
+     * Get ScanSettingsList. If one does not exist, then create an empty list.
+     * 
+     * @return
+     */
     public ScanSettingsList getScanSettingsList() {
         if (scanSettingsList == null) {
             scanSettingsList = new ScanSettingsList(0);
@@ -209,12 +391,23 @@ public class MzML extends MzMLContent implements Serializable {
         return scanSettingsList;
     }
 
+    /**
+     * Set InstrumentConfigurationList.
+     * 
+     * @param instrumentConfigurationList
+     */
     public void setInstrumentConfigurationList(InstrumentConfigurationList instrumentConfigurationList) {
         instrumentConfigurationList.setParent(this);
 
         this.instrumentConfigurationList = instrumentConfigurationList;
     }
 
+    /**
+     * Get InstrumentConfigurationList. If one does not exist, then create an 
+     * empty list.
+     * 
+     * @return
+     */
     public InstrumentConfigurationList getInstrumentConfigurationList() {
         if (instrumentConfigurationList == null) {
             instrumentConfigurationList = new InstrumentConfigurationList(0);
@@ -252,10 +445,6 @@ public class MzML extends MzMLContent implements Serializable {
         super.addChildrenToCollection(children);
     }
 
-    public void addElementsAtXPathToCollection(Collection<MzMLContent> elements, String xPath) throws InvalidXPathException {
-        addElementsAtXPathToCollection(elements, xPath, xPath);
-    }
-
     @Override
     protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/" + cvList.getTagName())) {
@@ -291,12 +480,22 @@ public class MzML extends MzMLContent implements Serializable {
         }
     }
 
+    /**
+     * Set DataProcessingList.
+     * 
+     * @param dataProcessingList
+     */
     public void setDataProcessingList(DataProcessingList dataProcessingList) {
         dataProcessingList.setParent(this);
 
         this.dataProcessingList = dataProcessingList;
     }
 
+    /**
+     * Get DataProcessingList. If it does not exist, then create an empty list.
+     * 
+     * @return
+     */
     public DataProcessingList getDataProcessingList() {
         if (dataProcessingList == null) {
             dataProcessingList = new DataProcessingList(0);
@@ -305,16 +504,32 @@ public class MzML extends MzMLContent implements Serializable {
         return dataProcessingList;
     }
 
+    /**
+     * Set Run.
+     * 
+     * @param run
+     */
     public void setRun(Run run) {
         run.setParent(this);
 
         this.run = run;
     }
 
+    /**
+     * Get Run.
+     * 
+     * @return
+     */
     public Run getRun() {
         return run;
     }
 
+    /**
+     * Write out to XML file with specified filename. Uses ISO-8859-1 encoding.
+     * 
+     * @param filename      Location to output as XML
+     * @throws ImzMLWriteException
+     */
     public void write(String filename) throws ImzMLWriteException {
         try {
             String encoding = "ISO-8859-1";
@@ -436,6 +651,11 @@ public class MzML extends MzMLContent implements Serializable {
     }
 
     // Clean up by closing any open DataStorage
+
+    /**
+     * Close the DataStorage (if it exists) for the data within the mzML file. 
+     * This should be called when the MzML file is no longer required.
+     */
     public void close() {
         if (dataStorage != null) {
             try {
@@ -463,6 +683,13 @@ public class MzML extends MzMLContent implements Serializable {
         }
     }
 
+    /**
+     * Close the specified DataStorage if not null.
+     * 
+     * <p>TODO: Is this the best location for this?
+     * 
+     * @param dataLocation
+     */
     protected static void closeDataStorage(DataLocation dataLocation) {
         if (dataLocation != null) {
             DataStorage dataStorage = dataLocation.getDataStorage();

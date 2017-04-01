@@ -167,6 +167,18 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
      * the specified collection.
      * 
      * @param elements      Collection of MzMLContent to add children to
+     * @param xPath         Full XPath to query
+     * @throws InvalidXPathException thrown if the XPath can not be followed
+     */
+    public void addElementsAtXPathToCollection(Collection<MzMLContent> elements, String xPath) throws InvalidXPathException {
+        addElementsAtXPathToCollection(elements, xPath, xPath);
+    }
+    
+    /**
+     * Add all child MzMLContent (mzML tags) that match the specified XPath to 
+     * the specified collection.
+     * 
+     * @param elements      Collection of MzMLContent to add children to
      * @param fullXPath     Full XPath to query
      * @param currentXPath  Sub XPath that should start with the tag name for the current MzMLContent
      * @throws InvalidXPathException thrown if the XPath can not be followed

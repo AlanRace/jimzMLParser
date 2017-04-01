@@ -116,10 +116,24 @@ public abstract class MzMLDataContainer extends MzMLContent {
         dataLocation = null;
     }
     
+    /**
+     * Get the intensity array as a double[].
+     * 
+     * @return Intensity array
+     * @throws IOException
+     */
     public double[] getIntensityArray() throws IOException {
         return getIntensityArray(false);
     }
 
+    /**
+     * Get the intensity array as a double[] and optionally keep the 
+     * array within memory.
+     * 
+     * @param keepInMemory true to keep the data within memory, false otherwise
+     * @return
+     * @throws IOException
+     */
     public double[] getIntensityArray(boolean keepInMemory) throws IOException {
         if (binaryDataArrayList == null) {
             return null;
