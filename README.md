@@ -1,5 +1,5 @@
 # jimzMLParser
-Java imzML parser
+Java parser for both the imzML and mzML mass spectrometry and mass spectrometry imaging formats.
 
 [![Build passing status](https://travis-ci.org/AlanRace/jimzMLParser.svg?branch=master)](https://travis-ci.org/AlanRace/jimzMLParser)
 
