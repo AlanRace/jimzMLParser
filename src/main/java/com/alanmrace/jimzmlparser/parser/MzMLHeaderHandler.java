@@ -61,50 +61,196 @@ public class MzMLHeaderHandler extends DefaultHandler {
     /** MzML currently being built by the SAX parser. */
     protected MzML mzML;
 
+    /**
+     * CVList associated with the MzML that is being parsed.
+     */
     protected CVList cvList;
+
+    /** 
+     * FileDescription associated with the MzML that is being parsed.
+     */
     protected FileDescription fileDescription;
+
+    /**
+     * SourceFileList associated with the MzML that is being parsed.
+     */
     protected SourceFileList sourceFileList;
+    
+    /**
+     * ReferenceableParamGroupList associated with the MzML that is being parsed.
+     */
     protected ReferenceableParamGroupList referenceableParamGroupList;
+
+    /**
+     * SampleList associated with the MzML that is being parsed.
+     */
     protected SampleList sampleList;
+
+    /**
+     * SoftwareList associated with the MzML that is being parsed.
+     */
     protected SoftwareList softwareList;
+
+    /**
+     * ScanSettingsList associated with the MzML that is being parsed.
+     */
     protected ScanSettingsList scanSettingsList;
+
+    /**
+     * Current ScanSettings created each time a {@literal <scanSettings>} tag is encountered.
+     */
     protected ScanSettings currentScanSettings;
+
+    /**
+     * Current SourceFileRefList created each time a {@literal <sourceFileRefList>} tag is encountered.
+     */
     protected SourceFileRefList currentSourceFileRefList;
+
+    /**
+     * Current TargetList created each time a {@literal <targetList>} tag is encountered.
+     */
     protected TargetList currentTargetList;
+
+    /**
+     * InstrumentConfigurationList associated with the MzML that is currently being parsed.
+     */
     protected InstrumentConfigurationList instrumentConfigurationList;
+
+    /**
+     * Current InstrumentConfiguration created each time a {@literal <instrumentConfiguration>} tag is encountered.
+     */
     protected InstrumentConfiguration currentInstrumentConfiguration;
+
+    /**
+     * Current ComponentList (can consist of Source, Analyzer and Detector) created each time a {@literal <instrumentConfiguration>} tag is encountered.
+     */
     protected ComponentList currentComponentList;
+
+    /**
+     * DataProcessingList associated with the MzML that is currently being parsed.
+     */
     protected DataProcessingList dataProcessingList;
+
+    /**
+     * Current DataProcessing created each time a {@literal <dataProcessing>} tag is encountered.
+     */
     protected DataProcessing currentDataProcessing;
+
+    /**
+     * Run associated with the MzML that is currently being parsed.
+     */
     protected Run run;
+
+    /**
+     * SpectrumList associated with the MzML that is currently being parsed.
+     */
     protected SpectrumList spectrumList;
+
+    /**
+     * Current Spectrum created each time a {@literal <spectrum>} tag is encountered.
+     */
     protected Spectrum currentSpectrum;
+
+    /**
+     * Current ScanList created each time a {@literal <scanList>} tag is encountered.
+     */
     protected ScanList currentScanList;
+
+    /**
+     * Current Scan created each time a {@literal <scan>} tag is encountered.
+     */
     protected Scan currentScan;
+
+    /**
+     * Current ScanWindowList created each time a {@literal <scanWindowList>} tag is encountered.
+     */
     protected ScanWindowList currentScanWindowList;
+
+    /**
+     * Current PrecursorList created each time a {@literal <precursorList>} tag is encountered.
+     */
     protected PrecursorList currentPrecursorList;
+
+    /**
+     * Current Precursor created each time a {@literal <precursor>} tag is encountered.
+     */
     protected Precursor currentPrecursor;
+
+    /**
+     * Current SelectedIonList created each time a {@literal <selectedIonList>} tag is encountered.
+     */
     protected SelectedIonList currentSelectedIonList;
+
+    /**
+     * Current ProductList created each time a {@literal <productList>} tag is encountered.
+     */
     protected ProductList currentProductList;
+
+    /**
+     * Current Product created each time a {@literal <product>} tag is encountered.
+     */
     protected Product currentProduct;
+
+    /**
+     * Current BinaryDataArrayList created each time a {@literal <binaryDataArrayList>} tag is encountered.
+     */
     protected BinaryDataArrayList currentBinaryDataArrayList;
+
+    /**
+     * Current BinaryDataArray created each time a {@literal <binaryDataArray>} tag is encountered.
+     */
     protected BinaryDataArray currentBinaryDataArray;
+
+    /**
+     * ChromatogramList associated with the current MzML being parsed.
+     */
     protected ChromatogramList chromatogramList;
+
+    /**
+     * Current Chromatogram created each time a {@literal <chromatogram>} tag is encountered.
+     */
     protected Chromatogram currentChromatogram;
 
+    /**
+     * Current tag.
+     */
     protected MzMLContent currentContent;
 
     // Flags for tags that share the same sub-tags
+
+    /**
+     * True after {@literal <spectrum>} tag and before the end tag has been encountered.
+     */
     protected boolean processingSpectrum;
+
+    /**
+     * True after {@literal <chromatogram>} tag and before the end tag has been encountered.
+     */
     protected boolean processingChromatogram;
 
+    /**
+     * True after {@literal <precursor>} tag and before the end tag has been encountered.
+     */
     protected boolean processingPrecursor;
+
+    /**
+     * True after {@literal <product>} tag and before the end tag has been encountered.
+     */
     protected boolean processingProduct;
 
+    /**
+     * True after {@literal <offset>} tag and before the end tag has been encountered.
+     */
     protected boolean processingOffset;
+
+    /**
+     * StringBuffer containing the contents between the {@literal <offset>} and {@literal </offset>} tags.
+     */
     protected StringBuffer offsetData;
+
     protected String previousOffsetIDRef;
     protected String currentOffsetIDRef;
+
     protected long previousOffset = -1;
 
     protected DataStorage dataStorage;
@@ -114,6 +260,11 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
     protected List<ParserListener> listeners;
 
+    /**
+     * Set up a SAX parser for MzML metadata with the specified ontology dictionary.
+     * 
+     * @param obo Ontology database
+     */
     protected MzMLHeaderHandler(OBO obo) {
         this.obo = obo;
 
