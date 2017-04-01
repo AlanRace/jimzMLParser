@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class Analyser extends MzMLContent implements Serializable {
 
     /**
-     *
+     * Serialisation version ID.
      */
     private static final long serialVersionUID = 1L;
 
@@ -36,6 +36,12 @@ public class Analyser extends MzMLContent implements Serializable {
     public Analyser() {
     }
 
+    /**
+     * Copy constructor, requiring new versions of lists to match old references to.
+     * 
+     * @param analyser Old Analyser to copy
+     * @param rpgList New ReferenceableParamGroupList
+     */
     public Analyser(Analyser analyser, ReferenceableParamGroupList rpgList) {
         super(analyser, rpgList);
     }

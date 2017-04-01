@@ -73,7 +73,10 @@ public abstract class CVParam implements Serializable, MzMLTag { //, MutableTree
 
     public abstract void setValueAsString(String newValue);
 
-    public void outputXML(BufferedWriter output) throws IOException {
+    @Override
+    public void outputXML(BufferedWriter output, int indent) throws IOException {
+        MzMLContent.indent(output, indent);
+        
         output.write("<cvParam");
 
         output.write(" cvRef=\"" + XMLHelper.ensureSafeXML(term.getNamespace()) + "\"");

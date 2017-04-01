@@ -446,7 +446,7 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
     /**
      * Remove cvParam at the specified index.
      * 
-     * @param index
+     * @param index Index within the list of cvParams
      */
     public void removeCVParam(int index) {
         if (cvParams == null) {
@@ -459,7 +459,7 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
     /**
      * Remove cvParam with the specified ID.
      * 
-     * @param id
+     * @param id Ontology ID
      */
     public void removeCVParam(String id) {
         if (cvParams == null) {
@@ -483,7 +483,7 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
      * Remove all cvParams which are defined as children of the specified ontology term 
      * with the ID id. 
      * 
-     * @param id
+     * @param id Ontology ID
      */
     public void removeChildOfCVParam(String id) {
         if (cvParams == null) {
@@ -500,7 +500,7 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
     /**
      * Add userParam to MzMLContent.
      * 
-     * @param userParam
+     * @param userParam UserParam to add
      */
     public void addUserParam(UserParam userParam) {
         getUserParamList().add(userParam);
@@ -509,7 +509,7 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
     /**
      * Remove userParam at the specified index.
      * 
-     * @param index
+     * @param index Index within the list of userParams
      */
     public void removeUserParam(int index) {
         if (userParams == null) {
@@ -523,7 +523,7 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
      * Get the cvParam which has the specified id. Checks list of CVParams as well
      * as all ReferenceableParamGroups associated with this MzMLContent.
      * 
-     * @param id
+     * @param id Ontology ID
      * @return CVParam with id if found, null otherwise
      */
     public CVParam getCVParam(String id) {
@@ -555,8 +555,8 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
     /**
      * Get cvParam at specified index.
      * 
-     * @param index
-     * @return
+     * @param index Index within the list of cvParams
+     * @return CVParam if exists at index, null if not
      */
     public CVParam getCVParam(int index) {
         if (cvParams == null) {
@@ -569,7 +569,7 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
     /**
      * Get count of cvParams (only includes cvParams within the CVParam list).
      * 
-     * @return
+     * @return Count of cvParams within the list
      */
     public int getCVParamCount() {
         if (cvParams == null) {
@@ -584,7 +584,7 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
      * term, with the specified id. Checks list of CVParams as well
      * as all ReferenceableParamGroups associated with this MzMLContent.
      * 
-     * @param id
+     * @param id Ontology ID 
      * @return CVParam with id (or child of) if found, null otherwise
      */
     public CVParam getCVParamOrChild(String id) {
@@ -628,8 +628,8 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
     /**
      * Get userParam with the specified name.
      * 
-     * @param name
-     * @return
+     * @param name Name of the userParam
+     * @return UserParam if it exists, or null if not
      */
     public UserParam getUserParam(String name) {
         if (referenceableParamGroupRefs != null) {
@@ -660,8 +660,8 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
     /**
      * Get userParam at the specified index.
      * 
-     * @param index
-     * @return
+     * @param index Index within the list of userParams
+     * @return UserParam if it exists, or null if not
      */
     public UserParam getUserParam(int index) {
         if (userParams == null) {
@@ -676,8 +676,8 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
      * ontology id. Checks list of CVParams as well as all ReferenceableParamGroups 
      * associated with this MzMLContent.
      * 
-     * @param id
-     * @return
+     * @param id Ontology ID
+     * @return List of CVParams which have IDs listed as children of the input ontology ID
      */
     public List<CVParam> getChildrenOf(String id) {
         List<CVParam> children = new LinkedList<CVParam>();
@@ -704,13 +704,7 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
         return children;
     }
 
-    /**
-     * Output this MzMLContent in formatted XML.
-     * 
-     * @param output
-     * @param indent
-     * @throws IOException
-     */
+    @Override
     public void outputXML(BufferedWriter output, int indent) throws IOException {
         if (referenceableParamGroupRefs != null) {
             for (ReferenceableParamGroupRef ref : referenceableParamGroupRefs) {
@@ -719,24 +713,21 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
                     continue;
                 }
 
-                MzMLContent.indent(output, indent);
-                ref.outputXML(output);
+                ref.outputXML(output, indent);
             }
         }
 
         if (cvParams != null) {
             for (CVParam cvParam : cvParams) {
                 if (cvParam != null) {
-                    MzMLContent.indent(output, indent);
-                    cvParam.outputXML(output);
+                    cvParam.outputXML(output, indent);
                 }
             }
         }
 
         if (userParams != null) {
             for (UserParam userParam : userParams) {
-                MzMLContent.indent(output, indent);
-                userParam.outputXML(output);
+                userParam.outputXML(output, indent);
             }
         }
     }
@@ -744,9 +735,9 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
     /**
      * Indent the output by the specified number of spaces (indent).
      * 
-     * @param output
-     * @param indent
-     * @throws IOException
+     * @param output BufferedReader to output the indents to
+     * @param indent Number of tabs to indent
+     * @throws IOException Exception occurred during writing data
      */
     public static void indent(BufferedWriter output, int indent) throws IOException {
         for (int i = 0; i < indent; i++) {

@@ -1,5 +1,7 @@
 package com.alanmrace.jimzmlparser.mzml;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.Collection;
 
 /**
@@ -23,4 +25,14 @@ public interface MzMLTag {
      * @param children Collection to add the children to
      */
     public void addChildrenToCollection(Collection<MzMLTag> children);
+    
+    /**
+     * Format the contents of the class into XML at a specified number of tab
+     * indents and output to a BufferedReader
+     * 
+     * @param output BufferedReader to output the XML to
+     * @param indent Number of tabs to indent each tag in the XML
+     * @throws IOException Exception occurred during writing data
+     */
+    public void outputXML(BufferedWriter output, int indent) throws IOException;
 }

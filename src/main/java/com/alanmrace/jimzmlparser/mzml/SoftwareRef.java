@@ -22,7 +22,10 @@ public class SoftwareRef implements Serializable, MzMLTag { //, MutableTreeNode 
         return ref;
     }
 
-    public void outputXML(BufferedWriter output) throws IOException {
+    @Override
+    public void outputXML(BufferedWriter output, int indent) throws IOException {
+        MzMLContent.indent(output, indent);
+        
         output.write("<softwareRef");
         output.write(" ref=\"" + ref.getID() + "\"");
         output.write("/>\n");

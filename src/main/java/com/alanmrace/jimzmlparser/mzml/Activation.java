@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class Activation extends MzMLContent {
 
     /**
-     *
+     * Serialisation version ID.
      */
     private static final long serialVersionUID = 1L;
 
@@ -29,25 +29,22 @@ public class Activation extends MzMLContent {
     public static final String dissociationMethodID = "MS:1000044";	// Required child (1+)
 
     /**
-     * Create an Activation tag
+     * Create an Activation tag.
      */
     public Activation() {
         super();
     }
 
     /**
-     *
-     * @param activation
-     * @param rpgList
+     * Copy constructor, requiring new versions of lists to match old references to.
+     * 
+     * @param activation Old Activation to copy
+     * @param rpgList New ReferenceableParamGroupList
      */
     public Activation(Activation activation, ReferenceableParamGroupList rpgList) {
         super(activation, rpgList);
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public ArrayList<OBOTermInclusion> getListOfRequiredCVParams() {
         ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
@@ -56,10 +53,6 @@ public class Activation extends MzMLContent {
         return required;
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public ArrayList<OBOTermInclusion> getListOfOptionalCVParams() {
         ArrayList<OBOTermInclusion> optional = new ArrayList<OBOTermInclusion>();
@@ -68,17 +61,6 @@ public class Activation extends MzMLContent {
         return optional;
     }
 
-    /* (non-Javadoc)
-     * @see mzML.MzMLContent#outputXML(java.io.BufferedWriter, int)
-     */
-    /**
-     * Format the contents of the class into XML at a specified number of tab
-     * indents and output to a BufferedReader
-     *
-     * @param output BufferedReader to output the XML to
-     * @param indent Number of tabs to indent the XML
-     * @throws IOException Exception occurred during writing data
-     */
     @Override
     public void outputXML(BufferedWriter output, int indent) throws IOException {
         MzMLContent.indent(output, indent);

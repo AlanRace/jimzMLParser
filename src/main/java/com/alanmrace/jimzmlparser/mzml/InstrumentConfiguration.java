@@ -166,8 +166,7 @@ public class InstrumentConfiguration extends MzMLContent implements Serializable
 
         // Create softwareRef
         if (softwareRef != null) {
-            MzMLContent.indent(output, indent + 1);
-            softwareRef.outputXML(output);
+            softwareRef.outputXML(output, indent + 1);
         }
 
         MzMLContent.indent(output, indent);

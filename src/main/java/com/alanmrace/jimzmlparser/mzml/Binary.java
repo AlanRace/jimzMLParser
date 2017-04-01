@@ -17,37 +17,88 @@ import java.util.Collection;
 public class Binary implements Serializable, MzMLTag {
 
     /**
-     *
+     * Serialisation version ID.
      */
     private static final long serialVersionUID = 1L;
     
+    /**
+     * Possible binary data types used to store data.
+     */
     public enum DataType {
+
+        /**
+         * Double precision floating point.
+         */
         doublePrecision,
+
+        /**
+         * Floating point.
+         */
         singlePrecision,
+
+        /**
+         * Signed 8-bit integer.
+         */
         signed8bitInteger,
+
+        /**
+         * Signed 16-bit integer.
+         */
         signed16bitInteger,
+
+        /**
+         * Signed 32-bit integer.
+         */
         signed32bitInteger,
+
+        /**
+         * Signed 64-bit integer.
+         */
         signed64bitInteger;
     }
 
+    /**
+     * Possible compression methods for compressing binary data.
+     */
     public enum CompressionType {
+
+        /**
+         * No compression.
+         */
         noCompression,
+
+        /**
+         * ZLib compression.
+         */
         zlibCompresion;
     }
 
+    /**
+     * Binary data type used to store the data.
+     */
     private DataType dataType;
+
+    /**
+     * CVParam describing the binary data type used to store the data.
+     */
     private CVParam cvDataType;
 
+    /**
+     * Compression (if any) used to compress the binary data.
+     */
     private CompressionType compression;
 
+    /**
+     * Uncompressed data, stored as double precision.
+     */
     private double[] data;
 
     /**
-     * Constructor for use when writing out mzML
+     * Constructor for use when writing out mzML.
      *
-     * @param data
-     * @param dataType
-     * @param compression
+     * @param data          Data associated with this binary tag
+     * @param dataType      Data type that should be used to store data
+     * @param compression   Compression (if any) to use on the data
      */
     public Binary(double[] data, DataType dataType, CompressionType compression) {
         this.data = data;
@@ -56,6 +107,12 @@ public class Binary implements Serializable, MzMLTag {
         this.compression = compression;
     }
 
+    /**
+     * Constructor for use when writing out mzML. Default to double precision 
+     * and no compression.
+     *
+     * @param data Data associated with this binary tag
+     */
     public Binary(double[] data) {
         this(data, DataType.doublePrecision, CompressionType.noCompression);
     }
@@ -70,6 +127,13 @@ public class Binary implements Serializable, MzMLTag {
         // No children
     }
     
+    /**
+     * Convert a CVParam (with MS or IMS OBO ontology terms) describing the data 
+     * type to a {@link DataType}.
+     * 
+     * @param cvParam   CVParam to convert
+     * @return          DataType if conversion possible, otherwise null
+     */
     public static DataType getDataTypeFromCV(CVParam cvParam) {
         String term = cvParam.getTerm().getID();
 
@@ -90,18 +154,34 @@ public class Binary implements Serializable, MzMLTag {
         return null;
     }
 
+    /**
+     * Get the CVParam that describes the binary data type.
+     * 
+     * @return Data type CVParam
+     */
     public CVParam getDataTypeCVParam() {
         return cvDataType;
     }
 
+    /**
+     * Get the DataType used to store binary data.
+     * 
+     * @return DataType
+     */
     public DataType getDataType() {
         return dataType;
     }
 
+    /**
+     * Get the compression method used to store binary data.
+     * 
+     * @return Compression method
+     */
     public CompressionType getCompressionType() {
         return compression;
     }
 
+    @Override
     public void outputXML(BufferedWriter output, int indent) throws IOException {
         MzMLContent.indent(output, indent);
 

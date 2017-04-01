@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,6 +21,9 @@ import java.util.zip.Inflater;
 
 /**
  * BinaryDataArray tag.
+ * 
+ * <p>TODO: Reassess the variables and the getter methods as the getter methods 
+ * mainly search the CVParams.
  *
  * @author Alan Race
  */
@@ -189,11 +193,24 @@ public class BinaryDataArray extends MzMLContent implements Serializable {
      */
     private Binary binary;
 
+    /**
+     * Binary data type of the stored data array.
+     */
     private Binary.DataType dataType;
 
+    /**
+     * True if this BinaryDataArray describes an m/z array, false otherwise.
+     */
     private boolean ismzArray;
+
+    /**
+     * True if this BinaryDataArray describes an intensity array, false otherwise.
+     */
     private boolean isIntensityArray;
 
+    /**
+     * Location of the binary data array.
+     */
     protected DataLocation dataLocation;
 
     /**
@@ -205,6 +222,13 @@ public class BinaryDataArray extends MzMLContent implements Serializable {
         this.encodedLength = encodedLength;
     }
 
+    /**
+     * Copy constructor, requiring new versions of lists to match old references to.
+     * 
+     * @param bda       Old BinaryDataArray to copy
+     * @param rpgList   New ReferenceableParamGroupList
+     * @param dpList    New DataProcessingList
+     */
     public BinaryDataArray(BinaryDataArray bda, ReferenceableParamGroupList rpgList, DataProcessingList dpList) {
         super(bda, rpgList);
 
@@ -236,6 +260,12 @@ public class BinaryDataArray extends MzMLContent implements Serializable {
         return required;
     }
 
+    /**
+     * Get the length in bytes of the encoded data (number of bytes for the data 
+     * type x number of elements in array).
+     * 
+     * @return Length in bytes of encoded data
+     */
     public int getEncodedLength() {
         return encodedLength;
     }
@@ -280,16 +310,16 @@ public class BinaryDataArray extends MzMLContent implements Serializable {
     /**
      * Checks if the binary data is double precision.
      *
-     * @return true, if double precision cvParam is present
+     * @return true, if double precision cvParam is present, false otherwise
      */
     public boolean isDoublePrecision() {
         if (dataType != null) {
             return dataType == Binary.DataType.doublePrecision;
         }
 
-        CVParam dataType = getCVParam(doublePrecisionID);
+        CVParam dataTypeCVParam = getCVParam(doublePrecisionID);
 
-        if (dataType == null) {
+        if (dataTypeCVParam == null) {
             return false;
         }
 
@@ -298,80 +328,171 @@ public class BinaryDataArray extends MzMLContent implements Serializable {
         return true;
     }
 
+    /**
+     * Checks if the binary data is single precision floating point.
+     *
+     * @return true, if single precision cvParam is present, false otherwise
+     */
     public boolean isSinglePrecision() {
-        CVParam dataType = getCVParam(singlePrecisionID);
+        CVParam dataTypeCVParam = getCVParam(singlePrecisionID);
 
-        return dataType != null;
+        return dataTypeCVParam != null;
     }
 
+    /**
+     * Checks if the binary data is 8-bit integer.
+     *
+     * @return true, if 8-bit integer cvParam is present, false otherwise
+     */
     public boolean isSigned8BitInteger() {
-        CVParam dataType = getCVParam(signed8bitIntegerID);
+        CVParam dataTypeCVParam = getCVParam(signed8bitIntegerID);
 
-        return dataType != null;
+        return dataTypeCVParam != null;
     }
 
+    /**
+     * Checks if the binary data is 16-bit integer.
+     *
+     * @return true, if 16-bit integer cvParam is present, false otherwise
+     */
     public boolean isSigned16BitInteger() {
-        CVParam dataType = getCVParam(signed16bitIntegerID);
+        CVParam dataTypeCVParam = getCVParam(signed16bitIntegerID);
 
-        return dataType != null;
+        return dataTypeCVParam != null;
     }
 
+    /**
+     * Checks if the binary data is 32-bit integer.
+     *
+     * @return true, if 32-bit integer cvParam is present, false otherwise
+     */
     public boolean isSigned32BitInteger() {
-        CVParam dataType = getCVParam(signed32bitIntegerID);
+        CVParam dataTypeCVParam = getCVParam(signed32bitIntegerID);
         CVParam imsDataType = getCVParam(imsSigned32bitIntegerID);
 
-        return !(dataType == null && imsDataType == null);
+        return !(dataTypeCVParam == null && imsDataType == null);
     }
 
+    /**
+     * Checks if the binary data is 64-bit integer.
+     *
+     * @return true, if 64-bit integer cvParam is present, false otherwise
+     */
     public boolean isSigned64BitInteger() {
-        CVParam dataType = getCVParam(signed64bitIntegerID);
+        CVParam dataTypeCVParam = getCVParam(signed64bitIntegerID);
         CVParam imsDataType = getCVParam(imsSigned64bitIntegerID);
 
-        return !(dataType == null && imsDataType == null);
+        return !(dataTypeCVParam == null && imsDataType == null);
     }
 
+    /**
+     * Checks if the cvParam for no compression is present.
+     *
+     * @return true, if the no compression cvParam cannot be found, false otherwise
+     */
     public boolean isCompressed() {
         CVParam compression = getCVParam(noCompressionID);
 
         return compression == null;
     }
 
+    /**
+     * Convert a CVParam (with MS or IMS OBO ontology terms) describing the data 
+     * type to the number of bytes for the type it describes.
+     * 
+     * @param dataType  CVParam to convert
+     * @return          Number of bytes for the data type 
+     */
     public static int getDataTypeInBytes(CVParam dataType) {
-        String dataTypeID = dataType.getTerm().getID();
+        String dataTypeTermID = dataType.getTerm().getID();
 
-        if (dataTypeID.equals(doublePrecisionID)) {
+        if (dataTypeTermID.equals(doublePrecisionID)) {
             return 8;
-        } else if (dataTypeID.equals(singlePrecisionID)) {
+        } else if (dataTypeTermID.equals(singlePrecisionID)) {
             return 4;
-        } else if (dataTypeID.equals(signed8bitIntegerID)) {
+        } else if (dataTypeTermID.equals(signed8bitIntegerID)) {
             return 1;
-        } else if (dataTypeID.equals(signed16bitIntegerID)) {
+        } else if (dataTypeTermID.equals(signed16bitIntegerID)) {
             return 2;
-        } else if (dataTypeID.equals(signed32bitIntegerID)) {
+        } else if (dataTypeTermID.equals(signed32bitIntegerID)) {
             return 4;
-        } else if (dataTypeID.equals(signed64bitIntegerID)) {
+        } else if (dataTypeTermID.equals(signed64bitIntegerID)) {
             return 8;
         }
 
         return 1;
     }
 
+    /**
+     * Set the location of the binary data.
+     * 
+     * @param dataLocation Location of the binary data
+     */
     public void setDataLocation(DataLocation dataLocation) {
         this.dataLocation = dataLocation;
     }
 
+    /**
+     * Get the location of the binary data.
+     * 
+     * @return Location of the binary data
+     */
     public DataLocation getDataLocation() {
         return dataLocation;
     }
 
+    /**
+     * Get the data array as double[], convert and decompress as necessary.
+     * Calls getDataAsDouble(false); - does not keep in memory.
+     * 
+     * @return Uncompressed data as double[]
+     * @throws IOException On failure to read from data location
+     */
     public double[] getDataAsDouble() throws IOException {
         return getDataAsDouble(false);
     }
 
+    /**
+     * Get the data array as double[], convert and decompress as necessary, 
+     * optionally keeping the data in memory.
+     * 
+     * <p>TODO: Doesn't keep data in memory
+     * 
+     * @param keepInMemory true if data should be kept in memory, false otherwise
+     * @return Uncompressed data as double[]
+     * @throws IOException On failure to read from data location
+     */
+    public double[] getDataAsDouble(boolean keepInMemory) throws IOException {
+        byte[] data = getDataAsByte(keepInMemory);
+
+        CVParam dataTypeCVParam = this.getCVParamOrChild(BinaryDataArray.dataTypeID);
+
+        double[] convertedData = convertDataToDouble(data, dataTypeCVParam);
+
+        return convertedData;
+    }
+    
+    /**
+     * Get the data array as byte[], decompressing as necessary.
+     * Calls getDataAsByte(false); - does not keep in memory.
+     * 
+     * @return Uncompressed data as byte[]
+     * @throws IOException On failure to read from data location
+     */
     public byte[] getDataAsByte() throws IOException {
         return getDataAsByte(false);
     }
 
+    /**
+     * Get the data array as byte[], decompressing as necessary, 
+     * optionally keeping the data in memory.
+     * 
+     * <p>TODO: Doesn't keep data in memory
+     * 
+     * @param keepInMemory true if data should be kept in memory, false otherwise
+     * @return Uncompressed data as byte[]
+     * @throws IOException On failure to read from data location
+     */
     public byte[] getDataAsByte(boolean keepInMemory) throws IOException {
         if (dataLocation == null) {
             return null;
@@ -383,23 +504,20 @@ public class BinaryDataArray extends MzMLContent implements Serializable {
         try {
             data = decompress(data);
         } catch (DataFormatException ex) {
-            Logger.getLogger(BinaryDataArray.class.getName()).log(Level.SEVERE, "" + data, ex);
+            Logger.getLogger(BinaryDataArray.class.getName()).log(Level.SEVERE, "" + Arrays.toString(data), ex);
         }
 
         return data;
     }
 
-    public double[] getDataAsDouble(boolean keepInMemory) throws IOException {
-        byte[] data = getDataAsByte(keepInMemory);
-
-        CVParam dataType = this.getCVParamOrChild(BinaryDataArray.dataTypeID);
-
-//	    System.out.println("DataType: " + dataType);
-        double[] convertedData = convertDataToDouble(data, dataType);
-
-        return convertedData;
-    }
-
+    /**
+     * Convert data from uncompressed byte[] with the data type defined by the dataType 
+     * CVParam to a double[].
+     * 
+     * @param data Data as byte[]
+     * @param dataType DataType of the byte[] as a CVParam
+     * @return Data as double[]
+     */
     public static double[] convertDataToDouble(byte[] data, CVParam dataType) {
         double[] convertedData = null;
 
@@ -463,6 +581,15 @@ public class BinaryDataArray extends MzMLContent implements Serializable {
         return convertedData;
     }
 
+    /**
+     * Convert data from uncompressed byte[] with the data type defined by the dataType 
+     * to a byte[] with data type defined by newDataType.
+     * 
+     * @param data Original data as byte[]
+     * @param dataType DataType of the original byte[]  
+     * @param newDataType DataType to convert to 
+     * @return Data as byte[] in the new DataType newDataType
+     */
     public static byte[] convertDataType(byte[] data, Binary.DataType dataType, CVParam newDataType) {
         if (dataType == null) {
             return convertDataType(data, new EmptyCVParam(new OBOTerm(BinaryDataArray.doublePrecisionID)), newDataType);
@@ -485,6 +612,15 @@ public class BinaryDataArray extends MzMLContent implements Serializable {
         }
     }
 
+    /**
+     * Convert data from uncompressed byte[] with the data type defined by the dataType 
+     * CVParam to a byte[] with data type defined by newDataType CVParam.
+     * 
+     * @param data Original data as byte[]
+     * @param originalDataType DataType of the original byte[] as a CVParam
+     * @param newDataType DataType to convert to as a CVParam
+     * @return Data as byte[] in the new DataType newDataType
+     */
     public static byte[] convertDataType(byte[] data, CVParam originalDataType, CVParam newDataType) {
         if (originalDataType.getTerm().getID().equals(newDataType.getTerm().getID())) {
             return data;
@@ -532,14 +668,19 @@ public class BinaryDataArray extends MzMLContent implements Serializable {
         return byteArrayStream.toByteArray();
     }
 
+    /**
+     * Compress byte[] using ZLib algorithm.
+     * 
+     * @param data byte[] to compress
+     * @return Compressed byte[]
+     */
     public static byte[] compressZLib(byte[] data) {
         Deflater compressor = new Deflater();
         compressor.setInput(data);
         compressor.finish();
 
         ArrayList<Byte> compressedData = new ArrayList<Byte>();
-//            int length = 0;
-        int compressed = 0;
+        int compressed;
 
         do {
             byte[] temp = new byte[BYTE_BUFFER_SIZE]; // 2^20
@@ -562,12 +703,18 @@ public class BinaryDataArray extends MzMLContent implements Serializable {
         return compressedBytes;
     }
 
+    /**
+     * Decompress byte[] using ZLib algorithm.
+     * 
+     * @param data byte[] to decompress
+     * @return Decompressed byte[]
+     */
     protected byte[] decompressZLib(byte[] data) throws DataFormatException {
         Inflater decompressor = new Inflater();
         decompressor.setInput(data);
 
         ArrayList<Byte> uncompressedData = new ArrayList<Byte>();
-        int uncompressed = 0;
+        int uncompressed;
 
         do {
             byte[] temp = new byte[BYTE_BUFFER_SIZE]; // 2^20
@@ -591,6 +738,13 @@ public class BinaryDataArray extends MzMLContent implements Serializable {
         return uncompressedBytes;
     }
 
+    /**
+     * Compress byte[] using specified algorithm in a CVParam.
+     * 
+     * @param data byte[] to compress
+     * @param compressionCVParam Compression method to use as CVParam
+     * @return Compressed byte[]
+     */
     public static byte[] compress(byte[] data, CVParam compressionCVParam) {
         // Check the decompression type needed
 
@@ -606,12 +760,25 @@ public class BinaryDataArray extends MzMLContent implements Serializable {
         return compressedData;
     }
 
+    /**
+     * Compress byte[] using the first algorithm found within the CVParam list.
+     * 
+     * @param data byte[] to compress
+     * @return Compressed byte[]
+     */
     protected byte[] compress(byte[] data) {
         CVParam compressionCVParam = this.getCVParamOrChild(BinaryDataArray.compressionTypeID);
 
         return compress(data, compressionCVParam);
     }
 
+    /**
+     * Decompress byte[] using the first algorithm found within the CVParam list.
+     * 
+     * @param data byte[] to decompress
+     * @return Decompressed byte[]
+     * @throws java.util.zip.DataFormatException Decompression fails
+     */
     protected byte[] decompress(byte[] data) throws DataFormatException {
         // Check the decompression type needed
         CVParam compressionCVParam = this.getCVParamOrChild(BinaryDataArray.compressionTypeID);
@@ -644,13 +811,13 @@ public class BinaryDataArray extends MzMLContent implements Serializable {
      * @return the external array length
      */
     public long getExternalArrayLength() {
-        CVParam arrayLength = getCVParam(externalArrayLengthID);
+        CVParam arrayLengthCVParam = getCVParam(externalArrayLengthID);
 
-        if (arrayLength == null) {
+        if (arrayLengthCVParam == null) {
             return -1;
         }
 
-        return arrayLength.getValueAsLong();
+        return arrayLengthCVParam.getValueAsLong();
     }
 
     /**
@@ -659,13 +826,13 @@ public class BinaryDataArray extends MzMLContent implements Serializable {
      * @return the external encoded length
      */
     public long getExternalEncodedLength() {
-        CVParam encodedLength = getCVParam(externalEncodedLengthID);
+        CVParam encodedLengthCVParam = getCVParam(externalEncodedLengthID);
 
-        if (encodedLength == null) {
+        if (encodedLengthCVParam == null) {
             return -1;
         }
 
-        return encodedLength.getValueAsLong();
+        return encodedLengthCVParam.getValueAsLong();
     }
 
     /**
@@ -730,10 +897,20 @@ public class BinaryDataArray extends MzMLContent implements Serializable {
         super.addReferenceableParamGroupRef(rpgr);
     }
 
+    /**
+     * Check if the binary data array is an m/z array
+     * 
+     * @return true if is m/z array, false otherwise
+     */
     public boolean ismzArray() {
         return ismzArray;
     }
 
+    /**
+     * Check if the binary data array is an intensity array
+     * 
+     * @return true if is intensity array, false otherwise
+     */
     public boolean isIntensityArray() {
         return isIntensityArray;
     }
@@ -747,9 +924,6 @@ public class BinaryDataArray extends MzMLContent implements Serializable {
         return getCVParamOrChild(binaryDataArrayID);
     }
 
-    /* (non-Javadoc)
-     * @see mzML.MzMLContent#outputXML(java.io.BufferedWriter, int)
-     */
     @Override
     public void outputXML(BufferedWriter output, int indent) throws IOException {
         MzMLContent.indent(output, indent);

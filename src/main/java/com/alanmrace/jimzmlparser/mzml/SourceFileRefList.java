@@ -50,8 +50,7 @@ public class SourceFileRefList extends MzMLContent implements Serializable, Iter
         output.write(">\n");
 
         for (SourceFileRef sourceFileRef : sourceFileRefList) {
-            MzMLContent.indent(output, indent + 1);
-            sourceFileRef.outputXML(output);
+            sourceFileRef.outputXML(output, indent + 1);
         }
 
         MzMLContent.indent(output, indent);

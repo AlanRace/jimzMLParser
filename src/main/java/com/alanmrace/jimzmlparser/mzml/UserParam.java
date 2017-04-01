@@ -71,7 +71,10 @@ public class UserParam implements Serializable, MzMLTag { //, MutableTreeNode {
         return value;
     }
 
-    public void outputXML(BufferedWriter output) throws IOException {
+    @Override
+    public void outputXML(BufferedWriter output, int indent) throws IOException {
+        MzMLContent.indent(output, indent);
+        
         output.write("<userParam");
 
         output.write(" name=\"" + XMLHelper.ensureSafeXML(name) + "\"");

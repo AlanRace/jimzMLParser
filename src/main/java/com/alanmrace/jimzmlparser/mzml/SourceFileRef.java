@@ -22,7 +22,10 @@ public class SourceFileRef implements Serializable, MzMLTag {
         return ref;
     }
 
-    public void outputXML(BufferedWriter output) throws IOException {
+    @Override
+    public void outputXML(BufferedWriter output, int indent) throws IOException {
+        MzMLContent.indent(output, indent);
+        
         output.write("<sourceFileRef");
         output.write(" ref=\"" + ref.getID() + "\"");
         output.write("/>\n");

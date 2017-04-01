@@ -22,7 +22,10 @@ public class ReferenceableParamGroupRef implements Serializable, MzMLTag { //, M
         return ref;
     }
 
-    public void outputXML(BufferedWriter output) throws IOException {
+    @Override
+    public void outputXML(BufferedWriter output, int indent) throws IOException {
+        MzMLContent.indent(output, indent);
+        
         output.write("<referenceableParamGroupRef");
         output.write(" ref=\"" + ref.getID() + "\"");
         output.write("/>\n");
