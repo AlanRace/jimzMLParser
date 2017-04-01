@@ -24,15 +24,30 @@ import java.util.logging.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
+/**
+ * SAX parser for imzML files.
+ *
+ * @author Alan Race
+ */
 public class ImzMLHandler extends MzMLHeaderHandler {
 
+    /**
+     * Logger for ImzMLHandler.
+     */
     private static final Logger logger = Logger.getLogger(ImzMLHandler.class.getName());
 
+    /**
+     * IBD file containing the binary data for the imzML file.
+     */
     private File ibdFile;
-//    private BinaryDataStorage dataStorage;
+
     private long currentOffset;
     private long currentNumBytes;
 
+    /**
+     * Boolean indicating whether 3D data exported from SCiLS has been detected. This 
+     * is determined by detecting a userParam with the name '3DPositionZ';
+     */
     private boolean processingSCiLS3DData = false;
     private int imageMaxX;
     private int imageMaxY;
@@ -54,12 +69,23 @@ public class ImzMLHandler extends MzMLHeaderHandler {
     private int currentMaxX = 0;
     private int currentMaxY = 0;
 
-//    private int count = 0;
-
+    /**
+     * Set up a SAX parser for imzML metadata only with the specified ontology dictionary.
+     * 
+     * @param obo Ontology database
+     */
     public ImzMLHandler(OBO obo) {
         super(obo);
     }
 
+    /**
+     * Set up a SAX parser for imzML with the specified ontology dictionary.
+     * 
+     * @param obo               Ontology database
+     * @param ibdFile           IBD file containing the binary data for the imzML file
+     * @param openDataStorage   if true, open the binary data file, otherwise just process metadata
+     * @throws FileNotFoundException    If no IBD file could be found
+     */
     public ImzMLHandler(OBO obo, File ibdFile, boolean openDataStorage) throws FileNotFoundException {
         super(obo);
 
@@ -70,14 +96,43 @@ public class ImzMLHandler extends MzMLHeaderHandler {
         }
     }
 
+    /**
+     * Set up an ImzMLHandler, perform the parsing and return the ImzML representation.
+     * Calls parseimzML(filename, true); defaulting to opening the binary IBD storage.
+     * 
+     * @param filename  Location of the imzML file
+     * @return          ImzML representation of the imzML file
+     * @throws ImzMLParseException  If a fatal parse error occurs
+     */
     public static ImzML parseimzML(String filename) throws ImzMLParseException {
         return parseimzML(filename, true);
     }
 
+    /**
+     * Set up an ImzMLHandler, perform the parsing and return the ImzML representation,
+     * optionally opening the IBD binary data storage for reading.
+     * Calls parseimzML(filename, openDataStorage, null); defaulting to no ParserListener
+     * 
+     * @param filename          Location of the imzML file
+     * @param openDataStorage   true to open the IBD binary data storage, false to only parse metadata
+     * @return                  ImzML representation of the imzML file
+     * @throws ImzMLParseException  If a fatal parse error occurs
+     */
     public static ImzML parseimzML(String filename, boolean openDataStorage) throws ImzMLParseException {
         return parseimzML(filename, openDataStorage, null);
     }
     
+    /**
+     * Set up an ImzMLHandler, perform the parsing and return the ImzML representation,
+     * optionally opening the IBD binary data storage for reading. Optional inclusion
+     * of a ParserListener which will be notified of any non-fatal parsing issues.
+     * 
+     * @param filename          Location of the imzML file
+     * @param openDataStorage   true to open the IBD binary data storage, false to only parse metadata
+     * @param listener          ParserListener which will be notified of any non-fatal parsing issues
+     * @return                  ImzML representation of the imzML file
+     * @throws ImzMLParseException  If a fatal parse error occurs
+     */
     public static ImzML parseimzML(String filename, boolean openDataStorage, ParserListener listener) throws ImzMLParseException {
         try {
             OBO obo = new OBO("imagingMS.obo");
@@ -292,6 +347,11 @@ public class ImzMLHandler extends MzMLHeaderHandler {
         super.endElement(uri, localName, qName);
     }
 
+    /**
+     * Get the ImzML created in the SAX parser process.
+     * 
+     * @return
+     */
     public ImzML getimzML() {
         ImzML imzML = (ImzML) mzML;
 

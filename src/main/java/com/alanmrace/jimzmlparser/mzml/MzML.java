@@ -176,7 +176,7 @@ public class MzML extends MzMLContent implements Serializable {
     /**
      * Set the storage style for the data within the mzML file.
      * 
-     * @param dataStorage
+     * @param dataStorage dataStorage
      */
     public void setDataStorage(DataStorage dataStorage) {
         this.dataStorage = dataStorage;
@@ -203,7 +203,7 @@ public class MzML extends MzMLContent implements Serializable {
     /**
      * Set the mzML version.
      * 
-     * @param version
+     * @param version mzML version
      */
     public void setVersion(String version) {
         this.version = version;
@@ -212,7 +212,7 @@ public class MzML extends MzMLContent implements Serializable {
     /**
      * Get the mzML version.
      * 
-     * @return
+     * @return mzML version
      */
     public String getVersion() {
         return version;
@@ -221,7 +221,7 @@ public class MzML extends MzMLContent implements Serializable {
     /**
      * Set the accession for the mzML tag for when exporting to XML.
      * 
-     * @param accession
+     * @param accession accession
      */
     public void setAccession(String accession) {
         this.accession = accession;
@@ -230,7 +230,7 @@ public class MzML extends MzMLContent implements Serializable {
     /**
      * Get the accession set within the mzML XML.
      * 
-     * @return
+     * @return accession
      */
     public String accession() {
         return accession;
@@ -239,7 +239,7 @@ public class MzML extends MzMLContent implements Serializable {
     /**
      * Set the id attribute for the mzML tag for exporting to XML.
      * 
-     * @param id
+     * @param id id
      */
     public void setID(String id) {
         this.id = id;
@@ -248,7 +248,7 @@ public class MzML extends MzMLContent implements Serializable {
     /**
      * Get the id attribute set within the mzML tag in the XML file.
      * 
-     * @return
+     * @return id
      */
     public String getID() {
         return id;
@@ -257,7 +257,7 @@ public class MzML extends MzMLContent implements Serializable {
     /**
      * Set the CVList for the mzML.
      * 
-     * @param cvList
+     * @param cvList cvList
      */
     public void setCVList(CVList cvList) {
         cvList.setParent(this);
@@ -268,7 +268,7 @@ public class MzML extends MzMLContent implements Serializable {
     /**
      * Get the CVList.
      * 
-     * @return
+     * @return cvList
      */
     public CVList getCVList() {
         return cvList;
@@ -277,18 +277,18 @@ public class MzML extends MzMLContent implements Serializable {
     /**
      * Set the FileDescription for the mzML.
      * 
-     * @param fd
+     * @param fileDescription fileDescription
      */
-    public void setFileDescription(FileDescription fd) {
-        fd.setParent(this);
+    public void setFileDescription(FileDescription fileDescription) {
+        fileDescription.setParent(this);
 
-        this.fileDescription = fd;
+        this.fileDescription = fileDescription;
     }
 
     /**
      * Get the FileDescription.
      * 
-     * @return
+     * @return fileDescription
      */
     public FileDescription getFileDescription() {
         return fileDescription;
@@ -297,7 +297,7 @@ public class MzML extends MzMLContent implements Serializable {
     /**
      * Set the ReferenceableParamGroupList.
      * 
-     * @param referenceableParamGroupList
+     * @param referenceableParamGroupList referenceableParamGroupList
      */
     public void setReferenceableParamGroupList(ReferenceableParamGroupList referenceableParamGroupList) {
         referenceableParamGroupList.setParent(this);
@@ -309,7 +309,7 @@ public class MzML extends MzMLContent implements Serializable {
      * Get the ReferenceableParamGroupList. If it does not exist, then create an 
      * empty list.
      * 
-     * @return
+     * @return referenceableParamGroupList
      */
     public ReferenceableParamGroupList getReferenceableParamGroupList() {
         if (referenceableParamGroupList == null) {
@@ -322,7 +322,7 @@ public class MzML extends MzMLContent implements Serializable {
     /**
      * Set the SampleList.
      * 
-     * @param sampleList
+     * @param sampleList sampleList
      */
     public void setSampleList(SampleList sampleList) {
         sampleList.setParent(this);
@@ -333,7 +333,7 @@ public class MzML extends MzMLContent implements Serializable {
     /**
      * Get the SampleList. If it does not exist, then create an empty list.
      * 
-     * @return
+     * @return sampleList
      */
     public SampleList getSampleList() {
         if (sampleList == null) {
@@ -346,7 +346,7 @@ public class MzML extends MzMLContent implements Serializable {
     /**
      * Set the SoftwareList.
      * 
-     * @param softwareList
+     * @param softwareList softwareList
      */
     public void setSoftwareList(SoftwareList softwareList) {
         softwareList.setParent(this);
@@ -357,7 +357,7 @@ public class MzML extends MzMLContent implements Serializable {
     /**
      * Get the SoftwareList. If it does not exist, then create an empty list.
      * 
-     * @return
+     * @return softwareList
      */
     public SoftwareList getSoftwareList() {
         if (softwareList == null) {
@@ -370,7 +370,7 @@ public class MzML extends MzMLContent implements Serializable {
     /**
      * Set ScanSettingsList.
      * 
-     * @param scanSettingsList
+     * @param scanSettingsList scanSettingsList
      */
     public void setScanSettingsList(ScanSettingsList scanSettingsList) {
         scanSettingsList.setParent(this);
@@ -381,7 +381,7 @@ public class MzML extends MzMLContent implements Serializable {
     /**
      * Get ScanSettingsList. If one does not exist, then create an empty list.
      * 
-     * @return
+     * @return scanSettingsList
      */
     public ScanSettingsList getScanSettingsList() {
         if (scanSettingsList == null) {
@@ -394,7 +394,7 @@ public class MzML extends MzMLContent implements Serializable {
     /**
      * Set InstrumentConfigurationList.
      * 
-     * @param instrumentConfigurationList
+     * @param instrumentConfigurationList instrumentConfigurationList
      */
     public void setInstrumentConfigurationList(InstrumentConfigurationList instrumentConfigurationList) {
         instrumentConfigurationList.setParent(this);
@@ -406,7 +406,7 @@ public class MzML extends MzMLContent implements Serializable {
      * Get InstrumentConfigurationList. If one does not exist, then create an 
      * empty list.
      * 
-     * @return
+     * @return instrumentConfigurationList
      */
     public InstrumentConfigurationList getInstrumentConfigurationList() {
         if (instrumentConfigurationList == null) {
@@ -483,7 +483,7 @@ public class MzML extends MzMLContent implements Serializable {
     /**
      * Set DataProcessingList.
      * 
-     * @param dataProcessingList
+     * @param dataProcessingList dataProcessingList
      */
     public void setDataProcessingList(DataProcessingList dataProcessingList) {
         dataProcessingList.setParent(this);
@@ -494,7 +494,7 @@ public class MzML extends MzMLContent implements Serializable {
     /**
      * Get DataProcessingList. If it does not exist, then create an empty list.
      * 
-     * @return
+     * @return dataProcessingList
      */
     public DataProcessingList getDataProcessingList() {
         if (dataProcessingList == null) {
@@ -507,7 +507,7 @@ public class MzML extends MzMLContent implements Serializable {
     /**
      * Set Run.
      * 
-     * @param run
+     * @param run run
      */
     public void setRun(Run run) {
         run.setParent(this);
@@ -518,7 +518,7 @@ public class MzML extends MzMLContent implements Serializable {
     /**
      * Get Run.
      * 
-     * @return
+     * @return run
      */
     public Run getRun() {
         return run;
@@ -528,7 +528,7 @@ public class MzML extends MzMLContent implements Serializable {
      * Write out to XML file with specified filename. Uses ISO-8859-1 encoding.
      * 
      * @param filename      Location to output as XML
-     * @throws ImzMLWriteException
+     * @throws ImzMLWriteException IOException are wrapped into ImzMLWriteException
      */
     public void write(String filename) throws ImzMLWriteException {
         try {
@@ -688,7 +688,7 @@ public class MzML extends MzMLContent implements Serializable {
      * 
      * <p>TODO: Is this the best location for this?
      * 
-     * @param dataLocation
+     * @param dataLocation DataLocation to close
      */
     protected static void closeDataStorage(DataLocation dataLocation) {
         if (dataLocation != null) {
