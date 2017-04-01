@@ -4,24 +4,32 @@ import java.io.Serializable;
 
 /**
  * Pixel 3D (x, y, z) integer coordinate.
- * 
+ *
  * @author Alan Race
  */
 public class PixelLocation implements Serializable {
 
-    /** Serial version ID */
+    /**
+     * Serial version ID.
+     */
     private static final long serialVersionUID = 1L;
 
-    /** x-coordinate */
+    /**
+     * x-coordinate.
+     */
     private final int x;
-    /** y-coordinate */
+    /**
+     * y-coordinate.
+     */
     private final int y;
-    /** z-coordinate */
+    /**
+     * z-coordinate.
+     */
     private final int z;
 
     /**
      * Construct PixelLocation (x, y, z).
-     * 
+     *
      * @param x x-coordinate
      * @param y y-coordinate
      * @param z z-coordinate
@@ -34,7 +42,7 @@ public class PixelLocation implements Serializable {
 
     /**
      * Get x-coordinate.
-     * 
+     *
      * @return x-coordinate
      */
     public int getX() {
@@ -43,7 +51,7 @@ public class PixelLocation implements Serializable {
 
     /**
      * Get y-coordinate.
-     * 
+     *
      * @return y-coordinate
      */
     public int getY() {
@@ -52,24 +60,25 @@ public class PixelLocation implements Serializable {
 
     /**
      * Get z-coordinate.
-     * 
+     *
      * @return z-coordinate
      */
     public int getZ() {
         return z;
     }
-    
+
     /**
-     * Test whether an object can equal this class (i.e. is of type PixelLocation).
-     * 
+     * Test whether an object can equal this class (i.e. is of type
+     * PixelLocation).
+     *
      * @param other Object to test
      * @return true if is of type PixelLocation, false if not
      */
     public boolean canEqual(Object other) {
         return (other instanceof PixelLocation);
     }
-    
-    @Override 
+
+    @Override
     public boolean equals(Object other) {
         boolean result = false;
         if (other instanceof PixelLocation) {
@@ -79,7 +88,8 @@ public class PixelLocation implements Serializable {
         return result;
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         return (41 * (41 * (41 + getX()) + getY()) + getZ());
     }
 }

@@ -30,22 +30,41 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Class capturing {@literal <mzML>} tag within an imzML file, extending 
+ * {@link MzML} to mass spectrometry imaging specific methods.
+ * 
  * @author Alan Race
  */
 public class ImzML extends MzML implements MassSpectrometryImagingData {
 
     /**
-     *
+     * Serialisation version ID.
      */
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Class logger.
+     */
     private static final Logger logger = Logger.getLogger(ImzML.class.getName());
 
+    /**
+     * Width of mass spectrometry image in pixels.
+     */
     private int width;
+    
+    /**
+     * Height of mass spectrometry image in pixels.
+     */
     private int height;
+    
+    /**
+     * Depth of mass spectrometry image in pixels.
+     */
     private int depth;
 
+    /**
+     * IBD file containing the binary data for imzML.
+     */
     private File ibdFile;
 
     private double[] fullmzList;
@@ -341,6 +360,11 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
         return maxMZ;
     }
 
+    /**
+     * Get the IBD file containing the binary data.
+     * 
+     * @return IBD data file
+     */
     public File getIBDFile() {
         return ibdFile;
     }
@@ -420,6 +444,16 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
         return getFileDescription().getFileContent().getCVParam(FileContent.binaryTypeContinuousID) != null;
     }
 
+    /**
+     * Generate an m/z axis starting at minMZ, ending at maxMZ and with each bin 
+     * size being binSize. If the number of bins that fit within the specified range
+     * with the specified size is not exact, then the number of bins will be rounded up.
+     * 
+     * @param minMZ     Minimum m/z
+     * @param maxMZ     Maximum m/z
+     * @param binSize   Bin size (delta m/z)
+     * @return          Generated m/z axis as double[]
+     */
     public static double[] getBinnedmzList(double minMZ, double maxMZ, double binSize) {
         // Round the min m/z down to the next lowest bin, and the max m/z up to the next bin
         double minMZRounded = minMZ - (minMZ % binSize);
@@ -685,10 +719,21 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
 //		return image;
 //	}
 
+    /**
+     * Set the IBD file containing the data of the ImzML.
+     * 
+     * @param ibdFile IBD file
+     */
+
     public void setibdFile(File ibdFile) {
         this.ibdFile = ibdFile;
     }
 
+    /**
+     * Write imzML file.
+     * 
+     * @throws ImzMLWriteException Issue writing imzML file
+     */
     public void write() throws ImzMLWriteException {
         if (ibdFile == null) {
             throw new ImzMLWriteException("No ibd file, can't write imzML file.");
@@ -717,6 +762,15 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
         }
     }
     
+    /**
+     * Calculate the checksum of a given file using a given algorithm. Examples 
+     * include SHA-1 and MD5.
+     * 
+     * @param filename  File on which to calculate the checksum
+     * @param algorithm Hash algorithm to perform
+     * @return          Hash of file
+     * @throws ImzMLParseException  Issue opening IBD file
+     */
     public static String calculateChecksum(String filename, String algorithm) throws ImzMLParseException {
         // Open the .ibd data stream
         DataInputStream dataStream = null;
@@ -766,14 +820,34 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
         return byteArrayToHexString(hash);
     }
     
+    /**
+     * Calculate the SHA-1 hash of the specified file.
+     * 
+     * @param filename  Filename to hash
+     * @return          SHA-1 hash of the file
+     * @throws ImzMLParseException  Issue with opening the IBD file
+     */
     public static String calculateSHA1(String filename) throws ImzMLParseException {
         return calculateChecksum(filename, "SHA-1");
     }
 
+    /**
+     * Calculate the MD5 hash of the specified file.
+     * 
+     * @param filename  Filename to hash
+     * @return          MD5 hash of the file
+     * @throws ImzMLParseException  Issue with opening the IBD file
+     */
     public static String calculateMD5(String filename) throws ImzMLParseException {
         return calculateChecksum(filename, "MD5");
     }
     
+    /**
+     * Convert hex string to byte[].
+     * 
+     * @param s Hex string to convert
+     * @return  Converted byte[]
+     */
     public static byte[] hexStringToByteArray(String s) {
         int len = s.length();
         byte[] data = new byte[len / 2];
@@ -786,6 +860,12 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
         return data;
     }
 
+    /**
+     * Convert byte[] to hex string.
+     * 
+     * @param byteArray byte[] to convert
+     * @return          Converted string
+     */
     public static String byteArrayToHexString(byte[] byteArray) {
         StringBuilder sb = new StringBuilder(2 * byteArray.length);
 
@@ -806,6 +886,12 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
         return sb.toString();
     }
     
+    /**
+     * Convert byte[] to UUID.
+     * 
+     * @param bytes byte[] to convert
+     * @return      UUID
+     */
     public static UUID byteArrayToUuid(byte[] bytes) {
         ByteBuffer bb = ByteBuffer.wrap(bytes);
         long firstLong = bb.getLong();
@@ -813,6 +899,12 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
         return new UUID(firstLong, secondLong);
     }
 
+    /**
+     * Convert UUID to byte[].
+     * 
+     * @param uuid  UUID to convert
+     * @return      byte[]
+     */
     public static byte[] uuidToByteArray(UUID uuid) {
         ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
         bb.putLong(uuid.getMostSignificantBits());
