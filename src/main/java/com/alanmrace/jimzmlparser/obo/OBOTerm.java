@@ -2,7 +2,6 @@ package com.alanmrace.jimzmlparser.obo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -111,16 +110,16 @@ public class OBOTerm implements Serializable {
          *      <li>nS indicates the number of seconds
          * </ul>
          * 
-         * @see https://www.w3schools.com/xml/schema_dtypes_date.asp
+         * @see <a href="https://www.w3schools.com/xml/schema_dtypes_date.asp">https://www.w3schools.com/xml/schema_dtypes_date.asp</a>
          */
         Duration,
         
         /** Date and time.
          *  
-         *  <p> Expected DateTime format is [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
+         *  <p>Expected DateTime format is [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
          * 
-         * @see http://books.xmlschemata.org/relaxng/ch19-77049.html
-         * @see https://www.w3schools.com/xml/schema_dtypes_date.asp
+         * @see <a href="http://books.xmlschemata.org/relaxng/ch19-77049.html">http://books.xmlschemata.org/relaxng/ch19-77049.html</a>
+         * @see <a href="https://www.w3schools.com/xml/schema_dtypes_date.asp">https://www.w3schools.com/xml/schema_dtypes_date.asp</a>
          */
         DateTime,
 
@@ -172,22 +171,22 @@ public class OBOTerm implements Serializable {
          * Representation of binary data as a sequence of binary octets using base64 encoding 
          * as described in RFC 2045.
          * 
-         * @see https://www.ietf.org/rfc/rfc2045.txt
+         * @see <a href="https://www.ietf.org/rfc/rfc2045.txt">RFC 2045</a>
          */
         Base64Binary,
 
         /**
          * Any uniform resource locator (URI) that conforms to RFC 2396 or 2732.
          * 
-         * @see https://tools.ietf.org/html/rfc2396
-         * @see https://www.ietf.org/rfc/rfc2732.txt
+         * @see <a href="https://tools.ietf.org/html/rfc2396">RFC 2396</a>
+         * @see <a href="https://www.ietf.org/rfc/rfc2732.txt">RFC 2732</a>
          */
         AnyURI,
 
         /**
          * Any qualified name according to Namespaces in XML.
          * 
-         * @see http://books.xmlschemata.org/relaxng/ch19-77287.html
+         * @see <a href="http://books.xmlschemata.org/relaxng/ch19-77287.html">http://books.xmlschemata.org/relaxng/ch19-77287.html</a>
          */
         QName,
 
@@ -284,7 +283,7 @@ public class OBOTerm implements Serializable {
     /**
      * Synonym scope, as defined by the OBO file format.
      * 
-     * @see http://owlcollab.github.io/oboformat/doc/obo-syntax.html
+     * @see <a href="http://owlcollab.github.io/oboformat/doc/obo-syntax.html">OBO File Format 1.4</a>
      */
     public enum Synonym {
 
@@ -300,7 +299,7 @@ public class OBOTerm implements Serializable {
          * and possibly mereological and temporal containment. For example, "skull" 
          * could conceivably be a BROAD synonym for the class cranium. 
          * 
-         * @see http://owlcollab.github.io/oboformat/doc/obo-syntax.html
+         * @see <a href="http://owlcollab.github.io/oboformat/doc/obo-syntax.html">OBO File Format 1.4</a>
          */
         Broad,
         
@@ -310,18 +309,18 @@ public class OBOTerm implements Serializable {
          * <p>In contrast to BROAD. For example, the class cranium
          * could conceivably be a NARROW synonym for "skull". 
          * 
-         * @see Broad
-         * @see http://owlcollab.github.io/oboformat/doc/obo-syntax.html
+         * @see OBOTerm.Synonym#Broad
+         * @see <a href="http://owlcollab.github.io/oboformat/doc/obo-syntax.html">OBO File Format 1.4</a>
          */
         Narrow,
 
         /**
          * If a synonym is neither EXACT, NARROW or BROAD, then it is RELATED.
          * 
-         * @see Exact
-         * @see Broad
-         * @see Narrow
-         * @see http://owlcollab.github.io/oboformat/doc/obo-syntax.html
+         * @see OBOTerm.Synonym#Exact
+         * @see OBOTerm.Synonym#Broad
+         * @see OBOTerm.Synonym#Narrow
+         * @see <a href="http://owlcollab.github.io/oboformat/doc/obo-syntax.html">OBO File Format 1.4</a>
          */
         Related
     }
@@ -611,7 +610,7 @@ public class OBOTerm implements Serializable {
      * (repeated recursively) where each child is indented by intent '-'
      * and their children are indented by indent+1 '-' (repeated recursively).
      * 
-     * TODO: Consider refactoring - this shouldn't care about indenting.
+     * <p>TODO: Consider refactoring - this shouldn't care about indenting.
      * 
      * @param allChildren List to add all children to
      * @param indent Number of '-' to indent child names by

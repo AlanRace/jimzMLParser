@@ -26,7 +26,7 @@ import java.util.zip.Inflater;
 public class BinaryDataArray extends MzMLContent implements Serializable {
 
     /**
-     *
+     * Serialisation version ID.
      */
     private static final long serialVersionUID = 1L;
 
@@ -46,6 +46,9 @@ public class BinaryDataArray extends MzMLContent implements Serializable {
      */
     public static final String dataTypeID = "MS:1000518";	// Required child (1)
 
+    /**
+     * Accession: IBD binary data type (IMS:1000014).
+     */
     public static final String ibdDataType = "IMS:1000014";
 
     /**
@@ -53,6 +56,9 @@ public class BinaryDataArray extends MzMLContent implements Serializable {
      */
     public static final String mzArrayID = "MS:1000514";
     
+    /**
+     * Accession: m/z units (MS:1000040).
+     */
     public static final String mzArrayUnitsID = "MS:1000040";
 
     /**
@@ -60,9 +66,24 @@ public class BinaryDataArray extends MzMLContent implements Serializable {
      */
     public static final String intensityArrayID = "MS:1000515";
     
+    /**
+     * Accession: Intensity array units: number of counts (MS:1000131).
+     */
     public static final String intensityArrayUnitsNumberOfCountsID = "MS:1000131";
+
+    /**
+     * Accession: Intensity array units: percentage of basepeak (MS:1000132).
+     */
     public static final String intensityArrayUnitsPercentOfBasepeakID = "MS:1000132";
+
+    /**
+     * Accession: Intensity array units: counts per second (MS:1000814).
+     */
     public static final String intensityArrayUnitsCountsPerSecondID = "MS:1000814";
+
+    /**
+     * Accession: Intensity array units: percent of basepeak x 100 (MS:1000905).
+     */
     public static final String intensityArrayUnitsPercentOfBasepeakTimes100ID = "MS:1000905";
 
     /**
@@ -76,13 +97,41 @@ public class BinaryDataArray extends MzMLContent implements Serializable {
     public static final String singlePrecisionID = "MS:1000521";
 
     // The IMS obo has copies of the data types found in the MS obo
+
+    /**
+     * Accession: Signed 32-bit integer (MS:1000519).
+     */
     public static final String signed32bitIntegerID = "MS:1000519";
+
+    /**
+     * Accession: Signed 32-bit integer (IMS:1000141).
+     * Copy of MS:1000519.
+     * 
+     * @see BinaryDataArray#signed32bitIntegerID
+     */
     public static final String imsSigned32bitIntegerID = "IMS:1000141";
+
+    /**
+     * Accession: Signed 64-bit integer (MS:1000522).
+     */
     public static final String signed64bitIntegerID = "MS:1000522";
+    
+    /**
+     * Accession: Signed 64-bit integer (IMS:1000142).
+     * Copy of MS:1000522.
+     * 
+     * @see BinaryDataArray#signed64bitIntegerID
+     */
     public static final String imsSigned64bitIntegerID = "IMS:1000142";
 
-//	public static final String unsigned32bitIntegerID		= "IMS:1000142";
+    /**
+     * Accession: Signed 8-bit integer (IMS:1100000).
+     */
     public static final String signed8bitIntegerID = "IMS:1100000";
+
+    /**
+     * Accession: Signed 16-bit integer (IMS:1100000).
+     */
     public static final String signed16bitIntegerID = "IMS:1100001";
 
     /**
@@ -90,6 +139,9 @@ public class BinaryDataArray extends MzMLContent implements Serializable {
      */
     public static final String noCompressionID = "MS:1000576";
 
+    /**
+     * Accession: zlib compression (MS:1000574).
+     */
     public static final String zlibCompressionID = "MS:1000574";
 
     /**
@@ -112,6 +164,9 @@ public class BinaryDataArray extends MzMLContent implements Serializable {
      */
     public static final String externalOffsetID = "IMS:1000102";
 
+    /**
+     * Buffer size to use when reading in data. Set to 2^20 bytes = 1 MB.
+     */
     protected static final int BYTE_BUFFER_SIZE = 2 ^ 20;
 
     /**
