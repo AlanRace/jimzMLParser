@@ -409,13 +409,23 @@ public class MzMLHeaderHandler extends DefaultHandler {
                             if (paramType.equals(CVParam.CVParamType.String)) {
                                 cvParam = new StringCVParam(term, value, units);
                             } else if (paramType.equals(CVParam.CVParamType.Empty)) {
-                                cvParam = new EmptyCVParam(term, units);
+                                cvParam = new EmptyCVParam(term);
 
                                 if (value != null) {
                                     InvalidFormatIssue formatIssue = new InvalidFormatIssue(term, attributes.getValue("value"));
                                     formatIssue.setIssueLocation(currentContent);
 
                                     notifyParserListeners(formatIssue);
+                                }
+                                
+                                // There shouldn't be any units assigned to any CVParam
+                                // that is marked as having no value - as the units should
+                                // only describe the units for the value.
+                                if(units != null) {
+                                    NonFatalParseException foundUnits = new NonFatalParseException("Found units on EmptyCVParam", "Found units " + units + " on EmptyCVParam " + cvParam);
+                                    foundUnits.setIssueLocation(currentContent);
+
+                                    notifyParserListeners(foundUnits);
                                 }
                             } else if (paramType.equals(CVParam.CVParamType.Long)) {
                                 cvParam = new LongCVParam(term, Long.parseLong(value), units);

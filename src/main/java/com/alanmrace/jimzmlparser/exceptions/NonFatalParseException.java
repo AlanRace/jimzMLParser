@@ -26,6 +26,36 @@ public class NonFatalParseException extends Exception implements ParseIssue {
     protected String fixMessage;
     
     /**
+     * A short description of the issue, suitable to be used as a title.
+     */
+    protected String issueTitle;
+
+    /**
+     * A detailed description of the issue, providing detail to a user.
+     */
+    protected String issueMessage;
+    
+    /**
+     * Base constructor that sets up default title and messages, but shouldn't be 
+     * used.
+     */
+    protected NonFatalParseException() {
+        this("[NonFatalParseException] - Temporary Title", "[NonFatalParseException] - Temporary Message");
+    }
+    
+    /**
+     * Describe a non-fatal parsing exception by supplying a title and a detailed
+     * message.
+     * 
+     * @param title     Short description of the issue, suitable to be used as a title
+     * @param message   Detailed description of the issue, providing detail to a user
+     */
+    public NonFatalParseException(String title, String message) {
+        this.issueTitle = title;
+        this.issueMessage = message;
+    }
+    
+    /**
      * Set the parent MzMLContent that was being parsed when the issue occurred.
      * 
      * @param location Parent MzMLContent
@@ -65,12 +95,12 @@ public class NonFatalParseException extends Exception implements ParseIssue {
     
     @Override
     public String getIssueTitle() {
-        return "[NonFatalParseException] - Temporary Title";
+        return issueTitle;
     }
 
     @Override
     public String getIssueMessage() {
-        return "[NonFatalParseException] - Temporary Message";
+        return issueMessage;
     }
 
     @Override

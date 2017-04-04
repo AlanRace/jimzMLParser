@@ -1,25 +1,46 @@
-/*
- * 
- */
 package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.exceptions.CVParamAccessionNotFoundException;
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 
 /**
- *
- * @author Alan
+ * CVParam with a boolean value.
+ * 
+ * @author Alan Race
  */
 public class BooleanCVParam extends CVParam {
 
+    /**
+     * Value of the cvParam.
+     */
     protected boolean value;
     
+    /**
+     * Initialise a BooleanCVParam from an ontology term for the parameter, a 
+     * value and an ontology term for the units.
+     * 
+     * @param term  Ontology term for the parameter
+     * @param value Value of the parameter
+     * @param units Ontology term for the units of the parameter
+     * @throws CVParamAccessionNotFoundException    Supplied a null value term
+     */
     public BooleanCVParam(OBOTerm term, boolean value, OBOTerm units) throws CVParamAccessionNotFoundException {
         this(term, value);
 
         this.units = units;
     }
 
+    /**
+     * Initialise a BooleanCVParam from an ontology term for the parameter and a 
+     * value.
+     * 
+     * <p>TODO: Reconsider the error message thrown here - should probably be a 
+     * InvalidArgumentException (or similar).
+     * 
+     * @param term  Ontology term for the parameter
+     * @param value Value of the parameter
+     * @throws CVParamAccessionNotFoundException    Supplied a null value term
+     */
     public BooleanCVParam(OBOTerm term, boolean value) throws CVParamAccessionNotFoundException {
         if (term == null) {
             throw (new CVParamAccessionNotFoundException("" + value));
@@ -29,6 +50,11 @@ public class BooleanCVParam extends CVParam {
         this.value = value;
     }
 
+    /**
+     * Copy constructor for BooleanCVParam.
+     * 
+     * @param cvParam BooleanCVParam to copy
+     */
     public BooleanCVParam(BooleanCVParam cvParam) {
         this.term = cvParam.term;
         this.value = cvParam.value;
