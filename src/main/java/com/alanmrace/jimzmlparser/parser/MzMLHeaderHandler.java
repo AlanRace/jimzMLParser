@@ -37,28 +37,34 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * SAX parser for mzML files, only focusing on metadata.
- * 
- * <p> All metadata are parsed, however the data is ignored. This allows a lower 
- * memory usage for loading metadata, while also allowing code reuse for both 
+ *
+ * <p>
+ * All metadata are parsed, however the data is ignored. This allows a lower
+ * memory usage for loading metadata, while also allowing code reuse for both
  * MzML and ImzML files.
  *
  * @author Alan Race
  */
 public class MzMLHeaderHandler extends DefaultHandler {
 
-    /** Class logger. */
+    /**
+     * Class logger.
+     */
     private static final Logger logger = Logger.getLogger(MzMLHeaderHandler.class.getName());
 
-    /** 
-     * SAX document locator. 
-     * TODO: Why is it used?
+    /**
+     * SAX document locator. TODO: Why is it used?
      */
     protected Locator locator;
 
-    /** OBO ontology used to match and check cvParam tags. */
+    /**
+     * OBO ontology used to match and check cvParam tags.
+     */
     protected OBO obo;
-    
-    /** MzML currently being built by the SAX parser. */
+
+    /**
+     * MzML currently being built by the SAX parser.
+     */
     protected MzML mzML;
 
     /**
@@ -66,7 +72,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
      */
     protected CVList cvList;
 
-    /** 
+    /**
      * FileDescription associated with the MzML that is being parsed.
      */
     protected FileDescription fileDescription;
@@ -75,9 +81,10 @@ public class MzMLHeaderHandler extends DefaultHandler {
      * SourceFileList associated with the MzML that is being parsed.
      */
     protected SourceFileList sourceFileList;
-    
+
     /**
-     * ReferenceableParamGroupList associated with the MzML that is being parsed.
+     * ReferenceableParamGroupList associated with the MzML that is being
+     * parsed.
      */
     protected ReferenceableParamGroupList referenceableParamGroupList;
 
@@ -97,42 +104,51 @@ public class MzMLHeaderHandler extends DefaultHandler {
     protected ScanSettingsList scanSettingsList;
 
     /**
-     * Current ScanSettings created each time a {@literal <scanSettings>} tag is encountered.
+     * Current ScanSettings created each time a {@literal <scanSettings>} tag is
+     * encountered.
      */
     protected ScanSettings currentScanSettings;
 
     /**
-     * Current SourceFileRefList created each time a {@literal <sourceFileRefList>} tag is encountered.
+     * Current SourceFileRefList created each time a
+     * {@literal <sourceFileRefList>} tag is encountered.
      */
     protected SourceFileRefList currentSourceFileRefList;
 
     /**
-     * Current TargetList created each time a {@literal <targetList>} tag is encountered.
+     * Current TargetList created each time a {@literal <targetList>} tag is
+     * encountered.
      */
     protected TargetList currentTargetList;
 
     /**
-     * InstrumentConfigurationList associated with the MzML that is currently being parsed.
+     * InstrumentConfigurationList associated with the MzML that is currently
+     * being parsed.
      */
     protected InstrumentConfigurationList instrumentConfigurationList;
 
     /**
-     * Current InstrumentConfiguration created each time a {@literal <instrumentConfiguration>} tag is encountered.
+     * Current InstrumentConfiguration created each time a
+     * {@literal <instrumentConfiguration>} tag is encountered.
      */
     protected InstrumentConfiguration currentInstrumentConfiguration;
 
     /**
-     * Current ComponentList (can consist of Source, Analyzer and Detector) created each time a {@literal <instrumentConfiguration>} tag is encountered.
+     * Current ComponentList (can consist of Source, Analyzer and Detector)
+     * created each time a {@literal <instrumentConfiguration>} tag is
+     * encountered.
      */
     protected ComponentList currentComponentList;
 
     /**
-     * DataProcessingList associated with the MzML that is currently being parsed.
+     * DataProcessingList associated with the MzML that is currently being
+     * parsed.
      */
     protected DataProcessingList dataProcessingList;
 
     /**
-     * Current DataProcessing created each time a {@literal <dataProcessing>} tag is encountered.
+     * Current DataProcessing created each time a {@literal <dataProcessing>}
+     * tag is encountered.
      */
     protected DataProcessing currentDataProcessing;
 
@@ -147,12 +163,14 @@ public class MzMLHeaderHandler extends DefaultHandler {
     protected SpectrumList spectrumList;
 
     /**
-     * Current Spectrum created each time a {@literal <spectrum>} tag is encountered.
+     * Current Spectrum created each time a {@literal <spectrum>} tag is
+     * encountered.
      */
     protected Spectrum currentSpectrum;
 
     /**
-     * Current ScanList created each time a {@literal <scanList>} tag is encountered.
+     * Current ScanList created each time a {@literal <scanList>} tag is
+     * encountered.
      */
     protected ScanList currentScanList;
 
@@ -162,42 +180,50 @@ public class MzMLHeaderHandler extends DefaultHandler {
     protected Scan currentScan;
 
     /**
-     * Current ScanWindowList created each time a {@literal <scanWindowList>} tag is encountered.
+     * Current ScanWindowList created each time a {@literal <scanWindowList>}
+     * tag is encountered.
      */
     protected ScanWindowList currentScanWindowList;
 
     /**
-     * Current PrecursorList created each time a {@literal <precursorList>} tag is encountered.
+     * Current PrecursorList created each time a {@literal <precursorList>} tag
+     * is encountered.
      */
     protected PrecursorList currentPrecursorList;
 
     /**
-     * Current Precursor created each time a {@literal <precursor>} tag is encountered.
+     * Current Precursor created each time a {@literal <precursor>} tag is
+     * encountered.
      */
     protected Precursor currentPrecursor;
 
     /**
-     * Current SelectedIonList created each time a {@literal <selectedIonList>} tag is encountered.
+     * Current SelectedIonList created each time a {@literal <selectedIonList>}
+     * tag is encountered.
      */
     protected SelectedIonList currentSelectedIonList;
 
     /**
-     * Current ProductList created each time a {@literal <productList>} tag is encountered.
+     * Current ProductList created each time a {@literal <productList>} tag is
+     * encountered.
      */
     protected ProductList currentProductList;
 
     /**
-     * Current Product created each time a {@literal <product>} tag is encountered.
+     * Current Product created each time a {@literal <product>} tag is
+     * encountered.
      */
     protected Product currentProduct;
 
     /**
-     * Current BinaryDataArrayList created each time a {@literal <binaryDataArrayList>} tag is encountered.
+     * Current BinaryDataArrayList created each time a
+     * {@literal <binaryDataArrayList>} tag is encountered.
      */
     protected BinaryDataArrayList currentBinaryDataArrayList;
 
     /**
-     * Current BinaryDataArray created each time a {@literal <binaryDataArray>} tag is encountered.
+     * Current BinaryDataArray created each time a {@literal <binaryDataArray>}
+     * tag is encountered.
      */
     protected BinaryDataArray currentBinaryDataArray;
 
@@ -207,7 +233,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
     protected ChromatogramList chromatogramList;
 
     /**
-     * Current Chromatogram created each time a {@literal <chromatogram>} tag is encountered.
+     * Current Chromatogram created each time a {@literal <chromatogram>} tag is
+     * encountered.
      */
     protected Chromatogram currentChromatogram;
 
@@ -217,34 +244,39 @@ public class MzMLHeaderHandler extends DefaultHandler {
     protected MzMLContentWithChildren currentContent;
 
     // Flags for tags that share the same sub-tags
-
     /**
-     * True after {@literal <spectrum>} tag and before the end tag has been encountered.
+     * True after {@literal <spectrum>} tag and before the end tag has been
+     * encountered.
      */
     protected boolean processingSpectrum;
 
     /**
-     * True after {@literal <chromatogram>} tag and before the end tag has been encountered.
+     * True after {@literal <chromatogram>} tag and before the end tag has been
+     * encountered.
      */
     protected boolean processingChromatogram;
 
     /**
-     * True after {@literal <precursor>} tag and before the end tag has been encountered.
+     * True after {@literal <precursor>} tag and before the end tag has been
+     * encountered.
      */
     protected boolean processingPrecursor;
 
     /**
-     * True after {@literal <product>} tag and before the end tag has been encountered.
+     * True after {@literal <product>} tag and before the end tag has been
+     * encountered.
      */
     protected boolean processingProduct;
 
     /**
-     * True after {@literal <offset>} tag and before the end tag has been encountered.
+     * True after {@literal <offset>} tag and before the end tag has been
+     * encountered.
      */
     protected boolean processingOffset;
 
     /**
-     * StringBuffer containing the contents between the {@literal <offset>} and {@literal </offset>} tags.
+     * StringBuffer containing the contents between the {@literal <offset>} and
+     * {@literal </offset>} tags.
      */
     protected StringBuffer offsetData;
 
@@ -261,8 +293,9 @@ public class MzMLHeaderHandler extends DefaultHandler {
     protected List<ParserListener> listeners;
 
     /**
-     * Set up a SAX parser for MzML metadata with the specified ontology dictionary.
-     * 
+     * Set up a SAX parser for MzML metadata with the specified ontology
+     * dictionary.
+     *
      * @param obo Ontology database
      */
     protected MzMLHeaderHandler(OBO obo) {
@@ -381,7 +414,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 // Notify listeners of the fact that an issue occured and we attempted to resolve it
                 if (term == null) {
                     UserParam userParam = new UserParam(attributes.getValue("accession"), attributes.getValue("value"), obo.getTerm(attributes.getValue("unitAccession")));
-                    ((MzMLContentWithParams)currentContent).addUserParam(userParam);
+                    ((MzMLContentWithParams) currentContent).addUserParam(userParam);
 
                     CVParamAccessionNotFoundException notFound = new CVParamAccessionNotFoundException(attributes.getValue("accession"));
                     notFound.fixAttempted(userParam);
@@ -417,11 +450,11 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
                                     notifyParserListeners(formatIssue);
                                 }
-                                
+
                                 // There shouldn't be any units assigned to any CVParam
                                 // that is marked as having no value - as the units should
                                 // only describe the units for the value.
-                                if(units != null) {
+                                if (units != null) {
                                     NonFatalParseException foundUnits = new NonFatalParseException("Found units on EmptyCVParam", "Found units " + units + " on EmptyCVParam " + cvParam);
                                     foundUnits.setIssueLocation(currentContent);
 
@@ -456,7 +489,11 @@ public class MzMLHeaderHandler extends DefaultHandler {
                             notifyParserListeners(formatIssue);
                         }
 
-                        ((MzMLContentWithParams)currentContent).addCVParam(cvParam);
+                        if (currentContent instanceof MzMLContentWithParams) {
+                            ((MzMLContentWithParams) currentContent).addCVParam(cvParam);
+                        } else {
+                            throw new RuntimeException("Failure to add CVParam to " + currentContent);
+                        }
                     } catch (NonFatalParseException ex) {
                         ex.setIssueLocation(currentContent);
 
@@ -507,7 +544,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
                 userParam.setUnits(obo.getTerm(attributes.getValue("unitAccession")));
 
-                ((MzMLContentWithParams)currentContent).addUserParam(userParam);
+                ((MzMLContentWithParams) currentContent).addUserParam(userParam);
             }
         } else if ("mzML".equalsIgnoreCase(qName)) {
             mzML = new MzML(attributes.getValue("version"));
@@ -830,29 +867,36 @@ public class MzMLHeaderHandler extends DefaultHandler {
         } else if ("processingMethod".equals(qName)) {
             String softwareRef = attributes.getValue("softwareRef");
 
+            boolean referenceFound = false;
             Software software = null;
 
-            try {
+            if (softwareList != null) {
                 software = softwareList.getSoftware(softwareRef);
-            } catch (NullPointerException ex) {
-                throw new InvalidMzML("<softwareList> tag not defined prior to defining <processingMethod> tag.");
+                
+                if(software != null)
+                    referenceFound = true;
+                else {
+                    software = softwareList.get(0);
+                }
             }
 
-            if (software != null) {
-                ProcessingMethod pm = new ProcessingMethod(software);
+            ProcessingMethod pm = new ProcessingMethod(software);
+            currentDataProcessing.addProcessingMethod(pm);
 
-                try {
-                    currentDataProcessing.addProcessingMethod(pm);
-                } catch (NullPointerException ex) {
-                    throw new InvalidMzML("<dataProcessing> tag not defined prior to defining <processingMethod> tag.");
-                }
+            currentContent = pm;
 
-                currentContent = pm;
-            } else {
-                logger.log(Level.WARNING, "Invalid mzML file - could not find softwareRef ''{0}''. Attempting to continue...", softwareRef);
+            if (!referenceFound && software != null) {
+                MissingReferenceIssue missingRefIssue = new MissingReferenceIssue(softwareRef, "processingMethod", "softwareRef");
+                missingRefIssue.setIssueLocation(currentContent);
+                missingRefIssue.fixAttemptedByChangingReference(software);
 
-                // TODO: reininstate these checks
-                //throw new InvalidMzML("Can't find softwareRef '" + softwareRef + "'");
+                notifyParserListeners(missingRefIssue);
+            } else if(!referenceFound) {
+                MissingReferenceIssue missingRefIssue = new MissingReferenceIssue(softwareRef, "processingMethod", "softwareRef");
+                missingRefIssue.setIssueLocation(currentContent);
+                missingRefIssue.fixAttemptedByRemovingReference();
+
+                notifyParserListeners(missingRefIssue);
             }
         } else if ("run".equals(qName)) {
             String instrumentConfigurationRef = attributes.getValue("defaultInstrumentConfigurationRef");

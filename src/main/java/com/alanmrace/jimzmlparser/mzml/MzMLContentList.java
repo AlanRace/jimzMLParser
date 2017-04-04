@@ -73,13 +73,17 @@ public abstract class MzMLContentList<T extends MzMLTag>
     
     @Override
     protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLTag> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
-        if (currentXPath.startsWith("/" + getTagName())) {
-            if (list == null) {
-                throw new UnfollowableXPathException("No " + getTagName() + " exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
-            }
+        if(list.size() > 0) {
+            T firstElement = list.get(0);
 
-            for (T item : list) {
-                item.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
+            if (currentXPath.startsWith("/" + firstElement.getTagName())) {
+                if (list == null) {
+                    throw new UnfollowableXPathException("No " + getTagName() + " exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
+                }
+
+                for (T item : list) {
+                    item.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
+                }
             }
         }
     }
