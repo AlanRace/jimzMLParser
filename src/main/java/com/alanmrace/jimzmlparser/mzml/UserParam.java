@@ -2,13 +2,11 @@ package com.alanmrace.jimzmlparser.mzml;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.Serializable;
 
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
-import java.util.Collection;
 
-public class UserParam implements Serializable, MzMLTag { //, MutableTreeNode {
+public class UserParam extends MzMLContent { //, MutableTreeNode {
 
     /**
      *
@@ -106,8 +104,4 @@ public class UserParam implements Serializable, MzMLTag { //, MutableTreeNode {
         return "userParam";
     }
     
-    @Override
-    public void setParent(MzMLTag parent) {
-        // This is a dummy function only included to allow the removal
-    }
 }

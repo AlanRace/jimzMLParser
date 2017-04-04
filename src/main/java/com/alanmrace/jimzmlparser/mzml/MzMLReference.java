@@ -16,6 +16,11 @@ public abstract class MzMLReference<T extends ReferenceableTag> extends MzMLCont
         this.reference = reference;
     }
     
+    @Deprecated
+    public T getRef() {
+        return reference;
+    }
+    
     public T getReference() {
         return reference;
     }

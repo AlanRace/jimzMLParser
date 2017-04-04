@@ -5,13 +5,12 @@ import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
 import java.util.Collection;
 
-public class Run extends MzMLContentWithParams implements Serializable {
+public class Run extends MzMLContentWithParams implements ReferenceableTag {
 
     /**
      *
@@ -133,7 +132,7 @@ public class Run extends MzMLContentWithParams implements Serializable {
     }
 
     @Override
-    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
+    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLTag> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/spectrumList")) {
             if (spectrumList == null) {
                 throw new UnfollowableXPathException("No spectrumList exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
@@ -330,5 +329,10 @@ public class Run extends MzMLContentWithParams implements Serializable {
             children.add(chromatogramList);
         
         super.addChildrenToCollection(children);
+    }
+
+    @Override
+    public void setID(String id) {
+        this.id = id;
     }
 }

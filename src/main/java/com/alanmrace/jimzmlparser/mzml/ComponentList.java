@@ -93,7 +93,7 @@ public class ComponentList extends MzMLContentWithChildren implements Serializab
     }
 
     @Override
-    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
+    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLTag> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/source")) {
             if (sources == null) {
                 throw new UnfollowableXPathException("No source exists, so cannot go to " + fullXPath, fullXPath, currentXPath);

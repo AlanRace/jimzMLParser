@@ -84,7 +84,7 @@ public class FileDescription extends MzMLContentWithParams implements Serializab
     }
 
     @Override
-    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
+    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLTag> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/fileContent")) {
             fileContent.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         } else if(currentXPath.startsWith("/sourceFileList")) {

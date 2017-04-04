@@ -1,11 +1,5 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-
 public class ReferenceableParamGroupList extends MzMLContentList<ReferenceableParamGroup> {
 
     /**
@@ -13,47 +7,46 @@ public class ReferenceableParamGroupList extends MzMLContentList<ReferenceablePa
      */
     private static final long serialVersionUID = 1L;
 
-    private ArrayList<ReferenceableParamGroup> referenceableParamGroupList;
-
     public ReferenceableParamGroupList(int count) {
-        referenceableParamGroupList = new ArrayList<ReferenceableParamGroup>(count);
+        super(count);
     }
 
     public ReferenceableParamGroupList(ReferenceableParamGroupList rpgList) {
-        referenceableParamGroupList = new ArrayList<ReferenceableParamGroup>(rpgList.size());
+        this(rpgList.size());
 
         for (ReferenceableParamGroup rpg : rpgList) {
-            referenceableParamGroupList.add(new ReferenceableParamGroup(rpg));
+            add(new ReferenceableParamGroup(rpg));
         }
     }
 
     public void addReferenceableParamGroup(ReferenceableParamGroup rpg) {
+        add(rpg);
+    }
+    
+    @Override
+    public void add(ReferenceableParamGroup rpg) {
         boolean exists = false;
 
-        for (ReferenceableParamGroup currentRPG : referenceableParamGroupList) {
+        for (ReferenceableParamGroup currentRPG : list) {
             if (currentRPG.getID().equals(rpg.getID())) {
                 exists = true;
                 break;
             }
         }
 
+        // TODO: Consider throwing an error if we try and add the same one twice?
         if (!exists) {
             rpg.setParent(this);
-            referenceableParamGroupList.add(rpg);
+            list.add(rpg);
         }
     }
 
-    public void remove(int index) {
-        ReferenceableParamGroup removed = referenceableParamGroupList.remove(index);
-        removed.setParent(null);
-    }
-
-    public int size() {
-        return referenceableParamGroupList.size();
-    }
-
     public ReferenceableParamGroup getReferenceableParamGroup(String id) {
-        for (ReferenceableParamGroup rpg : referenceableParamGroupList) {
+        return get(id);
+    }
+    
+    public ReferenceableParamGroup get(String id) {
+        for (ReferenceableParamGroup rpg : list) {
             if (rpg.getID().equals(id)) {
                 return rpg;
             }
@@ -63,44 +56,11 @@ public class ReferenceableParamGroupList extends MzMLContentList<ReferenceablePa
     }
 
     public ReferenceableParamGroup getReferenceableParamGroup(int index) {
-        return referenceableParamGroupList.get(index);
-    }
-
-    @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
-        MzMLContent.indent(output, indent);
-        output.write("<referenceableParamGroupList");
-        output.write(" count=\"" + referenceableParamGroupList.size() + "\"");
-        output.write(">\n");
-
-        for (ReferenceableParamGroup rpg : referenceableParamGroupList) {
-            rpg.outputXML(output, indent + 1);
-        }
-
-        MzMLContent.indent(output, indent);
-        output.write("</referenceableParamGroupList>\n");
-    }
-
-    @Override
-    public Iterator<ReferenceableParamGroup> iterator() {
-        return referenceableParamGroupList.iterator();
-    }
-
-    @Override
-    public String toString() {
-        return "referenceableParamGroupList";
+        return get(index);
     }
 
     @Override
     public String getTagName() {
         return "referenceableParamGroupList";
-    }
-    
-    @Override
-    public void addChildrenToCollection(Collection<MzMLTag> children) {
-        if(referenceableParamGroupList != null)
-            children.addAll(referenceableParamGroupList);
-        
-        super.addChildrenToCollection(children);
     }
 }

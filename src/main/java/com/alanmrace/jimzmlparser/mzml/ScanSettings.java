@@ -3,7 +3,6 @@ package com.alanmrace.jimzmlparser.mzml;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -12,7 +11,7 @@ import java.util.Collection;
  * 
  * @author Alan Race
  */
-public class ScanSettings extends MzMLContentWithParams implements Serializable {
+public class ScanSettings extends MzMLContentWithParams implements ReferenceableTag {
 
     /**
      * Serialisaiton version ID.
@@ -319,5 +318,10 @@ public class ScanSettings extends MzMLContentWithParams implements Serializable 
             children.add(targetList);
         
         super.addChildrenToCollection(children);
+    }
+
+    @Override
+    public void setID(String id) {
+        this.id = id;
     }
 }

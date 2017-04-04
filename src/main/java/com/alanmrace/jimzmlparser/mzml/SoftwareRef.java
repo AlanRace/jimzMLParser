@@ -16,9 +16,4 @@ public class SoftwareRef extends MzMLReference<Software> { //, MutableTreeNode {
     public String getTagName() {
         return "softwareRef";
     }
-
-    @Override
-    public void setParent(MzMLTag parent) {
-        // This is a dummy function only included to allow the removal
-    }
 }

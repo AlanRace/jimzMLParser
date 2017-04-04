@@ -20,24 +20,28 @@ public class SpectrumList extends MzMLContentList<Spectrum> {
 
     // Store a map of all spectra to make recalling a spectrum from the ID much faster
     private Map<String, Spectrum> spectrumMap;
-    private ArrayList<Spectrum> spectrumList;
     private DataProcessing defaultDataProcessingRef;
 
+    protected SpectrumList(int count) {
+        super(count);
+        
+        spectrumMap = new HashMap<String, Spectrum>(count);
+    }
+    
     public SpectrumList(int count, DataProcessing defaultDataProcessingRef) {
-        spectrumList = new ArrayList<Spectrum>(count);
-        spectrumMap = new HashMap<String, Spectrum>(spectrumList.size());
+        this(count);
+        
         this.defaultDataProcessingRef = defaultDataProcessingRef;
     }
 
     public SpectrumList(SpectrumList spectrumList, ReferenceableParamGroupList rpgList, DataProcessingList dpList,
             SourceFileList sourceFileList, InstrumentConfigurationList icList) {
-        this.spectrumList = new ArrayList<Spectrum>(spectrumList.size());
-        this.spectrumMap = new HashMap<String, Spectrum>(spectrumList.size());
+        this(spectrumList.size());
 
         for (Spectrum spectrum : spectrumList) {
             Spectrum newSpectrum = new Spectrum(spectrum, rpgList, dpList, sourceFileList, icList);
 
-            this.spectrumList.add(newSpectrum);
+            add(newSpectrum);
             this.spectrumMap.put(newSpectrum.getID(), newSpectrum);
         }
 
@@ -58,37 +62,27 @@ public class SpectrumList extends MzMLContentList<Spectrum> {
         return defaultDataProcessingRef;
     }
 
-    public int size() {
-        return spectrumList.size();
-    }
-
-    public void addSpectrum(Spectrum spectrum) {
-        spectrum.setParent(this);
-
-        spectrumList.add(spectrum);
+    @Override
+    public void add(Spectrum spectrum) {
+        super.add(spectrum);
+        
         spectrumMap.put(spectrum.getID(), spectrum);
+    }
+    
+    public void addSpectrum(Spectrum spectrum) {
+        add(spectrum);
     }
 
     public Spectrum getSpectrum(int index) {
-        if (index >= spectrumList.size()) {
-            return null;
-        }
-
-        return spectrumList.get(index);
+        return get(index);
     }
 
     public Spectrum getSpectrum(String id) {
-//            for(Spectrum spectrum : spectrumList)
-//                if (spectrum.getID().equals(id)) {
-//                    return spectrum;
-//                }
-//            
-//            return null;
         return spectrumMap.get(id);
     }
 
     public void removeSpectrum(Spectrum spectrum) {
-        spectrumList.remove(spectrum);
+        list.remove(spectrum);
         
         spectrumMap.remove(spectrum.getID());
         // Below method only included in Java 1.8
@@ -96,29 +90,16 @@ public class SpectrumList extends MzMLContentList<Spectrum> {
     }
 
     @Override
-    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
-        if (currentXPath.startsWith("/spectrum")) {
-            if (spectrumList == null) {
-                throw new UnfollowableXPathException("No spectrumList exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
-            }
-
-            for (Spectrum spectrum : spectrumList) {
-                spectrum.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
-            }
-        }
-    }
-
-    @Override
     public void outputXML(BufferedWriter output, int indent) throws IOException {
         MzMLContent.indent(output, indent);
         output.write("<spectrumList");
-        output.write(" count=\"" + spectrumList.size() + "\"");
+        output.write(" count=\"" + list.size() + "\"");
         output.write(" defaultDataProcessingRef=\"" + XMLHelper.ensureSafeXML(defaultDataProcessingRef.getID()) + "\"");
         output.write(">\n");
 
         int index = 0;
 
-        for (Spectrum spectrum : spectrumList) {
+        for (Spectrum spectrum : list) {
             spectrum.outputXML(output, indent + 1, index++);
         }
 
@@ -127,25 +108,7 @@ public class SpectrumList extends MzMLContentList<Spectrum> {
     }
 
     @Override
-    public Iterator<Spectrum> iterator() {
-        return spectrumList.iterator();
-    }
-
-    @Override
-    public String toString() {
-        return "spectrumList: defaultDataProcessingRef=\"" + defaultDataProcessingRef.getID() + "\"";
-    }
-
-    @Override
     public String getTagName() {
         return "spectrumList";
-    }
-    
-    @Override
-    public void addChildrenToCollection(Collection<MzMLTag> children) {
-        if(spectrumList != null)
-            children.addAll(spectrumList);
-        
-        super.addChildrenToCollection(children);
     }
 }

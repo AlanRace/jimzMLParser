@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class DataProcessing extends MzMLContentWithParams implements Serializable {
+public class DataProcessing extends MzMLContentList<ProcessingMethod> implements ReferenceableTag {
 
     /**
      *
@@ -21,46 +21,31 @@ public class DataProcessing extends MzMLContentWithParams implements Serializabl
     // Attributes
     protected String id;		// Required
 
-    // Sub-elements
-    protected ArrayList<ProcessingMethod> processingMethods;
 
     public DataProcessing(String id) {
+        super(0);
+        
         this.id = id;
-
-        processingMethods = new ArrayList<ProcessingMethod>();
     }
 
     public DataProcessing(DataProcessing dp, ReferenceableParamGroupList rpgList, SoftwareList softwareList) {
-        this.id = dp.id;
+        this(dp.id);
 
-        this.processingMethods = new ArrayList<ProcessingMethod>(dp.getProcessingMethodCount());
-
-        for (ProcessingMethod pm : dp.processingMethods) {
-            this.processingMethods.add(new ProcessingMethod(pm, rpgList, softwareList));
+        for (ProcessingMethod pm : dp) {
+            this.add(new ProcessingMethod(pm, rpgList, softwareList));
         }
     }
 
-//	public DataProcessing(ArrayList<ProcessingMethod> processingMethods) {
-//		id = "dp" + idNumber++;
-//		
-//		this.processingMethods = processingMethods;
-//	}
-    public void addProcessingMethod(ProcessingMethod pm) {
-        pm.setParent(this);
-
-        processingMethods.add(pm);
+    public void addProcessingMethod(ProcessingMethod preprocessingMethod) {
+        add(preprocessingMethod);
     }
 
     public ProcessingMethod getProcessingMethod(int index) {
-        if (index < processingMethods.size() && index >= 0) {
-            return processingMethods.get(index);
-        }
-
-        return null;
+        return get(index);
     }
 
     public int getProcessingMethodCount() {
-        return processingMethods.size();
+        return size();
     }
 
     @Override
@@ -68,21 +53,14 @@ public class DataProcessing extends MzMLContentWithParams implements Serializabl
         return "dataProcessing: " + id; // + " - " + processingMethods.get(0).toString();
     }
 
+    @Override
     public String getID() {
         return id;
     }
-
+    
     @Override
-    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
-        if (currentXPath.startsWith("/processingMethod")) {
-            if (processingMethods == null) {
-                throw new UnfollowableXPathException("No processingMethod exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
-            }
-
-            for (ProcessingMethod processingMethod : processingMethods) {
-                processingMethod.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
-            }
-        }
+    public void setID(String id) {
+        this.id = id;
     }
 
     @Override
@@ -94,7 +72,7 @@ public class DataProcessing extends MzMLContentWithParams implements Serializabl
 
         int order = 1;
 
-        for (ProcessingMethod pm : processingMethods) {
+        for (ProcessingMethod pm : this) {
             pm.outputXML(output, indent + 1, order++);
         }
 
@@ -105,13 +83,5 @@ public class DataProcessing extends MzMLContentWithParams implements Serializabl
     @Override
     public String getTagName() {
         return "dataProcessing";
-    }
-    
-    @Override
-    public void addChildrenToCollection(Collection<MzMLTag> children) {
-        if(processingMethods != null)
-            children.addAll(processingMethods);
-        
-        super.addChildrenToCollection(children);
     }
 }

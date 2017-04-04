@@ -1,5 +1,7 @@
 package com.alanmrace.jimzmlparser.mzml;
 
+import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
+import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ public abstract class MzMLContentList<T extends MzMLTag>
     /**
      *
      */
-    private final List<T> list;
+    protected final List<T> list;
 
     protected MzMLContentList() {
         list = new ArrayList<T>();
@@ -29,7 +31,7 @@ public abstract class MzMLContentList<T extends MzMLTag>
     }
 
     public MzMLContentList(MzMLContentList<T> contentList) {
-        this.list = new ArrayList<T>(contentList.size());
+        this(contentList.size());
 
         for (T item : contentList) {
             this.list.add(item);
@@ -48,15 +50,10 @@ public abstract class MzMLContentList<T extends MzMLTag>
         return list.get(index);
     }
 
-//    public T get(String id) {
-//        for (T item : list) {
-//            if (item.getID().equals(id)) {
-//                return item;
-//            }
-//        }
-//
-//        return null;
-//    }
+    @Override
+    public T remove(int index) {
+        return list.remove(index);
+    }
 
     @Override
     public int indexOf(T item) {
@@ -72,6 +69,19 @@ public abstract class MzMLContentList<T extends MzMLTag>
     public void addChildrenToCollection(Collection<MzMLTag> children) {
         if(list != null)
             children.addAll(list);
+    }
+    
+    @Override
+    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLTag> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
+        if (currentXPath.startsWith("/" + getTagName())) {
+            if (list == null) {
+                throw new UnfollowableXPathException("No " + getTagName() + " exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
+            }
+
+            for (T item : list) {
+                item.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
+            }
+        }
     }
 
     protected void outputOpenTag(BufferedWriter output) throws IOException {

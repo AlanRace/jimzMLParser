@@ -4,10 +4,7 @@ import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Base class for all mzML tags. This includes default handling for inclusion of 
@@ -68,32 +65,17 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
      * @param currentXPath Sub XPath that should start with the tag name for the current MzMLContent
      * @throws InvalidXPathException thrown if the XPath can not be followed
      */
-    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
+    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLTag> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
 
     }
 
-    /**
-     * Add all child MzMLContent (mzML tags) that match the specified XPath to 
-     * the specified collection.
-     * 
-     * @param elements      Collection of MzMLContent to add children to
-     * @param xPath         Full XPath to query
-     * @throws InvalidXPathException thrown if the XPath can not be followed
-     */
-    public void addElementsAtXPathToCollection(Collection<MzMLContent> elements, String xPath) throws InvalidXPathException {
+    @Override
+    public void addElementsAtXPathToCollection(Collection<MzMLTag> elements, String xPath) throws InvalidXPathException {
         addElementsAtXPathToCollection(elements, xPath, xPath);
     }
     
-    /**
-     * Add all child MzMLContent (mzML tags) that match the specified XPath to 
-     * the specified collection.
-     * 
-     * @param elements      Collection of MzMLContent to add children to
-     * @param fullXPath     Full XPath to query
-     * @param currentXPath  Sub XPath that should start with the tag name for the current MzMLContent
-     * @throws InvalidXPathException thrown if the XPath can not be followed
-     */
-    public final void addElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
+    @Override
+    public final void addElementsAtXPathToCollection(Collection<MzMLTag> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/" + getTagName())) {
             currentXPath = currentXPath.replaceFirst("/" + getTagName(), "");
 

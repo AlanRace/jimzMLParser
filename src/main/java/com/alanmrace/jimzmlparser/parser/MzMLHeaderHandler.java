@@ -214,7 +214,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
     /**
      * Current tag.
      */
-    protected MzMLContentWithParams currentContent;
+    protected MzMLContentWithChildren currentContent;
 
     // Flags for tags that share the same sub-tags
 
@@ -381,7 +381,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 // Notify listeners of the fact that an issue occured and we attempted to resolve it
                 if (term == null) {
                     UserParam userParam = new UserParam(attributes.getValue("accession"), attributes.getValue("value"), obo.getTerm(attributes.getValue("unitAccession")));
-                    currentContent.addUserParam(userParam);
+                    ((MzMLContentWithParams)currentContent).addUserParam(userParam);
 
                     CVParamAccessionNotFoundException notFound = new CVParamAccessionNotFoundException(attributes.getValue("accession"));
                     notFound.fixAttempted(userParam);
@@ -456,7 +456,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                             notifyParserListeners(formatIssue);
                         }
 
-                        currentContent.addCVParam(cvParam);
+                        ((MzMLContentWithParams)currentContent).addCVParam(cvParam);
                     } catch (NonFatalParseException ex) {
                         ex.setIssueLocation(currentContent);
 
@@ -480,7 +480,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                     if (currentContent != null) {
                         foundReference = true;
 
-                        currentContent.addReferenceableParamGroupRef(ref);
+                        ((MzMLContentWithParams) currentContent).addReferenceableParamGroupRef(ref);
                     }
                 }
             }
@@ -507,7 +507,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
                 userParam.setUnits(obo.getTerm(attributes.getValue("unitAccession")));
 
-                currentContent.addUserParam(userParam);
+                ((MzMLContentWithParams)currentContent).addUserParam(userParam);
             }
         } else if ("mzML".equalsIgnoreCase(qName)) {
             mzML = new MzML(attributes.getValue("version"));
@@ -1143,7 +1143,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             }
 
             try {
-                currentScanList.add(currentScan);
+                currentScanList.addScan(currentScan);
             } catch (NullPointerException ex) {
                 throw new InvalidMzML("<scanList> tag not defined prior to defining <scan> tag.");
             }

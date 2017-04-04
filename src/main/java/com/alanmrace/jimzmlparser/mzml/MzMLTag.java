@@ -1,7 +1,9 @@
 package com.alanmrace.jimzmlparser.mzml;
 
+import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.Collection;
 
 /**
  * Interface for any class which describes a tag within an MzML file.
@@ -16,7 +18,28 @@ public interface MzMLTag {
      * @return tag name
      */
     public String getTagName();
-        
+      
+    /**
+     * Add all child MzMLContent (mzML tags) that match the specified XPath to 
+     * the specified collection.
+     * 
+     * @param elements      Collection of MzMLContent to add children to
+     * @param xPath         Full XPath to query
+     * @throws InvalidXPathException thrown if the XPath can not be followed
+     */
+    public void addElementsAtXPathToCollection(Collection<MzMLTag> elements, String xPath) throws InvalidXPathException;
+    
+    /**
+     * Add all child MzMLContent (mzML tags) that match the specified XPath to 
+     * the specified collection.
+     * 
+     * @param elements      Collection of MzMLContent to add children to
+     * @param fullXPath     Full XPath to query
+     * @param currentXPath  Sub XPath that should start with the tag name for the current MzMLContent
+     * @throws InvalidXPathException thrown if the XPath can not be followed
+     */
+    public void addElementsAtXPathToCollection(Collection<MzMLTag> elements, String fullXPath, String currentXPath) throws InvalidXPathException;
+    
     /**
      * Format the contents of the class into XML at a specified number of tab
      * indents and output to a BufferedReader.

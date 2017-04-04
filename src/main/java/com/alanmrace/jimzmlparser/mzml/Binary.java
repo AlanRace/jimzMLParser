@@ -2,11 +2,9 @@ package com.alanmrace.jimzmlparser.mzml;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
-import java.util.Collection;
 
 /**
  * Binary tag. When an mzML file is parsed the data is output into a temporary
@@ -14,7 +12,7 @@ import java.util.Collection;
  *
  * @author Alan Race
  */
-public class Binary implements Serializable, MzMLTag {
+public class Binary extends MzMLContent {
 
     /**
      * Serialisation version ID.

@@ -9,7 +9,7 @@ import java.io.RandomAccessFile;
  *
  * @author Alan Race
  */
-public abstract class MzMLDataContainer extends MzMLContentWithParams {
+public abstract class MzMLDataContainer extends MzMLContentWithParams implements ReferenceableTag {
     protected DataLocation dataLocation;
     protected BinaryDataArrayList binaryDataArrayList;
     
@@ -30,8 +30,14 @@ public abstract class MzMLDataContainer extends MzMLContentWithParams {
         this.defaultArrayLength = defaultArrayLength;
     }
     
+    @Override
     public String getID() {
         return id;
+    }
+    
+    @Override
+    public void setID(String id) {
+        this.id = id;
     }
     
     // Functions to enable the setting of <index> in indexedmzML

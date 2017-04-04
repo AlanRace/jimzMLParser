@@ -8,7 +8,6 @@ import java.io.Serializable;
 
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
-import java.util.Collection;
 
 /**
  * Base class of CVParam with no type. Describes the {@literal <cvParam>} tag.
@@ -22,7 +21,7 @@ import java.util.Collection;
  * @see LongCVParam
  * @see StringCVParam
  */
-public abstract class CVParam implements Serializable, MzMLTag { 
+public abstract class CVParam extends MzMLContent { 
 
     /**
      * Serialisation version ID.

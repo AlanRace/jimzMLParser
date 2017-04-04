@@ -35,6 +35,7 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
         }
     }
 
+    @Override
     public ArrayList<OBOTermInclusion> getListOfRequiredCVParams() {
         ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
         required.add(new OBOTermInclusion(spectraCombinationID, true, true, false));
@@ -42,6 +43,11 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
         return required;
     }
 
+    public void addScan(Scan scan) {
+        add(scan);
+    }
+    
+    @Override
     public void add(Scan scan) {
         scan.setParent(this);
 
@@ -53,6 +59,11 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
         return scanList.size();
     }
 
+    public Scan getScan(int index) {
+        return scanList.get(index);
+    }
+    
+    @Override
     public Scan get(int index) {
         return scanList.get(index);
     }
@@ -65,7 +76,7 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
 //		return -1;
 //	}
     @Override
-    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
+    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLTag> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/scan")) {
             if (scanList == null) {
                 throw new UnfollowableXPathException("No scanList exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
@@ -120,5 +131,10 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
     @Override
     public int indexOf(Scan item) {
         return scanList.indexOf(item);
+    }
+
+    @Override
+    public Scan remove(int index) {
+        return scanList.remove(index);
     }
 }

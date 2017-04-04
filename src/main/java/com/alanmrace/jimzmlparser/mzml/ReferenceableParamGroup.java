@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ReferenceableParamGroup extends MzMLContentWithParams implements Serializable {
+public class ReferenceableParamGroup extends MzMLContentWithParams implements ReferenceableTag {
 
     /**
      *
@@ -40,10 +40,12 @@ public class ReferenceableParamGroup extends MzMLContentWithParams implements Se
         this.id = id;
     }
 
+    @Override
     public String getID() {
         return id;
     }
 
+    @Override
     public void setID(String id) {
         this.id = id;
     }

@@ -1,117 +1,42 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
-import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-
-public class SoftwareList extends MzMLContentList<Software> {
+public class SoftwareList extends MzMLIDContentList<Software> {
 
     /**
      *
      */
     private static final long serialVersionUID = 1L;
 
-    private ArrayList<Software> softwareList;
-
     public SoftwareList(int count) {
-        softwareList = new ArrayList<Software>(count);
+        super(count);
     }
 
     public SoftwareList(SoftwareList softwareList, ReferenceableParamGroupList rpgList) {
-        if (softwareList != null) {
-            this.softwareList = new ArrayList<Software>(softwareList.size());
+        this(softwareList.size());
 
-            for (Software software : softwareList) {
-                this.softwareList.add(new Software(software, rpgList));
-            }
-        } else {
-            this.softwareList = new ArrayList<Software>(0);
+        for (Software software : softwareList) {
+            this.add(new Software(software, rpgList));
         }
     }
 
     public void addSoftware(Software software) {
-        software.setParent(this);
-
-        softwareList.add(software);
-    }
-
-    public void removeSoftware(int index) {
-        Software removed = softwareList.remove(index);
-
-        removed.setParent(null);
+        add(software);
     }
 
     public Software getSoftware(String id) {
-        for (Software software : softwareList) {
-            if (software.getID().equals(id)) {
-                return software;
-            }
-        }
-
-        return null;
+        return get(id);
     }
 
     public Software getSoftware(int index) {
-        return softwareList.get(index);
+        return get(index);
     }
 
-    public int size() {
-        return softwareList.size();
-    }
-
-    @Override
-    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
-        if (currentXPath.startsWith("/software")) {
-            if (softwareList == null) {
-                throw new UnfollowableXPathException("No softwareList exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
-            }
-
-            for (Software software : softwareList) {
-                software.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
-            }
-        }
-    }
-    
-    @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
-        MzMLContent.indent(output, indent);
-        output.write("<softwareList");
-        output.write(" count=\"" + softwareList.size() + "\"");
-        output.write(">\n");
-
-        for (Software software : softwareList) {
-            software.outputXML(output, indent + 1);
-        }
-
-        MzMLContent.indent(output, indent);
-        output.write("</softwareList>\n");
-    }
-
-    @Override
-    public Iterator<Software> iterator() {
-        return softwareList.iterator();
-    }
-
-    @Override
-    public String toString() {
-        return "softwareList";
+    public void removeSoftware(int index) {
+        remove(index);
     }
 
     @Override
     public String getTagName() {
         return "softwareList";
-    }
-    
-    @Override
-    public void addChildrenToCollection(Collection<MzMLTag> children) {
-        if(softwareList != null)
-            children.addAll(softwareList);
-        
-        super.addChildrenToCollection(children);
     }
 }

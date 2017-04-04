@@ -446,7 +446,7 @@ public class MzML extends MzMLContentWithParams implements Serializable {
     }
 
     @Override
-    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLContent> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
+    protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLTag> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/" + cvList.getTagName())) {
             cvList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         } else if (currentXPath.startsWith("/fileDescription")) {
@@ -675,7 +675,7 @@ public class MzML extends MzMLContentWithParams implements Serializable {
             BinaryDataArrayList bdal = spectrum.getBinaryDataArrayList();
 
             if (bdal.size() > 0) {
-                BinaryDataArray bda = bdal.getBinaryDataArray(0);
+                BinaryDataArray bda = bdal.get(0);
 
                 closeDataStorage(bda.getDataLocation());
             }
