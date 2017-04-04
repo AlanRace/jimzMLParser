@@ -63,11 +63,6 @@ public abstract class CVParam implements Serializable, MzMLTag {
     }
     
     @Override
-    public void addChildrenToCollection(Collection<MzMLTag> children) {
-        // No children to add
-    }
-    
-    @Override
     public String toString() {
         String description = "(" + term.getID() + ") " + term.getName();
         String value = getValueAsString();
@@ -292,4 +287,8 @@ public abstract class CVParam implements Serializable, MzMLTag {
         return hash;
     }
 
+    @Override
+    public void setParent(MzMLTag parent) {
+        // This is a dummy function only included to allow the removal
+    }
 }

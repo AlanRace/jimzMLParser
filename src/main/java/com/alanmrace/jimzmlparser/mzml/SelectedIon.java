@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class SelectedIon extends MzMLContent implements Serializable {
+public class SelectedIon extends MzMLContentWithParams implements Serializable {
 
     /**
      *

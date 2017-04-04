@@ -5,12 +5,11 @@ import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-public class ChromatogramList extends MzMLContent implements Serializable, Iterable<Chromatogram> {
+public class ChromatogramList extends MzMLContentList<Chromatogram> {
 
     /**
      *

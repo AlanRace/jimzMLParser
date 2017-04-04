@@ -11,7 +11,7 @@ import java.util.Date;
 
 import java.util.Collection;
 
-public class Run extends MzMLContent implements Serializable {
+public class Run extends MzMLContentWithParams implements Serializable {
 
     /**
      *

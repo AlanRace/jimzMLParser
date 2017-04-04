@@ -107,7 +107,7 @@ public class UserParam implements Serializable, MzMLTag { //, MutableTreeNode {
     }
     
     @Override
-    public void addChildrenToCollection(Collection<MzMLTag> children) {
-        // No children to add
+    public void setParent(MzMLTag parent) {
+        // This is a dummy function only included to allow the removal
     }
 }

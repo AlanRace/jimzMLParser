@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileContent extends MzMLContent implements Serializable {
+public class FileContent extends MzMLContentWithParams implements Serializable {
 
     /**
      *

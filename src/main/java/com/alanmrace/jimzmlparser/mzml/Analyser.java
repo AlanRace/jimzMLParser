@@ -11,7 +11,7 @@ import java.util.ArrayList;
  *
  * @author Alan Race
  */
-public class Analyser extends MzMLContent implements Serializable {
+public class Analyser extends MzMLContentWithParams implements Serializable {
 
     /**
      * Serialisation version ID.

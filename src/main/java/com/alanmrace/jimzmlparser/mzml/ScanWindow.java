@@ -4,7 +4,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Serializable;
 
-public class ScanWindow extends MzMLContent implements Serializable {
+public class ScanWindow extends MzMLContentWithParams implements Serializable {
 
     /**
      *

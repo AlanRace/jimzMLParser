@@ -4,7 +4,6 @@ import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -14,7 +13,7 @@ import java.util.Iterator;
  *
  * @author Alan Race
  */
-public class BinaryDataArrayList extends MzMLContent implements Iterable<BinaryDataArray>, Serializable {
+public class BinaryDataArrayList extends MzMLContentList<BinaryDataArray> {
 
     /**
      * Serialisation version ID.

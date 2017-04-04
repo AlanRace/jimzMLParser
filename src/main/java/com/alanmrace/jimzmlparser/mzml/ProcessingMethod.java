@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ProcessingMethod extends MzMLContent implements Serializable {
+public class ProcessingMethod extends MzMLContentWithParams implements Serializable {
 
     /**
      *

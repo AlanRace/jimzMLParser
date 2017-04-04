@@ -214,7 +214,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
     /**
      * Current tag.
      */
-    protected MzMLContent currentContent;
+    protected MzMLContentWithParams currentContent;
 
     // Flags for tags that share the same sub-tags
 
@@ -539,7 +539,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             }
 
             try {
-                cvList.addCV(cv);
+                cvList.add(cv);
             } catch (NullPointerException ex) {
                 throw new InvalidMzML("<cvList> tag not defined prior to defining <cv> tag.");
             }
@@ -1143,7 +1143,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             }
 
             try {
-                currentScanList.addScan(currentScan);
+                currentScanList.add(currentScan);
             } catch (NullPointerException ex) {
                 throw new InvalidMzML("<scanList> tag not defined prior to defining <scan> tag.");
             }

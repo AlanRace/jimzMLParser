@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class ComponentList extends MzMLContent implements Serializable {
+public class ComponentList extends MzMLContentWithChildren implements Serializable {
 
     /**
      *
@@ -163,7 +163,5 @@ public class ComponentList extends MzMLContent implements Serializable {
             children.addAll(analysers);
         if(detectors != null)
             children.addAll(detectors);
-        
-        super.addChildrenToCollection(children);
     }
 }

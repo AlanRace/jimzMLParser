@@ -4,12 +4,12 @@ import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
-public class ScanList extends MzMLContent implements Iterable<Scan>, Serializable {
+public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan> {
 
     /**
      *
@@ -18,7 +18,7 @@ public class ScanList extends MzMLContent implements Iterable<Scan>, Serializabl
 
     public static String spectraCombinationID = "MS:1000570";
 
-    protected ArrayList<Scan> scanList;
+    protected List<Scan> scanList;
 
     public ScanList(int count) {
         scanList = new ArrayList<Scan>(count);
@@ -42,17 +42,18 @@ public class ScanList extends MzMLContent implements Iterable<Scan>, Serializabl
         return required;
     }
 
-    public void addScan(Scan scan) {
+    public void add(Scan scan) {
         scan.setParent(this);
 
         scanList.add(scan);
     }
 
+    @Override
     public int size() {
         return scanList.size();
     }
 
-    public Scan getScan(int index) {
+    public Scan get(int index) {
         return scanList.get(index);
     }
 
@@ -114,5 +115,10 @@ public class ScanList extends MzMLContent implements Iterable<Scan>, Serializabl
             children.addAll(scanList);
         
         super.addChildrenToCollection(children);
+    }
+
+    @Override
+    public int indexOf(Scan item) {
+        return scanList.indexOf(item);
     }
 }

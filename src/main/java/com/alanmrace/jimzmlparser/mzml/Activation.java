@@ -9,7 +9,7 @@ import java.util.ArrayList;
  *
  * @author Alan Race
  */
-public class Activation extends MzMLContent {
+public class Activation extends MzMLContentWithParams {
 
     /**
      * Serialisation version ID.

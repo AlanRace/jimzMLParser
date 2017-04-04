@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-public class SourceFileRefList extends MzMLContent implements Serializable, Iterable<SourceFileRef> {
+public class SourceFileRefList extends MzMLContentList<SourceFileRef> {
 
     /**
      *
@@ -25,7 +25,7 @@ public class SourceFileRefList extends MzMLContent implements Serializable, Iter
 
         for (SourceFileRef ref : sourceFileRefList) {
             for (SourceFile sourceFile : sourceFileList) {
-                if (ref.getRef().getID().equals(sourceFile.getID())) {
+                if (ref.getReference().getID().equals(sourceFile.getID())) {
                     this.sourceFileRefList.add(new SourceFileRef(sourceFile));
                 }
             }

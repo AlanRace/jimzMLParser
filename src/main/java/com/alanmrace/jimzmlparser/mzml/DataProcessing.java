@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class DataProcessing extends MzMLContent implements Serializable {
+public class DataProcessing extends MzMLContentWithParams implements Serializable {
 
     /**
      *

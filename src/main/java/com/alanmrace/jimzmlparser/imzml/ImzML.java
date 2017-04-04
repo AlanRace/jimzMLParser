@@ -288,7 +288,7 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
         if (spectrumList != null) {
             for (Spectrum spectrum : spectrumList) {
                 //for(ScanSettings scanSettings : spectrum.getScanList().getScan(0)) {
-                CVParam maxCountPixelZ = spectrum.getScanList().getScan(0).getCVParam(Scan.positionZID);
+                CVParam maxCountPixelZ = spectrum.getScanList().get(0).getCVParam(Scan.positionZID);
 
                 if (maxCountPixelZ != null) {
                     int curDepth = maxCountPixelZ.getValueAsInteger();
@@ -518,8 +518,8 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
 
 //		RandomAccessFile raf = null;
             for (Spectrum spectrum : getRun().getSpectrumList()) {
-                int x = spectrum.getScanList().getScan(0).getCVParam(Scan.positionXID).getValueAsInteger() - 1;
-                int y = spectrum.getScanList().getScan(0).getCVParam(Scan.positionYID).getValueAsInteger() - 1;
+                int x = spectrum.getScanList().get(0).getCVParam(Scan.positionXID).getValueAsInteger() - 1;
+                int y = spectrum.getScanList().get(0).getCVParam(Scan.positionYID).getValueAsInteger() - 1;
 
                 try {
                     double tic = spectrum.getCVParam(Spectrum.totalIonCurrentID).getValueAsDouble();

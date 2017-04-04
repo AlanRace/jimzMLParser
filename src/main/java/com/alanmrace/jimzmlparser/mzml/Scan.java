@@ -18,7 +18,7 @@ import java.util.Collection;
  * 
  * @author Alan Race
  */
-public class Scan extends MzMLContent implements Serializable {
+public class Scan extends MzMLContentWithParams implements Serializable {
 
     /**
      * Serialisation version ID.

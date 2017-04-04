@@ -121,11 +121,6 @@ public class Binary implements Serializable, MzMLTag {
     public String getTagName() {
         return "binary";
     }
-
-    @Override
-    public void addChildrenToCollection(Collection<MzMLTag> children) {
-        // No children
-    }
     
     /**
      * Convert a CVParam (with MS or IMS OBO ontology terms) describing the data 
@@ -205,4 +200,8 @@ public class Binary implements Serializable, MzMLTag {
         }
     }
 
+    @Override
+    public void setParent(MzMLTag parent) {
+        // This is a dummy function only included to allow the removal
+    }
 }

@@ -5,7 +5,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Serializable;
 
-public class Sample extends MzMLContent implements Serializable {
+public class Sample extends MzMLContentWithParams implements Serializable {
 
     /**
      *

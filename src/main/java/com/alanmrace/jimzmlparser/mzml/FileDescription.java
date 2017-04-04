@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class FileDescription extends MzMLContent implements Serializable {
+public class FileDescription extends MzMLContentWithParams implements Serializable {
 
     /**
      *

@@ -2,7 +2,6 @@ package com.alanmrace.jimzmlparser.mzml;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.Collection;
 
 /**
  * Interface for any class which describes a tag within an MzML file.
@@ -17,15 +16,7 @@ public interface MzMLTag {
      * @return tag name
      */
     public String getTagName();
-    
-    /**
-     * Add all child tags, and their children (repeated recursively) to the supplied 
-     * collection. 
-     * 
-     * @param children Collection to add the children to
-     */
-    public void addChildrenToCollection(Collection<MzMLTag> children);
-    
+        
     /**
      * Format the contents of the class into XML at a specified number of tab
      * indents and output to a BufferedReader.
@@ -35,4 +26,16 @@ public interface MzMLTag {
      * @throws IOException Exception occurred during writing data
      */
     public void outputXML(BufferedWriter output, int indent) throws IOException;
+    
+    /**
+     * Set the parent MzMLContent of this MzMLContent. This method currently 
+     * does nothing.
+     * 
+     * <p>TODO: Remove this.
+     * 
+     * @param parent Parent MzMLContent to add
+     * @deprecated This was removed when the Tree code was decoupled
+     */
+    @Deprecated
+    public void setParent(MzMLTag parent);
 }

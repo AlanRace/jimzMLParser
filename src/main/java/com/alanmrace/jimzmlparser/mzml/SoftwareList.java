@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-public class SoftwareList extends MzMLContent implements Iterable<Software>, Serializable {
+public class SoftwareList extends MzMLContentList<Software> {
 
     /**
      *

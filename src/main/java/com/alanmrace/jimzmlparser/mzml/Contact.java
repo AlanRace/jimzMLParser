@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Contact extends MzMLContent implements Serializable {
+public class Contact extends MzMLContentWithParams implements Serializable {
 
     /**
      *

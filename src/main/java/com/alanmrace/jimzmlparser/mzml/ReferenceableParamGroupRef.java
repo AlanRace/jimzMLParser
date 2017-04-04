@@ -42,7 +42,7 @@ public class ReferenceableParamGroupRef implements Serializable, MzMLTag { //, M
     }
     
     @Override
-    public void addChildrenToCollection(Collection<MzMLTag> children) {
-        // No children to add
+    public void setParent(MzMLTag parent) {
+        // This is a dummy function only included to allow the removal
     }
 }

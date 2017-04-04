@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class InstrumentConfiguration extends MzMLContent implements Serializable {
+public class InstrumentConfiguration extends MzMLContentWithParams implements ReferenceableTag {
 
     /**
      *
@@ -56,7 +56,7 @@ public class InstrumentConfiguration extends MzMLContent implements Serializable
 
         if (ic.softwareRef != null && softwareList != null) {
             for (Software software : softwareList) {
-                if (ic.softwareRef.getRef().getID().equals(software.id)) {
+                if (ic.softwareRef.getReference().getID().equals(software.id)) {
                     softwareRef = new SoftwareRef(software);
                     break;
                 }
@@ -191,5 +191,10 @@ public class InstrumentConfiguration extends MzMLContent implements Serializable
             children.add(softwareRef);
         
         super.addChildrenToCollection(children);
+    }
+
+    @Override
+    public void setID(String id) {
+        this.id = id;
     }
 }

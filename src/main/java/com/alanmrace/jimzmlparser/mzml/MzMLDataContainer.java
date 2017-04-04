@@ -9,7 +9,7 @@ import java.io.RandomAccessFile;
  *
  * @author Alan Race
  */
-public abstract class MzMLDataContainer extends MzMLContent {
+public abstract class MzMLDataContainer extends MzMLContentWithParams {
     protected DataLocation dataLocation;
     protected BinaryDataArrayList binaryDataArrayList;
     
@@ -21,7 +21,7 @@ public abstract class MzMLDataContainer extends MzMLContent {
     protected long mzMLLocation;
     protected RandomAccessFile raf;
     
-    public MzMLDataContainer(MzMLContent mzMLContent, ReferenceableParamGroupList rpgList) {
+    public MzMLDataContainer(MzMLContentWithParams mzMLContent, ReferenceableParamGroupList rpgList) {
         super(mzMLContent, rpgList);
     }
     

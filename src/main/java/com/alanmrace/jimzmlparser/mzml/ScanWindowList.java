@@ -4,12 +4,11 @@ import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-public class ScanWindowList extends MzMLContent implements Serializable, Iterable<ScanWindow> {
+public class ScanWindowList extends MzMLContentList<ScanWindow> {
 
     /**
      *

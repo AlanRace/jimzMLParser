@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-public class SourceFileList extends MzMLContent implements Serializable, Iterable<SourceFile> {
+public class SourceFileList extends MzMLContentList<SourceFile> {
 
     /**
      *

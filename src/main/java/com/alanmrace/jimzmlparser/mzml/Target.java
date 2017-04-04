@@ -4,7 +4,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Serializable;
 
-public class Target extends MzMLContent implements Serializable {
+public class Target extends MzMLContentWithParams implements Serializable {
 
     /**
      *

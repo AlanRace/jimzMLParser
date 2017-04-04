@@ -12,7 +12,7 @@ import java.util.Collection;
  * 
  * @author Alan Race
  */
-public class ScanSettings extends MzMLContent implements Serializable {
+public class ScanSettings extends MzMLContentWithParams implements Serializable {
 
     /**
      * Serialisaiton version ID.

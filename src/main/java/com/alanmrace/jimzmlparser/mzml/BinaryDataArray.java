@@ -27,7 +27,7 @@ import java.util.zip.Inflater;
  *
  * @author Alan Race
  */
-public class BinaryDataArray extends MzMLContent implements Serializable {
+public class BinaryDataArray extends MzMLContentWithParams implements Serializable {
 
     /**
      * Serialisation version ID.

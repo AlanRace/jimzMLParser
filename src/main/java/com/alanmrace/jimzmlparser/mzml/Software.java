@@ -3,10 +3,9 @@ package com.alanmrace.jimzmlparser.mzml;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Software extends MzMLContent implements Serializable {
+public class Software extends MzMLContentWithParams implements ReferenceableTag {
 
     /**
      *
@@ -81,6 +80,11 @@ public class Software extends MzMLContent implements Serializable {
     @Override
     public String getTagName() {
         return "software";
+    }
+
+    @Override
+    public void setID(String id) {
+        this.id = id;
     }
 
 }

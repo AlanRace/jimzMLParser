@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Detector extends MzMLContent implements Serializable {
+public class Detector extends MzMLContentWithParams implements Serializable {
 
     /**
      *

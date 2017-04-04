@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class SourceFile extends MzMLContent implements Serializable {
+public class SourceFile extends MzMLContentWithParams implements ReferenceableTag {
 
     /**
      *

@@ -24,7 +24,7 @@ import java.util.Collection;
  * 
  * @author Alan Race
  */
-public class MzML extends MzMLContent implements Serializable {
+public class MzML extends MzMLContentWithParams implements Serializable {
 
     /**
      * Serialisaiton version ID.

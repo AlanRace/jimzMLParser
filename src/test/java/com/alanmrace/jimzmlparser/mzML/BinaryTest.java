@@ -83,7 +83,7 @@ public class BinaryTest {
         System.out.println("addChildrenToCollection");
         Collection<MzMLTag> children = null;
         Binary instance = null;
-        instance.addChildrenToCollection(children);
+//        instance.addChildrenToCollection(children);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }

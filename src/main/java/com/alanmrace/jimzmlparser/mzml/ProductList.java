@@ -2,12 +2,11 @@ package com.alanmrace.jimzmlparser.mzml;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-public class ProductList extends MzMLContent implements Serializable, Iterable<Product> {
+public class ProductList extends MzMLContentList<Product> {
 
     /**
      *
