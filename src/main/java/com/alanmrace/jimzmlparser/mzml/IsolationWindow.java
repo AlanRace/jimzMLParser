@@ -31,22 +31,6 @@ public class IsolationWindow extends MzMLContentWithParams implements Serializab
     }
 
     @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
-        MzMLContent.indent(output, indent);
-        output.write("<isolationWindow>\n");
-
-        super.outputXML(output, indent + 1);
-
-        MzMLContent.indent(output, indent);
-        output.write("</isolationWindow>\n");
-    }
-
-    @Override
-    public String toString() {
-        return "isolationWindow";
-    }
-
-    @Override
     public String getTagName() {
         return "isolationWindow";
     }

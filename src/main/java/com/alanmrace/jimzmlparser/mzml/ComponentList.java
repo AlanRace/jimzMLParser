@@ -122,12 +122,7 @@ public class ComponentList extends MzMLContentWithChildren implements Serializab
     }
 
     @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
-        MzMLContent.indent(output, indent);
-        output.write("<" + getTagName());
-        output.write(" count=\"" + size() + "\"");
-        output.write(">\n");
-
+    protected void outputXMLContent(BufferedWriter output, int indent) throws IOException {
         int order = 1;
         for (Source source : sources) {
             source.outputXML(output, indent + 1, order++);
@@ -140,14 +135,6 @@ public class ComponentList extends MzMLContentWithChildren implements Serializab
         for (Detector detector : detectors) {
             detector.outputXML(output, indent + 1, order++);
         }
-
-        MzMLContent.indent(output, indent);
-        output.write("</" + getTagName() + ">\n");
-    }
-
-    @Override
-    public String toString() {
-        return "componentList";
     }
 
     @Override

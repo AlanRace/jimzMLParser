@@ -1,9 +1,6 @@
 package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.util.XMLHelper;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 
 public class SourceFile extends MzMLContentWithParams implements ReferenceableTag {
@@ -49,10 +46,12 @@ public class SourceFile extends MzMLContentWithParams implements ReferenceableTa
         return required;
     }
 
+    @Override
     public String getID() {
         return id;
     }
 
+    @Override
     public void setID(String id) {
         this.id = id;
     }
@@ -66,18 +65,12 @@ public class SourceFile extends MzMLContentWithParams implements ReferenceableTa
     }
 
     @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
-        MzMLContent.indent(output, indent);
-        output.write("<sourceFile");
-        output.write(" id=\"" + XMLHelper.ensureSafeXML(id) + "\"");
-        output.write(" location=\"" + XMLHelper.ensureSafeXML(location) + "\"");
-        output.write(" name=\"" + XMLHelper.ensureSafeXML(name) + "\"");
-        output.write(">\n");
-
-        super.outputXML(output, indent + 1);
-
-        MzMLContent.indent(output, indent);
-        output.write("</sourceFile>\n");
+    protected String getXMLAttributeText() {
+        String attributeText = "id=\"" + XMLHelper.ensureSafeXML(id) + "\"";
+        attributeText += " location=\"" + XMLHelper.ensureSafeXML(location) + "\"";
+        attributeText += " name=\"" + XMLHelper.ensureSafeXML(name) + "\"";
+        
+        return attributeText;
     }
 
     @Override

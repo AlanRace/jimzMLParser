@@ -1,7 +1,5 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -59,22 +57,6 @@ public class Activation extends MzMLContentWithParams {
         optional.add(new OBOTermInclusion(precursorActivationAttributeID, false, true, false));
 
         return optional;
-    }
-
-    @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
-        MzMLContent.indent(output, indent);
-        output.write("<activation>\n");
-
-        super.outputXML(output, indent + 1);
-
-        MzMLContent.indent(output, indent);
-        output.write("</activation>\n");
-    }
-
-    @Override
-    public String toString() {
-        return "activation";
     }
 
     @Override

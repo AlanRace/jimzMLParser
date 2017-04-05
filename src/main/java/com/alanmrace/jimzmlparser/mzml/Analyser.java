@@ -1,6 +1,5 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Serializable;
@@ -61,7 +60,7 @@ public class Analyser extends MzMLContentWithParams implements Serializable {
 
         return optional;
     }
-
+    
     /**
      * Output attribute in the form of XML.
      *
@@ -73,10 +72,10 @@ public class Analyser extends MzMLContentWithParams implements Serializable {
     public void outputXML(BufferedWriter output, int indent, int order) throws IOException {
         MzMLContent.indent(output, indent);
         output.write("<analyzer");
-        output.write(" order=\"" + XMLHelper.ensureSafeXML("" + order) + "\"");
+        output.write(" order=\"" + order + "\"");
         output.write(">\n");
 
-        super.outputXML(output, indent + 1);
+        super.outputXMLContent(output, indent + 1);
 
         MzMLContent.indent(output, indent);
         output.write("</analyzer>\n");

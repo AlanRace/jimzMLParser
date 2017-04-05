@@ -42,17 +42,6 @@ public class Contact extends MzMLContentWithParams implements Serializable {
     }
 
     @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
-        MzMLContent.indent(output, indent);
-        output.write("<" + getTagName() + ">\n");
-
-        super.outputXML(output, indent + 1);
-
-        MzMLContent.indent(output, indent);
-        output.write("</" + getTagName() + ">\n");
-    }
-
-    @Override
     public String toString() {
         String name = getCVParam(contactNameID).getValueAsString();
         String organisation = getCVParam(contactOrganisationID).getValueAsString();

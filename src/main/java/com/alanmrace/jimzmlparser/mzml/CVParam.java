@@ -4,7 +4,6 @@ import com.alanmrace.jimzmlparser.exceptions.InvalidFormatIssue;
 import com.alanmrace.jimzmlparser.exceptions.NonFatalParseException;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.Serializable;
 
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
@@ -66,7 +65,7 @@ public abstract class CVParam extends MzMLContent {
         String description = "(" + term.getID() + ") " + term.getName();
         String value = getValueAsString();
         
-        if(!value.isEmpty()) {
+        if(value != null && !value.isEmpty()) {
             description += ": " +  getValueAsString();
             
             if(units != null) {

@@ -49,7 +49,7 @@ public class Source extends MzMLContentWithParams implements Serializable {
         output.write(" order=\"" + XMLHelper.ensureSafeXML("" + order) + "\"");
         output.write(">\n");
 
-        super.outputXML(output, indent + 1);
+        super.outputXMLContent(output, indent + 1);
 
         MzMLContent.indent(output, indent);
         output.write("</source>\n");

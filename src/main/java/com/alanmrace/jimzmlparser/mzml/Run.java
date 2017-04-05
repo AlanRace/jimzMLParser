@@ -291,7 +291,7 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
         }
         output.write(">\n");
 
-        super.outputXML(output, indent + 1);
+        super.outputXMLContent(output, indent + 1);
 
         // spectrumList
         if (spectrumList != null && spectrumList.size() > 0) {

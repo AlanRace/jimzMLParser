@@ -291,7 +291,7 @@ public class Scan extends MzMLContentWithParams implements Serializable {
         }
         output.write(">\n");
 
-        super.outputXML(output, indent + 1);
+        super.outputXMLContent(output, indent + 1);
 
         if (scanWindowList != null && scanWindowList.size() > 0) {
             scanWindowList.outputXML(output, indent + 1);

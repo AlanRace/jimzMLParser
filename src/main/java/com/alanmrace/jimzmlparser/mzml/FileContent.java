@@ -56,18 +56,6 @@ public class FileContent extends MzMLContentWithParams implements Serializable {
 
         return optional;
     }
-    
-    @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
-        MzMLContent.indent(output, indent);
-        output.write("<fileContent");
-        output.write(">\n");
-
-        super.outputXML(output, indent + 1);
-
-        MzMLContent.indent(output, indent);
-        output.write("</fileContent>\n");
-    }
 
     public void addDataFileContent(CVParam dataFileContent) {
         this.addCVParam(dataFileContent);
@@ -75,11 +63,6 @@ public class FileContent extends MzMLContentWithParams implements Serializable {
 
     public List<CVParam> getDataFileContents() {
         return getChildrenOf(dataFileContentID);
-    }
-
-    @Override
-    public String toString() {
-        return "fileContent";
     }
 
     @Override

@@ -283,14 +283,10 @@ public class ImzMLTest {
      * @throws Exception IOException if issue with writing 
      */
     @Test
-    @Ignore
     public void testWrite_String() throws Exception {
         System.out.println("write");
-        String filename = "";
-        ImzML instance = null;
+        String filename = "ImzMLTest.imzML";
         instance.write(filename);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
     
 }

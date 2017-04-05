@@ -391,7 +391,7 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
         }
         output.write(">\n");
 
-        super.outputXML(output, indent + 1);
+        super.outputXMLContent(output, indent + 1);
 
         if (scanList != null && scanList.size() > 0) {
             scanList.outputXML(output, indent + 1);

@@ -1,8 +1,6 @@
 package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.util.XMLHelper;
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class Software extends MzMLContentWithParams implements ReferenceableTag {
@@ -46,6 +44,7 @@ public class Software extends MzMLContentWithParams implements ReferenceableTag 
         return required;
     }
 
+    @Override
     public String getID() {
         return id;
     }
@@ -64,17 +63,9 @@ public class Software extends MzMLContentWithParams implements ReferenceableTag 
     }
     
     @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
-        MzMLContent.indent(output, indent);
-        output.write("<software");
-        output.write(" id=\"" + XMLHelper.ensureSafeXML(id) + "\"");
-        output.write(" version=\"" + XMLHelper.ensureSafeXML(version) + "\"");
-        output.write(">\n");
-
-        super.outputXML(output, indent + 1);
-
-        MzMLContent.indent(output, indent);
-        output.write("</software>\n");
+    protected String getXMLAttributeText() {
+        return "id=\"" + XMLHelper.ensureSafeXML(id) + "\"" +
+            " version=\"" + XMLHelper.ensureSafeXML(version) + "\"";
     }
 
     @Override

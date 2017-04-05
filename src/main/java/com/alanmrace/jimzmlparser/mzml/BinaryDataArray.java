@@ -925,31 +925,31 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
     }
 
     @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
-        MzMLContent.indent(output, indent);
-        output.write("<binaryDataArray");
-        output.write(" encodedLength=\"" + encodedLength + "\"");
+    protected String getXMLAttributeText() {
+        String attributeText = "encodedLength=\"" + encodedLength + "\"";
+        
         if (arrayLength != -1) {
-            output.write(" arrayLength=\"" + arrayLength + "\"");
+            attributeText += " arrayLength=\"" + arrayLength + "\"";
         }
         if (dataProcessingRef != null) {
-            output.write(" dataProcessingRef=\"" + XMLHelper.ensureSafeXML(dataProcessingRef.getID()) + "\"");
+            attributeText += " dataProcessingRef=\"" + XMLHelper.ensureSafeXML(dataProcessingRef.getID()) + "\"";
         }
-        output.write(">\n");
-
-        super.outputXML(output, indent + 1);
-
+        
+        return attributeText;
+    }
+    
+    @Override
+    protected void outputXMLContent(BufferedWriter output, int indent) throws IOException {
+        super.outputXMLContent(output, indent);
+        
         if (binary != null) {
             binary.outputXML(output, indent + 1);
         } else {
             MzMLContent.indent(output, indent + 1);
             output.write("<binary />\n");
         }
-
-        MzMLContent.indent(output, indent);
-        output.write("</binaryDataArray>\n");
     }
-
+    
     @Override
     public String toString() {
         return "binaryDataArray: " + dataLocation;

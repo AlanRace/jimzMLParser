@@ -3,7 +3,7 @@ package com.alanmrace.jimzmlparser.mzml;
 public class SoftwareRef extends MzMLReference<Software> { //, MutableTreeNode {
 
     /**
-     *
+     * Serialisation version ID.
      */
     private static final long serialVersionUID = 1L;
 

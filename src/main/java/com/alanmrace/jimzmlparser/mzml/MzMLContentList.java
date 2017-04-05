@@ -10,26 +10,52 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
+ * Abstract class implementing the basic functionality for a list tag in MzML.
  *
  * @author Alan Race
- * @param <T>
+ * @param <T> The type of MzMLTag within this list.
+ *
+ * @see MzMLIDContentList
+ * @see BinaryDataArrayList
+ * @see CVList
+ * @see DataProcessing
+ * @see PrecursorList
+ * @see ProductList
+ * @see ReferenceableParamGroupList
+ * @see SampleList
+ * @see SelectedIonList
+ * @see SourceFileRefList
+ * @see TargetList
  */
-public abstract class MzMLContentList<T extends MzMLTag> 
+public abstract class MzMLContentList<T extends MzMLTag>
         extends MzMLContentWithChildren implements MzMLTagList<T> {
 
     /**
-     *
+     * The list of MzMLTags.
      */
     protected final List<T> list;
 
+    /**
+     * Create an empty list, used by subclasses.
+     */
     protected MzMLContentList() {
         list = new ArrayList<T>();
     }
-    
+
+    /**
+     * Create an empty list with the specified initial capacity.
+     *
+     * @param count Initial capacity
+     */
     public MzMLContentList(int count) {
         list = new ArrayList<T>(count);
     }
 
+    /**
+     * Copy constructor for list, shallow copy.
+     *
+     * @param contentList List to copy
+     */
     public MzMLContentList(MzMLContentList<T> contentList) {
         this(contentList.size());
 
@@ -64,16 +90,19 @@ public abstract class MzMLContentList<T extends MzMLTag>
     public int size() {
         return list.size();
     }
-    
+
     @Override
     public void addChildrenToCollection(Collection<MzMLTag> children) {
-        if(list != null)
+        if (list != null) {
             children.addAll(list);
+        }
     }
-    
+
     @Override
     protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLTag> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
-        if(list.size() > 0) {
+        if (list.size() > 0) {
+            // Get the first element from the list so that we can use it to get 
+            // the name of the tag.
             T firstElement = list.get(0);
 
             if (currentXPath.startsWith("/" + firstElement.getTagName())) {
@@ -88,23 +117,16 @@ public abstract class MzMLContentList<T extends MzMLTag>
         }
     }
 
-    protected void outputOpenTag(BufferedWriter output) throws IOException {
-        output.write("<" + getTagName());
-        output.write(" count=\"" + list.size() + "\"");
-        output.write(">\n");
-    }
-    
     @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
-        MzMLContent.indent(output, indent);
-        outputOpenTag(output);
+    protected String getXMLAttributeText() {
+        return "count=\"" + list.size() + "\"";
+    }
 
+    @Override
+    protected void outputXMLContent(BufferedWriter output, int indent) throws IOException {
         for (T item : this) {
-            item.outputXML(output, indent + 1);
+            item.outputXML(output, indent);
         }
-
-        MzMLContent.indent(output, indent);
-        output.write("</" + getTagName() + ">\n");
     }
 
     @Override

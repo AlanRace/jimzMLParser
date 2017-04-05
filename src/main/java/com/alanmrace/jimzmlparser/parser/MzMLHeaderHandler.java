@@ -569,7 +569,14 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 throw new InvalidMzML("<mzML> tag not defined prior to defining <cvList> tag.");
             }
         } else if ("cv".equals(qName)) {
-            CV cv = new CV(attributes.getValue("URI"), attributes.getValue("fullName"), attributes.getValue("id"));
+            String cvURI = attributes.getValue("URI");
+            
+            // In old versions a lower case attribute was used incorrectly, so 
+            // read this in
+            if(cvURI == null)
+                cvURI = attributes.getValue("uri");
+            
+            CV cv = new CV(cvURI, attributes.getValue("fullName"), attributes.getValue("id"));
 
             if (attributes.getValue("version") != null) {
                 cv.setVersion(attributes.getValue("version"));
@@ -635,11 +642,11 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
             currentContent = rpg;
 
-            try {
+            //try {
                 referenceableParamGroupList.addReferenceableParamGroup(rpg);
-            } catch (NullPointerException ex) {
-                throw new InvalidMzML("<referenceableParamGroupList> tag not defined prior to defining <referenceableParamGroup> tag.");
-            }
+            //} catch (NullPointerException ex) {
+            //    throw new InvalidMzML("<referenceableParamGroupList> tag not defined prior to defining <referenceableParamGroup> tag.");
+            //}
         } else if ("sampleList".equals(qName)) {
             sampleList = new SampleList(getCountAttribute(attributes));
 

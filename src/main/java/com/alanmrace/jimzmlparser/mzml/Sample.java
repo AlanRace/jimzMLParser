@@ -1,11 +1,8 @@
 package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.util.XMLHelper;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.Serializable;
 
-public class Sample extends MzMLContentWithParams implements Serializable {
+public class Sample extends MzMLContentWithParams implements ReferenceableTag {
 
     /**
      *
@@ -44,6 +41,7 @@ public class Sample extends MzMLContentWithParams implements Serializable {
 //		this.attributes.addAll(attributes);
 //	}	
 //	
+    @Override
     public String getID() {
         return id;
     }
@@ -53,20 +51,14 @@ public class Sample extends MzMLContentWithParams implements Serializable {
     }
 
     @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
-        MzMLContent.indent(output, indent);
-        output.write("<sample");
-        output.write(" id=\"" + XMLHelper.ensureSafeXML(id) + "\"");
-
+    protected String getXMLAttributeText() {
+        String attributeText = "id=\"" + XMLHelper.ensureSafeXML(id) + "\"";
+        
         if (name != null) {
-            output.write(" name=\"" + XMLHelper.ensureSafeXML(name) + "\"");
+            attributeText += " name=\"" + XMLHelper.ensureSafeXML(name) + "\"";
         }
-        output.write(">\n");
-
-        super.outputXML(output, indent + 1);
-
-        MzMLContent.indent(output, indent);
-        output.write("</sample>\n");
+        
+        return attributeText;
     }
 
     @Override
@@ -78,5 +70,10 @@ public class Sample extends MzMLContentWithParams implements Serializable {
     @Override
     public String getTagName() {
         return "sample";
+    }
+
+    @Override
+    public void setID(String id) {
+        this.id = id;
     }
 }

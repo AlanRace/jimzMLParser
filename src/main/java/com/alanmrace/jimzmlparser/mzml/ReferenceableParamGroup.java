@@ -3,7 +3,6 @@ package com.alanmrace.jimzmlparser.mzml;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 
 public class ReferenceableParamGroup extends MzMLContentWithParams implements ReferenceableTag {
@@ -37,6 +36,9 @@ public class ReferenceableParamGroup extends MzMLContentWithParams implements Re
     }
 
     public ReferenceableParamGroup(String id) {
+        if(id == null)
+            throw new IllegalArgumentException("ID cannot be null for ReferenceableParamGroup.");
+        
         this.id = id;
     }
 
@@ -51,16 +53,8 @@ public class ReferenceableParamGroup extends MzMLContentWithParams implements Re
     }
 
     @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
-        MzMLContent.indent(output, indent);
-        output.write("<referenceableParamGroup");
-        output.write(" id=\"" + XMLHelper.ensureSafeXML(id) + "\"");
-        output.write(">\n");
-
-        super.outputXML(output, indent + 1);
-
-        MzMLContent.indent(output, indent);
-        output.write("</referenceableParamGroup>\n");
+    protected String getXMLAttributeText() {
+        return "id=\"" + XMLHelper.ensureSafeXML(this.getID()) + "\"";
     }
 
     @Override

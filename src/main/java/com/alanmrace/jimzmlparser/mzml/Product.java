@@ -3,8 +3,9 @@ package com.alanmrace.jimzmlparser.mzml;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Collection;
 
-public class Product extends MzMLContent implements Serializable {
+public class Product extends MzMLContentWithChildren implements Serializable {
 
     /**
      *
@@ -33,25 +34,19 @@ public class Product extends MzMLContent implements Serializable {
     }
 
     @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
-        MzMLContent.indent(output, indent);
-        output.write("<product>\n");
-
+    protected void outputXMLContent(BufferedWriter output, int indent) throws IOException {
         if (isolationWindow != null) {
             isolationWindow.outputXML(output, indent + 1);
         }
-
-        MzMLContent.indent(output, indent);
-        output.write("</product>\n");
-    }
-
-    @Override
-    public String toString() {
-        return "product";
     }
 
     @Override
     public String getTagName() {
         return "product";
+    }
+
+    @Override
+    public void addChildrenToCollection(Collection<MzMLTag> children) {
+        children.add(isolationWindow);
     }
 }

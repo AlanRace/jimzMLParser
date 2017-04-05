@@ -33,7 +33,7 @@ public class EmptyCVParam extends CVParam {
 
     @Override
     public String getValueAsString() {
-        return "";
+        return null;
     }
 
     @Override

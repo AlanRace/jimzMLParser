@@ -196,11 +196,7 @@ public class ScanSettings extends MzMLContentWithParams implements Referenceable
         return optional;
     }
 
-    /**
-     * Get unique identifier.
-     * 
-     * @return
-     */
+    @Override
     public String getID() {
         return id;
     }
@@ -286,7 +282,7 @@ public class ScanSettings extends MzMLContentWithParams implements Referenceable
         output.write(" id=\"" + XMLHelper.ensureSafeXML(id) + "\"");
         output.write(">\n");
 
-        super.outputXML(output, indent + 1);
+        super.outputXMLContent(output, indent + 1);
 
         if (sourceFileRefList != null && sourceFileRefList.size() > 0) {
             sourceFileRefList.outputXML(output, indent + 1);

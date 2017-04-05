@@ -13,8 +13,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * Abstract class implementing the basic functionality for a tag in MzML which has
+ * child tags and ReferenceableParamGroupRef, CVParam and UserParam tags.
  *
  * @author Alan Race
+ * 
+ * @see ReferenceableParamGroupRef
+ * @see CVParam
+ * @see UserParam
  */
 public abstract class MzMLContentWithParams extends MzMLContentWithChildren implements HasParams {
     /**
@@ -426,7 +432,7 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
     }
 
     @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
+    protected void outputXMLContent(BufferedWriter output, int indent) throws IOException {
         if (referenceableParamGroupRefs != null) {
             for (ReferenceableParamGroupRef ref : referenceableParamGroupRefs) {
                 // TODO: Remove quick fix

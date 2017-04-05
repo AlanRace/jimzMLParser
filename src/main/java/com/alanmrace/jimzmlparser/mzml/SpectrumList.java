@@ -1,17 +1,12 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
-import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
-public class SpectrumList extends MzMLContentList<Spectrum> {
+public class SpectrumList extends MzMLIDContentList<Spectrum> {
 
     /**
      *

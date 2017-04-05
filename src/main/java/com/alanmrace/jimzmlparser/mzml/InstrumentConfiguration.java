@@ -158,7 +158,7 @@ public class InstrumentConfiguration extends MzMLContentWithParams implements Re
 
         output.write(">\n");
 
-        super.outputXML(output, indent + 1);
+        super.outputXMLContent(output, indent + 1);
 
         if (componentList != null && componentList.size() > 0) {
             componentList.outputXML(output, indent + 1);

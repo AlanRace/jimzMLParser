@@ -148,7 +148,7 @@ public class Chromatogram extends MzMLDataContainer implements Serializable {
         }
         output.write(">\n");
 
-        super.outputXML(output, indent + 1);
+        super.outputXMLContent(output, indent + 1);
 
         if (precursor != null) {
             precursor.outputXML(output, indent + 1);

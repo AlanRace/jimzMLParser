@@ -95,7 +95,7 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
         output.write(" count=\"" + scanList.size() + "\"");
         output.write(">\n");
 
-        super.outputXML(output, indent + 1);
+        super.outputXMLContent(output, indent + 1);
 
         for (Scan scan : scanList) {
             scan.outputXML(output, indent + 1);

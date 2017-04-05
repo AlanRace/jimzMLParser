@@ -101,18 +101,16 @@ public class CV extends MzMLIDContent implements Serializable {
     }
 
     @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
-        MzMLContent.indent(output, indent);
-        output.write("<cv");
-        output.write(" URI=\"" + XMLHelper.ensureSafeXML(uri) + "\"");
-        output.write(" fullName=\"" + XMLHelper.ensureSafeXML(fullName) + "\"");
-        output.write(" id=\"" + XMLHelper.ensureSafeXML(id) + "\"");
-
+    protected String getXMLAttributeText() {
+        String attributeText = "URI=\"" + XMLHelper.ensureSafeXML(uri) + "\"";
+        attributeText += " fullName=\"" + XMLHelper.ensureSafeXML(fullName) + "\"";
+        attributeText += " id=\"" + XMLHelper.ensureSafeXML(id) + "\"";
+        
         if (version != null) {
-            output.write(" version=\"" + XMLHelper.ensureSafeXML(version) + "\"");
+            attributeText += " version=\"" + XMLHelper.ensureSafeXML(version) + "\"";
         }
-
-        output.write("/>\n");
+        
+        return attributeText;
     }
 
     @Override

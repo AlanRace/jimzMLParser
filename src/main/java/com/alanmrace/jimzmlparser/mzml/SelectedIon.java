@@ -31,22 +31,6 @@ public class SelectedIon extends MzMLContentWithParams implements Serializable {
     }
 
     @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
-        MzMLContent.indent(output, indent);
-        output.write("<selectedIon>\n");
-
-        super.outputXML(output, indent + 1);
-
-        MzMLContent.indent(output, indent);
-        output.write("</selectedIon>\n");
-    }
-
-    @Override
-    public String toString() {
-        return "selectedIon";
-    }
-
-    @Override
     public String getTagName() {
         return "selectedIon";
     }

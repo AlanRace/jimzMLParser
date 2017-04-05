@@ -7,6 +7,8 @@ package com.alanmrace.jimzmlparser.mzml;
 
 /**
  *
+ * <p>TODO: Consider including the map like in SpectrumList to improve speed of access.
+ * 
  * @author Alan Race
  * @param <T>
  */

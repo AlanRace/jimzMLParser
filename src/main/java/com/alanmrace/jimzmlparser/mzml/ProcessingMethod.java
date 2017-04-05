@@ -69,7 +69,7 @@ public class ProcessingMethod extends MzMLContentWithParams implements Serializa
         output.write(" softwareRef=\"" + XMLHelper.ensureSafeXML(softwareRef.getID()) + "\"");
         output.write(">\n");
 
-        super.outputXML(output, indent + 1);
+        super.outputXMLContent(output, indent + 1);
 
         MzMLContent.indent(output, indent);
         output.write("</processingMethod>\n");
