@@ -360,35 +360,4 @@ public class ImzMLHandler extends MzMLHeaderHandler {
 
         return imzML;
     }
-
-    public static void main(String args[]) {
-        try {
-            ImzML imzML = ImzMLHandler.parseimzML("F:\\Sample3D\\Microbe_Interaction_3D_Timecourse_LP.imzML");
-
-            try {
-                imzML.write("F:\\Sample3D\\test.imzML");
-            } catch (ImzMLWriteException ex) {
-                Logger.getLogger(ImzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-            System.out.println("Size: " + imzML.getWidth() + " x " + imzML.getHeight());
-
-            double[] mzs;
-            try {
-                Spectrum spectrum = imzML.getSpectrum(1, 1);
-
-                if (spectrum != null) {
-                    mzs = spectrum.getmzArray();
-                    System.out.println(mzs[0]);
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(ImzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-        } catch (ImzMLParseException ex) {
-            Logger.getLogger(ImzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-    }
-
 }

@@ -3,12 +3,9 @@ package com.alanmrace.jimzmlparser.imzml;
 import com.alanmrace.jimzmlparser.exceptions.ImzMLParseException;
 import com.alanmrace.jimzmlparser.exceptions.ImzMLWriteException;
 import com.alanmrace.jimzmlparser.mzml.BinaryDataArray;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 
 import com.alanmrace.jimzmlparser.mzml.CVParam;
 import com.alanmrace.jimzmlparser.mzml.FileContent;
@@ -734,10 +731,10 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
      * 
      * @throws ImzMLWriteException Issue writing imzML file
      */
-    public void write() throws ImzMLWriteException {
-        if (ibdFile == null) {
-            throw new ImzMLWriteException("No ibd file, can't write imzML file.");
-        }
+    public void write() throws IOException {
+//        if (ibdFile == null) {
+//            throw new ImzMLWriteException("No ibd file, can't write imzML file.");
+//        }
 
         write(ibdFile.getAbsolutePath().substring(0, ibdFile.getAbsolutePath().length() - ".ibd".length()) + ".imzML");
     }
