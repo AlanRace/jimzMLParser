@@ -2,32 +2,59 @@ package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class Chromatogram extends MzMLDataContainer implements Serializable {
+/**
+ * Chromatogram tag ({@literal <chromatogram>}).
+ *
+ * @author Alan Race
+ */
+public class Chromatogram extends MzMLDataContainer {
 
     /**
-     *
+     * Serialisation version ID.
      */
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Accession: chromatogram attribute (MS:1000808).
+     */
     public static String chromatogramAttributeID = "MS:1000808";
+
+    /**
+     * Accession: chromatogram type (MS:1000626).
+     */
     public static String chromatogramTypeID = "MS:1000626";
 
-//	private DataProcessing dataProcessingRef;	// Optional
-//	private int defaultArrayLength;				// Required
-//	private String id;							// Required
-//	private int index;							// Required
+    /**
+     * Child {@literal <precursor>} tag.
+     */
     private Precursor precursor;
-    private Product product;
-//	private BinaryDataArrayList binaryDataArrayList;
 
+    /**
+     * Child {@literal <product>} tag.
+     */
+    private Product product;
+
+    /**
+     * Create a {@literal <chromatogram>} tag with an ID and a default array length (in values).
+     * 
+     * @param id Unique identifier
+     * @param defaultArrayLength Length of the chromatogram in data points
+     */
     public Chromatogram(String id, int defaultArrayLength) {
         super(id, defaultArrayLength);
     }
 
+    /**
+     * Copy constructor, requiring new versions of lists to match old references to.
+     * 
+     * @param chromatogram      Chromatogram to copy
+     * @param rpgList           New ReferenceableParamGroupList
+     * @param dpList            New DataProcessingList
+     * @param sourceFileList    New SourceFileList
+     */
     public Chromatogram(Chromatogram chromatogram, ReferenceableParamGroupList rpgList, DataProcessingList dpList,
             SourceFileList sourceFileList) {
         super(chromatogram, rpgList);
@@ -72,45 +99,46 @@ public class Chromatogram extends MzMLDataContainer implements Serializable {
         return optional;
     }
 
-    // Set optional attributes
-//    public void setDataProcessingRef(DataProcessing dataProcessingRef) {
-//        this.dataProcessingRef = dataProcessingRef;
-//    }
-    
-    public DataProcessing getDataProcessingRef() {
-        return dataProcessingRef;
-    }
-
+    /**
+     * Set the child precursor tag.
+     * 
+     * @param precursor Precursor
+     */
     public void setPrecursor(Precursor precursor) {
         precursor.setParent(this);
 
         this.precursor = precursor;
     }
 
+    /**
+     * Returns the precursor, or null if none exists.
+     * 
+     * @return Precursor
+     */
     public Precursor getPrecursor() {
         return precursor;
     }
 
+    /**
+     * Set the child product tag associated with the chromatogram.
+     * 
+     * @param product Product
+     */
     public void setProduct(Product product) {
         product.setParent(this);
 
         this.product = product;
     }
 
+    /**
+     * Returns the product, or null if none exists.
+     * 
+     * @return Product
+     */
     public Product getProduct() {
         return product;
     }
 
-//    public void setBinaryDataArrayList(BinaryDataArrayList binaryDataArrayList) {
-//        binaryDataArrayList.setParent(this);
-//
-//        this.binaryDataArrayList = binaryDataArrayList;
-//    }
-//
-//    public BinaryDataArrayList getBinaryDataArrayList() {
-//        return binaryDataArrayList;
-//    }
-    
     @Override
     protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLTag> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/precursor")) {
@@ -143,16 +171,19 @@ public class Chromatogram extends MzMLDataContainer implements Serializable {
     public String getTagName() {
         return "chromatogram";
     }
-    
+
     @Override
     public void addChildrenToCollection(Collection<MzMLTag> children) {
-        if(precursor != null)
+        if (precursor != null) {
             children.add(precursor);
-        if(product != null)
+        }
+        if (product != null) {
             children.add(product);
-        if(binaryDataArrayList != null)
+        }
+        if (binaryDataArrayList != null) {
             children.add(binaryDataArrayList);
-        
+        }
+
         super.addChildrenToCollection(children);
     }
 }

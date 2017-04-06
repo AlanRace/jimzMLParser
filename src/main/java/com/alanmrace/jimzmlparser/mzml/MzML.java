@@ -530,8 +530,8 @@ public class MzML extends MzMLContentWithParams implements Serializable {
      * @param filename      Location to output as XML
      * @throws ImzMLWriteException IOException are wrapped into ImzMLWriteException
      */
-    public void write(String filename) throws IOException {
-        //try {
+    public void write(String filename) throws ImzMLWriteException {
+        try {
             String encoding = "ISO-8859-1";
 
             raf = new RandomAccessFile(filename, "rw");
@@ -550,10 +550,9 @@ public class MzML extends MzMLContentWithParams implements Serializable {
             output.close();
             
             out.close();
-            //raf.close();
-        //} catch (IOException e1) {
-       //     throw new ImzMLWriteException("Error writing mzML file " + filename + ". " + e1.getLocalizedMessage());
-        //}
+        } catch (IOException ex) {
+            throw new ImzMLWriteException("Error writing mzML file " + filename + ". " + ex.getLocalizedMessage(), ex);
+        }
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.alanmrace.jimzmlparser.parser;
 
+import com.alanmrace.jimzmlparser.exceptions.FatalParseException;
 import com.alanmrace.jimzmlparser.exceptions.MzMLParseException;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -48,7 +49,7 @@ public class MzMLHandler extends MzMLHeaderHandler {
         temporaryFileStream = new DataOutputStream(new FileOutputStream(temporaryBinaryFile));
     }
 
-    public static MzML parsemzML(String filename) throws MzMLParseException {
+    public static MzML parsemzML(String filename) throws FatalParseException {
         try {
             OBO obo = new OBO("imagingMS.obo");
 

@@ -21,4 +21,14 @@ public class ImzMLWriteException extends Exception {
         super(message);
     }
 
+    /**
+     * Construct ImzMLWriteException with a message describing the issue and a chained
+     * exception.
+     * 
+     * @param message Description of the issue
+     * @param exception Exception thrown previously
+     */
+    public ImzMLWriteException(String message, Exception exception) {
+        super(message, exception);
+    }
 }

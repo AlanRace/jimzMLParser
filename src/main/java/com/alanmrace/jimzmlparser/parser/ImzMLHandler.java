@@ -1,7 +1,8 @@
 package com.alanmrace.jimzmlparser.parser;
 
+import com.alanmrace.jimzmlparser.exceptions.FatalParseException;
 import com.alanmrace.jimzmlparser.exceptions.ImzMLParseException;
-import com.alanmrace.jimzmlparser.exceptions.ImzMLWriteException;
+import com.alanmrace.jimzmlparser.exceptions.InvalidImzML;
 import com.alanmrace.jimzmlparser.imzml.ImzML;
 
 import java.io.File;
@@ -13,10 +14,8 @@ import javax.xml.parsers.SAXParserFactory;
 
 import com.alanmrace.jimzmlparser.mzml.BinaryDataArray;
 import com.alanmrace.jimzmlparser.obo.OBO;
-import com.alanmrace.jimzmlparser.exceptions.InvalidImzML;
 import com.alanmrace.jimzmlparser.exceptions.InvalidMzML;
 import com.alanmrace.jimzmlparser.mzml.Scan;
-import com.alanmrace.jimzmlparser.mzml.Spectrum;
 import java.io.FileNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -104,7 +103,7 @@ public class ImzMLHandler extends MzMLHeaderHandler {
      * @return          ImzML representation of the imzML file
      * @throws ImzMLParseException  If a fatal parse error occurs
      */
-    public static ImzML parseimzML(String filename) throws ImzMLParseException {
+    public static ImzML parseimzML(String filename) throws FatalParseException {
         return parseimzML(filename, true);
     }
 
@@ -118,7 +117,7 @@ public class ImzMLHandler extends MzMLHeaderHandler {
      * @return                  ImzML representation of the imzML file
      * @throws ImzMLParseException  If a fatal parse error occurs
      */
-    public static ImzML parseimzML(String filename, boolean openDataStorage) throws ImzMLParseException {
+    public static ImzML parseimzML(String filename, boolean openDataStorage) throws FatalParseException {
         return parseimzML(filename, openDataStorage, null);
     }
     
@@ -133,7 +132,7 @@ public class ImzMLHandler extends MzMLHeaderHandler {
      * @return                  ImzML representation of the imzML file
      * @throws ImzMLParseException  If a fatal parse error occurs
      */
-    public static ImzML parseimzML(String filename, boolean openDataStorage, ParserListener listener) throws ImzMLParseException {
+    public static ImzML parseimzML(String filename, boolean openDataStorage, ParserListener listener) throws FatalParseException {
         try {
             OBO obo = new OBO("imagingMS.obo");
 

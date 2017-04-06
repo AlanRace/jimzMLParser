@@ -423,12 +423,6 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
 //			}
 //				
 //			raf.close();
-//		} catch (FileNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
 //		}
 //	}
     @Override
@@ -497,12 +491,6 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
 //			}
 //			
 //			raf.close();
-//		} catch (FileNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
 //		}
 //		
 //		return datacube;
@@ -513,48 +501,30 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
         if(ticImage == null) {
             ticImage = new double[getHeight()][getWidth()];
 
-//		RandomAccessFile raf = null;
             for (Spectrum spectrum : getRun().getSpectrumList()) {
                 int x = spectrum.getScanList().get(0).getCVParam(Scan.positionXID).getValueAsInteger() - 1;
                 int y = spectrum.getScanList().get(0).getCVParam(Scan.positionYID).getValueAsInteger() - 1;
 
                 try {
                     double tic = spectrum.getCVParam(Spectrum.totalIonCurrentID).getValueAsDouble();
-    //				System.out.println(spectrum.getID());
-    //				System.out.println(image.length + " - " + y);
-    //				System.out.println("x -> " + image[y].length + " - " + x);
+                    
                     ticImage[y][x] = tic;
                 } catch (NullPointerException ex) {
                     try {
-    //					if(raf == null)
-    //						raf = new RandomAccessFile(ibdFile, "r");
-
                         double[] intensityArray = spectrum.getIntensityArray();
 
-                        try {
+                        if(intensityArray != null) {
                             for (int i = 0; i < intensityArray.length; i++) {
                                 ticImage[y][x] += intensityArray[i];
                             }
-                        } catch (NullPointerException exception) {
-                            // Do nothing - no data
                         }
                     } catch (FileNotFoundException e) {
-                        // TODO Auto-generated catch block
                         Logger.getLogger(ImzML.class.getName()).log(Level.SEVERE, null, e);
                     } catch (IOException ex1) {
                         Logger.getLogger(ImzML.class.getName()).log(Level.SEVERE, null, ex1);
                     }
                 }
             }
-
-//		if(raf != null) {
-//			try {
-//				raf.close();
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
         }
         
         return ticImage;
@@ -595,9 +565,6 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
 //					} catch(NullPointerException exception) {
 //						// Do nothing - no data
 //					}
-//				}catch (FileNotFoundException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
 //				}
 //			}
 //		}
@@ -605,10 +572,7 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
 //		if(raf != null) {
 //			try {
 //				raf.close();
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
+//			} 
 //		}
 //		
 //		return image;
@@ -647,9 +611,6 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
 //					} catch(NullPointerException exception) {
 //						// Do nothing - no data
 //					}
-//				}catch (FileNotFoundException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
 //				}
 //			}
 //		}
@@ -657,10 +618,7 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
 //		if(raf != null) {
 //			try {
 //				raf.close();
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
+//			} 
 //		}
 //		
 //		return image;
@@ -705,13 +663,7 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
 //			}
 //			
 //			raf.close();
-//		} catch (FileNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+//		} 
 //		
 //		return image;
 //	}
@@ -731,10 +683,10 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
      * 
      * @throws ImzMLWriteException Issue writing imzML file
      */
-    public void write() throws IOException {
-//        if (ibdFile == null) {
-//            throw new ImzMLWriteException("No ibd file, can't write imzML file.");
-//        }
+    public void write() throws ImzMLWriteException {
+        if (ibdFile == null) {
+            throw new ImzMLWriteException("No ibd file, can't write imzML file.");
+        }
 
         write(ibdFile.getAbsolutePath().substring(0, ibdFile.getAbsolutePath().length() - ".ibd".length()) + ".imzML");
     }

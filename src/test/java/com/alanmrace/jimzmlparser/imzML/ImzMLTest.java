@@ -3,16 +3,14 @@
  */
 package com.alanmrace.jimzmlparser.imzml;
 
-import com.alanmrace.jimzmlparser.exceptions.ImzMLParseException;
+import com.alanmrace.jimzmlparser.exceptions.FatalParseException;
 import com.alanmrace.jimzmlparser.exceptions.ImzMLWriteException;
 import com.alanmrace.jimzmlparser.exceptions.MzMLParseException;
 import com.alanmrace.jimzmlparser.mzml.MzML;
 import com.alanmrace.jimzmlparser.mzml.Spectrum;
 import com.alanmrace.jimzmlparser.parser.ImzMLHandler;
-import com.alanmrace.jimzmlparser.parser.MzMLHandler;
 import com.alanmrace.jimzmlparser.parser.MzMLHeaderHandler;
 import java.io.File;
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.Before;
@@ -59,7 +57,7 @@ public class ImzMLTest {
     public void setUp() {
         try {
             instance = ImzMLHandler.parseimzML(ImzMLTest.class.getResource(TEST_RESOURCE).getPath());
-        } catch (ImzMLParseException ex) {
+        } catch (FatalParseException ex) {
             Logger.getLogger(ImzMLTest.class.getName()).log(Level.SEVERE, null, ex);
             fail("ImzMLParseException: " + ex);
         }
@@ -296,8 +294,10 @@ public class ImzMLTest {
         synchronized(this) {
             try {
                 instance.write(filename);
-            } catch (IOException ex) {
+            } catch (ImzMLWriteException ex) {
                 Logger.getLogger(ImzMLTest.class.getName()).log(Level.SEVERE, null, ex);
+                
+                fail("Unexpected exception occured: " + ex);
             }
         }
     }
@@ -313,8 +313,12 @@ public class ImzMLTest {
                 mzML.write("small_miape.pwiz.1.1.mzML");
             } catch (MzMLParseException ex) {
                 Logger.getLogger(ImzMLTest.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
+                
+                fail("Unexpected exception occured: " + ex);
+            } catch (ImzMLWriteException ex) {
                 Logger.getLogger(ImzMLTest.class.getName()).log(Level.SEVERE, null, ex);
+                
+                fail("Unexpected exception occured: " + ex);
             }
         }
     }

@@ -26,31 +26,4 @@ public class Base64DataStorage extends DataStorage {
 	
 	return DatatypeConverter.parseBase64Binary(new String(buffer));
     }
-    
-    public static void main(String[] args) {
-        try {
-            //String mzMLFile = "C:\\Users\\Alan\\Documents\\Work\\jimzMLParser\\src\\main\\resources\\imzMLConverterTestData_23.898, 29.745, 30.898, 41.766, 7.000, 0.100, 1_1.mzML";
-            String mzMLFile = "D:\\Test\\Data7_1_2011-acc0.1_cyc10_Sample001_1.mzML";
-            
-            MzML mzML = MzMLHeaderHandler.parsemzMLHeader(mzMLFile);
-            
-            Spectrum spectrum = mzML.getRun().getSpectrumList().getSpectrum(0);
-            BinaryDataArray bda = spectrum.getBinaryDataArrayList().getBinaryDataArray(0);
-            
-            System.out.println(spectrum.getmzArray()[0]);
-            
-            mzML = MzMLHandler.parsemzML(mzMLFile);
-            
-            spectrum = mzML.getRun().getSpectrumList().getSpectrum(0);
-            bda = spectrum.getBinaryDataArrayList().getBinaryDataArray(0);
-            
-            System.out.println(spectrum.getmzArray()[0]);
-            
-//        System.out.println(bda.getBinary().getData()[0]);
-        } catch (MzMLParseException ex) {
-            Logger.getLogger(Base64DataStorage.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(Base64DataStorage.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
 }

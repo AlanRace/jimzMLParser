@@ -16,7 +16,6 @@ public abstract class MzMLDataContainer extends MzMLIndexedContentWithParams {
     
     protected int defaultArrayLength;
     
-    
     protected DataProcessing dataProcessingRef;
     
     protected RandomAccessFile raf;
@@ -47,6 +46,10 @@ public abstract class MzMLDataContainer extends MzMLIndexedContentWithParams {
     // Set optional attributes
     public void setDataProcessingRef(DataProcessing dataProcessingRef) {
         this.dataProcessingRef = dataProcessingRef;
+    }
+    
+    public DataProcessing getDataProcessingRef() {
+        return dataProcessingRef;
     }
     
     public DataLocation getDataLocation() {
