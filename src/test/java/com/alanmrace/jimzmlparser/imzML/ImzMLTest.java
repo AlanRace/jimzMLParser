@@ -4,6 +4,8 @@
 package com.alanmrace.jimzmlparser.imzml;
 
 import com.alanmrace.jimzmlparser.exceptions.ImzMLParseException;
+import com.alanmrace.jimzmlparser.exceptions.ImzMLWriteException;
+import com.alanmrace.jimzmlparser.exceptions.MzMLParseException;
 import com.alanmrace.jimzmlparser.mzml.MzML;
 import com.alanmrace.jimzmlparser.mzml.Spectrum;
 import com.alanmrace.jimzmlparser.parser.ImzMLHandler;
@@ -286,23 +288,33 @@ public class ImzMLTest {
      * @throws Exception IOException if issue with writing 
      */
     @Test
-    public void testWrite_String() throws Exception {
+    public void testWrite_String() {
         System.out.println("write");
         String filename = "ImzMLTest.imzML";
         
         synchronized(this) {
-            instance.write(filename);
+            try {
+                instance.write(filename);
+            } catch (ImzMLWriteException ex) {
+                Logger.getLogger(ImzMLTest.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
     
     @Test
-    public void testWritingOut() throws Exception {
+    public void testWritingOut() {
         System.out.println("---- Testing Writing Out mzML ----");
         
         synchronized(this) {
-            MzML mzML = MzMLHeaderHandler.parsemzMLHeader(ImzMLTest.class.getResource("/small_miape.pwiz.1.1.mzML").getPath());
+            try {
+                MzML mzML = MzMLHeaderHandler.parsemzMLHeader(ImzMLTest.class.getResource("/small_miape.pwiz.1.1.mzML").getPath());
                 
-            mzML.write("small_miape.pwiz.1.1.mzML");
+                mzML.write("small_miape.pwiz.1.1.mzML");
+            } catch (MzMLParseException ex) {
+                Logger.getLogger(ImzMLTest.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ImzMLWriteException ex) {
+                Logger.getLogger(ImzMLTest.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 }
