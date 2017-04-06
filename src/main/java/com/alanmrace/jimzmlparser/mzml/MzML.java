@@ -550,7 +550,7 @@ public class MzML extends MzMLContentWithParams implements Serializable {
             output.close();
             
             out.close();
-            raf.close();
+            //raf.close();
         //} catch (IOException e1) {
        //     throw new ImzMLWriteException("Error writing mzML file " + filename + ". " + e1.getLocalizedMessage());
         //}
