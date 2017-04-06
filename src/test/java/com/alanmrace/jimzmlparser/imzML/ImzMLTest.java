@@ -289,15 +289,20 @@ public class ImzMLTest {
     public void testWrite_String() throws Exception {
         System.out.println("write");
         String filename = "ImzMLTest.imzML";
-        instance.write(filename);
+        
+        synchronized(this) {
+            instance.write(filename);
+        }
     }
     
     @Test
     public void testWritingOut() throws Exception {
         System.out.println("---- Testing Writing Out mzML ----");
         
-        MzML mzML = MzMLHeaderHandler.parsemzMLHeader(ImzMLTest.class.getResource("/small_miape.pwiz.1.1.mzML").getPath());
-        
-        mzML.write("small_miape.pwiz.1.1.mzML");
+        synchronized(this) {
+            MzML mzML = MzMLHeaderHandler.parsemzMLHeader(ImzMLTest.class.getResource("/small_miape.pwiz.1.1.mzML").getPath());
+                
+            mzML.write("small_miape.pwiz.1.1.mzML");
+        }
     }
 }

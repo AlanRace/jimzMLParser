@@ -69,7 +69,7 @@ public class MzMLHeaderHandlerTest {
         boolean openDataFile = false;
         MzML result = MzMLHeaderHandler.parsemzMLHeader(resourcePath, openDataFile);
         
-        result.write("test.mzML");
+        //result.write("test.mzML");
     }
 
     /**
