@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<indexedmzML xmlns="http://psi.hupo.org/ms/mzml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.2_idx.xsd">
+  <mzML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.0.xsd" xmlns="http://psi.hupo.org/ms/mzml" version="1.1.0">
+    <cvList count="2">
+      <cv URI="http://psidev.info/ms/mzML/psi-ms.obo" fullName="MS" id="MS"/>
+      <cv URI="http://obo.cvs.sourceforge.net/obo/obo/ontology/phenotype/unit.obo" fullName="UO" id="UO"/>
+    </cvList>
+    <fileDescription>
+      <fileContent>
+        <cvParam cvRef="MS" accession="MS:1000579" name="MS1 spectrum"/>
+        <cvParam cvRef="IMS" accession="IMS:1000080" name="universally unique identifier" value="197940487ca0400885cc7b19ffd3b532"/>
+        <cvParam cvRef="IMS" accession="IMS:1000091" name="ibd SHA-1" value="05f81ab633868c60a60ffe15a980c8a9f6727438"/>
+        <cvParam cvRef="IMS" accession="IMS:1000031" name="processed"/>
+      </fileContent>
+      <sourceFileList count="5">
+        <sourceFile id="WF1" location="file:///D:/GitProjects/jimzMLConverter/jimzMLConverter/target/test-classes" name="MatrixTests_N2.wiff">
+          <cvParam cvRef="MS" accession="MS:1000562" name="ABI WIFF format"/>
+          <cvParam cvRef="MS" accession="MS:1000770" name="WIFF nativeID format"/>
+          <cvParam cvRef="MS" accession="MS:1000569" name="SHA-1" value="1fa5ff81aef2510adbc1d344d62b851667f14a5"/>
+        </sourceFile>
+        <sourceFile id="mzML0" location="file:/D:/GitProjects/jimzMLConverter/jimzMLConverter/target/test-classes/" name="MatrixTests_N2_CHCA_1_1.mzML">
+          <cvParam cvRef="MS" accession="MS:1000569" name="SHA-1" value="1c25d2ee2cbd480dd25f010a6aeb9f137e9a90d5"/>
+          <cvParam cvRef="MS" accession="MS:1000770" name="WIFF nativeID format"/>
+          <cvParam cvRef="MS" accession="MS:1000584" name="mzML format"/>
+        </sourceFile>
+        <sourceFile id="mzML1" location="file:/D:/GitProjects/jimzMLConverter/jimzMLConverter/target/test-classes/" name="MatrixTests_N2_SPA_1_2.mzML">
+          <cvParam cvRef="MS" accession="MS:1000569" name="SHA-1" value="ffe68648333b373077191491cfbf03d6c35f527f"/>
+          <cvParam cvRef="MS" accession="MS:1000770" name="WIFF nativeID format"/>
+          <cvParam cvRef="MS" accession="MS:1000584" name="mzML format"/>
+        </sourceFile>
+        <sourceFile id="mzML2" location="file:/D:/GitProjects/jimzMLConverter/jimzMLConverter/target/test-classes/" name="MatrixTests_N2_THAP_1_3.mzML">
+          <cvParam cvRef="MS" accession="MS:1000569" name="SHA-1" value="2890308956a86d3c8979a31bc33b3eafad24f81b"/>
+          <cvParam cvRef="MS" accession="MS:1000770" name="WIFF nativeID format"/>
+          <cvParam cvRef="MS" accession="MS:1000584" name="mzML format"/>
+        </sourceFile>
+        <sourceFile id="mzML3" location="file:/D:/GitProjects/jimzMLConverter/jimzMLConverter/target/test-classes/" name="MatrixTests_N2_DHB_1_4.mzML">
+          <cvParam cvRef="MS" accession="MS:1000569" name="SHA-1" value="d3e955efeed8e9a9b6e139268c478720e7691fd5"/>
+          <cvParam cvRef="MS" accession="MS:1000770" name="WIFF nativeID format"/>
+          <cvParam cvRef="MS" accession="MS:1000584" name="mzML format"/>
+        </sourceFile>
+      </sourceFileList>
+    </fileDescription>
+    <referenceableParamGroupList count="10">
+      <referenceableParamGroup id="sample1experiment1SpectrumParams">
+        <cvParam cvRef="MS" accession="MS:1000579" name="MS1 spectrum"/>
+        <cvParam cvRef="MS" accession="MS:1000511" name="ms level" value="1"/>
+        <cvParam cvRef="MS" accession="MS:1000128" name="profile spectrum"/>
+        <cvParam cvRef="MS" accession="MS:1000130" name="positive scan"/>
+      </referenceableParamGroup>
+      <referenceableParamGroup id="sample1experiment1ScanWindowParams">
+        <cvParam cvRef="MS" accession="MS:1000501" name="scan window lower limit" value="50.0" unitCvRef="MS" unitAccession="MS:1000040" unitName="m/z"/>
+        <cvParam cvRef="MS" accession="MS:1000500" name="scan window upper limit" value="2000.0" unitCvRef="MS" unitAccession="MS:1000040" unitName="m/z"/>
+        <userParam name="m/z step" value="1950" unitCvRef="MS" unitAccession="MS:1000040" unitName="m/z"/>
+      </referenceableParamGroup>
+      <referenceableParamGroup id="mzArray">
+        <cvParam cvRef="MS" accession="MS:1000514" name="m/z array"/>
+        <cvParam cvRef="MS" accession="MS:1000521" name="32-bit float"/>
+        <cvParam cvRef="MS" accession="MS:1000576" name="no compression"/>
+      </referenceableParamGroup>
+      <referenceableParamGroup id="intensityArray">
+        <cvParam cvRef="MS" accession="MS:1000515" name="intensity array"/>
+        <cvParam cvRef="MS" accession="MS:1000521" name="32-bit float"/>
+        <cvParam cvRef="MS" accession="MS:1000576" name="no compression"/>
+      </referenceableParamGroup>
+      <referenceableParamGroup id="sample2experiment1SpectrumParams">
+        <cvParam cvRef="MS" accession="MS:1000579" name="MS1 spectrum"/>
+        <cvParam cvRef="MS" accession="MS:1000511" name="ms level" value="1"/>
+        <cvParam cvRef="MS" accession="MS:1000128" name="profile spectrum"/>
+        <cvParam cvRef="MS" accession="MS:1000130" name="positive scan"/>
+      </referenceableParamGroup>
+      <referenceableParamGroup id="sample2experiment1ScanWindowParams">
+        <cvParam cvRef="MS" accession="MS:1000501" name="scan window lower limit" value="50.0" unitCvRef="MS" unitAccession="MS:1000040" unitName="m/z"/>
+        <cvParam cvRef="MS" accession="MS:1000500" name="scan window upper limit" value="2000.0" unitCvRef="MS" unitAccession="MS:1000040" unitName="m/z"/>
+        <userParam name="m/z step" value="1950" unitCvRef="MS" unitAccession="MS:1000040" unitName="m/z"/>
+      </referenceableParamGroup>
+      <referenceableParamGroup id="sample3experiment1SpectrumParams">
+        <cvParam cvRef="MS" accession="MS:1000579" name="MS1 spectrum"/>
+        <cvParam cvRef="MS" accession="MS:1000511" name="ms level" value="1"/>
+        <cvParam cvRef="MS" accession="MS:1000128" name="profile spectrum"/>
+        <cvParam cvRef="MS" accession="MS:1000130" name="positive scan"/>
+      </referenceableParamGroup>
+      <referenceableParamGroup id="sample3experiment1ScanWindowParams">
+        <cvParam cvRef="MS" accession="MS:1000501" name="scan window lower limit" value="50.0" unitCvRef="MS" unitAccession="MS:1000040" unitName="m/z"/>
+        <cvParam cvRef="MS" accession="MS:1000500" name="scan window upper limit" value="2000.0" unitCvRef="MS" unitAccession="MS:1000040" unitName="m/z"/>
+        <userParam name="m/z step" value="1950" unitCvRef="MS" unitAccession="MS:1000040" unitName="m/z"/>
+      </referenceableParamGroup>
+      <referenceableParamGroup id="sample4experiment1SpectrumParams">
+        <cvParam cvRef="MS" accession="MS:1000579" name="MS1 spectrum"/>
+        <cvParam cvRef="MS" accession="MS:1000511" name="ms level" value="1"/>
+        <cvParam cvRef="MS" accession="MS:1000128" name="profile spectrum"/>
+        <cvParam cvRef="MS" accession="MS:1000130" name="positive scan"/>
+      </referenceableParamGroup>
+      <referenceableParamGroup id="sample4experiment1ScanWindowParams">
+        <cvParam cvRef="MS" accession="MS:1000501" name="scan window lower limit" value="50.0" unitCvRef="MS" unitAccession="MS:1000040" unitName="m/z"/>
+        <cvParam cvRef="MS" accession="MS:1000500" name="scan window upper limit" value="2000.0" unitCvRef="MS" unitAccession="MS:1000040" unitName="m/z"/>
+        <userParam name="m/z step" value="1950" unitCvRef="MS" unitAccession="MS:1000040" unitName="m/z"/>
+      </referenceableParamGroup>
+    </referenceableParamGroupList>
+    <softwareList count="3">
+      <software id="Analyst" version="Analyst QS 1.1">
+        <cvParam cvRef="MS" accession="MS:1000551" name="Analyst"/>
+      </software>
+      <software id="ProteinPilotSoftware" version="4.5.0.1591">
+        <cvParam cvRef="MS" accession="MS:1000663" name="ProteinPilot Software"/>
+      </software>
+      <software id="imzMLConverter" version="2.0.0">
+        <cvParam cvRef="IMS" accession="IMS:1000102" name="external offset" value="933152"/>
+        <cvParam cvRef="IMS" accession="IMS:1000103" name="external array length" value="73063"/>
+        <cvParam cvRef="IMS" accession="IMS:1000104" name="external encoded length" value="584504"/>
+      </software>
+    </softwareList>
+    <scanSettingsList count="1">
+      <scanSettings id="scanSettings1">
+        <cvParam cvRef="IMS" accession="IMS:1000042" name="max count of pixels x" value="1"/>
+        <cvParam cvRef="IMS" accession="IMS:1000043" name="max count of pixels y" value="4"/>
+      </scanSettings>
+    </scanSettingsList>
+    <instrumentConfigurationList count="1">
+      <instrumentConfiguration id="instrumentConfiguration1">
+        <cvParam cvRef="MS" accession="MS:1000657" name="QSTAR XL"/>
+        <componentList count="0">
+            <source order="1">
+              <cvParam cvRef="MS" accession="MS:1000008" name="ionization type"/>
+            </source>
+            <analyzer order="2">
+              <cvParam cvRef="MS" accession="MS:1000081" name="quadrupole"/>
+            </analyzer>
+            <analyzer order="3">
+              <cvParam cvRef="MS" accession="MS:1000081" name="quadrupole"/>
+            </analyzer>
+            <analyzer order="4">
+              <cvParam cvRef="MS" accession="MS:1000084" name="time-of-flight"/>
+            </analyzer>
+            <detector order="5">
+              <cvParam cvRef="MS" accession="MS:1000114" name="microchannel plate detector"/>
+              <cvParam cvRef="MS" accession="MS:1000119" name="time-digital converter"/>
+            </detector>
+        </componentList>
+        <softwareRef ref="Analyst"/>
+      </instrumentConfiguration>
+    </instrumentConfigurationList>
+    <dataProcessingList count="2">
+      <dataProcessing id="dataProcessing1">
+        <processingMethod order="1" softwareRef="ProteinPilotSoftware">
+          <cvParam cvRef="MS" accession="MS:1000544" name="Conversion to mzML"/>
+        </processingMethod>
+      </dataProcessing>
+      <dataProcessing id="conversionToImzML">
+        <processingMethod order="1" softwareRef="imzMLConverter">
+          <cvParam cvRef="MS" accession="MS:1000530" name="file format conversion"/>
+        </processingMethod>
+      </dataProcessing>
+    </dataProcessingList>
+    <run defaultInstrumentConfigurationRef="instrumentConfiguration1" id="run1">
+      <spectrumList count="4" defaultDataProcessingRef="conversionToImzML">
+        <spectrum id="sample=1 period=1 cycle=1 experiment=1" defaultArrayLength="44526">
+          <referenceableParamGroupRef ref="sample1experiment1SpectrumParams"/>
+          <cvParam cvRef="MS" accession="MS:1000285" name="total ion current" value="111748.0"/>
+          <scanList count="1">
+            <cvParam cvRef="MS" accession="MS:1000571" name="sum of spectra"/>
+            <scan instrumentConfigurationRef="instrumentConfiguration1">
+              <cvParam cvRef="MS" accession="MS:1000826" name="elution time" value="0.2506333333333333" unitCvRef="UO" unitAccession="UO:0000031" unitName="minute"/>
+              <cvParam cvRef="MS" accession="MS:1000016" name="scan start time" value="0.2506333333333333" unitCvRef="UO" unitAccession="UO:0000031" unitName="minute"/>
+              <cvParam cvRef="IMS" accession="IMS:1000050" name="position x" value="1"/>
+              <cvParam cvRef="IMS" accession="IMS:1000051" name="position y" value="1"/>
+              <scanWindowList count="1">
+                <scanWindow>
+                  <referenceableParamGroupRef ref="sample1experiment1ScanWindowParams"/>
+                </scanWindow>
+              </scanWindowList>
+            </scan>
+          </scanList>
+          <binaryDataArrayList count="2">
+            <binaryDataArray encodedLength="368136">
+              <referenceableParamGroupRef ref="mzArray"/>
+              <cvParam cvRef="IMS" accession="IMS:1000104" name="external encoded length" value="178104"/>
+              <cvParam cvRef="IMS" accession="IMS:1000101" name="external data" value="true"/>
+              <cvParam cvRef="IMS" accession="IMS:1000102" name="external offset" value="16"/>
+              <cvParam cvRef="IMS" accession="IMS:1000103" name="external array length" value="44526"/>
+              <binary />
+            </binaryDataArray>
+            <binaryDataArray encodedLength="48100">
+              <referenceableParamGroupRef ref="intensityArray"/>
+              <cvParam cvRef="IMS" accession="IMS:1000104" name="external encoded length" value="178104"/>
+              <cvParam cvRef="IMS" accession="IMS:1000101" name="external data" value="true"/>
+              <cvParam cvRef="IMS" accession="IMS:1000102" name="external offset" value="178120"/>
+              <cvParam cvRef="IMS" accession="IMS:1000103" name="external array length" value="44526"/>
+              <binary />
+            </binaryDataArray>
+          </binaryDataArrayList>
+        </spectrum>
+        <spectrum id="sample=2 period=1 cycle=1 experiment=1" defaultArrayLength="28224">
+          <referenceableParamGroupRef ref="sample2experiment1SpectrumParams"/>
+          <cvParam cvRef="MS" accession="MS:1000285" name="total ion current" value="61798.0"/>
+          <scanList count="1">
+            <cvParam cvRef="MS" accession="MS:1000571" name="sum of spectra"/>
+            <scan instrumentConfigurationRef="instrumentConfiguration1">
+              <cvParam cvRef="MS" accession="MS:1000826" name="elution time" value="0.25056666666666666" unitCvRef="UO" unitAccession="UO:0000031" unitName="minute"/>
+              <cvParam cvRef="MS" accession="MS:1000016" name="scan start time" value="0.25056666666666666" unitCvRef="UO" unitAccession="UO:0000031" unitName="minute"/>
+              <cvParam cvRef="IMS" accession="IMS:1000050" name="position x" value="1"/>
+              <cvParam cvRef="IMS" accession="IMS:1000051" name="position y" value="2"/>
+              <scanWindowList count="1">
+                <scanWindow>
+                  <referenceableParamGroupRef ref="sample2experiment1ScanWindowParams"/>
+                </scanWindow>
+              </scanWindowList>
+            </scan>
+          </scanList>
+          <binaryDataArrayList count="2">
+            <binaryDataArray encodedLength="236292">
+              <referenceableParamGroupRef ref="mzArray"/>
+              <cvParam cvRef="IMS" accession="IMS:1000104" name="external encoded length" value="112896"/>
+              <cvParam cvRef="IMS" accession="IMS:1000101" name="external data" value="true"/>
+              <cvParam cvRef="IMS" accession="IMS:1000102" name="external offset" value="356224"/>
+              <cvParam cvRef="IMS" accession="IMS:1000103" name="external array length" value="28224"/>
+              <binary />
+            </binaryDataArray>
+            <binaryDataArray encodedLength="30908">
+              <referenceableParamGroupRef ref="intensityArray"/>
+              <cvParam cvRef="IMS" accession="IMS:1000104" name="external encoded length" value="112896"/>
+              <cvParam cvRef="IMS" accession="IMS:1000101" name="external data" value="true"/>
+              <cvParam cvRef="IMS" accession="IMS:1000102" name="external offset" value="469120"/>
+              <cvParam cvRef="IMS" accession="IMS:1000103" name="external array length" value="28224"/>
+              <binary />
+            </binaryDataArray>
+          </binaryDataArrayList>
+        </spectrum>
+        <spectrum id="sample=3 period=1 cycle=1 experiment=1" defaultArrayLength="15971">
+          <referenceableParamGroupRef ref="sample3experiment1SpectrumParams"/>
+          <cvParam cvRef="MS" accession="MS:1000285" name="total ion current" value="4439.0"/>
+          <scanList count="1">
+            <cvParam cvRef="MS" accession="MS:1000571" name="sum of spectra"/>
+            <scan instrumentConfigurationRef="instrumentConfiguration1">
+              <cvParam cvRef="MS" accession="MS:1000826" name="elution time" value="0.25056666666666666" unitCvRef="UO" unitAccession="UO:0000031" unitName="minute"/>
+              <cvParam cvRef="MS" accession="MS:1000016" name="scan start time" value="0.25056666666666666" unitCvRef="UO" unitAccession="UO:0000031" unitName="minute"/>
+              <cvParam cvRef="IMS" accession="IMS:1000050" name="position x" value="1"/>
+              <cvParam cvRef="IMS" accession="IMS:1000051" name="position y" value="3"/>
+              <scanWindowList count="1">
+                <scanWindow>
+                  <referenceableParamGroupRef ref="sample3experiment1ScanWindowParams"/>
+                </scanWindow>
+              </scanWindowList>
+            </scan>
+          </scanList>
+          <binaryDataArrayList count="2">
+            <binaryDataArray encodedLength="136816">
+              <referenceableParamGroupRef ref="mzArray"/>
+              <cvParam cvRef="IMS" accession="IMS:1000104" name="external encoded length" value="63884"/>
+              <cvParam cvRef="IMS" accession="IMS:1000101" name="external data" value="true"/>
+              <cvParam cvRef="IMS" accession="IMS:1000102" name="external offset" value="582016"/>
+              <cvParam cvRef="IMS" accession="IMS:1000103" name="external array length" value="15971"/>
+              <binary />
+            </binaryDataArray>
+            <binaryDataArray encodedLength="11816">
+              <referenceableParamGroupRef ref="intensityArray"/>
+              <cvParam cvRef="IMS" accession="IMS:1000104" name="external encoded length" value="63884"/>
+              <cvParam cvRef="IMS" accession="IMS:1000101" name="external data" value="true"/>
+              <cvParam cvRef="IMS" accession="IMS:1000102" name="external offset" value="645900"/>
+              <cvParam cvRef="IMS" accession="IMS:1000103" name="external array length" value="15971"/>
+              <binary />
+            </binaryDataArray>
+          </binaryDataArrayList>
+        </spectrum>
+        <spectrum id="sample=4 period=1 cycle=1 experiment=1" defaultArrayLength="27921">
+          <referenceableParamGroupRef ref="sample4experiment1SpectrumParams"/>
+          <cvParam cvRef="MS" accession="MS:1000285" name="total ion current" value="36783.0"/>
+          <scanList count="1">
+            <cvParam cvRef="MS" accession="MS:1000571" name="sum of spectra"/>
+            <scan instrumentConfigurationRef="instrumentConfiguration1">
+              <cvParam cvRef="MS" accession="MS:1000826" name="elution time" value="0.25055" unitCvRef="UO" unitAccession="UO:0000031" unitName="minute"/>
+              <cvParam cvRef="MS" accession="MS:1000016" name="scan start time" value="0.25055" unitCvRef="UO" unitAccession="UO:0000031" unitName="minute"/>
+              <cvParam cvRef="IMS" accession="IMS:1000050" name="position x" value="1"/>
+              <cvParam cvRef="IMS" accession="IMS:1000051" name="position y" value="4"/>
+              <scanWindowList count="1">
+                <scanWindow>
+                  <referenceableParamGroupRef ref="sample4experiment1ScanWindowParams"/>
+                </scanWindow>
+              </scanWindowList>
+            </scan>
+          </scanList>
+          <binaryDataArrayList count="2">
+            <binaryDataArray encodedLength="233076">
+              <referenceableParamGroupRef ref="mzArray"/>
+              <cvParam cvRef="IMS" accession="IMS:1000104" name="external encoded length" value="111684"/>
+              <cvParam cvRef="IMS" accession="IMS:1000101" name="external data" value="true"/>
+              <cvParam cvRef="IMS" accession="IMS:1000102" name="external offset" value="709784"/>
+              <cvParam cvRef="IMS" accession="IMS:1000103" name="external array length" value="27921"/>
+              <binary />
+            </binaryDataArray>
+            <binaryDataArray encodedLength="26616">
+              <referenceableParamGroupRef ref="intensityArray"/>
+              <cvParam cvRef="IMS" accession="IMS:1000104" name="external encoded length" value="111684"/>
+              <cvParam cvRef="IMS" accession="IMS:1000101" name="external data" value="true"/>
+              <cvParam cvRef="IMS" accession="IMS:1000102" name="external offset" value="821468"/>
+              <cvParam cvRef="IMS" accession="IMS:1000103" name="external array length" value="27921"/>
+              <binary />
+            </binaryDataArray>
+          </binaryDataArrayList>
+        </spectrum>
+      </spectrumList>
+    </run>
+  </mzML>
+  <indexList count="1">
+    <index name="spectrum">
+      <offset idRef="sample=1 period=1 cycle=1 experiment=1">10724</offset>
+      <offset idRef="sample=2 period=1 cycle=1 experiment=1">13190</offset>
+      <offset idRef="sample=3 period=1 cycle=1 experiment=1">15661</offset>
+      <offset idRef="sample=4 period=1 cycle=1 experiment=1">18129</offset>
+    </index>
+  </indexList>
+  <indexListOffset>20619</indexListOffset>
+</indexedmzML>
