@@ -12,6 +12,7 @@ import com.alanmrace.jimzmlparser.parser.ImzMLHandler;
 import com.alanmrace.jimzmlparser.parser.MzMLHandler;
 import com.alanmrace.jimzmlparser.parser.MzMLHeaderHandler;
 import java.io.File;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.Before;
@@ -295,7 +296,7 @@ public class ImzMLTest {
         synchronized(this) {
             try {
                 instance.write(filename);
-            } catch (ImzMLWriteException ex) {
+            } catch (IOException ex) {
                 Logger.getLogger(ImzMLTest.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -312,7 +313,7 @@ public class ImzMLTest {
                 mzML.write("small_miape.pwiz.1.1.mzML");
             } catch (MzMLParseException ex) {
                 Logger.getLogger(ImzMLTest.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ImzMLWriteException ex) {
+            } catch (IOException ex) {
                 Logger.getLogger(ImzMLTest.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
