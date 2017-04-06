@@ -1,8 +1,6 @@
 package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.util.XMLHelper;
-import java.io.BufferedWriter;
-import java.io.IOException;
 
 public class ChromatogramList extends MzMLIDContentList<Chromatogram> {
 
@@ -55,21 +53,8 @@ public class ChromatogramList extends MzMLIDContentList<Chromatogram> {
     }
     
     @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
-        MzMLContent.indent(output, indent);
-        output.write("<chromatogramList");
-        output.write(" count=\"" + list.size() + "\"");
-        output.write(" defaultDataProcessingRef=\"" + XMLHelper.ensureSafeXML(defaultDataProcessingRef.getID()) + "\"");
-        output.write(">\n");
-
-        int index = 0;
-
-        for (Chromatogram chromatogram : list) {
-            chromatogram.outputXML(output, indent + 1, index++);
-        }
-
-        MzMLContent.indent(output, indent);
-        output.write("</chromatogramList>\n");
+    protected String getXMLAttributeText() {
+        return super.getXMLAttributeText() + " defaultDataProcessingRef=\"" + XMLHelper.ensureSafeXML(defaultDataProcessingRef.getID()) + "\""; 
     }
 
     @Override

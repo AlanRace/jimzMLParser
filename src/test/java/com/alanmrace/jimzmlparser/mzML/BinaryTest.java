@@ -148,21 +148,5 @@ public class BinaryTest {
         fail("The test case is a prototype.");
     }
 
-    /**
-     * Test of outputXML method, of class Binary.
-     * 
-     * @throws Exception IOException if failing to write
-     */
-    @Test
-    @Ignore
-    public void testOutputXML() throws Exception {
-        System.out.println("outputXML");
-        BufferedWriter output = null;
-        int indent = 0;
-        Binary instance = null;
-        instance.outputXML(output, indent);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
     
 }

@@ -3,9 +3,6 @@ package com.alanmrace.jimzmlparser.mzml;
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -109,21 +106,8 @@ public class InstrumentConfiguration extends MzMLContentWithParams implements Re
 
         return componentList;
     }
-
-//	public void addSource(Source source) {
-//		componentList.addSource(source);
-//	}
-//	
-//	public void addAnalyser(Analyser analyser) {
-//		componentList.addAnalyser(analyser);
-//	}
-//	
-//	public void addDetector(Detector detector) {
-//		componentList.addDetector(detector);
-//	}
+    
     public void setSoftwareRef(SoftwareRef software) {
-//		software.setParent(this);
-
         softwareRef = software;
     }
 
@@ -131,6 +115,7 @@ public class InstrumentConfiguration extends MzMLContentWithParams implements Re
         return softwareRef;
     }
 
+    @Override
     public String getID() {
         return id;
     }
@@ -147,30 +132,14 @@ public class InstrumentConfiguration extends MzMLContentWithParams implements Re
     }
 
     @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
-        MzMLContent.indent(output, indent);
-        output.write("<instrumentConfiguration");
-        output.write(" id=\"" + XMLHelper.ensureSafeXML(id) + "\"");
-
+    protected String getXMLAttributeText() {
+        String attributeText = super.getXMLAttributeText();
+        
         if (scanSettingsRef != null) {
-            output.write(" scanSettingsRef=\"" + XMLHelper.ensureSafeXML(scanSettingsRef.getID()) + "\"");
+            attributeText += " scanSettingsRef=\"" + XMLHelper.ensureSafeXML(scanSettingsRef.getID()) + "\"";
         }
-
-        output.write(">\n");
-
-        super.outputXMLContent(output, indent + 1);
-
-        if (componentList != null && componentList.size() > 0) {
-            componentList.outputXML(output, indent + 1);
-        }
-
-        // Create softwareRef
-        if (softwareRef != null) {
-            softwareRef.outputXML(output, indent + 1);
-        }
-
-        MzMLContent.indent(output, indent);
-        output.write("</instrumentConfiguration>\n");
+        
+        return attributeText;
     }
 
     @Override
@@ -185,12 +154,12 @@ public class InstrumentConfiguration extends MzMLContentWithParams implements Re
     
     @Override
     public void addChildrenToCollection(Collection<MzMLTag> children) {
+        super.addChildrenToCollection(children);
+        
         if(componentList != null)
             children.add(componentList);
         if(softwareRef != null)
             children.add(softwareRef);
-        
-        super.addChildrenToCollection(children);
     }
 
     @Override

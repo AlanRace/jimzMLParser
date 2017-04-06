@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Source extends MzMLContentWithParams implements Serializable {
+public class Source extends Component {
 
     /**
      *
@@ -41,23 +41,6 @@ public class Source extends MzMLContentWithParams implements Serializable {
         optional.add(new OBOTermInclusion(sampleStageID, false, true, false));
 
         return optional;
-    }
-
-    public void outputXML(BufferedWriter output, int indent, int order) throws IOException {
-        MzMLContent.indent(output, indent);
-        output.write("<source");
-        output.write(" order=\"" + XMLHelper.ensureSafeXML("" + order) + "\"");
-        output.write(">\n");
-
-        super.outputXMLContent(output, indent + 1);
-
-        MzMLContent.indent(output, indent);
-        output.write("</source>\n");
-    }
-
-    @Override
-    public String toString() {
-        return "source";
     }
 
     @Override

@@ -1,12 +1,8 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import com.alanmrace.jimzmlparser.util.XMLHelper;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Detector extends MzMLContentWithParams implements Serializable {
+public class Detector extends Component {
 
     /**
      *
@@ -39,23 +35,6 @@ public class Detector extends MzMLContentWithParams implements Serializable {
         optional.add(new OBOTermInclusion(detectorAcquisitionModeID, false, true, false));
 
         return optional;
-    }
-
-    public void outputXML(BufferedWriter output, int indent, int order) throws IOException {
-        MzMLContent.indent(output, indent);
-        output.write("<detector");
-        output.write(" order=\"" + XMLHelper.ensureSafeXML("" + order) + "\"");
-        output.write(">\n");
-
-        super.outputXMLContent(output, indent + 1);
-
-        MzMLContent.indent(output, indent);
-        output.write("</detector>\n");
-    }
-
-    @Override
-    public String toString() {
-        return "detector";
     }
 
     @Override

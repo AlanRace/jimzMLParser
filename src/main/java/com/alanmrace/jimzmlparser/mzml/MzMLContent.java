@@ -1,8 +1,10 @@
 package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
+import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.io.Serializable;
 import java.util.Collection;
 
@@ -81,11 +83,14 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
     }
     
     protected String getXMLAttributeText() {
-        return null;
-    }
+        if(this instanceof ReferenceableTag)
+            return "id=\"" + XMLHelper.ensureSafeXML(((ReferenceableTag)this).getID()) + "\"";
         
+        return "";
+    }
+    
     @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
+    public void outputXML(RandomAccessFile raf, BufferedWriter output, int indent) throws IOException {
         String attributeText = getXMLAttributeText();
         
         MzMLContent.indent(output, indent);

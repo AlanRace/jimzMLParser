@@ -20,6 +20,18 @@ public class EmptyCVParam extends CVParam {
     public EmptyCVParam(OBOTerm term) {
         this.term = term;
     }
+    
+    /**
+     * Initialise a BooleanCVParam from an ontology term for the parameter, a 
+     * value and an ontology term for the units.
+     * 
+     * @param term  Ontology term for the parameter
+     * @param units Ontology term for the units of the parameter
+     */
+    public EmptyCVParam(OBOTerm term, OBOTerm units) {
+        this.term = term;
+        this.units = units;
+    }
 
     /**
      * Copy constructor for EmptyCVParam.

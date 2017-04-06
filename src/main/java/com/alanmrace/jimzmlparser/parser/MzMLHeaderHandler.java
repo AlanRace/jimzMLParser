@@ -442,7 +442,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                             if (paramType.equals(CVParam.CVParamType.String)) {
                                 cvParam = new StringCVParam(term, value, units);
                             } else if (paramType.equals(CVParam.CVParamType.Empty)) {
-                                cvParam = new EmptyCVParam(term);
+                                cvParam = new EmptyCVParam(term, units);
 
                                 if (value != null) {
                                     InvalidFormatIssue formatIssue = new InvalidFormatIssue(term, attributes.getValue("value"));
@@ -454,12 +454,12 @@ public class MzMLHeaderHandler extends DefaultHandler {
                                 // There shouldn't be any units assigned to any CVParam
                                 // that is marked as having no value - as the units should
                                 // only describe the units for the value.
-                                if (units != null) {
-                                    NonFatalParseException foundUnits = new NonFatalParseException("Found units on EmptyCVParam", "Found units " + units + " on EmptyCVParam " + cvParam);
-                                    foundUnits.setIssueLocation(currentContent);
-
-                                    notifyParserListeners(foundUnits);
-                                }
+//                                if (units != null) {
+//                                    NonFatalParseException foundUnits = new NonFatalParseException("Found units on EmptyCVParam", "Found units " + units + " on EmptyCVParam " + cvParam);
+//                                    foundUnits.setIssueLocation(currentContent);
+//
+//                                    notifyParserListeners(foundUnits);
+//                                }
                             } else if (paramType.equals(CVParam.CVParamType.Long)) {
                                 cvParam = new LongCVParam(term, Long.parseLong(value), units);
                             } else if (paramType.equals(CVParam.CVParamType.Double)) {
@@ -1545,7 +1545,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             if (processingSpectrum && processingChromatogram) {
                 processingSpectrum = false;
             }
-
+            
             setDataContainer(dataContainer, offset);
 
             previousOffset = offset;
@@ -1569,49 +1569,5 @@ public class MzMLHeaderHandler extends DefaultHandler {
 //	}
     public MzML getmzML() {
         return mzML;
-    }
-
-    public static void main(String[] args) {
-        String filename = "/home/alan/workspace/imzMLConverter/RianRasterLine.mzML";
-        File mzMLFile = new File(filename);
-        File temporaryBinaryFile = new File(filename + ".tmp");
-
-        OBO obo = new OBO("imagingMS.obo");
-        MzMLHandler headerHandler;
-        try {
-            headerHandler = new MzMLHandler(obo, temporaryBinaryFile);
-
-            SAXParserFactory sspf = SAXParserFactory.newInstance();
-
-            //get a new instance of parser
-            SAXParser sp = sspf.newSAXParser();
-
-            //parse the file and also register this class for call backs
-            sp.parse(mzMLFile, headerHandler);
-
-            String encoding = "ISO-8859-1";
-
-            OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream("RianTest.mzML"), encoding);
-            BufferedWriter output = new BufferedWriter(out);
-
-            //writer = new FileWriter(imzMLFilename + ".imzML");
-            //			System.out.println(out.getEncoding() + " - " + xo.getFormat().getEncoding());
-            //			xo.output(new Document(mzMLElement), out);
-            output.write("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>\n");
-            headerHandler.getmzML().outputXML(output, 0);
-
-            output.flush();
-            output.close();
-
-            //temporaryBinaryFile.delete();
-        } catch (FileNotFoundException e) {
-            logger.log(Level.SEVERE, null, e);
-        } catch (SAXException ex) {
-            Logger.getLogger(MzMLHeaderHandler.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(MzMLHeaderHandler.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ParserConfigurationException ex) {
-            Logger.getLogger(MzMLHeaderHandler.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 }

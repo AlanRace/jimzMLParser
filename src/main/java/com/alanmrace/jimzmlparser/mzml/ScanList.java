@@ -89,30 +89,13 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
     }
 
     @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
-        MzMLContent.indent(output, indent);
-        output.write("<scanList");
-        output.write(" count=\"" + scanList.size() + "\"");
-        output.write(">\n");
-
-        super.outputXMLContent(output, indent + 1);
-
-        for (Scan scan : scanList) {
-            scan.outputXML(output, indent + 1);
-        }
-
-        MzMLContent.indent(output, indent);
-        output.write("</scanList>\n");
+    protected String getXMLAttributeText() {
+        return "count=\"" + scanList.size() + "\"";
     }
 
     @Override
     public Iterator<Scan> iterator() {
         return scanList.iterator();
-    }
-
-    @Override
-    public String toString() {
-        return "scanList";
     }
 
     @Override
@@ -122,10 +105,10 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
     
     @Override
     public void addChildrenToCollection(Collection<MzMLTag> children) {
+        super.addChildrenToCollection(children);
+        
         if(scanList != null)
             children.addAll(scanList);
-        
-        super.addChildrenToCollection(children);
     }
 
     @Override

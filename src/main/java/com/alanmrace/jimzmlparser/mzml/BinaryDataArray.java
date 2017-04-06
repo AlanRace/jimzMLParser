@@ -7,6 +7,7 @@ import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -939,13 +940,11 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
     }
     
     @Override
-    protected void outputXMLContent(BufferedWriter output, int indent) throws IOException {
-        super.outputXMLContent(output, indent);
+    protected void outputXMLContent(RandomAccessFile raf, BufferedWriter output, int indent) throws IOException {
+        super.outputXMLContent(raf, output, indent);
         
-        if (binary != null) {
-            binary.outputXML(output, indent + 1);
-        } else {
-            MzMLContent.indent(output, indent + 1);
+        if (binary == null) {
+            MzMLContent.indent(output, indent);
             output.write("<binary />\n");
         }
     }

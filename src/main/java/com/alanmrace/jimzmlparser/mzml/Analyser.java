@@ -1,8 +1,5 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -10,7 +7,7 @@ import java.util.ArrayList;
  *
  * @author Alan Race
  */
-public class Analyser extends MzMLContentWithParams implements Serializable {
+public class Analyser extends Component {
 
     /**
      * Serialisation version ID.
@@ -59,26 +56,6 @@ public class Analyser extends MzMLContentWithParams implements Serializable {
         optional.add(new OBOTermInclusion(analyserAttributeID, false, true, false));
 
         return optional;
-    }
-    
-    /**
-     * Output attribute in the form of XML.
-     *
-     * @param output where to write the XML
-     * @param indent how large an indent is needed for this tag
-     * @param order order of the component from source to detector
-     * @throws IOException Signals that an I/O exception has occurred.
-     */
-    public void outputXML(BufferedWriter output, int indent, int order) throws IOException {
-        MzMLContent.indent(output, indent);
-        output.write("<analyzer");
-        output.write(" order=\"" + order + "\"");
-        output.write(">\n");
-
-        super.outputXMLContent(output, indent + 1);
-
-        MzMLContent.indent(output, indent);
-        output.write("</analyzer>\n");
     }
 
     @Override

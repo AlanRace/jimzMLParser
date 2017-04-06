@@ -2,6 +2,7 @@ package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.parser.DataLocation;
 import com.alanmrace.jimzmlparser.parser.MzMLSpectrumDataStorage;
+import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
@@ -9,48 +10,24 @@ import java.io.RandomAccessFile;
  *
  * @author Alan Race
  */
-public abstract class MzMLDataContainer extends MzMLContentWithParams implements ReferenceableTag {
+public abstract class MzMLDataContainer extends MzMLIndexedContentWithParams {
     protected DataLocation dataLocation;
     protected BinaryDataArrayList binaryDataArrayList;
     
     protected int defaultArrayLength;
-    protected String id;
+    
     
     protected DataProcessing dataProcessingRef;
     
-    protected long mzMLLocation;
     protected RandomAccessFile raf;
     
-    public MzMLDataContainer(MzMLContentWithParams mzMLContent, ReferenceableParamGroupList rpgList) {
+    public MzMLDataContainer(MzMLDataContainer mzMLContent, ReferenceableParamGroupList rpgList) {
         super(mzMLContent, rpgList);
     }
     
     public MzMLDataContainer(String id, int defaultArrayLength) { 
         this.id = id;
         this.defaultArrayLength = defaultArrayLength;
-    }
-    
-    @Override
-    public String getID() {
-        return id;
-    }
-    
-    @Override
-    public void setID(String id) {
-        this.id = id;
-    }
-    
-    // Functions to enable the setting of <index> in indexedmzML
-    protected void setRAF(RandomAccessFile raf) {
-        this.raf = raf;
-    }
-    
-    protected void setmzMLLocation(long mzMLLocation) {
-        this.mzMLLocation = mzMLLocation;
-    }
-    
-    protected long getmzMLLocation() {
-        return mzMLLocation;
     }
     
     public void setBinaryDataArrayList(BinaryDataArrayList binaryDataArrayList) {
@@ -150,5 +127,21 @@ public abstract class MzMLDataContainer extends MzMLContentWithParams implements
         }
 
         return binaryDataArrayList.getIntensityArray().getDataAsDouble(keepInMemory);
+    }
+    
+    @Override
+    protected String getXMLAttributeText() {
+        String attributeText = super.getXMLAttributeText();
+        
+        if(!attributeText.isEmpty())
+            attributeText += " ";
+        
+        attributeText += "defaultArrayLength=\"" + defaultArrayLength + "\"";
+        
+        if (dataProcessingRef != null) {
+            attributeText += " dataProcessingRef=\"" + XMLHelper.ensureSafeXML(dataProcessingRef.getID()) + "\"";
+        }
+        
+        return attributeText;
     }
 }

@@ -4,12 +4,19 @@ import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.Serializable;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class ComponentList extends MzMLContentWithChildren implements Serializable {
+/**
+ *
+ * <p>TODO: Change this to use the base component list rather than the 3 lists within
+ * this class.
+ * 
+ * @author Alan Race
+ */
+public class ComponentList extends MzMLContentList<Component> {
 
     /**
      *
@@ -46,6 +53,16 @@ public class ComponentList extends MzMLContentWithChildren implements Serializab
         }
     }
 
+    @Override
+    public void add(Component component) {
+        if(component instanceof Source)
+            addSource((Source) component);
+        else if(component instanceof Analyser)
+            addAnalyser((Analyser) component);
+        else if(component instanceof Detector)
+            addDetector((Detector) component);
+    }
+    
     public void addSource(Source source) {
         source.setParent(this);
 
@@ -88,6 +105,7 @@ public class ComponentList extends MzMLContentWithChildren implements Serializab
         return detectors.get(index);
     }
 
+    @Override
     public int size() {
         return sources.size() + analysers.size() + detectors.size();
     }
@@ -122,18 +140,18 @@ public class ComponentList extends MzMLContentWithChildren implements Serializab
     }
 
     @Override
-    protected void outputXMLContent(BufferedWriter output, int indent) throws IOException {
+    protected void outputXMLContent(RandomAccessFile raf, BufferedWriter output, int indent) throws IOException {
         int order = 1;
         for (Source source : sources) {
-            source.outputXML(output, indent + 1, order++);
+            source.outputXML(raf, output, indent + 1, order++);
         }
 
         for (Analyser analyser : analysers) {
-            analyser.outputXML(output, indent + 1, order++);
+            analyser.outputXML(raf, output, indent + 1, order++);
         }
 
         for (Detector detector : detectors) {
-            detector.outputXML(output, indent + 1, order++);
+            detector.outputXML(raf, output, indent + 1, order++);
         }
     }
 

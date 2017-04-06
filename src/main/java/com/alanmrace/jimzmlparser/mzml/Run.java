@@ -5,6 +5,8 @@ import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -95,6 +97,7 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
         this.defaultSourceFileRef = defaultSourceFileRef;
     }
 
+    @Override
     public String getID() {
         return id;
     }
@@ -275,7 +278,7 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
 //		return chromatogramList.get(index);
 //	}
     @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
+    public void outputXML(RandomAccessFile raf, BufferedWriter output, int indent) throws IOException {
         MzMLContent.indent(output, indent);
         output.write("<run");
         output.write(" defaultInstrumentConfigurationRef=\"" + XMLHelper.ensureSafeXML(defaultInstrumentConfigurationRef.getID()) + "\"");
@@ -287,21 +290,13 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
             output.write(" sampleRef=\"" + XMLHelper.ensureSafeXML(sampleRef.getID()) + "\"");
         }
         if (startTimeStamp != null) {
-            output.write(" startTimeStamp=\"" + XMLHelper.ensureSafeXML(startTimeStamp.toString()) + "\"");
+            SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-DD'T'hh:mm:ss");
+            
+            output.write(" startTimeStamp=\"" + XMLHelper.ensureSafeXML(format.format(startTimeStamp)) + "\"");
         }
         output.write(">\n");
 
-        super.outputXMLContent(output, indent + 1);
-
-        // spectrumList
-        if (spectrumList != null && spectrumList.size() > 0) {
-            spectrumList.outputXML(output, indent + 1);
-        }
-
-        // chromatogramList
-        if (chromatogramList != null && chromatogramList.size() > 0) {
-            chromatogramList.outputXML(output, indent + 1);
-        }
+        super.outputXMLContent(raf, output, indent + 1);
 
         MzMLContent.indent(output, indent);
         output.write("</run>\n");
@@ -323,12 +318,12 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
     
     @Override
     public void addChildrenToCollection(Collection<MzMLTag> children) {
+        super.addChildrenToCollection(children);
+        
         if(spectrumList != null)
             children.add(spectrumList);
         if(chromatogramList != null)
             children.add(chromatogramList);
-        
-        super.addChildrenToCollection(children);
     }
 
     @Override

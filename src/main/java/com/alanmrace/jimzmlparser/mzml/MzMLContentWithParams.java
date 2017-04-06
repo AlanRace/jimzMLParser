@@ -431,31 +431,31 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
         return children;
     }
 
-    @Override
-    protected void outputXMLContent(BufferedWriter output, int indent) throws IOException {
-        if (referenceableParamGroupRefs != null) {
-            for (ReferenceableParamGroupRef ref : referenceableParamGroupRefs) {
-                // TODO: Remove quick fix
-                if (ref == null || ref.getReference() == null || ref.getReference().getID() == null) {
-                    continue;
-                }
-
-                ref.outputXML(output, indent);
-            }
-        }
-
-        if (cvParams != null) {
-            for (CVParam cvParam : cvParams) {
-                if (cvParam != null) {
-                    cvParam.outputXML(output, indent);
-                }
-            }
-        }
-
-        if (userParams != null) {
-            for (UserParam userParam : userParams) {
-                userParam.outputXML(output, indent);
-            }
-        }
-    }
+//    @Override
+//    protected void outputXMLContent(BufferedWriter output, int indent) throws IOException {
+//        if (referenceableParamGroupRefs != null) {
+//            for (ReferenceableParamGroupRef ref : referenceableParamGroupRefs) {
+//                // TODO: Remove quick fix
+//                if (ref == null || ref.getReference() == null || ref.getReference().getID() == null) {
+//                    continue;
+//                }
+//
+//                ref.outputXML(output, indent);
+//            }
+//        }
+//
+//        if (cvParams != null) {
+//            for (CVParam cvParam : cvParams) {
+//                if (cvParam != null) {
+//                    cvParam.outputXML(output, indent);
+//                }
+//            }
+//        }
+//
+//        if (userParams != null) {
+//            for (UserParam userParam : userParams) {
+//                userParam.outputXML(output, indent);
+//            }
+//        }
+//    }
 }

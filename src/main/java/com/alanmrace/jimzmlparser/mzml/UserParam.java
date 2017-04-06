@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
+import java.io.RandomAccessFile;
 
 public class UserParam extends MzMLContent { //, MutableTreeNode {
 
@@ -70,7 +71,7 @@ public class UserParam extends MzMLContent { //, MutableTreeNode {
     }
 
     @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
+    public void outputXML(RandomAccessFile raf, BufferedWriter output, int indent) throws IOException {
         MzMLContent.indent(output, indent);
         
         output.write("<userParam");

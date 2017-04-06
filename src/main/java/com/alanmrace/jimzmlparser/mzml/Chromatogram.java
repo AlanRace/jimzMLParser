@@ -2,9 +2,6 @@ package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
-import com.alanmrace.jimzmlparser.util.XMLHelper;
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -135,35 +132,6 @@ public class Chromatogram extends MzMLDataContainer implements Serializable {
 
             binaryDataArrayList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         }
-    }
-    
-    public void outputXML(BufferedWriter output, int indent, int index) throws IOException {
-        MzMLContent.indent(output, indent);
-        output.write("<chromatogram");
-        output.write(" defaultArrayLength=\"" + defaultArrayLength + "\"");
-        output.write(" id=\"" + XMLHelper.ensureSafeXML(id) + "\"");
-        output.write(" index=\"" + index + "\"");
-        if (dataProcessingRef != null) {
-            output.write(" dataProcessingRef=\"" + XMLHelper.ensureSafeXML(dataProcessingRef.getID()) + "\"");
-        }
-        output.write(">\n");
-
-        super.outputXMLContent(output, indent + 1);
-
-        if (precursor != null) {
-            precursor.outputXML(output, indent + 1);
-        }
-
-        if (product != null) {
-            product.outputXML(output, indent + 1);
-        }
-
-        if (binaryDataArrayList != null && binaryDataArrayList.size() > 0) {
-            binaryDataArrayList.outputXML(output, indent + 1);
-        }
-
-        MzMLContent.indent(output, indent);
-        output.write("</chromatogram>\n");
     }
 
     @Override

@@ -542,27 +542,30 @@ public class MzML extends MzMLContentWithParams implements Serializable {
             BufferedWriter output = new BufferedWriter(out);
 
             output.write("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>\n");
-            outputXML(output, 0);
+            outputXML(raf, output, 0);
 
             output.flush();
+            
+            raf.getChannel().truncate(raf.getFilePointer());
             output.close();
+            
+            out.close();
+            raf.close();
         } catch (IOException e1) {
             throw new ImzMLWriteException("Error writing mzML file " + filename + ". " + e1.getLocalizedMessage());
         }
     }
 
     @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
+    public void outputXML(RandomAccessFile raf, BufferedWriter output, int indent) throws IOException {
         if (outputIndex) {
             MzMLContent.indent(output, indent);
             output.write("<indexedmzML");
-            output.write("  xmlns=\"http://psi.hupo.org/ms/mzml\"");
-            output.write("  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
-            output.write("  xsi:schemaLocation=\"http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.2_idx.xsd\">\n");
-
-            for (Spectrum spectrum : run.getSpectrumList()) {
-                spectrum.setRAF(raf);
-            }
+            output.write(" xmlns=\"http://psi.hupo.org/ms/mzml\"");
+            output.write(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
+            output.write(" xsi:schemaLocation=\"http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.2_idx.xsd\">\n");
+            
+            indent++;
         }
 
         MzMLContent.indent(output, indent);
@@ -586,40 +589,42 @@ public class MzML extends MzMLContentWithParams implements Serializable {
             cvList = new CVList(0);
         }
 
-        cvList.outputXML(output, indent + 1);
+        cvList.outputXML(raf, output, indent + 1);
 
         // FileDescription
-        fileDescription.outputXML(output, indent + 1);
+        fileDescription.outputXML(raf, output, indent + 1);
 
         if (referenceableParamGroupList != null && referenceableParamGroupList.size() > 0) {
-            referenceableParamGroupList.outputXML(output, indent + 1);
+            referenceableParamGroupList.outputXML(raf, output, indent + 1);
         }
 
         if (sampleList != null && sampleList.size() > 0) {
-            sampleList.outputXML(output, indent + 1);
+            sampleList.outputXML(raf, output, indent + 1);
         }
 
         // SoftwareList
-        softwareList.outputXML(output, indent + 1);
+        softwareList.outputXML(raf, output, indent + 1);
 
         // ScanSettingsList
         if (scanSettingsList != null && scanSettingsList.size() > 0) {
-            scanSettingsList.outputXML(output, indent + 1);
+            scanSettingsList.outputXML(raf, output, indent + 1);
         }
 
         // InstrumentConfigurationList
-        instrumentConfigurationList.outputXML(output, indent + 1);
+        instrumentConfigurationList.outputXML(raf, output, indent + 1);
 
         // DataProcessingList
-        dataProcessingList.outputXML(output, indent + 1);
+        dataProcessingList.outputXML(raf, output, indent + 1);
 
         // Run
-        run.outputXML(output, indent + 1);
+        run.outputXML(raf, output, indent + 1);
 
         MzMLContent.indent(output, indent);
         output.write("</mzML>\n");
 
         if (outputIndex) {
+            indent--;
+            
             output.flush();
             long indexListOffset = raf.getFilePointer();
 
@@ -638,11 +643,14 @@ public class MzML extends MzMLContentWithParams implements Serializable {
             MzMLContent.indent(output, indent + 1);
             output.write("</indexList>\n");
 
+            MzMLContent.indent(output, indent + 1);
             output.write("<indexListOffset>" + indexListOffset + "</indexListOffset>\n");
 
             MzMLContent.indent(output, indent);
             output.write("</indexedmzML>\n");
         }
+        
+        output.flush();
     }
 
     @Override

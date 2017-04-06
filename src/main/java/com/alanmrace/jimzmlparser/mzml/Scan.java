@@ -272,33 +272,28 @@ public class Scan extends MzMLContentWithParams implements Serializable {
             scanWindowList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         }
     }
-
+    
     @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
-        MzMLContent.indent(output, indent);
-        output.write("<scan");
+    protected String getXMLAttributeText() {
+        String attributeText = super.getXMLAttributeText();
+        
         if (externalSpectrumID != null) {
-            output.write(" externalSpectrumID=\"" + XMLHelper.ensureSafeXML(externalSpectrumID) + "\"");
+            attributeText += " externalSpectrumID=\"" + XMLHelper.ensureSafeXML(externalSpectrumID) + "\"";
         }
         if (instrumentConfigurationRef != null) {
-            output.write(" instrumentConfigurationRef=\"" + XMLHelper.ensureSafeXML(instrumentConfigurationRef.getID()) + "\"");
+            attributeText += " instrumentConfigurationRef=\"" + XMLHelper.ensureSafeXML(instrumentConfigurationRef.getID()) + "\"";
         }
         if (sourceFileRef != null) {
-            output.write(" sourceFileRef=\"" + XMLHelper.ensureSafeXML(sourceFileRef.getID()) + "\"");
+            attributeText += " sourceFileRef=\"" + XMLHelper.ensureSafeXML(sourceFileRef.getID()) + "\"";
         }
         if (spectrumRef != null) {
-            output.write(" spectrumRef=\"" + XMLHelper.ensureSafeXML(spectrumRef) + "\"");
+            attributeText += " spectrumRef=\"" + XMLHelper.ensureSafeXML(spectrumRef) + "\"";
         }
-        output.write(">\n");
-
-        super.outputXMLContent(output, indent + 1);
-
-        if (scanWindowList != null && scanWindowList.size() > 0) {
-            scanWindowList.outputXML(output, indent + 1);
-        }
-
-        MzMLContent.indent(output, indent);
-        output.write("</scan>\n");
+        
+        if(attributeText.startsWith(" "))
+            attributeText = attributeText.substring(1);
+        
+        return attributeText;
     }
 
     @Override
@@ -317,9 +312,9 @@ public class Scan extends MzMLContentWithParams implements Serializable {
     
     @Override
     public void addChildrenToCollection(Collection<MzMLTag> children) {
+        super.addChildrenToCollection(children);
+        
         if(scanWindowList != null)
             children.add(scanWindowList);
-        
-        super.addChildrenToCollection(children);
     }
 }

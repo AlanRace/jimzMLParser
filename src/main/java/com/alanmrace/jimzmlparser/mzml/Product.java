@@ -34,13 +34,6 @@ public class Product extends MzMLContentWithChildren implements Serializable {
     }
 
     @Override
-    protected void outputXMLContent(BufferedWriter output, int indent) throws IOException {
-        if (isolationWindow != null) {
-            isolationWindow.outputXML(output, indent + 1);
-        }
-    }
-
-    @Override
     public String getTagName() {
         return "product";
     }

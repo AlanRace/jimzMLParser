@@ -4,8 +4,11 @@
 package com.alanmrace.jimzmlparser.imzml;
 
 import com.alanmrace.jimzmlparser.exceptions.ImzMLParseException;
+import com.alanmrace.jimzmlparser.mzml.MzML;
 import com.alanmrace.jimzmlparser.mzml.Spectrum;
 import com.alanmrace.jimzmlparser.parser.ImzMLHandler;
+import com.alanmrace.jimzmlparser.parser.MzMLHandler;
+import com.alanmrace.jimzmlparser.parser.MzMLHeaderHandler;
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -289,4 +292,12 @@ public class ImzMLTest {
         instance.write(filename);
     }
     
+    @Test
+    public void testWritingOut() throws Exception {
+        System.out.println("---- Testing Writing Out mzML ----");
+        
+        MzML mzML = MzMLHeaderHandler.parsemzMLHeader(ImzMLTest.class.getResource("/small_miape.pwiz.1.1.mzML").getPath());
+        
+        mzML.write("small_miape.pwiz.1.1.mzML");
+    }
 }

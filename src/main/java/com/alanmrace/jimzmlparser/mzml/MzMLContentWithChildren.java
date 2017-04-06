@@ -7,6 +7,8 @@ package com.alanmrace.jimzmlparser.mzml;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.util.ArrayList;
 
 /**
  * Abstract class implementing the basic functionality for a tag in MzML which has
@@ -16,10 +18,18 @@ import java.io.IOException;
  */
 public abstract class MzMLContentWithChildren extends MzMLContent implements HasChildren {
 
-    protected abstract void outputXMLContent(BufferedWriter output, int indent) throws IOException;
-    
+    protected void outputXMLContent(RandomAccessFile raf, BufferedWriter output, int indent) throws IOException {
+        ArrayList<MzMLTag> children = new ArrayList<MzMLTag>();
+        
+        addChildrenToCollection(children);
+        
+        for(MzMLTag child : children) {
+            child.outputXML(raf, output, indent);
+        }
+    }
+       
     @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
+    public void outputXML(RandomAccessFile raf, BufferedWriter output, int indent) throws IOException {
         String attributeText = getXMLAttributeText();
         
         MzMLContent.indent(output, indent);
@@ -30,7 +40,7 @@ public abstract class MzMLContentWithChildren extends MzMLContent implements Has
         
         output.write(">\n");
 
-        outputXMLContent(output, indent + 1);
+        outputXMLContent(raf, output, indent + 1);
 
         MzMLContent.indent(output, indent);
         output.write("</" + getTagName() + ">\n");

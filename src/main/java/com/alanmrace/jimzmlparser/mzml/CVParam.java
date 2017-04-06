@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
+import java.io.RandomAccessFile;
 
 /**
  * Base class of CVParam with no type. Describes the {@literal <cvParam>} tag.
@@ -112,7 +113,7 @@ public abstract class CVParam extends MzMLContent {
     public abstract void setValueAsString(String newValue);
 
     @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
+    public void outputXML(RandomAccessFile raf, BufferedWriter output, int indent) throws IOException {
         MzMLContent.indent(output, indent);
         
         output.write("<cvParam");

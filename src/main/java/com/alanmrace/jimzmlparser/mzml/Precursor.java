@@ -1,8 +1,6 @@
 package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.util.XMLHelper;
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collection;
 
@@ -95,32 +93,23 @@ public class Precursor extends MzMLContentWithParams implements Serializable {
     }
 
     @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
-        MzMLContent.indent(output, indent);
-        output.write("<precursor");
+    public String getXMLAttributeText() {
+        String attributeText = super.getXMLAttributeText();
+        
         if (externalSpectrumID != null) {
-            output.write(" externalSpectrumID=\"" + XMLHelper.ensureSafeXML(externalSpectrumID) + "\"");
+            attributeText += " externalSpectrumID=\"" + XMLHelper.ensureSafeXML(externalSpectrumID) + "\"";
         }
         if (sourceFileRef != null) {
-            output.write(" sourceFileRef=\"" + XMLHelper.ensureSafeXML(sourceFileRef.getID()) + "\"");
+            attributeText += " sourceFileRef=\"" + XMLHelper.ensureSafeXML(sourceFileRef.getID()) + "\"";
         }
         if (spectrumRef != null) {
-            output.write(" spectrumRef=\"" + XMLHelper.ensureSafeXML(spectrumRef) + "\"");
+            attributeText += " spectrumRef=\"" + XMLHelper.ensureSafeXML(spectrumRef) + "\"";
         }
-        output.write(">\n");
-
-        if (isolationWindow != null) {
-            isolationWindow.outputXML(output, indent + 1);
-        }
-
-        if (selectedIonList != null && selectedIonList.size() > 0) {
-            selectedIonList.outputXML(output, indent + 1);
-        }
-
-        activation.outputXML(output, indent + 1);
-
-        MzMLContent.indent(output, indent);
-        output.write("</precursor>\n");
+        
+        if(attributeText.startsWith(" "))
+            attributeText = attributeText.substring(1);
+        
+        return attributeText;
     }
 
     @Override

@@ -1,8 +1,6 @@
 package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.util.XMLHelper;
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -84,22 +82,10 @@ public class SpectrumList extends MzMLIDContentList<Spectrum> {
 //        spectrumMap.remove(spectrum.getID(), spectrum);
     }
 
+    
     @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
-        MzMLContent.indent(output, indent);
-        output.write("<spectrumList");
-        output.write(" count=\"" + list.size() + "\"");
-        output.write(" defaultDataProcessingRef=\"" + XMLHelper.ensureSafeXML(defaultDataProcessingRef.getID()) + "\"");
-        output.write(">\n");
-
-        int index = 0;
-
-        for (Spectrum spectrum : list) {
-            spectrum.outputXML(output, indent + 1, index++);
-        }
-
-        MzMLContent.indent(output, indent);
-        output.write("</spectrumList>\n");
+    protected String getXMLAttributeText() {
+        return super.getXMLAttributeText() + " defaultDataProcessingRef=\"" + XMLHelper.ensureSafeXML(defaultDataProcessingRef.getID()) + "\""; 
     }
 
     @Override

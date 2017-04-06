@@ -4,6 +4,7 @@ import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -102,31 +103,6 @@ public class FileDescription extends MzMLContentWithParams implements Serializab
                 contact.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
             }
         }
-    }
-
-    @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
-        MzMLContent.indent(output, indent);
-        output.write("<fileDescription");
-        output.write(">\n");
-
-        fileContent.outputXML(output, indent + 1);
-
-        if (sourceFileList != null && sourceFileList.size() > 0) {
-            sourceFileList.outputXML(output, indent + 1);
-        }
-
-        for (Contact contact : contacts) {
-            contact.outputXML(output, indent + 1);
-        }
-
-        MzMLContent.indent(output, indent);
-        output.write("</fileDescription>\n");
-    }
-
-    @Override
-    public String toString() {
-        return "fileDescription";
     }
 
     @Override

@@ -276,27 +276,6 @@ public class ScanSettings extends MzMLContentWithParams implements Referenceable
     }
 
     @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
-        MzMLContent.indent(output, indent);
-        output.write("<scanSettings");
-        output.write(" id=\"" + XMLHelper.ensureSafeXML(id) + "\"");
-        output.write(">\n");
-
-        super.outputXMLContent(output, indent + 1);
-
-        if (sourceFileRefList != null && sourceFileRefList.size() > 0) {
-            sourceFileRefList.outputXML(output, indent + 1);
-        }
-
-        if (targetList != null && targetList.size() > 0) {
-            targetList.outputXML(output, indent + 1);
-        }
-
-        MzMLContent.indent(output, indent);
-        output.write("</scanSettings>\n");
-    }
-
-    @Override
     public String toString() {
         return "scanSettings: " + id;
     }

@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ProcessingMethod extends MzMLContentWithParams implements Serializable {
+public class ProcessingMethod extends MzMLOrderedContentWithParams implements Serializable {
 
     /**
      *
@@ -61,20 +61,12 @@ public class ProcessingMethod extends MzMLContentWithParams implements Serializa
     public Software getSoftwareRef() {
         return softwareRef;
     }
-
-    public void outputXML(BufferedWriter output, int indent, int order) throws IOException {
-        MzMLContent.indent(output, indent);
-        output.write("<processingMethod");
-        output.write(" order=\"" + order + "\"");
-        output.write(" softwareRef=\"" + XMLHelper.ensureSafeXML(softwareRef.getID()) + "\"");
-        output.write(">\n");
-
-        super.outputXMLContent(output, indent + 1);
-
-        MzMLContent.indent(output, indent);
-        output.write("</processingMethod>\n");
+    
+    @Override
+    protected String getXMLAttributeText() {
+        return "softwareRef=\"" + XMLHelper.ensureSafeXML(softwareRef.getID()) + "\"";
     }
-
+    
     @Override
     public String toString() {
         return "processingMethod: softwareRef=\"" + softwareRef.getID() + "\"";

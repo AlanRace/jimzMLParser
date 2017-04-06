@@ -5,6 +5,11 @@
  */
 package com.alanmrace.jimzmlparser.mzml;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.util.ArrayList;
+
 /**
  *
  * <p>TODO: Consider including the map like in SpectrumList to improve speed of access.
@@ -30,5 +35,22 @@ public abstract class MzMLIDContentList<T extends ReferenceableTag & MzMLTag> ex
         }
 
         return null;
+    }
+    
+    @Override
+    protected void outputXMLContent(RandomAccessFile raf, BufferedWriter output, int indent) throws IOException {
+        ArrayList<MzMLTag> children = new ArrayList<MzMLTag>();
+        
+        addChildrenToCollection(children);
+        
+        for(MzMLTag child : children) {
+            if(child instanceof MzMLDataContainer) {
+                output.flush();
+                
+                ((MzMLDataContainer) child).setmzMLLocation(raf.getFilePointer());
+            }
+            
+            child.outputXML(raf, output, indent);
+        }
     }
 }

@@ -5,7 +5,6 @@ import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
 import com.alanmrace.jimzmlparser.imzml.PixelLocation;
 import com.alanmrace.jimzmlparser.parser.MzMLSpectrumDataStorage;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -361,67 +360,18 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
         }
     }
 
-    /**
-     * Output this MzMLContent in formatted XML.
-     * 
-     * @param output    
-     * @param indent    Number of indents to make for this tag
-     * @param index     Spectrum index to include as an attribute
-     * @throws IOException
-     */
-    public void outputXML(BufferedWriter output, int indent, int index) throws IOException {
-        if (raf != null) {
-            output.flush();
-            this.setmzMLLocation(raf.getFilePointer());
-        }
-
-        MzMLContent.indent(output, indent);
-        output.write("<spectrum");
-        output.write(" defaultArrayLength=\"" + defaultArrayLength + "\"");
-        output.write(" id=\"" + XMLHelper.ensureSafeXML(id) + "\"");
-        output.write(" index=\"" + index + "\"");
-        if (dataProcessingRef != null) {
-            output.write(" dataProcessingRef=\"" + XMLHelper.ensureSafeXML(dataProcessingRef.getID()) + "\"");
-        }
+    @Override
+    protected String getXMLAttributeText() {
+        String attributeText = super.getXMLAttributeText();
+                
         if (sourceFileRef != null) {
-            output.write(" sourceFileRef=\"" + XMLHelper.ensureSafeXML(sourceFileRef.getID()) + "\"");
+            attributeText += " sourceFileRef=\"" + XMLHelper.ensureSafeXML(sourceFileRef.getID()) + "\"";
         }
         if (spotID != null) {
-            output.write(" spotID=\"" + XMLHelper.ensureSafeXML(spotID) + "\"");
+            attributeText += " spotID=\"" + XMLHelper.ensureSafeXML(spotID) + "\"";
         }
-        output.write(">\n");
-
-        super.outputXMLContent(output, indent + 1);
-
-        if (scanList != null && scanList.size() > 0) {
-            scanList.outputXML(output, indent + 1);
-        }
-
-        if (precursorList != null && precursorList.size() > 0) {
-            precursorList.outputXML(output, indent + 1);
-        }
-
-        if (productList != null && productList.size() > 0) {
-            productList.outputXML(output, indent + 1);
-        }
-
-        if (binaryDataArrayList != null && binaryDataArrayList.size() > 0) {
-            binaryDataArrayList.outputXML(output, indent + 1);
-        }
-//			MzMLContent.indent(output, indent+1);
-//			output.write("<binaryDataArrayList");
-//			output.write(" count=\"" + binaryDataArray.size() + "\"");
-//			output.write(">\n");
-//			
-//			for(BinaryDataArray bda : binaryDataArray)
-//				bda.outputXML(output, indent+2);
-//			
-//			MzMLContent.indent(output, indent+1);
-//			output.write("</binaryDataArrayList>\n");
-//		}
-
-        MzMLContent.indent(output, indent);
-        output.write("</spectrum>\n");
+        
+        return attributeText;
     }
 
     @Override
@@ -441,6 +391,8 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
     
     @Override
     public void addChildrenToCollection(Collection<MzMLTag> children) {
+        super.addChildrenToCollection(children);
+        
         if(scanList != null)
             children.add(scanList);
         if(precursorList != null)
@@ -449,7 +401,5 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
             children.add(productList);
         if(binaryDataArrayList != null)
             children.add(binaryDataArrayList);
-        
-        super.addChildrenToCollection(children);
     }
 }

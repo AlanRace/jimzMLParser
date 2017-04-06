@@ -742,25 +742,25 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
         write(ibdFile.getAbsolutePath().substring(0, ibdFile.getAbsolutePath().length() - ".ibd".length()) + ".imzML");
     }
 
-    @Override
-    public void write(String filename) throws ImzMLWriteException {
-        String encoding = "ISO-8859-1";
-
-        try {
-            OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(filename), encoding);
-            BufferedWriter output = new BufferedWriter(out);
-
-            output.write("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>\n");
-            outputXML(output, 0);
-
-            output.flush();
-
-            output.close();
-            out.close();
-        } catch (IOException e1) {
-            throw new ImzMLWriteException("Error writing imzML file " + filename + ". " + e1.getLocalizedMessage());
-        }
-    }
+//    @Override
+//    public void write(String filename) throws ImzMLWriteException {
+//        String encoding = "ISO-8859-1";
+//
+//        try {
+//            OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(filename), encoding);
+//            BufferedWriter output = new BufferedWriter(out);
+//
+//            output.write("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>\n");
+//            outputXML(output, 0);
+//
+//            output.flush();
+//
+//            output.close();
+//            out.close();
+//        } catch (IOException e1) {
+//            throw new ImzMLWriteException("Error writing imzML file " + filename + ". " + e1.getLocalizedMessage());
+//        }
+//    }
     
     /**
      * Calculate the checksum of a given file using a given algorithm. Examples 

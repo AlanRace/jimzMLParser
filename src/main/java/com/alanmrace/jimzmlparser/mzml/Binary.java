@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
+import java.io.RandomAccessFile;
 
 /**
  * Binary tag. When an mzML file is parsed the data is output into a temporary
@@ -175,7 +176,7 @@ public class Binary extends MzMLContent {
     }
 
     @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
+    public void outputXML(RandomAccessFile raf, BufferedWriter output, int indent) throws IOException {
         MzMLContent.indent(output, indent);
 
         if (this.data != null) {

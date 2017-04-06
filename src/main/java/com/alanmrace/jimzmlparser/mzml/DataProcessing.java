@@ -1,8 +1,6 @@
 package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.util.XMLHelper;
-import java.io.BufferedWriter;
-import java.io.IOException;
 
 public class DataProcessing extends MzMLContentList<ProcessingMethod> implements ReferenceableTag {
 
@@ -57,22 +55,16 @@ public class DataProcessing extends MzMLContentList<ProcessingMethod> implements
     public void setID(String id) {
         this.id = id;
     }
-
+    
+    /**
+     * DataProcessing does not include a count attribute, despite being a list, so
+     * this method is overridden to only output the ID.
+     * 
+     * @return Attribute text
+     */
     @Override
-    public void outputXML(BufferedWriter output, int indent) throws IOException {
-        MzMLContent.indent(output, indent);
-        output.write("<dataProcessing");
-        output.write(" id=\"" + XMLHelper.ensureSafeXML(id) + "\"");
-        output.write(">\n");
-
-        int order = 1;
-
-        for (ProcessingMethod pm : this) {
-            pm.outputXML(output, indent + 1, order++);
-        }
-
-        MzMLContent.indent(output, indent);
-        output.write("</dataProcessing>\n");
+    protected String getXMLAttributeText() {
+        return "id=\"" + XMLHelper.ensureSafeXML(id) + "\"";
     }
 
     @Override
