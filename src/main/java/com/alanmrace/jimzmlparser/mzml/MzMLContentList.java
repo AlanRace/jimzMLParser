@@ -2,9 +2,8 @@ package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
-import java.io.BufferedWriter;
+import com.alanmrace.jimzmlparser.writer.MzMLWriteable;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -129,17 +128,17 @@ public abstract class MzMLContentList<T extends MzMLTag>
     }
 
     @Override
-    protected void outputXMLContent(RandomAccessFile raf, BufferedWriter output, int indent) throws IOException {
+    protected void outputXMLContent(MzMLWriteable output, int indent) throws IOException {
         int counter = 0;
         
         for (T item : this) {
             // 0 index for indexed content, but 1 for ordered content
             if(item instanceof MzMLIndexedContentWithParams)
-                ((MzMLIndexedContentWithParams) item).outputXML(raf, output, indent, counter++);
+                ((MzMLIndexedContentWithParams) item).outputXML(output, indent, counter++);
             else if(item instanceof MzMLOrderedContentWithParams)
-                ((MzMLOrderedContentWithParams) item).outputXML(raf, output, indent, ++counter);
+                ((MzMLOrderedContentWithParams) item).outputXML(output, indent, ++counter);
             else
-                item.outputXML(raf, output, indent);
+                item.outputXML(output, indent);
         }
     }
 

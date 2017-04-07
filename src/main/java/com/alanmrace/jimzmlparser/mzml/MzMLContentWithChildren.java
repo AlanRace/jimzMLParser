@@ -5,7 +5,7 @@
  */
 package com.alanmrace.jimzmlparser.mzml;
 
-import java.io.BufferedWriter;
+import com.alanmrace.jimzmlparser.writer.MzMLWriteable;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
@@ -18,18 +18,18 @@ import java.util.ArrayList;
  */
 public abstract class MzMLContentWithChildren extends MzMLContent implements HasChildren {
 
-    protected void outputXMLContent(RandomAccessFile raf, BufferedWriter output, int indent) throws IOException {
+    protected void outputXMLContent(MzMLWriteable output, int indent) throws IOException {
         ArrayList<MzMLTag> children = new ArrayList<MzMLTag>();
         
         addChildrenToCollection(children);
         
         for(MzMLTag child : children) {
-            child.outputXML(raf, output, indent);
+            child.outputXML(output, indent);
         }
     }
        
     @Override
-    public void outputXML(RandomAccessFile raf, BufferedWriter output, int indent) throws IOException {
+    public void outputXML(MzMLWriteable output, int indent) throws IOException {
         String attributeText = getXMLAttributeText();
         
         MzMLContent.indent(output, indent);
@@ -40,7 +40,7 @@ public abstract class MzMLContentWithChildren extends MzMLContent implements Has
         
         output.write(">\n");
 
-        outputXMLContent(raf, output, indent + 1);
+        outputXMLContent(output, indent + 1);
 
         MzMLContent.indent(output, indent);
         output.write("</" + getTagName() + ">\n");

@@ -5,7 +5,7 @@
  */
 package com.alanmrace.jimzmlparser.mzml;
 
-import java.io.BufferedWriter;
+import com.alanmrace.jimzmlparser.writer.MzMLWriteable;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
@@ -73,7 +73,7 @@ public abstract class MzMLIndexedContentWithParams extends MzMLOrderedContentWit
      * @throws IOException Signals that an I/O exception has occurred.
      */
     @Override
-    public void outputXML(RandomAccessFile raf, BufferedWriter output, int indent, int index) throws IOException {
+    public void outputXML(MzMLWriteable output, int indent, int index) throws IOException {
         String attributeText = getXMLAttributeText();
         
         MzMLContent.indent(output, indent);
@@ -84,7 +84,7 @@ public abstract class MzMLIndexedContentWithParams extends MzMLOrderedContentWit
         
         output.write(">\n");
 
-        outputXMLContent(raf, output, indent + 1);
+        outputXMLContent(output, indent + 1);
 
         MzMLContent.indent(output, indent);
         output.write("</" + getTagName() + ">\n");

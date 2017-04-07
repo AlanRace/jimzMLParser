@@ -1,6 +1,6 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import java.io.BufferedWriter;
+import com.alanmrace.jimzmlparser.writer.MzMLWriteable;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
@@ -27,7 +27,7 @@ public abstract class MzMLReference<T extends ReferenceableTag> extends MzMLCont
     }
     
     @Override
-    public void outputXML(RandomAccessFile raf, BufferedWriter output, int indent) throws IOException {
+    public void outputXML(MzMLWriteable output, int indent) throws IOException {
         MzMLContent.indent(output, indent);
         
         output.write("<" + getTagName());

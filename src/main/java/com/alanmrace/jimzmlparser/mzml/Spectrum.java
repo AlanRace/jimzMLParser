@@ -3,6 +3,7 @@ package com.alanmrace.jimzmlparser.mzml;
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
 import com.alanmrace.jimzmlparser.imzml.PixelLocation;
+import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.parser.MzMLSpectrumDataStorage;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.IOException;
@@ -298,39 +299,6 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
 
         return pixelLocation;
     }
-
-    /**
-     * Get the m/z array of the spectrum as a double[].
-     * 
-     * @return m/z array
-     * @throws IOException
-     */
-    public double[] getmzArray() throws IOException {
-        return getmzArray(false);
-    }
-
-    /**
-     * Get the m/z array of the spectrum as a double[] and optionally keep the 
-     * array within memory.
-     * 
-     * @param keepInMemory true to keep the data within memory, false otherwise
-     * @return
-     * @throws IOException
-     */
-    public double[] getmzArray(boolean keepInMemory) throws IOException {
-//	    System.out.println(dataLocation);
-
-        if (binaryDataArrayList == null) {
-            return null;
-        }
-
-        if (dataLocation != null && dataLocation.getDataStorage() instanceof MzMLSpectrumDataStorage) {
-            convertMzMLDataStorageToBase64();
-        }
-
-        return binaryDataArrayList.getmzArray().getDataAsDouble(keepInMemory);
-    }
-
     @Override
     protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLTag> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/scanList")) {
@@ -401,5 +369,118 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
             children.add(productList);
         if(binaryDataArrayList != null)
             children.add(binaryDataArrayList);
+    }
+    
+    /**
+     * Get the m/z array of the spectrum as a double[].
+     * 
+     * @return m/z array
+     * @throws IOException
+     */
+    public double[] getmzArray() throws IOException {
+        return getmzArray(false);
+    }
+
+    /**
+     * Get the m/z array of the spectrum as a double[] and optionally keep the 
+     * array within memory.
+     * 
+     * @param keepInMemory true to keep the data within memory, false otherwise
+     * @return
+     * @throws IOException
+     */
+    public double[] getmzArray(boolean keepInMemory) throws IOException {
+        if (binaryDataArrayList == null) {
+            return null;
+        }
+
+        if (dataLocation != null && dataLocation.getDataStorage() instanceof MzMLSpectrumDataStorage) {
+            convertMzMLDataStorageToBase64();
+        }
+
+        return binaryDataArrayList.getmzArray().getDataAsDouble(keepInMemory);
+    }
+    
+    /**
+     * Set the m/z array to be equal to the supplied double[]. This does not update
+     * any metadata, and therefore should only be used when creating new spectra
+     * which have not had any processing applied. For all other cases, 
+     * use {@link Spectrum#updatemzArray(double[], DataProcessing)}.
+     * 
+     * @param mzs New spectral data as double[]
+     */
+    protected void setmzArray(double[] mzs) {
+        Binary binary = new Binary(mzs);
+        
+        binaryDataArrayList.getmzArray().setBinary(binary);
+    }
+    
+    protected void setIntensityArray(double[] intensities) {
+        Binary binary = new Binary(intensities);
+        
+        binaryDataArrayList.getIntensityArray().setBinary(binary);
+    }
+    
+    protected void setSpectralData(double[] mzs, double[] intensities) {
+        setmzArray(mzs);
+        setIntensityArray(intensities);
+    }
+    
+    /**
+     * Set the m/z array to be equal to the supplied double[] and update the metadata
+     * to include the description of the processing applied to create the new spectrum.
+     * 
+     * @param mzs
+     * @param processing
+     */
+    public void updatemzArray(double[] mzs, DataProcessing processing) {
+        
+    }
+    
+    public void updateIntensityArray(double[] mzs, DataProcessing processing) {
+        
+    }
+    
+    public void updateSpectralData(double[] mzs, double[] intensities, DataProcessing processing) {
+        
+    }
+    
+    /**
+     *
+     * Default Spectrum parameters are: MS1 Spectrum & Profile Spectrum. These MUST be 
+     * changed if this is not the case.
+     * TODO: Consider having these as part of the create spectrum interface.
+     * 
+     * Data defaults are no compression, 64-bit float representation.
+     * 
+     * @param mzs
+     * @param intensities
+     * @return
+     */
+    public static Spectrum createSpectrum(double[] mzs, double[] intensities) {
+        // TODO: Specify ID
+        String id = "";
+        
+        Spectrum spectrum = new Spectrum(id, intensities.length);
+        spectrum.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(Spectrum.MS1Spectrum)));
+        spectrum.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(Spectrum.profileSpectrumID)));
+        
+        BinaryDataArray mzsDataArray = new BinaryDataArray(mzs.length);
+        mzsDataArray.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(BinaryDataArray.mzArrayID), 
+                OBO.getOBO().getTerm(BinaryDataArray.mzArrayUnitsID)));
+        mzsDataArray.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(BinaryDataArray.noCompressionID)));
+        mzsDataArray.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(BinaryDataArray.doublePrecisionID)));
+        
+        BinaryDataArray intensitiesDataArray = new BinaryDataArray(intensities.length);
+        intensitiesDataArray.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(BinaryDataArray.intensityArrayID)));
+        intensitiesDataArray.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(BinaryDataArray.noCompressionID)));
+        intensitiesDataArray.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(BinaryDataArray.doublePrecisionID)));
+        
+        spectrum.getBinaryDataArrayList().addBinaryDataArray(mzsDataArray);
+        spectrum.getBinaryDataArrayList().addBinaryDataArray(intensitiesDataArray);
+        
+        spectrum.setSpectralData(mzs, intensities);
+        
+        return spectrum;
     }
 }

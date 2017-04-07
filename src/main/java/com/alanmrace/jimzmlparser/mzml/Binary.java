@@ -1,11 +1,10 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import java.io.BufferedWriter;
+import com.alanmrace.jimzmlparser.writer.MzMLWriteable;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import com.sun.org.apache.xml.internal.security.utils.Base64;
-import java.io.RandomAccessFile;
 
 /**
  * Binary tag. When an mzML file is parsed the data is output into a temporary
@@ -176,22 +175,22 @@ public class Binary extends MzMLContent {
     }
 
     @Override
-    public void outputXML(RandomAccessFile raf, BufferedWriter output, int indent) throws IOException {
+    public void outputXML(MzMLWriteable output, int indent) throws IOException {
         MzMLContent.indent(output, indent);
 
         if (this.data != null) {
             output.write("<binary>");
 
-            byte[] bytes = new byte[8 * this.data.length];
+            byte[] bytes = new byte[8 * data.length];
 
             for (int i = 0; i < data.length; i++) {
                 ByteBuffer buffer = ByteBuffer.wrap(bytes).putDouble(i * 8, data[i]);
                 buffer.order(ByteOrder.LITTLE_ENDIAN);
                 buffer.putDouble(i * 8, data[i]);
             }
-
-            output.write(Base64.encode(bytes));
-
+            
+            output.writeData(bytes);
+            
             MzMLContent.indent(output, indent);
             output.write("</binary>\n");
         } else {

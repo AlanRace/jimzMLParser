@@ -2,11 +2,11 @@ package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.exceptions.InvalidFormatIssue;
 import com.alanmrace.jimzmlparser.exceptions.NonFatalParseException;
-import java.io.BufferedWriter;
 import java.io.IOException;
 
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
+import com.alanmrace.jimzmlparser.writer.MzMLWriteable;
 import java.io.RandomAccessFile;
 
 /**
@@ -113,7 +113,7 @@ public abstract class CVParam extends MzMLContent {
     public abstract void setValueAsString(String newValue);
 
     @Override
-    public void outputXML(RandomAccessFile raf, BufferedWriter output, int indent) throws IOException {
+    public void outputXML(MzMLWriteable output, int indent) throws IOException {
         MzMLContent.indent(output, indent);
         
         output.write("<cvParam");

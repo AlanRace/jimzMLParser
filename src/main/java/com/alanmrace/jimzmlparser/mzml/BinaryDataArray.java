@@ -3,7 +3,7 @@ package com.alanmrace.jimzmlparser.mzml;
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 import com.alanmrace.jimzmlparser.parser.DataLocation;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
-import java.io.BufferedWriter;
+import com.alanmrace.jimzmlparser.writer.MzMLWriteable;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -940,8 +940,8 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
     }
     
     @Override
-    protected void outputXMLContent(RandomAccessFile raf, BufferedWriter output, int indent) throws IOException {
-        super.outputXMLContent(raf, output, indent);
+    protected void outputXMLContent(MzMLWriteable output, int indent) throws IOException {
+        super.outputXMLContent(output, indent);
         
         if (binary == null) {
             MzMLContent.indent(output, indent);

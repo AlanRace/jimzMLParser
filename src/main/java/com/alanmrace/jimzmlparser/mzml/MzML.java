@@ -3,7 +3,6 @@ package com.alanmrace.jimzmlparser.mzml;
 import com.alanmrace.jimzmlparser.exceptions.ImzMLWriteException;
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
-import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -13,6 +12,8 @@ import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.parser.DataLocation;
 import com.alanmrace.jimzmlparser.parser.DataStorage;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
+import com.alanmrace.jimzmlparser.writer.MzMLWriteable;
+import com.alanmrace.jimzmlparser.writer.MzMLWriter;
 import java.io.RandomAccessFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -532,31 +533,32 @@ public class MzML extends MzMLContentWithParams implements Serializable {
      */
     public void write(String filename) throws ImzMLWriteException {
         try {
+            outputIndex = true;
+            
             String encoding = "ISO-8859-1";
 
-            raf = new RandomAccessFile(filename, "rw");
+            //raf = new RandomAccessFile(filename, "rw");
 
-            outputIndex = true;
-
-            OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(raf.getFD()), encoding);
-            BufferedWriter output = new BufferedWriter(out);
+            //OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(raf.getFD()), encoding);
+            
+            MzMLWriter output = new MzMLWriter(filename);
 
             output.write("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>\n");
-            outputXML(raf, output, 0);
+            outputXML(output, 0);
 
-            output.flush();
+            //output.flush();
             
-            raf.getChannel().truncate(raf.getFilePointer());
+            //raf.getChannel().truncate(raf.getFilePointer());
             output.close();
             
-            out.close();
+            //out.close();
         } catch (IOException ex) {
             throw new ImzMLWriteException("Error writing mzML file " + filename + ". " + ex.getLocalizedMessage(), ex);
         }
     }
 
     @Override
-    public void outputXML(RandomAccessFile raf, BufferedWriter output, int indent) throws IOException {
+    public void outputXML(MzMLWriteable output, int indent) throws IOException {
         if (outputIndex) {
             MzMLContent.indent(output, indent);
             output.write("<indexedmzML");
@@ -588,35 +590,35 @@ public class MzML extends MzMLContentWithParams implements Serializable {
             cvList = new CVList(0);
         }
 
-        cvList.outputXML(raf, output, indent + 1);
+        cvList.outputXML(output, indent + 1);
 
         // FileDescription
-        fileDescription.outputXML(raf, output, indent + 1);
+        fileDescription.outputXML(output, indent + 1);
 
         if (referenceableParamGroupList != null && referenceableParamGroupList.size() > 0) {
-            referenceableParamGroupList.outputXML(raf, output, indent + 1);
+            referenceableParamGroupList.outputXML(output, indent + 1);
         }
 
         if (sampleList != null && sampleList.size() > 0) {
-            sampleList.outputXML(raf, output, indent + 1);
+            sampleList.outputXML(output, indent + 1);
         }
 
         // SoftwareList
-        softwareList.outputXML(raf, output, indent + 1);
+        softwareList.outputXML(output, indent + 1);
 
         // ScanSettingsList
         if (scanSettingsList != null && scanSettingsList.size() > 0) {
-            scanSettingsList.outputXML(raf, output, indent + 1);
+            scanSettingsList.outputXML(output, indent + 1);
         }
 
         // InstrumentConfigurationList
-        instrumentConfigurationList.outputXML(raf, output, indent + 1);
+        instrumentConfigurationList.outputXML(output, indent + 1);
 
         // DataProcessingList
-        dataProcessingList.outputXML(raf, output, indent + 1);
+        dataProcessingList.outputXML(output, indent + 1);
 
         // Run
-        run.outputXML(raf, output, indent + 1);
+        run.outputXML(output, indent + 1);
 
         MzMLContent.indent(output, indent);
         output.write("</mzML>\n");
@@ -625,7 +627,7 @@ public class MzML extends MzMLContentWithParams implements Serializable {
             indent--;
             
             output.flush();
-            long indexListOffset = raf.getFilePointer();
+            long indexListOffset = output.getMetadataPointer();
 
             MzMLContent.indent(output, indent + 1);
             output.write("<indexList count=\"1\">\n");

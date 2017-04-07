@@ -2,7 +2,6 @@ package com.alanmrace.jimzmlparser.mzml;
 
 import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
-import java.io.BufferedWriter;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Collection;

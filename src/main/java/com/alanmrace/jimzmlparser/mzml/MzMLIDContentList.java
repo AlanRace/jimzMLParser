@@ -5,7 +5,7 @@
  */
 package com.alanmrace.jimzmlparser.mzml;
 
-import java.io.BufferedWriter;
+import com.alanmrace.jimzmlparser.writer.MzMLWriteable;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ public abstract class MzMLIDContentList<T extends ReferenceableTag & MzMLTag> ex
     }
     
     @Override
-    protected void outputXMLContent(RandomAccessFile raf, BufferedWriter output, int indent) throws IOException {
+    protected void outputXMLContent(MzMLWriteable output, int indent) throws IOException {
         ArrayList<MzMLTag> children = new ArrayList<MzMLTag>();
         
         addChildrenToCollection(children);
@@ -47,10 +47,10 @@ public abstract class MzMLIDContentList<T extends ReferenceableTag & MzMLTag> ex
             if(child instanceof MzMLDataContainer) {
                 output.flush();
                 
-                ((MzMLDataContainer) child).setmzMLLocation(raf.getFilePointer());
+                ((MzMLDataContainer) child).setmzMLLocation(output.getDataPointer());
             }
             
-            child.outputXML(raf, output, indent);
+            child.outputXML(output, indent);
         }
     }
 }

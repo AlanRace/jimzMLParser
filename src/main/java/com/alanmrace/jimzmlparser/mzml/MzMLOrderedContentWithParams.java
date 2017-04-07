@@ -5,7 +5,7 @@
  */
 package com.alanmrace.jimzmlparser.mzml;
 
-import java.io.BufferedWriter;
+import com.alanmrace.jimzmlparser.writer.MzMLWriteable;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
@@ -44,13 +44,12 @@ public abstract class MzMLOrderedContentWithParams extends MzMLContentWithParams
     /**
      * Output attribute in the form of XML.
      *
-     * @param raf   RandomAccessFile being output to - used for getting current file location
      * @param output where to write the XML
      * @param indent how large an indent is needed for this tag
      * @param order order of the component within the list
      * @throws IOException Signals that an I/O exception has occurred.
      */
-    public void outputXML(RandomAccessFile raf, BufferedWriter output, int indent, int order) throws IOException {
+    public void outputXML(MzMLWriteable output, int indent, int order) throws IOException {
         String attributeText = getXMLAttributeText();
         
         MzMLContent.indent(output, indent);
@@ -61,7 +60,7 @@ public abstract class MzMLOrderedContentWithParams extends MzMLContentWithParams
         
         output.write(">\n");
 
-        outputXMLContent(raf, output, indent + 1);
+        outputXMLContent(output, indent + 1);
 
         MzMLContent.indent(output, indent);
         output.write("</" + getTagName() + ">\n");

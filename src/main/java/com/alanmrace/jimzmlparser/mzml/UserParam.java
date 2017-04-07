@@ -1,10 +1,10 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
+import com.alanmrace.jimzmlparser.writer.MzMLWriteable;
 import java.io.RandomAccessFile;
 
 public class UserParam extends MzMLContent {
@@ -71,7 +71,7 @@ public class UserParam extends MzMLContent {
     }
 
     @Override
-    public void outputXML(RandomAccessFile raf, BufferedWriter output, int indent) throws IOException {
+    public void outputXML(MzMLWriteable output, int indent) throws IOException {
         MzMLContent.indent(output, indent);
         
         output.write("<userParam");
