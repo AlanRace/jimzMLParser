@@ -40,7 +40,16 @@ public class ImzMLHandler extends MzMLHeaderHandler {
      */
     private File ibdFile;
 
+    /**
+     * Used to store the current spectrum/chromatogram's externalOffset attribute
+     * value for use when creating a {@link DataLocation} for the binary data.
+     */
     private long currentOffset;
+
+    /**
+     * Used to store the current spectrum/chromatogram's externalEncodedLength attribute
+     * value for use when creating a {@link DataLocation} for the binary data.
+     */
     private long currentNumBytes;
 
     /**
@@ -48,7 +57,18 @@ public class ImzMLHandler extends MzMLHeaderHandler {
      * is determined by detecting a userParam with the name '3DPositionZ';
      */
     private boolean processingSCiLS3DData = false;
+
+    /**
+     * Updated at the end of each {@literal <scan>} tag if processing SCiLS exported 
+     * 3D data (see {@link ImzMLHandler#processingSCiLS3DData}) to keep track of the largest
+     * x-coordinate for a spectrum stored within the imzML file.
+     */
     private int imageMaxX;
+    
+    /**
+     * Updated at the end of each {@literal <scan>} tag to keep track of the largest
+     * y-coordinate for a spectrum stored within the imzML file.
+     */
     private int imageMaxY;
     private int datasetMaxX;
     private int datasetMaxY;
@@ -185,12 +205,16 @@ public class ImzMLHandler extends MzMLHeaderHandler {
                 try {
                     currentNumBytes = Long.parseLong(attributes.getValue("value"));
                 } catch (NumberFormatException ex) {
+                    // TODO: Add in a parser issue notification here
+                    
                     currentNumBytes = (long) Double.parseDouble(attributes.getValue("value"));
                 }
             } else if (accession.equals(BinaryDataArray.externalOffsetID)) {
                 try {
                     currentOffset = Long.parseLong(attributes.getValue("value"));
                 } catch (NumberFormatException ex) {
+                    // TODO: Add in a parser issue notification here
+                    
                     currentNumBytes = (long) Double.parseDouble(attributes.getValue("value"));
                 }
             }
@@ -278,16 +302,9 @@ public class ImzMLHandler extends MzMLHeaderHandler {
 
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
+        
         if (ibdFile != null && qName.equals("binaryDataArray")) {
-//			CVParam dataType = currentBinaryDataArray.getCVParamOrChild(BinaryDataArray.dataTypeID);
-
-//			if(dataType == null)
-//				dataType = currentBinaryDataArray.getCVParamOrChild(BinaryDataArray.ibdDataType);
             currentBinaryDataArray.setDataLocation(new DataLocation(this.dataStorage, currentOffset, (int) this.currentNumBytes));
-
-//                        if(true)
-//                            throw new RuntimeException("Removed code - won't work");
-//			currentBinaryDataArray.setBinary(new Binary(dataStorage, currentOffset, currentNumBytes, dataType));
         }
 
         if ("scan".equals(qName) && processingSCiLS3DData) {
@@ -307,7 +324,8 @@ public class ImzMLHandler extends MzMLHeaderHandler {
             }
 
             if (currentScan.getCVParam(Scan.positionXID).getValueAsInteger() != x) {
-                System.out.println("BAD TIME");
+                logger.log(Level.SEVERE, "Mismatch between the X value in the currentScan ({0}) and the local variable x ({1})", 
+                        new Object[]{currentScan.getCVParam(Scan.positionXID).getValueAsInteger(), x});
             }
 
             currentScan.getCVParam(Scan.positionXID).setValueAsString("" + newX);
@@ -328,19 +346,16 @@ public class ImzMLHandler extends MzMLHeaderHandler {
             }
 
             if (currentScan.getCVParam(Scan.positionYID).getValueAsInteger() != y) {
-                System.out.println("BAD TIME");
+                logger.log(Level.SEVERE, "Mismatch between the Y value in the currentScan ({0}) and the local variable y ({1})", 
+                        new Object[]{currentScan.getCVParam(Scan.positionYID).getValueAsInteger(), y});
             }
 
             currentScan.getCVParam(Scan.positionYID).setValueAsString("" + newY);
-            
-//            count++;
         }
 
         if ("run".equals(qName) && processingSCiLS3DData) {
             this.currentScanSettings.getCVParam("IMS:1000042").setValueAsString("" + this.datasetMaxX);
             this.currentScanSettings.getCVParam("IMS:1000043").setValueAsString("" + this.datasetMaxY);
-
-//            System.out.println("Count = " + count);
         }
 
         super.endElement(uri, localName, qName);

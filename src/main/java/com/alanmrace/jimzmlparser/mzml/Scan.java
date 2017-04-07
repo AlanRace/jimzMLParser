@@ -3,11 +3,10 @@ package com.alanmrace.jimzmlparser.mzml;
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Class describing a {@literal <scan>} tag.
@@ -142,7 +141,7 @@ public class Scan extends MzMLContentWithParams implements Serializable {
     }
 
     @Override
-    public ArrayList<OBOTermInclusion> getListOfRequiredCVParams() {
+    public List<OBOTermInclusion> getListOfRequiredCVParams() {
         ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
         required.add(new OBOTermInclusion(positionXID, true, false, true));
         required.add(new OBOTermInclusion(positionYID, true, false, true));
@@ -151,7 +150,7 @@ public class Scan extends MzMLContentWithParams implements Serializable {
     }
 
     @Override
-    public ArrayList<OBOTermInclusion> getListOfOptionalCVParams() {
+    public List<OBOTermInclusion> getListOfOptionalCVParams() {
         ArrayList<OBOTermInclusion> optional = new ArrayList<OBOTermInclusion>();
         optional.add(new OBOTermInclusion(positionZID, true, false, true));
         optional.add(new OBOTermInclusion(scanAttributeID, false, true, false));

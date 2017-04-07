@@ -1,11 +1,9 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
-public class IsolationWindow extends MzMLContentWithParams implements Serializable {
+public class IsolationWindow extends MzMLContentWithParams {
 
     /**
      *
@@ -23,7 +21,7 @@ public class IsolationWindow extends MzMLContentWithParams implements Serializab
     }
 
     @Override
-    public ArrayList<OBOTermInclusion> getListOfRequiredCVParams() {
+    public List<OBOTermInclusion> getListOfRequiredCVParams() {
         ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
         required.add(new OBOTermInclusion(isolationWindowAttributeID, false, true, false));
 

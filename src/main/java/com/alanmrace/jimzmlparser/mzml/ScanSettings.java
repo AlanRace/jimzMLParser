@@ -1,10 +1,8 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import com.alanmrace.jimzmlparser.util.XMLHelper;
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Class describing a {@literal <scanSettings>} tag.
@@ -178,7 +176,7 @@ public class ScanSettings extends MzMLContentWithParams implements Referenceable
     }
 
     @Override
-    public ArrayList<OBOTermInclusion> getListOfRequiredCVParams() {
+    public List<OBOTermInclusion> getListOfRequiredCVParams() {
         ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
         required.add(new OBOTermInclusion(lineScanDirectionID, true, true, false));
         required.add(new OBOTermInclusion(scanDirectionID, true, true, false));
@@ -189,7 +187,7 @@ public class ScanSettings extends MzMLContentWithParams implements Referenceable
     }
 
     @Override
-    public ArrayList<OBOTermInclusion> getListOfOptionalCVParams() {
+    public List<OBOTermInclusion> getListOfOptionalCVParams() {
         ArrayList<OBOTermInclusion> optional = new ArrayList<OBOTermInclusion>();
         optional.add(new OBOTermInclusion(imageID, false, true, false));
 

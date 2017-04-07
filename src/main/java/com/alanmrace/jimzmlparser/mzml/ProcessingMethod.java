@@ -1,12 +1,9 @@
 package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.util.XMLHelper;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ProcessingMethod extends MzMLOrderedContentWithParams implements Serializable {
+public class ProcessingMethod extends MzMLOrderedContentWithParams {
 
     /**
      *

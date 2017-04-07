@@ -1,8 +1,6 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import java.io.Serializable;
-
-public class Target extends MzMLContentWithParams implements Serializable {
+public class Target extends MzMLContentWithParams {
 
     /**
      * Serialisation version ID.

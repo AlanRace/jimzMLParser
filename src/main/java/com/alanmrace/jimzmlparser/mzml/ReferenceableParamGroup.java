@@ -1,9 +1,8 @@
 package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.util.XMLHelper;
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ReferenceableParamGroup extends MzMLContentWithParams implements ReferenceableTag {
 
@@ -27,7 +26,7 @@ public class ReferenceableParamGroup extends MzMLContentWithParams implements Re
     }
 
     @Override
-    public ArrayList<OBOTermInclusion> getListOfOptionalCVParams() {
+    public List<OBOTermInclusion> getListOfOptionalCVParams() {
         ArrayList<OBOTermInclusion> optional = new ArrayList<OBOTermInclusion>();
         optional.add(new OBOTermInclusion("IMS:0000000", false, true, true));
         optional.add(new OBOTermInclusion("MS:0000000", false, true, true));

@@ -1,6 +1,6 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-public class ReferenceableParamGroupRef extends MzMLReference<ReferenceableParamGroup> { //, MutableTreeNode {
+public class ReferenceableParamGroupRef extends MzMLReference<ReferenceableParamGroup> {
 
     /**
      *

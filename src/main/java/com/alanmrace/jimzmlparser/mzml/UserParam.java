@@ -7,7 +7,7 @@ import com.alanmrace.jimzmlparser.obo.OBOTerm;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.RandomAccessFile;
 
-public class UserParam extends MzMLContent { //, MutableTreeNode {
+public class UserParam extends MzMLContent {
 
     /**
      *

@@ -1,11 +1,8 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.Serializable;
 import java.util.Collection;
 
-public class Product extends MzMLContentWithChildren implements Serializable {
+public class Product extends MzMLContentWithChildren {
 
     /**
      *

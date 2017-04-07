@@ -2,8 +2,6 @@ package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -36,7 +34,7 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
     }
 
     @Override
-    public ArrayList<OBOTermInclusion> getListOfRequiredCVParams() {
+    public List<OBOTermInclusion> getListOfRequiredCVParams() {
         ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
         required.add(new OBOTermInclusion(spectraCombinationID, true, true, false));
 

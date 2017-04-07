@@ -2,6 +2,7 @@ package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.util.ArrayList;
+import java.util.List;
 
 public class SourceFile extends MzMLContentWithParams implements ReferenceableTag {
 
@@ -37,7 +38,7 @@ public class SourceFile extends MzMLContentWithParams implements ReferenceableTa
     }
 
     @Override
-    public ArrayList<OBOTermInclusion> getListOfRequiredCVParams() {
+    public List<OBOTermInclusion> getListOfRequiredCVParams() {
         ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
         required.add(new OBOTermInclusion(nativeSpectrumIdentifierFormat, true, true, false));
         required.add(new OBOTermInclusion(dataFileChecksumType, false, true, false));

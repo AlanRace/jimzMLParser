@@ -1,18 +1,17 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.alanmrace.jimzmlparser.mzml;
 
 /**
- *
+ * Base class for Components within a ComponentList (i.e. {@literal <source>}, 
+ * {@literal <analyzer>} and {@literal <detector>}).
+ * 
  * @author Alan Race
  */
 public abstract class Component extends MzMLOrderedContentWithParams {
     
+    /**
+     * Protected constructor useful for subclasses.
+     */
     protected Component() {
-        
     }
     
     /**

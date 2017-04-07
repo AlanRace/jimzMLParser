@@ -27,8 +27,6 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
     private Sample sampleRef;											// Optional
     private Date startTimeStamp;										// Optional
 
-//	// defaultDataProcessingRef is for spectrumList
-//	protected DataProcessing defaultDataProcessingRef;
     private SpectrumList spectrumList;
     private ChromatogramList chromatogramList;
 

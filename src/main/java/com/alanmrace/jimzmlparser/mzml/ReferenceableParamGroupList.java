@@ -1,7 +1,5 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import java.security.InvalidParameterException;
-
 public class ReferenceableParamGroupList extends MzMLContentList<ReferenceableParamGroup> {
 
     /**

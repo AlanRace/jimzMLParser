@@ -12,18 +12,9 @@ public class Software extends MzMLContentWithParams implements ReferenceableTag 
 
     public static String softwareID = "MS:1000531"; // Required child (1)
 
-    protected static int idNumber = 0;
-
     protected String id;			// Required
-//	protected OBOTerm software;
     protected String version;		// Required
 
-//	public Software(OBOTerm software, String version) {
-//		id = "software" + idNumber++;
-//		
-//		this.software = software;
-//		this.version = version;
-//	}
     public Software(String id, String version) {
         this.id = id;
         this.version = version;

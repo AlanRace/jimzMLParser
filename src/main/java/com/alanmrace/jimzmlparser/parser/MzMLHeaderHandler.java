@@ -3,12 +3,9 @@ package com.alanmrace.jimzmlparser.parser;
 import com.alanmrace.jimzmlparser.exceptions.CVParamAccessionNotFoundException;
 import com.alanmrace.jimzmlparser.exceptions.InvalidFormatIssue;
 import com.alanmrace.jimzmlparser.exceptions.MissingReferenceIssue;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -439,44 +436,41 @@ public class MzMLHeaderHandler extends DefaultHandler {
                         OBOTerm units = obo.getTerm(attributes.getValue("unitAccession"));
 
                         try {
-                            if (paramType.equals(CVParam.CVParamType.String)) {
-                                cvParam = new StringCVParam(term, value, units);
-                            } else if (paramType.equals(CVParam.CVParamType.Empty)) {
-                                cvParam = new EmptyCVParam(term, units);
-
-                                if (value != null) {
-                                    InvalidFormatIssue formatIssue = new InvalidFormatIssue(term, attributes.getValue("value"));
+                            switch (paramType) {
+                                case String:
+                                    cvParam = new StringCVParam(term, value, units);
+                                    break;
+                                case Empty:
+                                    cvParam = new EmptyCVParam(term, units);
+                                    
+                                    if (value != null) {
+                                        InvalidFormatIssue formatIssue = new InvalidFormatIssue(term, attributes.getValue("value"));
+                                        formatIssue.setIssueLocation(currentContent);
+                                        
+                                        notifyParserListeners(formatIssue);
+                                    }
+                                    break;
+                                case Long:
+                                    cvParam = new LongCVParam(term, Long.parseLong(value), units);
+                                    break;
+                                case Double:
+                                    cvParam = new DoubleCVParam(term, Double.parseDouble(value), units);
+                                    break;
+                                case Boolean:
+                                    cvParam = new BooleanCVParam(term, Boolean.parseBoolean(value), units);
+                                    break;
+                                case Integer:
+                                    cvParam = new IntegerCVParam(term, Integer.parseInt(value), units);
+                                    break;
+                                default:
+                                    cvParam = new StringCVParam(term, attributes.getValue("value"), obo.getTerm(attributes.getValue("unitAccession")));
+                                    
+                                    InvalidFormatIssue formatIssue = new InvalidFormatIssue(term, paramType);
+                                    formatIssue.fixAttemptedByChangingType((StringCVParam) cvParam);
                                     formatIssue.setIssueLocation(currentContent);
-
                                     notifyParserListeners(formatIssue);
-                                }
-
-                                // There shouldn't be any units assigned to any CVParam
-                                // that is marked as having no value - as the units should
-                                // only describe the units for the value.
-//                                if (units != null) {
-//                                    NonFatalParseException foundUnits = new NonFatalParseException("Found units on EmptyCVParam", "Found units " + units + " on EmptyCVParam " + cvParam);
-//                                    foundUnits.setIssueLocation(currentContent);
-//
-//                                    notifyParserListeners(foundUnits);
-//                                }
-                            } else if (paramType.equals(CVParam.CVParamType.Long)) {
-                                cvParam = new LongCVParam(term, Long.parseLong(value), units);
-                            } else if (paramType.equals(CVParam.CVParamType.Double)) {
-                                cvParam = new DoubleCVParam(term, Double.parseDouble(value), units);
-                            } else if (paramType.equals(CVParam.CVParamType.Boolean)) {
-                                cvParam = new BooleanCVParam(term, Boolean.parseBoolean(value), units);
-                            } else if (paramType.equals(CVParam.CVParamType.Integer)) {
-                                cvParam = new IntegerCVParam(term, Integer.parseInt(value), units);
-                            } else {
-                                cvParam = new StringCVParam(term, attributes.getValue("value"), obo.getTerm(attributes.getValue("unitAccession")));
-
-                                InvalidFormatIssue formatIssue = new InvalidFormatIssue(term, paramType);
-                                formatIssue.fixAttemptedByChangingType((StringCVParam) cvParam);
-                                formatIssue.setIssueLocation(currentContent);
-
-                                notifyParserListeners(formatIssue);
-
+                                    
+                                    break;
                             }
                         } catch (NumberFormatException nfe) {
                             cvParam = new StringCVParam(term, attributes.getValue("value"), obo.getTerm(attributes.getValue("unitAccession")));
