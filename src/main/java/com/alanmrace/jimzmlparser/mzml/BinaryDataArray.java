@@ -464,12 +464,18 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
      * @throws IOException On failure to read from data location
      */
     public double[] getDataAsDouble(boolean keepInMemory) throws IOException {
+        if(binary != null && binary.getData() != null)
+            return binary.getData();
+        
         byte[] data = getDataAsByte(keepInMemory);
 
         CVParam dataTypeCVParam = this.getCVParamOrChild(BinaryDataArray.dataTypeID);
 
         double[] convertedData = convertDataToDouble(data, dataTypeCVParam);
 
+        if(keepInMemory)
+            binary = new Binary(convertedData);
+        
         return convertedData;
     }
     
@@ -495,6 +501,11 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
      * @throws IOException On failure to read from data location
      */
     public byte[] getDataAsByte(boolean keepInMemory) throws IOException {
+        // Check to see if already loaded data in memory
+        if(binary != null && binary.getData() != null) {
+            
+        }
+        
         if (dataLocation == null) {
             return null;
         }
@@ -946,6 +957,10 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
         if (binary == null) {
             MzMLContent.indent(output, indent);
             output.write("<binary />\n");
+        } else {
+            output.write("<binary>");
+            output.writeData(convertDataToBytes());
+            output.write("</binary>");
         }
     }
     
@@ -961,9 +976,9 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
     
     @Override
     public void addChildrenToCollection(Collection<MzMLTag> children) {
-        if(binary != null)
-            children.add(binary);
-        
         super.addChildrenToCollection(children);
+        
+//        if(binary != null)
+//            children.add(binary);
     }
 }

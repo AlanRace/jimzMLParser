@@ -115,6 +115,10 @@ public class Binary extends MzMLContent {
         this(data, DataType.doublePrecision, CompressionType.noCompression);
     }
     
+    public double[] getData() {
+        return data;
+    }
+    
     @Override
     public String getTagName() {
         return "binary";
@@ -191,7 +195,6 @@ public class Binary extends MzMLContent {
             
             output.writeData(bytes);
             
-            MzMLContent.indent(output, indent);
             output.write("</binary>\n");
         } else {
             output.write("<binary />\n");

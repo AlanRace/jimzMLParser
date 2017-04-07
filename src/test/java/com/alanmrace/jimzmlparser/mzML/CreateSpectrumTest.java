@@ -5,6 +5,7 @@
  */
 package com.alanmrace.jimzmlparser.mzml;
 
+import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.writer.ImzMLWriter;
 import com.alanmrace.jimzmlparser.writer.MzMLWriter;
 import java.io.File;
@@ -15,6 +16,7 @@ import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import org.junit.Test;
@@ -44,19 +46,33 @@ public class CreateSpectrumTest {
         Spectrum spectrum = Spectrum.createSpectrum(mzs, intensities);
         
         assertNotNull(spectrum);
-        
+                
         try {
+            double[] mzsBack = spectrum.getmzArray();
+        
+            assertEquals("Getting m/z when data only stored in memory", 100, mzsBack[0], 0.1);
+            
+            double[] intensitiesBack = spectrum.getIntensityArray();
+        
+            assertEquals("Getting intensities when data only stored in memory", 1000, intensitiesBack[0], 0.1);
+            
+            // Now try outputing the spectral data
             MzMLWriter output = new MzMLWriter(targetDir() + "/spectrum.xml");
-            
             spectrum.outputXML(output, 0);
-            
             output.close();
             
+            // Output as imzML
             ImzMLWriter imzMLOutput = new ImzMLWriter(targetDir() + "/spectrum.imzML");
-            
             spectrum.outputXML(imzMLOutput, 0);
-            
             imzMLOutput.close();
+            
+            // Now try outputing compressed spectral data
+            spectrum.getBinaryDataArrayList().getmzArray().removeChildOfCVParam(BinaryDataArray.noCompressionID);
+            spectrum.getBinaryDataArrayList().getmzArray().addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(BinaryDataArray.zlibCompressionID)));
+            
+            output = new MzMLWriter(targetDir() + "/compressed_spectrum.xml");
+            spectrum.outputXML(output, 0);
+            output.close();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(CreateSpectrumTest.class.getName()).log(Level.SEVERE, null, ex);
             
