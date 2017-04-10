@@ -1,5 +1,6 @@
 package com.alanmrace.jimzmlparser.mzml;
 
+import com.alanmrace.jimzmlparser.data.DataTypeTransform;
 import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
 import java.nio.ByteBuffer;
@@ -95,8 +96,8 @@ public class BinaryTest {
     public void testGetDataTypeFromCV() {
         System.out.println("getDataTypeFromCV");
         CVParam cvParam = null;
-        Binary.DataType expResult = null;
-        Binary.DataType result = Binary.getDataTypeFromCV(cvParam);
+        DataTypeTransform.DataType expResult = null;
+        DataTypeTransform.DataType result = Binary.getDataTypeFromCV(cvParam);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
@@ -125,8 +126,8 @@ public class BinaryTest {
     public void testGetDataType() {
         System.out.println("getDataType");
         Binary instance = null;
-        Binary.DataType expResult = null;
-        Binary.DataType result = instance.getDataType();
+        DataTypeTransform.DataType expResult = null;
+        DataTypeTransform.DataType result = instance.getDataType();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");

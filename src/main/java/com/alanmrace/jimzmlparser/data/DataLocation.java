@@ -1,8 +1,9 @@
-package com.alanmrace.jimzmlparser.parser;
+package com.alanmrace.jimzmlparser.data;
 
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.DataFormatException;
 
 /**
  * The location of specific data within a {@link DataStorage}.
@@ -40,6 +41,8 @@ public class DataLocation {
      * The length in bytes of the data.
      */
     protected int length;
+    
+    protected DataTransformation dataTransformation;
     
     /**
      * Construct a DataLocation at a specific offset, with a specific length within
@@ -89,7 +92,7 @@ public class DataLocation {
      * @return byte[] containing the data 
      * @throws IOException can be thrown by dataStorage if the data storage is on disk
      */
-    public byte[] getData() throws IOException {
+    public byte[] getBytes() throws IOException {
         if(length <= 0) {
             logger.log(Level.FINER, "Data is of size {0} for {1}", new Object[] {length, dataStorage});
 
@@ -102,6 +105,28 @@ public class DataLocation {
         }
         
         return dataStorage.getData(offset, length);
+    }
+    
+//    public byte[] getConvertedBytes() throws DataFormatException, IOException {
+//        byte[] data = getBytes();
+//        
+//        if(dataTransformation == null)
+//            return data;
+//        
+//        return dataTransformation.performReverseTransform(data);
+//    }
+    
+    public double[] getData() throws DataFormatException, IOException {
+        byte[] data = getBytes();
+        
+        if(dataTransformation == null)
+            return DataTypeTransform.convertDataToDouble(data, DataTypeTransform.DataType.Double);
+        
+        return dataTransformation.performReverseTransform(data);
+    }
+    
+    public void setDataTransformation(DataTransformation transformation) {
+        this.dataTransformation = transformation;
     }
     
     @Override

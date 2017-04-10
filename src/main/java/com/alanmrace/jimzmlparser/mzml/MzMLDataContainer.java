@@ -1,7 +1,7 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import com.alanmrace.jimzmlparser.parser.DataLocation;
-import com.alanmrace.jimzmlparser.parser.MzMLSpectrumDataStorage;
+import com.alanmrace.jimzmlparser.data.DataLocation;
+import com.alanmrace.jimzmlparser.data.MzMLSpectrumDataStorage;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -66,7 +66,7 @@ public abstract class MzMLDataContainer extends MzMLIndexedContentWithParams {
     
     protected void convertMzMLDataStorageToBase64() throws IOException {
         // Load in the data from the data storage
-        byte[] data = dataLocation.getData();
+        byte[] data = dataLocation.getBytes();
         String spectrumData = new String(data);
 
         MzMLSpectrumDataStorage mzMLDataStorage = (MzMLSpectrumDataStorage) dataLocation.getDataStorage();
@@ -90,7 +90,10 @@ public abstract class MzMLDataContainer extends MzMLIndexedContentWithParams {
                     int binaryStart = subSpectrumData.indexOf("<binary>") + cvParamLocation + "<binary>".length();
                     int binaryEnd = subSpectrumData.indexOf("</binary>") + cvParamLocation;
 
-                    bda.setDataLocation(new DataLocation(mzMLDataStorage.getBase64DataStorage(), binaryStart + dataLocation.getOffset(), binaryEnd - binaryStart));
+                    DataLocation location = new DataLocation(mzMLDataStorage.getBase64DataStorage(), binaryStart + dataLocation.getOffset(), binaryEnd - binaryStart);
+                    bda.setDataLocation(location);
+                    location.setDataTransformation(bda.generateDataTransformation());
+                    
                     //		    System.out.println(cvParam);
                     //		    System.out.println(spectrumData.substring(binaryStart, binaryEnd));
                 } else {

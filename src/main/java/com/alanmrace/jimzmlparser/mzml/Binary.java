@@ -1,5 +1,6 @@
 package com.alanmrace.jimzmlparser.mzml;
 
+import com.alanmrace.jimzmlparser.data.DataTypeTransform;
 import com.alanmrace.jimzmlparser.writer.MzMLWriteable;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -19,41 +20,6 @@ public class Binary extends MzMLContent {
      */
     private static final long serialVersionUID = 1L;
     
-    /**
-     * Possible binary data types used to store data.
-     */
-    public enum DataType {
-
-        /**
-         * Double precision floating point.
-         */
-        doublePrecision,
-
-        /**
-         * Floating point.
-         */
-        singlePrecision,
-
-        /**
-         * Signed 8-bit integer.
-         */
-        signed8bitInteger,
-
-        /**
-         * Signed 16-bit integer.
-         */
-        signed16bitInteger,
-
-        /**
-         * Signed 32-bit integer.
-         */
-        signed32bitInteger,
-
-        /**
-         * Signed 64-bit integer.
-         */
-        signed64bitInteger;
-    }
 
     /**
      * Possible compression methods for compressing binary data.
@@ -74,7 +40,7 @@ public class Binary extends MzMLContent {
     /**
      * Binary data type used to store the data.
      */
-    private DataType dataType;
+    private DataTypeTransform.DataType dataType;
 
     /**
      * CVParam describing the binary data type used to store the data.
@@ -98,7 +64,7 @@ public class Binary extends MzMLContent {
      * @param dataType      Data type that should be used to store data
      * @param compression   Compression (if any) to use on the data
      */
-    public Binary(double[] data, DataType dataType, CompressionType compression) {
+    public Binary(double[] data, DataTypeTransform.DataType dataType, CompressionType compression) {
         this.data = data;
 
         this.dataType = dataType;
@@ -112,7 +78,7 @@ public class Binary extends MzMLContent {
      * @param data Data associated with this binary tag
      */
     public Binary(double[] data) {
-        this(data, DataType.doublePrecision, CompressionType.noCompression);
+        this(data, DataTypeTransform.DataType.Double, CompressionType.noCompression);
     }
     
     public double[] getData() {
@@ -131,21 +97,21 @@ public class Binary extends MzMLContent {
      * @param cvParam   CVParam to convert
      * @return          DataType if conversion possible, otherwise null
      */
-    public static DataType getDataTypeFromCV(CVParam cvParam) {
+    public static DataTypeTransform.DataType getDataTypeFromCV(CVParam cvParam) {
         String term = cvParam.getTerm().getID();
 
         if (term.equals(BinaryDataArray.doublePrecisionID)) {
-            return DataType.doublePrecision;
+            return DataTypeTransform.DataType.Double;
         } else if (term.equals(BinaryDataArray.singlePrecisionID)) {
-            return Binary.DataType.singlePrecision;
+            return DataTypeTransform.DataType.Float;
         } else if (term.equals(BinaryDataArray.signed64bitIntegerID) || term.equals(BinaryDataArray.imsSigned64bitIntegerID)) {
-            return Binary.DataType.signed64bitInteger;
+            return DataTypeTransform.DataType.Integer64bit;
         } else if (term.equals(BinaryDataArray.signed32bitIntegerID) || term.equals(BinaryDataArray.imsSigned32bitIntegerID)) {
-            return Binary.DataType.signed32bitInteger;
+            return DataTypeTransform.DataType.Integer32bit;
         } else if (term.equals(BinaryDataArray.signed16bitIntegerID)) {
-            return Binary.DataType.signed16bitInteger;
+            return DataTypeTransform.DataType.Integer16bit;
         } else if (term.equals(BinaryDataArray.signed8bitIntegerID)) {
-            return Binary.DataType.signed8bitInteger;
+            return DataTypeTransform.DataType.Integer8bit;
         }
 
         return null;
@@ -165,7 +131,7 @@ public class Binary extends MzMLContent {
      * 
      * @return DataType
      */
-    public DataType getDataType() {
+    public DataTypeTransform.DataType getDataType() {
         return dataType;
     }
 

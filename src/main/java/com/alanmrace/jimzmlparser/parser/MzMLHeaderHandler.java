@@ -1,5 +1,8 @@
 package com.alanmrace.jimzmlparser.parser;
 
+import com.alanmrace.jimzmlparser.data.MzMLSpectrumDataStorage;
+import com.alanmrace.jimzmlparser.data.DataLocation;
+import com.alanmrace.jimzmlparser.data.DataStorage;
 import com.alanmrace.jimzmlparser.exceptions.CVParamAccessionNotFoundException;
 import com.alanmrace.jimzmlparser.exceptions.InvalidFormatIssue;
 import com.alanmrace.jimzmlparser.exceptions.MissingReferenceIssue;
@@ -1514,7 +1517,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
     protected void setDataContainer(MzMLDataContainer dataContainer, long offset) {
         if (previousOffset != -1 && openDataStorage && dataContainer != null) {
             DataLocation dataLocation = new DataLocation(dataStorage, previousOffset, (int) (offset - previousOffset));
-
+            
             dataContainer.setDataLocation(dataLocation);
         }
     }

@@ -3,14 +3,12 @@ package com.alanmrace.jimzmlparser.mzml;
 import com.alanmrace.jimzmlparser.exceptions.ImzMLWriteException;
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.Serializable;
 
 import com.alanmrace.jimzmlparser.obo.OBO;
-import com.alanmrace.jimzmlparser.parser.DataLocation;
-import com.alanmrace.jimzmlparser.parser.DataStorage;
+import com.alanmrace.jimzmlparser.data.DataLocation;
+import com.alanmrace.jimzmlparser.data.DataStorage;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import com.alanmrace.jimzmlparser.writer.MzMLWriteable;
 import com.alanmrace.jimzmlparser.writer.MzMLWriter;
@@ -711,5 +709,39 @@ public class MzML extends MzMLContentWithParams implements Serializable {
                 }
             }
         }
+    }
+    
+    protected static void createDefaults(MzML mzML) {
+        FileDescription fd = new FileDescription();
+        mzML.setFileDescription(fd);
+        
+        SoftwareList softwareList = new SoftwareList(0);
+        mzML.setSoftwareList(softwareList);
+        
+        InstrumentConfigurationList icList = new InstrumentConfigurationList(0);
+        mzML.setInstrumentConfigurationList(icList);
+        
+        InstrumentConfiguration ic = new InstrumentConfiguration("instrumentConfiguration");
+        icList.add(ic);
+        
+        DataProcessingList dpList = new DataProcessingList(0);
+        mzML.setDataProcessingList(dpList);
+        
+        DataProcessing dp = new DataProcessing("dataProcessing");
+        dpList.add(dp);
+        
+        Run run = new Run("run", ic);
+        mzML.setRun(run);
+        
+        SpectrumList spectrumList = new SpectrumList(0, dp);
+        run.setSpectrumList(spectrumList);
+    }
+    
+    public static MzML create() {
+        MzML mzML = new MzML(currentVersion);
+        
+        createDefaults(mzML);
+        
+        return mzML;
     }
 }

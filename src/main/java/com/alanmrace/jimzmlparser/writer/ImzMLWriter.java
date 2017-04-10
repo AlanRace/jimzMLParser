@@ -27,7 +27,8 @@ public class ImzMLWriter extends MzMLWriter {
             outputLocation = outputLocation.substring(0, pos);
         }
         
-        dataOutput = new DataOutputStream(new FileOutputStream(outputLocation + ".ibd"));
+        dataRAF = new RandomAccessFile(outputLocation + ".ibd", "rw");
+        dataOutput = new DataOutputStream(new FileOutputStream(dataRAF.getFD()));
     }
     
     @Override

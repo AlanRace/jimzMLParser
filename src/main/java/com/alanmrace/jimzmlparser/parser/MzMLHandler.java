@@ -1,5 +1,7 @@
 package com.alanmrace.jimzmlparser.parser;
 
+import com.alanmrace.jimzmlparser.data.DataLocation;
+import com.alanmrace.jimzmlparser.data.BinaryDataStorage;
 import com.alanmrace.jimzmlparser.exceptions.FatalParseException;
 import com.alanmrace.jimzmlparser.exceptions.MzMLParseException;
 import java.io.DataOutputStream;
@@ -179,8 +181,10 @@ public class MzMLHandler extends MzMLHeaderHandler {
                 logger.log(Level.SEVERE, null, ex);
             }
 
-            currentBinaryDataArray.setDataLocation(new DataLocation(dataStorage, offset, lengthToWrite));
-
+            DataLocation location = new DataLocation(dataStorage, offset, lengthToWrite);
+            currentBinaryDataArray.setDataLocation(location);
+            location.setDataTransformation(currentBinaryDataArray.generateDataTransformation());
+            
             offset += lengthToWrite;
             processingBinary = false;
         } else {

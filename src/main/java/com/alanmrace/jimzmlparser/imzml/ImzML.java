@@ -16,6 +16,8 @@ import com.alanmrace.jimzmlparser.mzml.ScanSettingsList;
 import com.alanmrace.jimzmlparser.mzml.Software;
 import com.alanmrace.jimzmlparser.mzml.Spectrum;
 import com.alanmrace.jimzmlparser.mzml.SpectrumList;
+import com.alanmrace.jimzmlparser.writer.ImzMLWriter;
+import com.alanmrace.jimzmlparser.writer.MzMLWriter;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.nio.ByteBuffer;
@@ -690,6 +692,22 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
 
         write(ibdFile.getAbsolutePath().substring(0, ibdFile.getAbsolutePath().length() - ".ibd".length()) + ".imzML");
     }
+    
+    @Override
+    public void write(String filename) throws ImzMLWriteException {
+        try {
+            String encoding = "ISO-8859-1";
+            
+            ImzMLWriter output = new ImzMLWriter(filename);
+
+            output.write("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>\n");
+            outputXML(output, 0);
+
+            output.close();
+        } catch (IOException ex) {
+            throw new ImzMLWriteException("Error writing imzML file " + filename + ". " + ex.getLocalizedMessage(), ex);
+        }
+    }
 
 //    @Override
 //    public void write(String filename) throws ImzMLWriteException {
@@ -859,5 +877,13 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
         bb.putLong(uuid.getMostSignificantBits());
         bb.putLong(uuid.getLeastSignificantBits());
         return bb.array();
+    }
+    
+    public static ImzML create() {
+        ImzML imzML = new ImzML(currentVersion);
+        
+        createDefaults(imzML);
+        
+        return imzML;
     }
 }

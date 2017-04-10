@@ -1,7 +1,7 @@
 /*
  * 
  */
-package com.alanmrace.jimzmlparser.parser;
+package com.alanmrace.jimzmlparser.data;
 
 import java.io.File;
 import java.io.FileNotFoundException;
