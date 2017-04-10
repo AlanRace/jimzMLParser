@@ -76,8 +76,8 @@ public class CreateSpectrumTest {
             
             mzML.write(targetDir() + "/spectrum.mzML");
             
-            mzML = MzMLHeaderHandler.parsemzMLHeader(targetDir() + "/spectrum.mzML");
-            Spectrum mzMLSpectrum = mzML.getRun().getSpectrumList().getSpectrum(0);
+            MzML mzMLBack = MzMLHeaderHandler.parsemzMLHeader(targetDir() + "/spectrum.mzML");
+            Spectrum mzMLSpectrum = mzMLBack.getRun().getSpectrumList().getSpectrum(0);
             double[] mzMLmzs = mzMLSpectrum.getmzArray(true);
             
             assertEquals("Getting m/z back from mzML", mzs[0], mzMLmzs[0], 0.1);

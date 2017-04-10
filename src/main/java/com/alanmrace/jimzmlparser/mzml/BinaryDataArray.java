@@ -1,6 +1,5 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import com.alanmrace.jimzmlparser.data.Base64DataTransform;
 import com.alanmrace.jimzmlparser.data.DataLocation;
 import com.alanmrace.jimzmlparser.data.DataTransformation;
 import com.alanmrace.jimzmlparser.data.DataTypeTransform;
@@ -11,7 +10,6 @@ import com.alanmrace.jimzmlparser.writer.MzMLWriteable;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -193,7 +191,6 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
      * Binary data type of the stored data array.
      */
 //    private DataTypeTransform.DataType dataType;
-
     /**
      * True if this BinaryDataArray describes an m/z array, false otherwise.
      */
@@ -312,7 +309,7 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
      */
     public boolean isDoublePrecision() {
         DataType dataType = getDataType();
-        
+
         return dataType == DataTypeTransform.DataType.Double;
     }
 
@@ -467,6 +464,10 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
 //        if (keepInMemory) {
 //            binary = new Binary(convertedData);
 //        }
+        if (dataLocation == null) {
+            return null;
+        }
+
         double[] data = null;
 
         try {
@@ -566,7 +567,7 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
         } else if (term.equals(signed8bitIntegerID)) {
             dataType = DataTypeTransform.DataType.Integer8bit;
         }
-        
+
         return dataType;
     }
 
@@ -691,24 +692,25 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
     protected void outputXMLContent(MzMLWriteable output, int indent) throws IOException {
         super.outputXMLContent(output, indent);
 
+        double[] data = getDataAsDouble();
+
         MzMLContent.indent(output, indent);
-        
-        if (binary == null) {
+
+        if (data == null) {
             output.write("<binary />\n");
         } else {
             output.write("<binary>");
-            
+
             try {
-                double[] data = getDataAsDouble();
                 DataTransformation transformation = this.generateDataTransformation();
                 //transformation.addTransform(new Base64DataTransform());
-                                
+
                 output.writeData(transformation.performForwardTransform(data));
 
             } catch (DataFormatException ex) {
                 Logger.getLogger(BinaryDataArray.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
             //            output.writeData(convertDataToBytes());
             output.write("</binary>\n");
         }
