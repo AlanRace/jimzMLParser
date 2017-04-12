@@ -5,9 +5,9 @@
  */
 package com.alanmrace.jimzmlparser.mzml;
 
-import com.alanmrace.jimzmlparser.writer.MzMLWriteable;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import com.alanmrace.jimzmlparser.writer.MzMLWritable;
 
 /**
  *
@@ -49,7 +49,7 @@ public abstract class MzMLOrderedContentWithParams extends MzMLContentWithParams
      * @param order order of the component within the list
      * @throws IOException Signals that an I/O exception has occurred.
      */
-    public void outputXML(MzMLWriteable output, int indent, int order) throws IOException {
+    public void outputXML(MzMLWritable output, int indent, int order) throws IOException {
         String attributeText = getXMLAttributeText();
         
         MzMLContent.indent(output, indent);

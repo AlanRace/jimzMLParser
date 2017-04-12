@@ -2,12 +2,12 @@ package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
-import com.alanmrace.jimzmlparser.writer.MzMLWriteable;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import com.alanmrace.jimzmlparser.writer.MzMLWritable;
 
 /**
  *
@@ -140,7 +140,7 @@ public class ComponentList extends MzMLContentList<Component> {
     }
 
     @Override
-    protected void outputXMLContent(MzMLWriteable output, int indent) throws IOException {
+    protected void outputXMLContent(MzMLWritable output, int indent) throws IOException {
         int order = 1;
         for (Source source : sources) {
             source.outputXML(output, indent + 1, order++);

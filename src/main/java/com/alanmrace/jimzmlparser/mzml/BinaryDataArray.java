@@ -6,7 +6,8 @@ import com.alanmrace.jimzmlparser.data.DataTypeTransform;
 import com.alanmrace.jimzmlparser.data.DataTypeTransform.DataType;
 import com.alanmrace.jimzmlparser.data.ZlibDataTransform;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
-import com.alanmrace.jimzmlparser.writer.MzMLWriteable;
+import com.alanmrace.jimzmlparser.writer.ImzMLHeaderWriter;
+import com.alanmrace.jimzmlparser.writer.ImzMLWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
+import com.alanmrace.jimzmlparser.writer.MzMLWritable;
 
 /**
  * BinaryDataArray tag.
@@ -689,30 +691,29 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
     }
 
     @Override
-    protected void outputXMLContent(MzMLWriteable output, int indent) throws IOException {
-        super.outputXMLContent(output, indent);
-
+    protected void outputXMLContent(MzMLWritable output, int indent) throws IOException {
         double[] data = getDataAsDouble();
 
-        MzMLContent.indent(output, indent);
-
         if (data == null) {
+            super.outputXMLContent(output, indent);
+
+            MzMLContent.indent(output, indent);
             output.write("<binary />\n");
         } else {
-            output.write("<binary>");
+            byte[] byteData = output.prepareData(data, this);
 
-            try {
-                DataTransformation transformation = this.generateDataTransformation();
-                //transformation.addTransform(new Base64DataTransform());
+            super.outputXMLContent(output, indent);
 
-                output.writeData(transformation.performForwardTransform(data));
-
-            } catch (DataFormatException ex) {
-                Logger.getLogger(BinaryDataArray.class.getName()).log(Level.SEVERE, null, ex);
+            MzMLContent.indent(output, indent);
+            
+            if(output instanceof ImzMLHeaderWriter) {
+                output.write("<binary />\n");
+                output.writeData(byteData);
+            } else {
+                output.write("<binary>");
+                output.writeData(byteData);
+                output.write("</binary>\n");
             }
-
-            //            output.writeData(convertDataToBytes());
-            output.write("</binary>\n");
         }
     }
 

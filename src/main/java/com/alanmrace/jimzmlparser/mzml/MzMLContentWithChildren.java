@@ -5,10 +5,10 @@
  */
 package com.alanmrace.jimzmlparser.mzml;
 
-import com.alanmrace.jimzmlparser.writer.MzMLWriteable;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
+import com.alanmrace.jimzmlparser.writer.MzMLWritable;
 
 /**
  * Abstract class implementing the basic functionality for a tag in MzML which has
@@ -18,7 +18,7 @@ import java.util.ArrayList;
  */
 public abstract class MzMLContentWithChildren extends MzMLContent implements HasChildren {
 
-    protected void outputXMLContent(MzMLWriteable output, int indent) throws IOException {
+    protected void outputXMLContent(MzMLWritable output, int indent) throws IOException {
         ArrayList<MzMLTag> children = new ArrayList<MzMLTag>();
         
         addChildrenToCollection(children);
@@ -29,7 +29,7 @@ public abstract class MzMLContentWithChildren extends MzMLContent implements Has
     }
        
     @Override
-    public void outputXML(MzMLWriteable output, int indent) throws IOException {
+    public void outputXML(MzMLWritable output, int indent) throws IOException {
         String attributeText = getXMLAttributeText();
         
         MzMLContent.indent(output, indent);

@@ -3,7 +3,6 @@ package com.alanmrace.jimzmlparser.mzml;
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
-import com.alanmrace.jimzmlparser.writer.MzMLWriteable;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.text.SimpleDateFormat;
@@ -11,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import java.util.Collection;
+import com.alanmrace.jimzmlparser.writer.MzMLWritable;
 
 public class Run extends MzMLContentWithParams implements ReferenceableTag {
 
@@ -276,7 +276,7 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
 //		return chromatogramList.get(index);
 //	}
     @Override
-    public void outputXML(MzMLWriteable output, int indent) throws IOException {
+    public void outputXML(MzMLWritable output, int indent) throws IOException {
         MzMLContent.indent(output, indent);
         output.write("<run");
         output.write(" defaultInstrumentConfigurationRef=\"" + XMLHelper.ensureSafeXML(defaultInstrumentConfigurationRef.getID()) + "\"");

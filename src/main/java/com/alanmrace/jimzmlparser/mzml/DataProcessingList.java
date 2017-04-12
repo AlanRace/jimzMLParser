@@ -1,5 +1,7 @@
 package com.alanmrace.jimzmlparser.mzml;
 
+import com.alanmrace.jimzmlparser.obo.OBO;
+
 public class DataProcessingList extends MzMLIDContentList<DataProcessing> {
 
     /**
@@ -35,5 +37,18 @@ public class DataProcessingList extends MzMLIDContentList<DataProcessing> {
     @Override
     public String getTagName() {
         return "dataProcessingList";
+    }
+    
+    public static DataProcessingList create(Software software) {
+        DataProcessingList dpList = new DataProcessingList(1);
+        DataProcessing dp = new DataProcessing("imzML-creation");
+        dpList.add(dp);
+        
+        ProcessingMethod pm = new ProcessingMethod(software);
+        dp.add(pm);
+        
+        pm.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ProcessingMethod.conversionTomzMLID)));
+        
+        return dpList;
     }
 }

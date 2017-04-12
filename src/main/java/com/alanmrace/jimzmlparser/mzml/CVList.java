@@ -31,4 +31,14 @@ public class CVList extends MzMLContentList<CV> {
     public String getTagName() {
         return "cvList";
     }
+    
+    public static CVList create() {
+        CVList cvList = new CVList(3);
+        
+        cvList.add(new CV(CV.IMS_URI, "Mass Spectrometry Imaging Ontology", "IMS"));
+        cvList.add(new CV(CV.MS_URI, "Proteomics Standards Initiative Mass Spectrometry Ontology", "MS"));
+        cvList.add(new CV(CV.UO_URI, "Unit Ontology", "UO"));
+        
+        return cvList;
+    }
 }

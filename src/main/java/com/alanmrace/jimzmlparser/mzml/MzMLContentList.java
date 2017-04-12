@@ -2,12 +2,12 @@ package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
-import com.alanmrace.jimzmlparser.writer.MzMLWriteable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import com.alanmrace.jimzmlparser.writer.MzMLWritable;
 
 /**
  * Abstract class implementing the basic functionality for a list tag in MzML.
@@ -128,7 +128,7 @@ public abstract class MzMLContentList<T extends MzMLTag>
     }
 
     @Override
-    protected void outputXMLContent(MzMLWriteable output, int indent) throws IOException {
+    protected void outputXMLContent(MzMLWritable output, int indent) throws IOException {
         int counter = 0;
         
         for (T item : this) {

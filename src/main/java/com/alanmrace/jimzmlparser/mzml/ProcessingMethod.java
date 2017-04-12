@@ -14,6 +14,8 @@ public class ProcessingMethod extends MzMLOrderedContentWithParams {
     public static String dataProcessingParameterID = "MS:1000630"; // Optional child (1+)
 
     public static String fileFormatConversionID = "MS:1000530";
+    
+    public static String conversionTomzMLID = "MS:1000544";
 
     private Software softwareRef;
 

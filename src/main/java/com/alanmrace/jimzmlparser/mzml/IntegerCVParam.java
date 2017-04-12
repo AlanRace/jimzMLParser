@@ -22,9 +22,8 @@ public class IntegerCVParam extends CVParam {
      * @param term  Ontology term for the parameter
      * @param value Value of the parameter
      * @param units Ontology term for the units of the parameter
-     * @throws CVParamAccessionNotFoundException    Supplied a null value term
      */
-    public IntegerCVParam(OBOTerm term, int value, OBOTerm units) throws CVParamAccessionNotFoundException {
+    public IntegerCVParam(OBOTerm term, int value, OBOTerm units) {
         this(term, value);
 
         this.units = units;
@@ -39,11 +38,10 @@ public class IntegerCVParam extends CVParam {
      * 
      * @param term  Ontology term for the parameter
      * @param value Value of the parameter
-     * @throws CVParamAccessionNotFoundException    Supplied a null value term
      */
-    public IntegerCVParam(OBOTerm term, int value) throws CVParamAccessionNotFoundException {
+    public IntegerCVParam(OBOTerm term, int value) {
         if (term == null) {
-            throw (new CVParamAccessionNotFoundException("" + value));
+            throw (new IllegalArgumentException("OBOTerm cannot be null for IntegerCVParam"));
         }
 
         this.term = term;

@@ -1,5 +1,6 @@
 package com.alanmrace.jimzmlparser.mzml;
 
+import com.alanmrace.jimzmlparser.obo.OBO;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +14,8 @@ public class FileContent extends MzMLContentWithParams {
     public static final String dataFileContentID = "MS:1000524";		// Required child (1+)
     public static final String spectrumRepresentationID = "MS:1000525";		// Optional child (1)
 
+    public static final String massSpectrumID = "MS:1000294";
+    
     public static final String binaryTypeID = "IMS:1000003";
     public static final String binaryTypeContinuousID = "IMS:1000030";
     public static final String binaryTypeProcessedID = "IMS:1000031";
@@ -65,5 +68,13 @@ public class FileContent extends MzMLContentWithParams {
     @Override
     public String getTagName() {
         return "fileContent";
+    }
+    
+    public static FileContent create() {
+        FileContent fc = new FileContent();
+        
+        fc.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(massSpectrumID)));
+        
+        return fc;
     }
 }

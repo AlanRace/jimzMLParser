@@ -1,5 +1,7 @@
 package com.alanmrace.jimzmlparser.mzml;
 
+import com.alanmrace.jimzmlparser.obo.OBO;
+
 public class InstrumentConfigurationList extends MzMLIDContentList<InstrumentConfiguration> {
 
     /**
@@ -35,5 +37,16 @@ public class InstrumentConfigurationList extends MzMLIDContentList<InstrumentCon
     @Override
     public String getTagName() {
         return "instrumentConfigurationList";
+    }
+    
+    public static InstrumentConfigurationList create() {
+        InstrumentConfigurationList icList = new InstrumentConfigurationList(1);
+        
+        InstrumentConfiguration ic = new InstrumentConfiguration("instrumentConfiguration");
+        icList.add(ic);
+        
+        ic.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(InstrumentConfiguration.instrumentModelID)));
+        
+        return icList;
     }
 }

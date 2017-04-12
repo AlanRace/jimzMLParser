@@ -11,6 +11,8 @@ public class Software extends MzMLContentWithParams implements ReferenceableTag 
     private static final long serialVersionUID = 1L;
 
     public static String softwareID = "MS:1000531"; // Required child (1)
+    
+    public static final String customUnreleasedToolID = "MS:1000799";
 
     protected String id;			// Required
     protected String version;		// Required

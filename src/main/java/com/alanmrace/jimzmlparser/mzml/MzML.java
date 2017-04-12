@@ -10,13 +10,13 @@ import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.data.DataLocation;
 import com.alanmrace.jimzmlparser.data.DataStorage;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
-import com.alanmrace.jimzmlparser.writer.MzMLWriteable;
 import com.alanmrace.jimzmlparser.writer.MzMLWriter;
 import java.io.RandomAccessFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import java.util.Collection;
+import com.alanmrace.jimzmlparser.writer.MzMLWritable;
 
 /**
  * Class capturing {@literal <mzML>} tag within an MzML file.
@@ -556,7 +556,7 @@ public class MzML extends MzMLContentWithParams implements Serializable {
     }
 
     @Override
-    public void outputXML(MzMLWriteable output, int indent) throws IOException {
+    public void outputXML(MzMLWritable output, int indent) throws IOException {
         if (outputIndex) {
             MzMLContent.indent(output, indent);
             output.write("<indexedmzML");
@@ -712,28 +712,25 @@ public class MzML extends MzMLContentWithParams implements Serializable {
     }
     
     protected static void createDefaults(MzML mzML) {
-        FileDescription fd = new FileDescription();
+        CVList cvList = CVList.create();
+        mzML.setCVList(cvList);
+        
+        FileDescription fd = FileDescription.create();
         mzML.setFileDescription(fd);
         
-        SoftwareList softwareList = new SoftwareList(0);
+        SoftwareList softwareList = SoftwareList.create();
         mzML.setSoftwareList(softwareList);
         
-        InstrumentConfigurationList icList = new InstrumentConfigurationList(0);
+        InstrumentConfigurationList icList = InstrumentConfigurationList.create();
         mzML.setInstrumentConfigurationList(icList);
         
-        InstrumentConfiguration ic = new InstrumentConfiguration("instrumentConfiguration");
-        icList.add(ic);
-        
-        DataProcessingList dpList = new DataProcessingList(0);
+        DataProcessingList dpList = DataProcessingList.create(softwareList.get(0));
         mzML.setDataProcessingList(dpList);
         
-        DataProcessing dp = new DataProcessing("dataProcessing");
-        dpList.add(dp);
-        
-        Run run = new Run("run", ic);
+        Run run = new Run("run", icList.get(0));
         mzML.setRun(run);
         
-        SpectrumList spectrumList = new SpectrumList(0, dp);
+        SpectrumList spectrumList = new SpectrumList(0, dpList.get(0));
         run.setSpectrumList(spectrumList);
     }
     

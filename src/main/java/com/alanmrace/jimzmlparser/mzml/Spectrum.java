@@ -445,6 +445,8 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
         
     }
     
+    protected static int spectrumNumber = 0;
+    
     /**
      *
      * Default Spectrum parameters are: MS1 Spectrum & Profile Spectrum. These MUST be 
@@ -458,8 +460,7 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
      * @return
      */
     public static Spectrum createSpectrum(double[] mzs, double[] intensities) {
-        // TODO: Specify ID
-        String id = "";
+        String id = "spectrum=" + spectrumNumber++;
         
         Spectrum spectrum = new Spectrum(id, intensities.length);
         spectrum.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(Spectrum.MS1Spectrum)));

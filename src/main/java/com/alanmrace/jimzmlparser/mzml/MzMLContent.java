@@ -2,10 +2,10 @@ package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
-import com.alanmrace.jimzmlparser.writer.MzMLWriteable;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collection;
+import com.alanmrace.jimzmlparser.writer.MzMLWritable;
 
 /**
  * Base class for all mzML tags. This includes default handling for inclusion of
@@ -89,7 +89,7 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
     }
     
     @Override
-    public void outputXML(MzMLWriteable output, int indent) throws IOException {
+    public void outputXML(MzMLWritable output, int indent) throws IOException {
         String attributeText = getXMLAttributeText();
         
         MzMLContent.indent(output, indent);
@@ -108,7 +108,7 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
      * @param indent Number of tabs to indent
      * @throws IOException Exception occurred during writing data
      */
-    public static void indent(MzMLWriteable output, int indent) throws IOException {
+    public static void indent(MzMLWritable output, int indent) throws IOException {
         for (int i = 0; i < indent; i++) {
             output.write("  ");
         }

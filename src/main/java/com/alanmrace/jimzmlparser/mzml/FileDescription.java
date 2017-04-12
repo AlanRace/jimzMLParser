@@ -118,4 +118,13 @@ public class FileDescription extends MzMLContentWithParams implements Serializab
         
         super.addChildrenToCollection(children);
     }
+    
+    public static FileDescription create() {
+        FileDescription fd = new FileDescription();
+        
+        FileContent fc = FileContent.create();
+        fd.setFileContent(fc);
+        
+        return fd;
+    }
 }

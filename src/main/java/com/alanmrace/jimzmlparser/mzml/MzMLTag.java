@@ -1,10 +1,10 @@
 package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
-import com.alanmrace.jimzmlparser.writer.MzMLWriteable;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Collection;
+import com.alanmrace.jimzmlparser.writer.MzMLWritable;
 
 /**
  * Interface for any class which describes a tag within an MzML file.
@@ -49,7 +49,7 @@ public interface MzMLTag {
      * @param indent Number of tabs to indent each tag in the XML
      * @throws IOException Exception occurred during writing data
      */
-    public void outputXML(MzMLWriteable output, int indent) throws IOException;
+    public void outputXML(MzMLWritable output, int indent) throws IOException;
     
     /**
      * Set the parent MzMLContent of this MzMLContent. This method currently 

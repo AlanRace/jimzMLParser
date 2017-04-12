@@ -1,11 +1,11 @@
 package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.data.DataTypeTransform;
-import com.alanmrace.jimzmlparser.writer.MzMLWriteable;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import com.alanmrace.jimzmlparser.writer.MzMLWritable;
 
 /**
  * Binary tag. When an mzML file is parsed the data is output into a temporary
@@ -145,7 +145,7 @@ public class Binary extends MzMLContent {
     }
 
     @Override
-    public void outputXML(MzMLWriteable output, int indent) throws IOException {
+    public void outputXML(MzMLWritable output, int indent) throws IOException {
         MzMLContent.indent(output, indent);
 
         if (this.data != null) {

@@ -5,9 +5,9 @@
  */
 package com.alanmrace.jimzmlparser.mzml;
 
-import com.alanmrace.jimzmlparser.writer.MzMLWriteable;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import com.alanmrace.jimzmlparser.writer.MzMLWritable;
 
 /**
  * MzMLContent which can be indexed within the {@literal <indexList>} in the indexed
@@ -63,7 +63,7 @@ public abstract class MzMLIndexedContentWithParams extends MzMLOrderedContentWit
     protected long getmzMLLocation() {
         return mzMLLocation;
     }
-    
+        
     /**
      * Output attribute in the form of XML.
      *
@@ -73,7 +73,7 @@ public abstract class MzMLIndexedContentWithParams extends MzMLOrderedContentWit
      * @throws IOException Signals that an I/O exception has occurred.
      */
     @Override
-    public void outputXML(MzMLWriteable output, int indent, int index) throws IOException {
+    public void outputXML(MzMLWritable output, int indent, int index) throws IOException {
         String attributeText = getXMLAttributeText();
         
         MzMLContent.indent(output, indent);
