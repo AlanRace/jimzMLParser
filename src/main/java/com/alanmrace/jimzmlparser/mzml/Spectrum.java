@@ -437,7 +437,7 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
         // TODO: 
         
         DataProcessing previousProcessing = this.getDataProcessingRef();
-        DataProcessing newProcessing = new DataProcessing("update");
+        DataProcessing newProcessing = new DataProcessing(previousProcessing.getID() + "-" + processing.getID());
         
         for(ProcessingMethod method : previousProcessing)
             newProcessing.add(method);
