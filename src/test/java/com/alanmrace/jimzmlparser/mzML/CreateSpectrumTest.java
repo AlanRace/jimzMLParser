@@ -9,10 +9,13 @@ import com.alanmrace.jimzmlparser.data.DataTypeTransform;
 import com.alanmrace.jimzmlparser.data.DataTypeTransform.DataType;
 import com.alanmrace.jimzmlparser.exceptions.FatalParseException;
 import com.alanmrace.jimzmlparser.exceptions.ImzMLWriteException;
+import com.alanmrace.jimzmlparser.exceptions.Issue;
 import com.alanmrace.jimzmlparser.exceptions.MzMLParseException;
 import com.alanmrace.jimzmlparser.imzml.ImzML;
 import com.alanmrace.jimzmlparser.obo.OBO;
+import com.alanmrace.jimzmlparser.parser.ImzMLHandler;
 import com.alanmrace.jimzmlparser.parser.MzMLHeaderHandler;
+import com.alanmrace.jimzmlparser.parser.ParserListener;
 import com.alanmrace.jimzmlparser.writer.ImzMLWriter;
 import com.alanmrace.jimzmlparser.writer.MzMLWriter;
 import java.io.File;
@@ -118,6 +121,66 @@ public class CreateSpectrumTest {
             fail("Unexpected exception: " + ex);
         } 
         
+    }
+    
+    @Test
+    public void modifySpectrumTest() {
+        System.out.println("---- modifySpectrumTest ----");
+        
+        double[] mzs = {100, 150, 200};
+        double[] intensities = {1000, 432, 2439.439};
+        
+        ImzML imzML = ImzML.create();
+        
+        Spectrum spectrum = Spectrum.createSpectrum(mzs, intensities);
+        imzML.getRun().getSpectrumList().add(spectrum);
+        
+        spectrum = Spectrum.createSpectrum(mzs, intensities);
+        imzML.getRun().getSpectrumList().add(spectrum);
+        
+        
+        DataProcessing processing = new DataProcessing("modification");
+        ProcessingMethod method = new ProcessingMethod(Software.create());
+        processing.add(method);
+        method.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ProcessingMethod.dataTransformationID)));
+        
+        spectrum.updatemzArray(intensities, processing);
+        
+        // Now add a spectrum with DataProcessing that is not part of the list previously
+        processing = new DataProcessing("extra-addition");
+        method = new ProcessingMethod(Software.create());
+        processing.add(method);
+        method.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ProcessingMethod.conversionTomzMLID)));
+        
+        spectrum = Spectrum.createSpectrum(mzs, intensities, processing);
+        imzML.getRun().getSpectrumList().add(spectrum);
+        
+        try {
+            imzML.write(targetDir() + "/modifySpectrumTest.imzML");
+            
+            // Check that we can read in the written imzML without any issues - i.e. whether
+            // it is valid enough to parse
+            ImzML imzMLBack = ImzMLHandler.parseimzML(targetDir() + "/modifySpectrumTest.imzML", false, new ParserListener() {
+                @Override
+                public void issueFound(Issue exception) {
+                    Logger.getLogger(CreateSpectrumTest.class.getName()).log(Level.SEVERE, null, exception);
+            
+                    System.out.println(" ---- " + exception.getIssueTitle() + " ---- ");
+                    System.out.println(exception.getIssueMessage());
+                    fail("Unexpected exception: " + exception);
+                }
+                
+            });
+            
+        } catch (ImzMLWriteException ex) {
+            Logger.getLogger(CreateSpectrumTest.class.getName()).log(Level.SEVERE, null, ex);
+            
+            fail("Unexpected exception: " + ex);
+        } catch (FatalParseException ex) {
+            Logger.getLogger(CreateSpectrumTest.class.getName()).log(Level.SEVERE, null, ex);
+            
+            fail("Unexpected exception: " + ex);
+        }
     }
     
     @Test

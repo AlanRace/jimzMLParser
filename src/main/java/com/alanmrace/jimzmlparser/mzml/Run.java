@@ -2,9 +2,9 @@ package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
+import com.alanmrace.jimzmlparser.listener.DataProcessingListener;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,6 +27,8 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
     private Sample sampleRef;											// Optional
     private Date startTimeStamp;										// Optional
 
+    private DataProcessingListener dataProcessingListener;
+    
     private SpectrumList spectrumList;
     private ChromatogramList chromatogramList;
 
@@ -83,6 +85,16 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
         }
     }
 
+    protected void setDataProcessingListener(DataProcessingListener dataProcessingListener) {
+        this.dataProcessingListener = dataProcessingListener;
+        
+        if(spectrumList != null)
+            spectrumList.setDataProcessingListener(dataProcessingListener);
+        
+        if(chromatogramList != null)
+            chromatogramList.setDataProcessingListener(dataProcessingListener);
+    }
+    
     @Override
     public ArrayList<OBOTermInclusion> getListOfOptionalCVParams() {
         ArrayList<OBOTermInclusion> optional = new ArrayList<OBOTermInclusion>();
@@ -95,6 +107,10 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
         this.defaultSourceFileRef = defaultSourceFileRef;
     }
 
+    public SourceFile getDefaultSourceFileRef() {
+        return defaultSourceFileRef;
+    }
+    
     @Override
     public String getID() {
         return id;
@@ -112,6 +128,7 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
         spectrumList.setParent(this);
 
         this.spectrumList = spectrumList;
+        this.spectrumList.setDataProcessingListener(dataProcessingListener);
     }
 
     public InstrumentConfiguration getDefaultInstrumentConfiguration() {
@@ -126,6 +143,7 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
         chromatogramList.setParent(this);
 
         this.chromatogramList = chromatogramList;
+        this.chromatogramList.setDataProcessingListener(dataProcessingListener);
     }
 
     public ChromatogramList getChromatogramList() {

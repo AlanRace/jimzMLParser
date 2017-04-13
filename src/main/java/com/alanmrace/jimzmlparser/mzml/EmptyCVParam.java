@@ -65,7 +65,7 @@ public class EmptyCVParam extends CVParam {
 
     @Override
     public void setValueAsString(String newValue) {
-        throw new RuntimeException("Cannot change the value of an empty CV param");
+        throw new UnsupportedOperationException("Cannot change the value of an empty CV param");
     }
 
 }

@@ -1,8 +1,8 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import com.alanmrace.jimzmlparser.obo.OBO;
+import com.alanmrace.jimzmlparser.listener.DataProcessingListener;
 
-public class DataProcessingList extends MzMLIDContentList<DataProcessing> {
+public class DataProcessingList extends MzMLIDContentList<DataProcessing> implements DataProcessingListener {
 
     /**
      *
@@ -39,16 +39,30 @@ public class DataProcessingList extends MzMLIDContentList<DataProcessing> {
         return "dataProcessingList";
     }
     
+    public static DataProcessingList create() {
+        return create(Software.create());
+    }
+    
     public static DataProcessingList create(Software software) {
         DataProcessingList dpList = new DataProcessingList(1);
-        DataProcessing dp = new DataProcessing("imzML-creation");
-        dpList.add(dp);
-        
-        ProcessingMethod pm = new ProcessingMethod(software);
-        dp.add(pm);
-        
-        pm.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ProcessingMethod.conversionTomzMLID)));
+        dpList.add(DataProcessing.create(software));
         
         return dpList;
+    }
+
+    @Override
+    public DataProcessing referenceCheck(DataProcessing processing) {
+        boolean found = false;
+        
+        for(DataProcessing curProcessing : this) {
+            if(processing.equals(curProcessing) || processing.getID().equals(curProcessing.getID())) {
+                return curProcessing;
+            }
+        }
+        
+        if(!found)
+            this.add(processing);
+        
+        return processing;
     }
 }

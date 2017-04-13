@@ -2,6 +2,7 @@ package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.data.DataLocation;
 import com.alanmrace.jimzmlparser.data.MzMLSpectrumDataStorage;
+import com.alanmrace.jimzmlparser.listener.DataProcessingListener;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -17,6 +18,8 @@ public abstract class MzMLDataContainer extends MzMLIndexedContentWithParams {
     protected int defaultArrayLength;
     
     protected DataProcessing dataProcessingRef;
+    
+    protected DataProcessingListener dataProcessingListener;
     
     protected RandomAccessFile raf;
     
@@ -46,10 +49,17 @@ public abstract class MzMLDataContainer extends MzMLIndexedContentWithParams {
     // Set optional attributes
     public void setDataProcessingRef(DataProcessing dataProcessingRef) {
         this.dataProcessingRef = dataProcessingRef;
+        
+        if(dataProcessingListener != null)
+            this.dataProcessingRef = dataProcessingListener.referenceCheck(dataProcessingRef);
     }
     
     public DataProcessing getDataProcessingRef() {
         return dataProcessingRef;
+    }
+    
+    protected void setDataProcessingListener(DataProcessingListener dataProcessingListener) {
+        this.dataProcessingListener = dataProcessingListener;
     }
     
     public DataLocation getDataLocation() {

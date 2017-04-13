@@ -1,5 +1,6 @@
 package com.alanmrace.jimzmlparser.mzml;
 
+import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 
 public class DataProcessing extends MzMLContentList<ProcessingMethod> implements ReferenceableTag {
@@ -70,5 +71,20 @@ public class DataProcessing extends MzMLContentList<ProcessingMethod> implements
     @Override
     public String getTagName() {
         return "dataProcessing";
+    }
+    
+    public static DataProcessing create() {
+        return create(Software.create());
+    }
+    
+    public static DataProcessing create(Software software) {
+        DataProcessing dp = new DataProcessing("imzML-creation");
+        
+        ProcessingMethod pm = new ProcessingMethod(software);
+        dp.add(pm);
+        
+        pm.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ProcessingMethod.conversionTomzMLID)));
+        
+        return dp;
     }
 }

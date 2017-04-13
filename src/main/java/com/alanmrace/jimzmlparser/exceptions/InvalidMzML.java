@@ -18,6 +18,10 @@ public class InvalidMzML extends RuntimeException implements ParseIssue {
      * 
      * @param message Description of the exception
      */
+    public InvalidMzML(String message, Exception ex) {
+        super(message, ex);
+    }
+    
     public InvalidMzML(String message) {
         super(message);
     }

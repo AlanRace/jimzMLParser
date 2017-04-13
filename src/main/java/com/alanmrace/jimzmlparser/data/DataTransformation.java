@@ -27,18 +27,22 @@ public class DataTransformation {
     }
     
     public byte[] performForwardTransform(byte[] data) throws DataFormatException {
+        byte[] transformedData = data;
+        
         for(DataTransform transform : transformation) {
-            data = transform.forwardTransform(data);
+            transformedData = transform.forwardTransform(transformedData);
         }
         
-        return data;
+        return transformedData;
     }
     
     public double[] performReverseTransform(byte[] data) throws DataFormatException {
+        byte[] transformedData = data;
+        
         for(DataTransform transform : transformation) {
-            data = transform.reverseTransform(data);
+            transformedData = transform.reverseTransform(transformedData);
         }
         
-        return DataTypeTransform.convertDataToDouble(data, DataTypeTransform.DataType.Double);
+        return DataTypeTransform.convertDataToDouble(transformedData, DataTypeTransform.DataType.Double);
     }
 }

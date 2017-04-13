@@ -434,7 +434,19 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
      * @param processing
      */
     public void updatemzArray(double[] mzs, DataProcessing processing) {
+        // TODO: 
         
+        DataProcessing previousProcessing = this.getDataProcessingRef();
+        DataProcessing newProcessing = new DataProcessing("update");
+        
+        for(ProcessingMethod method : previousProcessing)
+            newProcessing.add(method);
+        for(ProcessingMethod method : processing)
+            newProcessing.add(method);
+        
+        this.setDataProcessingRef(newProcessing);
+        
+        setmzArray(mzs);
     }
     
     public void updateIntensityArray(double[] mzs, DataProcessing processing) {
@@ -460,9 +472,28 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
      * @return
      */
     public static Spectrum createSpectrum(double[] mzs, double[] intensities) {
+        return createSpectrum(mzs, intensities, DataProcessing.create());
+    }
+    
+    /**
+     *
+     * Default Spectrum parameters are: MS1 Spectrum & Profile Spectrum. These MUST be 
+     * changed if this is not the case.
+     * TODO: Consider having these as part of the create spectrum interface.
+     * 
+     * Data defaults are no compression, 64-bit float representation.
+     * 
+     * @param mzs
+     * @param intensities
+     * @param processing
+     * @return
+     */
+    public static Spectrum createSpectrum(double[] mzs, double[] intensities, DataProcessing processing) {
         String id = "spectrum=" + spectrumNumber++;
         
         Spectrum spectrum = new Spectrum(id, intensities.length);
+        spectrum.setDataProcessingRef(processing);
+        
         spectrum.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(Spectrum.MS1Spectrum)));
         spectrum.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(Spectrum.profileSpectrumID)));
         

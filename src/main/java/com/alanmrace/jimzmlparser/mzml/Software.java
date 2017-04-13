@@ -1,7 +1,13 @@
 package com.alanmrace.jimzmlparser.mzml;
 
+import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Software extends MzMLContentWithParams implements ReferenceableTag {
 
@@ -71,4 +77,25 @@ public class Software extends MzMLContentWithParams implements ReferenceableTag 
         this.id = id;
     }
 
+    public static Software create() {
+        String version = "Unknown";
+        
+        // Get the version of the software from the properites file
+        Properties prop = new Properties();
+        InputStream in = SoftwareList.class.getResourceAsStream("/jimzMLParser.properties");
+        
+        try {
+            prop.load(in);
+            version = prop.getProperty("version");
+            
+            in.close();
+        } catch (IOException ex) {
+            Logger.getLogger(SoftwareList.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        Software software = new Software("jimzMLParser", version);
+        software.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(Software.customUnreleasedToolID)));
+        
+        return software;
+    }
 }

@@ -488,6 +488,9 @@ public class MzML extends MzMLContentWithParams implements Serializable {
         dataProcessingList.setParent(this);
 
         this.dataProcessingList = dataProcessingList;
+        
+        if(run != null)
+            run.setDataProcessingListener(dataProcessingList);
     }
 
     /**
@@ -512,6 +515,8 @@ public class MzML extends MzMLContentWithParams implements Serializable {
         run.setParent(this);
 
         this.run = run;
+        
+        run.setDataProcessingListener(dataProcessingList);
     }
 
     /**

@@ -26,15 +26,6 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Empty constructor.
-     *
-     * <p>
-     * TODO: Remove this?
-     */
-    public MzMLContent() {
-    }
-
-    /**
      * Add all child MzMLContent (mzML tags) that match the specified XPath,
      * which are specific to this tag (i.e. child tags which are not
      * {@literal <referenceableParamGroupRef>}, {@literal <cvParam>} and
@@ -52,7 +43,7 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
      * @throws InvalidXPathException thrown if the XPath can not be followed
      */
     protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLTag> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
-
+        // Default is no tag specific elements, so don't do anything.
     }
 
     @Override
@@ -63,18 +54,18 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
     @Override
     public final void addElementsAtXPathToCollection(Collection<MzMLTag> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/" + getTagName())) {
-            currentXPath = currentXPath.replaceFirst("/" + getTagName(), "");
+            String subXPath = currentXPath.replaceFirst("/" + getTagName(), "");
 
-            if (currentXPath.isEmpty()) {
+            if (subXPath.isEmpty()) {
                 elements.add(this);
 
                 return;
             }
 
-            addTagSpecificElementsAtXPathToCollection(elements, fullXPath, currentXPath);
+            addTagSpecificElementsAtXPathToCollection(elements, fullXPath, subXPath);
 
             if (elements.isEmpty()) {
-                throw new InvalidXPathException("Invalid sub-XPath (" + currentXPath + ") in XPath " + fullXPath, fullXPath);
+                throw new InvalidXPathException("Invalid sub-XPath (" + subXPath + ") in XPath " + fullXPath, fullXPath);
             }
         } else {
             throw new InvalidXPathException("XPath does not start with /" + getTagName() + " in sub-XPath [" + currentXPath + "] of [" + fullXPath + "]", fullXPath);

@@ -18,8 +18,8 @@ public class InvalidImzML extends RuntimeException implements ParseIssue {
      * 
      * @param message Description of the exception
      */
-    public InvalidImzML(String message) {
-        super(message);
+    public InvalidImzML(String message, Exception ex) {
+        super(message, ex);
     }
 
     @Override

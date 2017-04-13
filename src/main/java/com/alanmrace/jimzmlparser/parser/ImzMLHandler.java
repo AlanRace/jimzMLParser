@@ -282,7 +282,7 @@ public class ImzMLHandler extends MzMLHeaderHandler {
             try {
                 super.startElement(uri, localName, qName, attributes);
             } catch (InvalidMzML ex) {
-                throw new InvalidImzML(ex.getLocalizedMessage());
+                throw new InvalidImzML(ex.getLocalizedMessage(), ex);
             }
         }
 
