@@ -1,9 +1,9 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import com.alanmrace.jimzmlparser.listener.ReferenceListener;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.util.HashMap;
 import java.util.Map;
+import com.alanmrace.jimzmlparser.listener.ReferenceList;
 
 public class SpectrumList extends MzMLIDContentList<Spectrum> {
 
@@ -16,7 +16,7 @@ public class SpectrumList extends MzMLIDContentList<Spectrum> {
     private Map<String, Spectrum> spectrumMap;
     private DataProcessing defaultDataProcessingRef;
     
-    private ReferenceListener<DataProcessing> dataProcessingListener;
+    private ReferenceList<DataProcessing> dataProcessingListener;
 
     protected SpectrumList(int count) {
         super(count);
@@ -58,11 +58,11 @@ public class SpectrumList extends MzMLIDContentList<Spectrum> {
         return defaultDataProcessingRef;
     }
     
-    protected void setDataProcessingListener(ReferenceListener<DataProcessing> dataProcessingListener) {
+    protected void setDataProcessingListener(ReferenceList<DataProcessing> dataProcessingListener) {
         this.dataProcessingListener = dataProcessingListener;
         
         for(Spectrum spectrum : this)
-            spectrum.setDataProcessingListener(dataProcessingListener);
+            spectrum.setDataProcessingList(dataProcessingListener);
     }
 
     @Override
@@ -70,8 +70,7 @@ public class SpectrumList extends MzMLIDContentList<Spectrum> {
         super.add(spectrum);
         
         if(dataProcessingListener != null) {
-            spectrum.setDataProcessingListener(dataProcessingListener);
-            dataProcessingListener.referenceModified(spectrum.getDataProcessingRef());
+            spectrum.setDataProcessingList(dataProcessingListener);
         }
         
         spectrumMap.put(spectrum.getID(), spectrum);

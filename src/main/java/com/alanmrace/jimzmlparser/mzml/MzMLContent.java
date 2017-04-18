@@ -114,4 +114,9 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
     public String toString() {
         return getTagName();
     }
+    
+    protected void ensureValidReferences() {
+        // For any child class which has references (e.g. dataProcessingRef in Spectrum)
+        // this should be called whenever a change is made to the ReferenceList 
+    }
 }

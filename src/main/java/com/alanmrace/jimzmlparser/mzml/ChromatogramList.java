@@ -1,17 +1,24 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import com.alanmrace.jimzmlparser.listener.ReferenceListener;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
+import com.alanmrace.jimzmlparser.listener.ReferenceList;
 
 public class ChromatogramList extends MzMLIDContentList<Chromatogram> {
 
     /**
-     *
+     * Serialisation version ID.
      */
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Default DataProcessing description for the ChromatogramList.
+     */
     private DataProcessing defaultDataProcessingRef;
-    private ReferenceListener<DataProcessing> dataProcessingListener;
+
+    /**
+     * Listener for when/if the 
+     */
+    private ReferenceList<DataProcessing> dataProcessingList;
 
     public ChromatogramList(int count, DataProcessing defaultDataProcessingRef) {
         super(count);
@@ -42,13 +49,22 @@ public class ChromatogramList extends MzMLIDContentList<Chromatogram> {
         return defaultDataProcessingRef;
     }
     
-    protected void setDataProcessingListener(ReferenceListener<DataProcessing> dataProcessingListener) {
-        this.dataProcessingListener = dataProcessingListener;
+    protected void setDataProcessingList(ReferenceList<DataProcessing> dataProcessingList) {
+        this.dataProcessingList = dataProcessingList;
         
-        for(Chromatogram chromatogram : this)
-            chromatogram.setDataProcessingListener(dataProcessingListener);
+        for(Chromatogram chromatogram : this) {
+            chromatogram.setDataProcessingList(dataProcessingList);
+        }
     }
 
+    @Override
+    public void add(Chromatogram chromatogram) {
+        super.add(chromatogram);
+        
+        if(dataProcessingList != null)
+            chromatogram.setDataProcessingList(dataProcessingList);
+    }
+    
     public void addChromatogram(Chromatogram chromatogram) {
         add(chromatogram);
     }

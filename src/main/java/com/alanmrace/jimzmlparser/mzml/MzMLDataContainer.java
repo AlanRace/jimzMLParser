@@ -2,24 +2,36 @@ package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.data.DataLocation;
 import com.alanmrace.jimzmlparser.data.MzMLSpectrumDataStorage;
-import com.alanmrace.jimzmlparser.listener.ReferenceListener;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import com.alanmrace.jimzmlparser.listener.ReferenceList;
 
 /**
- *
+ * Base class with default implementations of methods for MzMLTags which describe 
+ * data (Spectrum and Chromatogram).
+ * 
  * @author Alan Race
+ * @see Spectrum
+ * @see Chromatogram
  */
 public abstract class MzMLDataContainer extends MzMLIndexedContentWithParams {
+
+    /**
+     * The location of the data that this tag instance describes.
+     */
     protected DataLocation dataLocation;
+
+    /**
+     * 
+     */
     protected BinaryDataArrayList binaryDataArrayList;
     
     protected int defaultArrayLength;
     
     protected DataProcessing dataProcessingRef;
     
-    protected ReferenceListener<DataProcessing> dataProcessingListener;
+    protected ReferenceList<DataProcessing> dataProcessingList;
     
     protected RandomAccessFile raf;
     
@@ -50,16 +62,17 @@ public abstract class MzMLDataContainer extends MzMLIndexedContentWithParams {
     public void setDataProcessingRef(DataProcessing dataProcessingRef) {
         this.dataProcessingRef = dataProcessingRef;
         
-        if(dataProcessingListener != null)
-            this.dataProcessingRef = dataProcessingListener.referenceModified(dataProcessingRef);
+        ensureValidReferences();
     }
     
     public DataProcessing getDataProcessingRef() {
         return dataProcessingRef;
     }
     
-    protected void setDataProcessingListener(ReferenceListener<DataProcessing> dataProcessingListener) {
-        this.dataProcessingListener = dataProcessingListener;
+    protected void setDataProcessingList(ReferenceList<DataProcessing> dataProcessingList) {
+        this.dataProcessingList = dataProcessingList;
+        
+        ensureValidReferences();
     }
     
     public DataLocation getDataLocation() {
@@ -159,5 +172,11 @@ public abstract class MzMLDataContainer extends MzMLIndexedContentWithParams {
         }
         
         return attributeText;
+    }
+    
+    @Override
+    protected void ensureValidReferences() {
+        if(dataProcessingList != null)
+            dataProcessingRef = dataProcessingList.getValidReference(dataProcessingRef);
     }
 }

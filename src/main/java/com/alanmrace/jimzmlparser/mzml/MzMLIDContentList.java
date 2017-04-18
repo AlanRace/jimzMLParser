@@ -5,10 +5,10 @@
  */
 package com.alanmrace.jimzmlparser.mzml;
 
-import com.alanmrace.jimzmlparser.listener.ReferenceListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import com.alanmrace.jimzmlparser.writer.MzMLWritable;
+import com.alanmrace.jimzmlparser.listener.ReferenceList;
 
 /**
  *
@@ -18,7 +18,7 @@ import com.alanmrace.jimzmlparser.writer.MzMLWritable;
  * @param <T>
  */
 public abstract class MzMLIDContentList<T extends ReferenceableTag & MzMLTag> extends MzMLContentList<T> 
-    implements ReferenceListener<T> {
+    implements ReferenceList<T> {
 
     public MzMLIDContentList(int count) {
         super(count);
@@ -56,7 +56,7 @@ public abstract class MzMLIDContentList<T extends ReferenceableTag & MzMLTag> ex
     }
     
     @Override
-    public T referenceModified(T processing) {
+    public T getValidReference(T processing) {
         boolean found = false;
         
         for(T curProcessing : this) {

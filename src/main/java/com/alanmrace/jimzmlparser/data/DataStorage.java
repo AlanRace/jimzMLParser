@@ -9,7 +9,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Access to a dataset.
+ * Access to a dataset. This class provides the base for accessing binary data stored
+ * within a given type of file.
  *  
  * @author Alan Race
  * @see Base64DataStorage

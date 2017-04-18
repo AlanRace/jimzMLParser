@@ -2,7 +2,6 @@ package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
-import com.alanmrace.jimzmlparser.listener.ReferenceListener;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -11,6 +10,7 @@ import java.util.Date;
 
 import java.util.Collection;
 import com.alanmrace.jimzmlparser.writer.MzMLWritable;
+import com.alanmrace.jimzmlparser.listener.ReferenceList;
 
 public class Run extends MzMLContentWithParams implements ReferenceableTag {
 
@@ -27,7 +27,7 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
     private Sample sampleRef;											// Optional
     private Date startTimeStamp;										// Optional
 
-    private ReferenceListener<DataProcessing> dataProcessingListener;
+    private ReferenceList<DataProcessing> dataProcessingListener;
     
     private SpectrumList spectrumList;
     private ChromatogramList chromatogramList;
@@ -85,14 +85,14 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
         }
     }
 
-    protected void setDataProcessingListener(ReferenceListener<DataProcessing> dataProcessingListener) {
+    protected void setDataProcessingListener(ReferenceList<DataProcessing> dataProcessingListener) {
         this.dataProcessingListener = dataProcessingListener;
         
         if(spectrumList != null)
             spectrumList.setDataProcessingListener(dataProcessingListener);
         
         if(chromatogramList != null)
-            chromatogramList.setDataProcessingListener(dataProcessingListener);
+            chromatogramList.setDataProcessingList(dataProcessingListener);
     }
     
     @Override
@@ -143,7 +143,7 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
         chromatogramList.setParent(this);
 
         this.chromatogramList = chromatogramList;
-        this.chromatogramList.setDataProcessingListener(dataProcessingListener);
+        this.chromatogramList.setDataProcessingList(dataProcessingListener);
     }
 
     public ChromatogramList getChromatogramList() {
