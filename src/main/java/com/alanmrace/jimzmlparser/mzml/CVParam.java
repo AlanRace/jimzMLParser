@@ -6,7 +6,6 @@ import java.io.IOException;
 
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
-import java.io.RandomAccessFile;
 import com.alanmrace.jimzmlparser.writer.MzMLWritable;
 
 /**

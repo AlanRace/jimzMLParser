@@ -1,7 +1,6 @@
 package com.alanmrace.jimzmlparser.mzml;
 
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import com.alanmrace.jimzmlparser.writer.MzMLWritable;
 
 /**

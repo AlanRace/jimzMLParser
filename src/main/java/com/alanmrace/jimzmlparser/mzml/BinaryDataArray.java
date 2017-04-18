@@ -7,7 +7,6 @@ import com.alanmrace.jimzmlparser.data.DataTypeTransform.DataType;
 import com.alanmrace.jimzmlparser.data.ZlibDataTransform;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import com.alanmrace.jimzmlparser.writer.ImzMLHeaderWriter;
-import com.alanmrace.jimzmlparser.writer.ImzMLWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;

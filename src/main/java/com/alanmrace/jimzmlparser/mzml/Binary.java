@@ -1,8 +1,8 @@
 package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.data.DataTypeTransform;
+import com.alanmrace.jimzmlparser.data.DataTypeTransform.DataType;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import com.alanmrace.jimzmlparser.writer.MzMLWritable;

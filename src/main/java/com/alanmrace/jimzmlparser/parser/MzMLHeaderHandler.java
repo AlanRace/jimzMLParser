@@ -1260,7 +1260,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             }
 
             if (attributes.getValue("spectrumRef") != null) {
-                currentPrecursor.setSpectrumRef(attributes.getValue("spectrumRef"));
+                currentPrecursor.setSpectrumRef(spectrumList.getSpectrum(attributes.getValue("spectrumRef")));
             }
 
             if (processingSpectrum) {

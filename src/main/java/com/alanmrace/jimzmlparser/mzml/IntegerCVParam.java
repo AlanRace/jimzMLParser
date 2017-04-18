@@ -1,6 +1,5 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import com.alanmrace.jimzmlparser.exceptions.CVParamAccessionNotFoundException;
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 
 /**
