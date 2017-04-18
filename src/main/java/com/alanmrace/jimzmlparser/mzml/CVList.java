@@ -7,7 +7,7 @@ package com.alanmrace.jimzmlparser.mzml;
  * 
  * @see CV
  */
-public class CVList extends MzMLContentList<CV> {
+public class CVList extends MzMLIDContentList<CV> {
 
     /**
      * Create an empty CVList with the specified initial capacity.
@@ -25,6 +25,14 @@ public class CVList extends MzMLContentList<CV> {
      */
     public CVList(CVList cvList) {
         super(cvList);
+    }
+    
+    public void addCV(CV cv) {
+        add(cv);
+    }
+    
+    public CV getCV(String id) {
+        return get(id);
     }
     
     @Override

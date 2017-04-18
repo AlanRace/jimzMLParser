@@ -18,6 +18,10 @@ public class EmptyCVParam extends CVParam {
      * @param term  Ontology term for the parameter
      */
     public EmptyCVParam(OBOTerm term) {
+        if (term == null) {
+            throw (new IllegalArgumentException("OBOTerm cannot be null for EmptyCVParam"));
+        }
+        
         this.term = term;
     }
     
@@ -29,6 +33,10 @@ public class EmptyCVParam extends CVParam {
      * @param units Ontology term for the units of the parameter
      */
     public EmptyCVParam(OBOTerm term, OBOTerm units) {
+        if (term == null) {
+            throw (new IllegalArgumentException("OBOTerm term cannot be null for EmptyCVParam"));
+        }
+        
         this.term = term;
         this.units = units;
     }

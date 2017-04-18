@@ -1,6 +1,5 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import com.alanmrace.jimzmlparser.exceptions.CVParamAccessionNotFoundException;
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 
 /**
@@ -32,9 +31,6 @@ public class LongCVParam extends CVParam {
     /**
      * Initialise a LongCVParam from an ontology term for the parameter and a 
      * value.
-     * 
-     * <p>TODO: Reconsider the error message thrown here - should probably be a 
-     * InvalidArgumentException (or similar).
      * 
      * @param term  Ontology term for the parameter
      * @param value Value of the parameter
