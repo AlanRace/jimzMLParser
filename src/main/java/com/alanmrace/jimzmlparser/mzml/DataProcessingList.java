@@ -1,8 +1,6 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import com.alanmrace.jimzmlparser.listener.DataProcessingListener;
-
-public class DataProcessingList extends MzMLIDContentList<DataProcessing> implements DataProcessingListener {
+public class DataProcessingList extends MzMLIDContentList<DataProcessing> {
 
     /**
      *
@@ -50,19 +48,5 @@ public class DataProcessingList extends MzMLIDContentList<DataProcessing> implem
         return dpList;
     }
 
-    @Override
-    public DataProcessing referenceCheck(DataProcessing processing) {
-        boolean found = false;
-        
-        for(DataProcessing curProcessing : this) {
-            if(processing.equals(curProcessing) || processing.getID().equals(curProcessing.getID())) {
-                return curProcessing;
-            }
-        }
-        
-        if(!found)
-            this.add(processing);
-        
-        return processing;
-    }
+    
 }

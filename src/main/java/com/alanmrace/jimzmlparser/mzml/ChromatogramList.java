@@ -1,6 +1,6 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import com.alanmrace.jimzmlparser.listener.DataProcessingListener;
+import com.alanmrace.jimzmlparser.listener.ReferenceListener;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 
 public class ChromatogramList extends MzMLIDContentList<Chromatogram> {
@@ -11,7 +11,7 @@ public class ChromatogramList extends MzMLIDContentList<Chromatogram> {
     private static final long serialVersionUID = 1L;
 
     private DataProcessing defaultDataProcessingRef;
-    private DataProcessingListener dataProcessingListener;
+    private ReferenceListener<DataProcessing> dataProcessingListener;
 
     public ChromatogramList(int count, DataProcessing defaultDataProcessingRef) {
         super(count);
@@ -42,7 +42,7 @@ public class ChromatogramList extends MzMLIDContentList<Chromatogram> {
         return defaultDataProcessingRef;
     }
     
-    protected void setDataProcessingListener(DataProcessingListener dataProcessingListener) {
+    protected void setDataProcessingListener(ReferenceListener<DataProcessing> dataProcessingListener) {
         this.dataProcessingListener = dataProcessingListener;
         
         for(Chromatogram chromatogram : this)

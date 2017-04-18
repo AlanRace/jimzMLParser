@@ -2,7 +2,7 @@ package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
-import com.alanmrace.jimzmlparser.listener.DataProcessingListener;
+import com.alanmrace.jimzmlparser.listener.ReferenceListener;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -27,7 +27,7 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
     private Sample sampleRef;											// Optional
     private Date startTimeStamp;										// Optional
 
-    private DataProcessingListener dataProcessingListener;
+    private ReferenceListener<DataProcessing> dataProcessingListener;
     
     private SpectrumList spectrumList;
     private ChromatogramList chromatogramList;
@@ -85,7 +85,7 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
         }
     }
 
-    protected void setDataProcessingListener(DataProcessingListener dataProcessingListener) {
+    protected void setDataProcessingListener(ReferenceListener<DataProcessing> dataProcessingListener) {
         this.dataProcessingListener = dataProcessingListener;
         
         if(spectrumList != null)

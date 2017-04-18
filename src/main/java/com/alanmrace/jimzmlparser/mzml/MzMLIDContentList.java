@@ -5,6 +5,7 @@
  */
 package com.alanmrace.jimzmlparser.mzml;
 
+import com.alanmrace.jimzmlparser.listener.ReferenceListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import com.alanmrace.jimzmlparser.writer.MzMLWritable;
@@ -16,7 +17,8 @@ import com.alanmrace.jimzmlparser.writer.MzMLWritable;
  * @author Alan Race
  * @param <T>
  */
-public abstract class MzMLIDContentList<T extends ReferenceableTag & MzMLTag> extends MzMLContentList<T> {
+public abstract class MzMLIDContentList<T extends ReferenceableTag & MzMLTag> extends MzMLContentList<T> 
+    implements ReferenceListener<T> {
 
     public MzMLIDContentList(int count) {
         super(count);
@@ -51,5 +53,21 @@ public abstract class MzMLIDContentList<T extends ReferenceableTag & MzMLTag> ex
         }
         
         super.outputXMLContent(output, indent);
+    }
+    
+    @Override
+    public T referenceModified(T processing) {
+        boolean found = false;
+        
+        for(T curProcessing : this) {
+            if(processing.equals(curProcessing) || processing.getID().equals(curProcessing.getID())) {
+                return curProcessing;
+            }
+        }
+        
+        if(!found)
+            this.add(processing);
+        
+        return processing;
     }
 }
