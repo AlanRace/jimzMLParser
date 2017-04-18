@@ -5,7 +5,6 @@ import com.alanmrace.jimzmlparser.data.MzMLSpectrumDataStorage;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import com.alanmrace.jimzmlparser.listener.ReferenceList;
 
 /**
  * Base class with default implementations of methods for MzMLTags which describe 

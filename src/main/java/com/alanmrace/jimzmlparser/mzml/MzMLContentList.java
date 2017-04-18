@@ -80,6 +80,11 @@ public abstract class MzMLContentList<T extends MzMLTag>
     public T remove(int index) {
         return list.remove(index);
     }
+    
+    @Override
+    public boolean remove(T item) {
+        return list.remove(item);
+    }
 
     @Override
     public int indexOf(T item) {

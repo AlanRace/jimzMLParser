@@ -10,7 +10,6 @@ import java.util.Date;
 
 import java.util.Collection;
 import com.alanmrace.jimzmlparser.writer.MzMLWritable;
-import com.alanmrace.jimzmlparser.listener.ReferenceList;
 
 public class Run extends MzMLContentWithParams implements ReferenceableTag {
 
@@ -27,7 +26,7 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
     private Sample sampleRef;											// Optional
     private Date startTimeStamp;										// Optional
 
-    private ReferenceList<DataProcessing> dataProcessingListener;
+    private ReferenceList<DataProcessing> dataProcessingList;
     
     private SpectrumList spectrumList;
     private ChromatogramList chromatogramList;
@@ -85,14 +84,14 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
         }
     }
 
-    protected void setDataProcessingListener(ReferenceList<DataProcessing> dataProcessingListener) {
-        this.dataProcessingListener = dataProcessingListener;
+    protected void setDataProcessingList(ReferenceList<DataProcessing> dataProcessingList) {
+        this.dataProcessingList = dataProcessingList;
         
         if(spectrumList != null)
-            spectrumList.setDataProcessingListener(dataProcessingListener);
+            spectrumList.setDataProcessingList(dataProcessingList);
         
         if(chromatogramList != null)
-            chromatogramList.setDataProcessingList(dataProcessingListener);
+            chromatogramList.setDataProcessingList(dataProcessingList);
     }
     
     @Override
@@ -128,7 +127,7 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
         spectrumList.setParent(this);
 
         this.spectrumList = spectrumList;
-        this.spectrumList.setDataProcessingListener(dataProcessingListener);
+        this.spectrumList.setDataProcessingList(dataProcessingList);
     }
 
     public InstrumentConfiguration getDefaultInstrumentConfiguration() {
@@ -143,7 +142,7 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
         chromatogramList.setParent(this);
 
         this.chromatogramList = chromatogramList;
-        this.chromatogramList.setDataProcessingList(dataProcessingListener);
+        this.chromatogramList.setDataProcessingList(dataProcessingList);
     }
 
     public ChromatogramList getChromatogramList() {

@@ -1,4 +1,4 @@
-package com.alanmrace.jimzmlparser.listener;
+package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.mzml.ReferenceableTag;
 

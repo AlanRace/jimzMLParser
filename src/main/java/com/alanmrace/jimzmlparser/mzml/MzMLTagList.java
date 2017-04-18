@@ -20,6 +20,8 @@ public interface MzMLTagList<T extends MzMLTag> extends Iterable<T> {
     
     public T remove(int index);
     
+    public boolean remove(T item);
+    
     public int indexOf(T item);
     
     public int size();

@@ -8,7 +8,6 @@ package com.alanmrace.jimzmlparser.mzml;
 import java.io.IOException;
 import java.util.ArrayList;
 import com.alanmrace.jimzmlparser.writer.MzMLWritable;
-import com.alanmrace.jimzmlparser.listener.ReferenceList;
 
 /**
  *

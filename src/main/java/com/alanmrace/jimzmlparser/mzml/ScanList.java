@@ -118,4 +118,9 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
     public Scan remove(int index) {
         return scanList.remove(index);
     }
+    
+    @Override
+    public boolean remove(Scan item) {
+        return scanList.remove(item);
+    }
 }

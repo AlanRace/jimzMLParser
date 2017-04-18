@@ -1,7 +1,6 @@
 package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.util.XMLHelper;
-import com.alanmrace.jimzmlparser.listener.ReferenceList;
 
 public class ChromatogramList extends MzMLIDContentList<Chromatogram> {
 
@@ -85,5 +84,11 @@ public class ChromatogramList extends MzMLIDContentList<Chromatogram> {
     @Override
     public String getTagName() {
         return "chromatogramList";
+    }
+    
+    @Override
+    public void ensureValidReferences() {
+        if(dataProcessingList != null)
+            defaultDataProcessingRef = dataProcessingList.getValidReference(defaultDataProcessingRef);
     }
 }
