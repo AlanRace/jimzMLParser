@@ -42,9 +42,9 @@ public interface MzMLTag {
     
     /**
      * Format the contents of the class into XML at a specified number of tab
-     * indents and output to a BufferedReader.
+     * indents and output to a MzMLWritable.
      * 
-     * @param output BufferedReader to output the XML to
+     * @param output MzMLWritable to output the XML to
      * @param indent Number of tabs to indent each tag in the XML
      * @throws IOException Exception occurred during writing data
      */

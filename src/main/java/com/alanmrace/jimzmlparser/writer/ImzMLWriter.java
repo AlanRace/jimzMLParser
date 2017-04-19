@@ -15,14 +15,32 @@ import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 
 /**
- *
+ * Writer for exporting both the metadata into an imzML file and the binary data
+ * to an IBD file.
+ * 
  * @author Alan Race
  */
 public class ImzMLWriter extends ImzMLHeaderWriter {
 
+    /**
+     * RandomAccessFile for the file containing the binary data.
+     */
     protected RandomAccessFile dataRAF;
+
+    /**
+     * BufferedWriter created from the data RandomAccessFile for writing out to.
+     */
     protected DataOutputStream dataOutput;
 
+    /**
+     * Create an imzML file and an IBD file at the specified outputLocation. 
+     * The extension of the outputLocation will be replaced with .ibd for the 
+     * location and name of the IBD file. These files will be open as 'rw' 
+     * in a RandomAccessFile.
+     * 
+     * @param outputLocation Location to write the new imzML file
+     * @throws IOException Issue with opening file for writing
+     */
     public ImzMLWriter(String outputLocation) throws IOException {
         super(outputLocation);
 

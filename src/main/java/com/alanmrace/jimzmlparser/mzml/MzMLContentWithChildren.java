@@ -12,6 +12,14 @@ import com.alanmrace.jimzmlparser.writer.MzMLWritable;
  */
 public abstract class MzMLContentWithChildren extends MzMLContent implements HasChildren {
 
+    /**
+     * Format the all children of the MzMLContent into XML and writes to the 
+     * MzMLWriter at the specified indent.
+     * 
+     * @param output MzMLWriter to output to
+     * @param indent Current number of tabs to indent
+     * @throws IOException Issue writing out XML
+     */
     protected void outputXMLContent(MzMLWritable output, int indent) throws IOException {
         ArrayList<MzMLTag> children = new ArrayList<MzMLTag>();
         

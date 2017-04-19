@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.alanmrace.jimzmlparser.writer;
 
 import com.alanmrace.jimzmlparser.data.DataTransformation;
@@ -18,16 +13,35 @@ import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 
 /**
- *
+ * Writer for exporting to mzML. Binary data exported as Base64 in the same file
+ * as the metadata.
+ * 
  * @author Alan Race
  */
 public class MzMLWriter implements MzMLWritable {
 
+    /**
+     * Encoding to write the XML document out as. Default is ISO-8859-1.
+     */
     protected String encoding = "ISO-8859-1";
     
+    /**
+     * RandomAccessFile for the file containing the XML metadata.
+     */
     protected RandomAccessFile metadataRAF;
+
+    /**
+     * BufferedWriter created from the metadata RandomAccessFile for writing out to.
+     */
     protected BufferedWriter output;
     
+    /**
+     * Create an mzML file at the specified outputLocation. This file will be open
+     * as 'rw' in a RandomAccessFile.
+     * 
+     * @param outputLocation Location to write the new mzML file
+     * @throws IOException Issue with opening file for writing
+     */
     public MzMLWriter(String outputLocation) throws IOException {
         metadataRAF = new RandomAccessFile(outputLocation, "rw");
         OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(metadataRAF.getFD()), encoding);
@@ -87,8 +101,4 @@ public class MzMLWriter implements MzMLWritable {
         
         return metadataRAF.getFilePointer();
     }
-
-    
-
-
 }

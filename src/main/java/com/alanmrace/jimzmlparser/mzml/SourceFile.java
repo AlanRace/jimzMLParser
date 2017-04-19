@@ -7,7 +7,7 @@ import java.util.List;
 public class SourceFile extends MzMLContentWithParams implements ReferenceableTag {
 
     /**
-     *
+     * Serialisation version ID.
      */
     private static final long serialVersionUID = 1L;
 
