@@ -20,8 +20,14 @@ public class CV extends MzMLIDContent implements Serializable {
      */
     public static final String IMS_URI = "http://www.maldi-msi.org/download/imzml/imagingMS.obo";
     
+    /**
+     * Default location for the mass spectrometry ontology.
+     */
     public static final String MS_URI = "http://purl.obolibrary.org/obo/ms.obo";
     
+    /**
+     * Default location for the units ontology.
+     */
     public static final String UO_URI = "http://obo.cvs.sourceforge.net/viewvc/obo/obo/ontology/phenotype/unit.obo";
 
     /**

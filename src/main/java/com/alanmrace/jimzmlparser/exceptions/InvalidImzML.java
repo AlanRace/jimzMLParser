@@ -17,6 +17,7 @@ public class InvalidImzML extends RuntimeException implements ParseIssue {
      * Set up InvalidImzML with a message.
      * 
      * @param message Description of the exception
+     * @param ex Issue that caused this exception
      */
     public InvalidImzML(String message, Exception ex) {
         super(message, ex);

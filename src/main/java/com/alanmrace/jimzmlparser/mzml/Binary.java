@@ -81,6 +81,11 @@ public class Binary extends MzMLContent {
         this(data, DataTypeTransform.DataType.Double, CompressionType.noCompression);
     }
     
+    /**
+     * Get the data stored in memory, or null if none.
+     * 
+     * @return Data stored in memory, or null if none
+     */
     public double[] getData() {
         return data;
     }

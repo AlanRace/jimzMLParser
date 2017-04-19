@@ -14,14 +14,21 @@ public class InvalidMzML extends RuntimeException implements ParseIssue {
     private static final long serialVersionUID = -5265931318748556126L;
 
     /**
-     * Set up InvalidMzML with a message.
+     * Set up InvalidMzML with a message and a previous exception which triggered
+     * this being created.
      * 
      * @param message Description of the exception
+     * @param ex Issue that caused this exception
      */
     public InvalidMzML(String message, Exception ex) {
         super(message, ex);
     }
     
+    /**
+     * Set up InvalidMzML with a message.
+     * 
+     * @param message Description of the exception
+     */
     public InvalidMzML(String message) {
         super(message);
     }
