@@ -2,7 +2,6 @@ package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.Collection;
 import com.alanmrace.jimzmlparser.writer.MzMLWritable;
 
