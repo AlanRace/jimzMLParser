@@ -5,7 +5,7 @@ import com.alanmrace.jimzmlparser.obo.OBO;
 public class InstrumentConfigurationList extends MzMLIDContentList<InstrumentConfiguration> {
 
     /**
-     *
+     * Serialisation version ID.
      */
     private static final long serialVersionUID = 1L;
 

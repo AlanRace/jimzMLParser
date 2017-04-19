@@ -11,7 +11,11 @@ import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 
 /**
- *
+ * DataTransformation where data stored in a byte[] representation of one data 
+ * type is converted to a byte[] representation of another data type. For example
+ * this could be the conversion of a double -> integer. Valid data types are 
+ * included in {@link DataTypeTransform.DataType}.
+ * 
  * @author Alan Race
  */
 public class DataTypeTransform implements DataTransform {
@@ -47,14 +51,34 @@ public class DataTypeTransform implements DataTransform {
         Integer64bit;
     }
 
+    /**
+     * Original data type to convert from.
+     */
     protected DataType from;
+
+    /**
+     * New data type to convert to.
+     */
     protected DataType to;
 
+    /**
+     * Set up a DataTypeTransform from one data type to another.
+     * 
+     * @param from Original data type
+     * @param to New data type
+     */
     public DataTypeTransform(DataType from, DataType to) {
         this.from = from;
         this.to = to;
     }
 
+    /**
+     * Convert a double[] to the corresponding byte[] representation of the same
+     * array.
+     * 
+     * @param data Data as double[] to convert
+     * @return byte[] representation of the double[]
+     */
     public static byte[] convertDoublesToBytes(double[] data) {
         byte[] convertedData = new byte[data.length*8];
         int j = 0;
@@ -149,6 +173,15 @@ public class DataTypeTransform implements DataTransform {
         return convertedData;
     }
 
+    /**
+     * Convert data from uncompressed byte[] with the data type 'from' to the 
+     * data type 'to'.
+     *
+     * @param data Data as byte[] in data type 'from'
+     * @param from Data type of the input byte[]
+     * @param to Data type to convert the input data to
+     * @return Data as byte[] in the data type 'to'
+     */
     public static byte[] convertData(byte[] data, DataType from, DataType to) {
         if (from.equals(to)) {
             return data;

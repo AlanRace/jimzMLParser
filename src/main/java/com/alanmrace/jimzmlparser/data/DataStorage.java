@@ -56,7 +56,7 @@ public abstract class DataStorage {
     
     /**
      * Get the data from the dataStorage at the specified offset with the specified length.
-     * Reading of data is synchronized to allow multithreaded access.
+     * Reading of data is synchronized to the file to allow multithreaded access.
      * 
      * <p>If the randomAccessFile has not been opened successfully (in the constructor) then
      * this will return an empty byte array.

@@ -3,27 +3,31 @@ package com.alanmrace.jimzmlparser.data;
 import java.util.zip.DataFormatException;
 
 /**
- *
+ * Interface describing a DataTransformation which goes from one byte[] to 
+ * another byte[].
+ * 
  * @author Alan Race
  */
 public interface DataTransform {
-    static final int BYTE_BUFFER_SIZE = 2 ^ 20;
     
     /**
-     * Data being written out. e.g. compressing
+     * Perform the data transformation. For example, this could be applying 
+     * compression.
      * 
-     * @param data
-     * @return
-     * @throws DataFormatException
+     * @param data Data to perform the transformation on
+     * @return Transformed data
+     * @throws DataFormatException Issue with the transformation
      */
     byte[] forwardTransform(byte[] data) throws DataFormatException;
 
     /**
-     * Data being read in. e.g. decompressing
+     * Perform the data transformation in reverse. For example, this could be 
+     * performing the corresponding decompression algorithm that was applied by
+     * the forwardTransform.
      * 
-     * @param data
-     * @return
-     * @throws DataFormatException
+     * @param data Data to reverse the transformation on
+     * @return Transformed data
+     * @throws DataFormatException Issue with the transformation
      */
     byte[] reverseTransform(byte[] data) throws DataFormatException;
 }

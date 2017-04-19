@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * FileContent tag.
+ * FileContent tag. Describes the content of the (i)mzML file.
  * 
  * @author Alan Race
  */

@@ -42,6 +42,11 @@ public class DataLocation {
      */
     protected int length;
     
+    /**
+     * The data transformation such that when {@link DataTransformation#performReverseTransform(byte[])}
+     * is applied it will convert the raw input binary as it appears in the 
+     * {@link DataLocation#dataStorage} to a double[].
+     */
     protected DataTransformation dataTransformation;
     
     /**
@@ -115,6 +120,21 @@ public class DataLocation {
 //        
 //        return dataTransformation.performReverseTransform(data);
 //    }
+
+    /**
+     * Gets the raw data from the DataStorage using {@link DataLocation#getBytes()} and
+     * applies the {@link DataLocation#dataTransformation} to convert the byte[] 
+     * to a double[]. If no {@link DataTransformation} has been supplied then this 
+     * method will just convert the byte[] to a double[] directly, therefore if
+     * the data is not stored as a double[], then a DataTransformation should be
+     * added which performs the necessary data type -> double transformation.
+     * 
+     * @return Converted and decompressed data as double[]
+     * @throws DataFormatException Issue with converting the data
+     * @throws IOException Issue reading the raw data
+     * 
+     * @see DataTransformation
+     */
     
     public double[] getData() throws DataFormatException, IOException {
         byte[] data = getBytes();
@@ -125,6 +145,14 @@ public class DataLocation {
         return dataTransformation.performReverseTransform(data);
     }
     
+    /**
+     * Set the data transformation which describes how the data was originally 
+     * converted from a byte[] representation of double[] to how it was stored in
+     * the {@link DataStorage}. This could one or more steps such as data type conversion 
+     * and compression.
+     *
+     * @param transformation DataTransformation applied to generate the data in the DataLocation
+     */
     public void setDataTransformation(DataTransformation transformation) {
         this.dataTransformation = transformation;
     }

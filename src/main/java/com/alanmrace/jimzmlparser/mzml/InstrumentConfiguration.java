@@ -9,7 +9,7 @@ import java.util.Collection;
 public class InstrumentConfiguration extends MzMLContentWithParams implements ReferenceableTag {
 
     /**
-     *
+     * Serialisation version ID.
      */
     private static final long serialVersionUID = 1L;
 

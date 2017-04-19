@@ -3,7 +3,10 @@ package com.alanmrace.jimzmlparser.mzml;
 import java.util.List;
 
 /**
- *
+ * Interface for MzMLTags which allow parameters (therefore must allow 
+ * references to a {@link ReferenceableParamGroup}, and inclusion of {@link CVParam}
+ * and {@link UserParam} child elements).
+ * 
  * @author Alan Race
  */
 public interface HasParams {

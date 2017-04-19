@@ -6,10 +6,17 @@ import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
 /**
- *
+ * DataTransform describing the compression (forward) and decompression (reverse)
+ * of data using the zlib algorithm.
+ * 
  * @author Alan Race
  */
 public class ZlibDataTransform implements DataTransform {
+    
+    /**
+     * Byte buffer size to use for temporary storage for (de)compression.
+     */
+    static final int BYTE_BUFFER_SIZE = 2 ^ 20;
 
     @Override
     public byte[] forwardTransform(byte[] data) throws DataFormatException {
