@@ -49,7 +49,7 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
     private Sample sampleRef;											// Optional
 
     /**
-     *
+     * Start time of the run.
      */
     private Date startTimeStamp;										// Optional
 

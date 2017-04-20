@@ -5,23 +5,49 @@ import java.util.ArrayList;
 import com.alanmrace.jimzmlparser.writer.MzMLWritable;
 
 /**
- *
- * <p>TODO: Consider including the map like in SpectrumList to improve speed of access.
+ * Class describing a list of MzML tags which have an ID, for example Spectrum.
  * 
  * @author Alan Race
- * @param <T>
+ * @param <T> MzML tag which are children of the list
+ * 
+ * @see ChromatogramList
+ * @see CVList
+ * @see DataProcessingList
+ * @see InstrumentConfigurationList
+ * @see SampleList
+ * @see ScanSettingsList
+ * @see SoftwareList
+ * @see SourceFileList
+ * @see SpectrumList
+ * @see ChromatogramList
  */
 public abstract class MzMLIDContentList<T extends ReferenceableTag & MzMLTag> extends MzMLContentList<T> 
     implements ReferenceList<T> {
 
+    /**
+     * Create an empty list with specified capacity.
+     * 
+     * @param count Capacity
+     */
     public MzMLIDContentList(int count) {
         super(count);
     }
     
+    /**
+     * Copy constructor.
+     * 
+     * @param contentList Old list
+     */
     public MzMLIDContentList(MzMLIDContentList<T> contentList) {
         super(contentList);
     }
     
+    /**
+     * Returns an element of the list with the specified unique ID. 
+     * 
+     * @param id Unique ID.
+     * @return Element of the list with the unique ID, null if none found
+     */
     public T get(String id) {
         for (T item : list) {
             if (item.getID().equals(id)) {

@@ -11,9 +11,20 @@ import com.alanmrace.jimzmlparser.writer.MzMLWritable;
  */
 public abstract class MzMLIndexedContentWithParams extends MzMLOrderedContentWithParams implements ReferenceableTag {
     
+    /**
+     * Unique identifier for the MzML tag.
+     */
     protected String id;
+
+    /**
+     * The file pointer within the mzML file of the start point for this specific 
+     * MzML tag.
+     */
     protected long mzMLLocation;
     
+    /**
+     * Set up default constructor, does nothing.
+     */
     protected MzMLIndexedContentWithParams() {
     }
     
@@ -50,10 +61,20 @@ public abstract class MzMLIndexedContentWithParams extends MzMLOrderedContentWit
         this.id = id;
     }
     
+    /**
+     * Set the location of this mzML tag within the mzML file.
+     * 
+     * @param mzMLLocation File pointer location within mzML file
+     */
     protected void setmzMLLocation(long mzMLLocation) {
         this.mzMLLocation = mzMLLocation;
     }
     
+    /**
+     * Returns the location of this mzML tag within the mzML file.
+     * 
+     * @return File pointer location within mzML file
+     */
     protected long getmzMLLocation() {
         return mzMLLocation;
     }

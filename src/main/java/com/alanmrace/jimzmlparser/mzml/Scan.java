@@ -11,10 +11,11 @@ import java.util.List;
 /**
  * Class describing a {@literal <scan>} tag.
  *
- * <p>
- * TODO: Look at the methods setInstrumentConfigurationRef,
+ * <p>TODO: Look at the methods setInstrumentConfigurationRef,
  * getInstrumentConfigurationRef, setSourceFileRef, setSpectrumRef as they do
- * not match some of the getter methods. Decide on consistent API.
+ * not match some of the getter methods. Decide on consistent API. Also check the
+ * setExternalSpectrumID and setSourceFile - these should probably be joined like
+ * in Precursor.
  *
  * @author Alan Race
  */
@@ -173,7 +174,7 @@ public class Scan extends MzMLContentWithParams implements Serializable {
     }
 
     /**
-     * Get external spectrum ID
+     * Get external spectrum ID.
      *
      * @return External spectrum ID
      */
@@ -212,7 +213,7 @@ public class Scan extends MzMLContentWithParams implements Serializable {
     /**
      * Get the source file that this scan was previously stored in.
      *
-     * @return
+     * @return SourceFile
      */
     public SourceFile getSourceFileRef() {
         return sourceFileRef;

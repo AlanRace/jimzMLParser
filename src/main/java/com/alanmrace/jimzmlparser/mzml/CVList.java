@@ -27,10 +27,23 @@ public class CVList extends MzMLIDContentList<CV> {
         super(cvList);
     }
     
+    /**
+     * Add CV. Helper method to retain API, calls 
+     * {@link CVList#add(com.alanmrace.jimzmlparser.mzml.MzMLTag)}.
+     * 
+     * @param cv CV to add to list
+     */
     public void addCV(CV cv) {
         add(cv);
     }
     
+    /**
+     * Returns a CV with a specific unique ID. Helper method to retain API, calls 
+     * {@link CVList#get(java.lang.String) }.
+     * 
+     * @param id Unique ID attribute of the CV
+     * @return CV if one exists in the list with the given id, null otherwise.
+     */
     public CV getCV(String id) {
         return get(id);
     }
@@ -40,6 +53,12 @@ public class CVList extends MzMLIDContentList<CV> {
         return "cvList";
     }
     
+    /**
+     * Generate the default content for a CVList. This will include CV elements 
+     * which describe the MSI, MS and units ontologies.
+     * 
+     * @return Default CVList
+     */
     public static CVList create() {
         CVList cvList = new CVList(3);
         

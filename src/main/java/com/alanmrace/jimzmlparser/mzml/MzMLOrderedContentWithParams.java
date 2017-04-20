@@ -4,11 +4,18 @@ import java.io.IOException;
 import com.alanmrace.jimzmlparser.writer.MzMLWritable;
 
 /**
- *
+ * A base class for MzML tags which include ordered children.
+ * 
  * @author Alan Race
+ * 
+ * @see ProcessingMethod
+ * @see Component
  */
 public abstract class MzMLOrderedContentWithParams extends MzMLContentWithParams {
     
+    /**
+     * Default constructor, does nothing.
+     */
     protected MzMLOrderedContentWithParams() {
     }
     

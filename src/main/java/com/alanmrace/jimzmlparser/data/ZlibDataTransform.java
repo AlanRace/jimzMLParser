@@ -16,7 +16,7 @@ public class ZlibDataTransform implements DataTransform {
     /**
      * Byte buffer size to use for temporary storage for (de)compression.
      */
-    static final int BYTE_BUFFER_SIZE = 2 ^ 20;
+    static protected final int BYTE_BUFFER_SIZE = 2 ^ 20;
 
     @Override
     public byte[] forwardTransform(byte[] data) throws DataFormatException {

@@ -555,10 +555,10 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
      * Default Spectrum parameters are: MS1 Spectrum & Profile Spectrum. These
      * MUST be changed if this is not the case. Data is stored in memory until 
      * written out.
-     * <p>
-     * TODO: Consider having these as part of the create spectrum interface.
-     * <p>
-     * Data defaults are no compression, 64-bit float representation.
+     * 
+     * <p>TODO: Consider having these as part of the create spectrum interface.
+     * 
+     * <p>Data defaults are no compression, 64-bit float representation.
      *
      * @param mzs m/z array as double[]
      * @param intensities Intensity array as double[]

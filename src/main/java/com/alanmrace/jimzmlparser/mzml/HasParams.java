@@ -165,29 +165,30 @@ public interface HasParams {
      * Get the list of MUST include CVParam for this MzMLContent. These are 
      * currently hard coded, based on ms-mapping.xml and so each subclass should
      * overwrite this method if there are any MUST include CVParams.
-     * 
-     * <p>TODO: Consider deprecating for the validator (CVMappingRule).
-     * 
+     *  
      * @return List of cvParams that MUST be included
+     * @deprecated Use jimzMLValidator instead.
      */
+    @Deprecated
     public List<MzMLContentWithParams.OBOTermInclusion> getListOfRequiredCVParams();
     
     /**
      * Get the list of MAY include CVParam for this MzMLContent. These are 
      * currently hard coded, based on ms-mapping.xml and so each subclass should
      * overwrite this method if there are any MAY include CVParams.
-     * 
-     * <p>TODO: Consider deprecating for the validator (CVMappingRule).
-     * 
+     *  
      * @return List of cvParams that MAY be included
+     * @deprecated Use jimzMLValidator instead.
      */
+    @Deprecated
     public List<MzMLContentWithParams.OBOTermInclusion> getListOfOptionalCVParams();
     
     /**
      * Description of the inclusion of an ontology term within the current MzMLContent.
      * 
-     * <p>TODO: Consider deprecating for the validator (CVTerm within CVMappingRule).
+     * @deprecated Use jimzMLValidator instead.
      */
+    @Deprecated
     public static class OBOTermInclusion {
 
         /**

@@ -12,10 +12,6 @@ import com.alanmrace.jimzmlparser.writer.MzMLWritable;
  * lists of {@link ReferenceableParamGroupRef}, {@link CVParam} and
  * {@link UserParam}.
  *
- * <p>TODO: Consider refactoring so that inclusion of CVParams is only possible on
- * tags that are allowed to have CVParams. This could be done using an
- * interface.
- *
  * @author Alan Race
  */
 public abstract class MzMLContent implements Serializable, MzMLTag {
@@ -31,8 +27,7 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
      * {@literal <referenceableParamGroupRef>}, {@literal <cvParam>} and
      * {@literal <userParam>}), to the specified collection.
      *
-     * <p>
-     * This method should be overridden in subclasses (mzML tags) which have
+     * <p>This method should be overridden in subclasses (mzML tags) which have
      * specific children (i.e. child tags in addition to {@literal <referenceableParamGroupRef>},
      * {@literal <cvParam>} and {@literal <userParam>}.
      *
@@ -72,6 +67,11 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
         }
     }
     
+    /**
+     * Returns XML formatted text describing XML attributes for the MzMLTag.
+     * 
+     * @return XML formatted attribute text
+     */
     protected String getXMLAttributeText() {
         if(this instanceof ReferenceableTag)
             return "id=\"" + XMLHelper.ensureSafeXML(((ReferenceableTag)this).getID()) + "\"";
@@ -115,6 +115,12 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
         return getTagName();
     }
     
+    /**
+     * For any child class which has attribute references (e.g. dataProcessingRef in Spectrum)
+     * this should be overwritten to ensure that the ReferenceList is always 
+     * kept up to date. This method will be called whenever a change is made to 
+     * either the ReferenceList or a reference.
+     */
     protected void ensureValidReferences() {
         // For any child class which has references (e.g. dataProcessingRef in Spectrum)
         // this should be called whenever a change is made to the ReferenceList 

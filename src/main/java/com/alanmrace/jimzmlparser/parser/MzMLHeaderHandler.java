@@ -38,8 +38,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * SAX parser for mzML files, only focusing on metadata.
  *
- * <p>
- * All metadata are parsed, however the data is ignored. This allows a lower
+ * <p>All metadata are parsed, however the data is ignored. This allows a lower
  * memory usage for loading metadata, while also allowing code reuse for both
  * MzML and ImzML files.
  *
@@ -1232,10 +1231,6 @@ public class MzMLHeaderHandler extends DefaultHandler {
             processingPrecursor = true;
             currentPrecursor = new Precursor();
 
-            if (attributes.getValue("externalSpectrumID") != null) {
-                currentPrecursor.setExternalSpectrumID(attributes.getValue("externalSpectrumID"));
-            }
-
             String sourceFileRef = attributes.getValue("sourceFileRef");
 
             if (sourceFileRef != null) {
@@ -1246,7 +1241,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
                     if (sourceFile != null) {
                         foundRef = true;
-                        currentPrecursor.setSourceFileRef(sourceFile);
+                        currentPrecursor.setExternalSpectrum(sourceFile, attributes.getValue("externalSpectrumID"));
                     }
                 }
 

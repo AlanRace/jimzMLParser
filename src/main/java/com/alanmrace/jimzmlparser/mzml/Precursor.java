@@ -92,25 +92,17 @@ public class Precursor extends MzMLContentWithParams {
     }
 
     /**
-     * Set the external spectrum ID. Spectrum ID of a precursor spectrum which 
-     * is stored in an external document (see {@link Precursor#setSourceFileRef}) [Optional].
+     * Set the details of the location of the spectrum describing the precursor
+     * in an external SourceFile [Optional]. The spectrum ID of a precursor spectrum which 
+     * is stored in the external document (see {@link Precursor#setSourceFileRef}) 
+     * must also be supplied.
      * 
-     * <p>TODO: Combine setSourceFileRef and setExternalSpectrumID?
-     * 
+     * @param sourceFileRef
      * @param externalSpectrumID Unique spectrum ID in external file
      */
-    public void setExternalSpectrumID(String externalSpectrumID) {
-        this.externalSpectrumID = externalSpectrumID;
-    }
-
-    /**
-     * Set the external SourceFile containing the precursor spectrum. Used in 
-     * conjunction with (see {@link Precursor#setExternalSpectrumID}).
-     * 
-     * @param sourceFileRef External SourceFile
-     */
-    public void setSourceFileRef(SourceFile sourceFileRef) {
+    public void setExternalSpectrum(SourceFile sourceFileRef, String externalSpectrumID) {
         this.sourceFileRef = sourceFileRef;
+        this.externalSpectrumID = externalSpectrumID;
     }
 
     /**

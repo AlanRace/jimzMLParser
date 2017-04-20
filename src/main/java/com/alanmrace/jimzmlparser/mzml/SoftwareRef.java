@@ -14,7 +14,7 @@ public class SoftwareRef extends MzMLReference<Software> { //, MutableTreeNode {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Create a SoftwareRef with the supplied Software as the reference
+     * Create a SoftwareRef with the supplied Software as the reference.
      * 
      * @param ref Software reference
      */

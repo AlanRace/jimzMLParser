@@ -19,8 +19,7 @@ import com.alanmrace.jimzmlparser.writer.MzMLWritable;
 /**
  * BinaryDataArray tag.
  *
- * <p>
- * TODO: Reassess the variables and the getter methods as the getter methods
+ * <p>TODO: Reassess the variables and the getter methods as the getter methods
  * mainly search the CVParams.
  *
  * @author Alan Race
@@ -32,6 +31,8 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
      */
     private static final long serialVersionUID = 1L;
 
+    // <editor-fold defaultstate="collapsed" desc="Accessions">
+    
     /**
      * Accession: Binary data compression type (MS:1000572). MUST supply a child
      * only once
@@ -163,6 +164,8 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
      */
     public static final String externalOffsetID = "IMS:1000102";
 
+    // </editor-fold>
+    
     /**
      * Buffer size to use when reading in data. Set to 2^20 bytes = 1 MB.
      */
@@ -192,6 +195,7 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
      * Binary data type of the stored data array.
      */
 //    private DataTypeTransform.DataType dataType;
+    
     /**
      * True if this BinaryDataArray describes an m/z array, false otherwise.
      */
@@ -443,8 +447,7 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
      * Get the data array as double[], convert and decompress as necessary,
      * optionally keeping the data in memory.
      *
-     * <p>
-     * TODO: Doesn't keep data in memory
+     * <p>TODO: Doesn't keep data in memory
      *
      * @param keepInMemory true if data should be kept in memory, false
      * otherwise
@@ -487,7 +490,7 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
      * @return Uncompressed data as byte[]
      * @throws IOException On failure to read from data location
      */
-    public byte[] getDataAsByte() throws IOException {
+    protected byte[] getDataAsByte() throws IOException {
         return getDataAsByte(false);
     }
 
@@ -495,19 +498,17 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
      * Get the data array as byte[], decompressing as necessary, optionally
      * keeping the data in memory.
      *
-     * <p>
-     * TODO: Doesn't keep data in memory
+     * <p>TODO: Doesn't keep data in memory
      *
      * @param keepInMemory true if data should be kept in memory, false
      * otherwise
      * @return Uncompressed data as byte[]
      * @throws IOException On failure to read from data location
      */
-    public byte[] getDataAsByte(boolean keepInMemory) throws IOException {
+    protected byte[] getDataAsByte(boolean keepInMemory) throws IOException {
         // Check to see if already loaded data in memory
-        if (binary != null && binary.getData() != null) {
-
-        }
+//        if (binary != null && binary.getData() != null) {
+//        }
 
         if (dataLocation == null) {
             return null;
@@ -524,6 +525,12 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
         return dataLocation.getBytes();
     }
 
+    /**
+     * Create a {@link DataTransformation} based on the relevant CVParams 
+     * included within this BinaryDataArray.
+     * 
+     * @return DataTransformation describing CVParams
+     */
     public DataTransformation generateDataTransformation() {
         DataTransformation transformation = new DataTransformation();
 

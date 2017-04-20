@@ -14,7 +14,7 @@ public class SourceFileRef extends MzMLReference<SourceFile> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Create a SourceFileRef with the supplied SourceFile as the reference
+     * Create a SourceFileRef with the supplied SourceFile as the reference.
      * 
      * @param ref SourceFile reference
      */

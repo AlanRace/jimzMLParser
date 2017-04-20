@@ -31,6 +31,9 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
      */
     private List<UserParam> userParams;
     
+    /**
+     * Default constructor which sets all lists of references to be ArrayLists.
+     */
     public MzMLContentWithParams() {
         referenceableParamGroupRefs = new ArrayList<ReferenceableParamGroupRef>();
         cvParams = new ArrayList<CVParam>();
@@ -85,7 +88,7 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
                 } else if (cvParam instanceof EmptyCVParam) {
                     cvParams.add(new EmptyCVParam((EmptyCVParam) cvParam));
                 } else {
-                    throw new RuntimeException("Unknown CVParam type, unable to replicate: " + cvParam.getClass());
+                    throw new IllegalArgumentException("Unknown CVParam type, unable to replicate: " + cvParam.getClass());
                 }
             }
         }
@@ -420,35 +423,6 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
             }
         }
 
-        // TODO: userParams
         return children;
     }
-
-//    @Override
-//    protected void outputXMLContent(BufferedWriter output, int indent) throws IOException {
-//        if (referenceableParamGroupRefs != null) {
-//            for (ReferenceableParamGroupRef ref : referenceableParamGroupRefs) {
-//                // TODO: Remove quick fix
-//                if (ref == null || ref.getReference() == null || ref.getReference().getID() == null) {
-//                    continue;
-//                }
-//
-//                ref.outputXML(output, indent);
-//            }
-//        }
-//
-//        if (cvParams != null) {
-//            for (CVParam cvParam : cvParams) {
-//                if (cvParam != null) {
-//                    cvParam.outputXML(output, indent);
-//                }
-//            }
-//        }
-//
-//        if (userParams != null) {
-//            for (UserParam userParam : userParams) {
-//                userParam.outputXML(output, indent);
-//            }
-//        }
-//    }
 }

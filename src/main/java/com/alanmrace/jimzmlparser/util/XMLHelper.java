@@ -14,14 +14,14 @@ public class XMLHelper {
      * @param input Text to escape
      * @return Safe text to include within XML attributes
      */
-    public static String ensureSafeXML(String input) {
-	// TODO: Remove invalid characters such as '<' and '>'
-		
+    public static String ensureSafeXML(String input) {		
 	if(input == null)
             return "";
 	
         String output = input.replaceAll("&amp;", "&");
         output = output.replaceAll("&", "&amp;");
+        output = output.replaceAll("<", "&lt;");
+        output = output.replaceAll(">", "&rt;");
         
 	output = output.replaceAll("\"", "&quot;");
         

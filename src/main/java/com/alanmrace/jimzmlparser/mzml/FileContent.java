@@ -130,7 +130,7 @@ public class FileContent extends MzMLContentWithParams {
     
     /**
      * Create the default, valid (according to imzML) FileContent. Default file contents
-     * CV parameter is mass spectrum ({@link FileContent#massSpectrumID).
+     * CV parameter is mass spectrum ({@link FileContent#massSpectrumID}).
      * 
      * @return Default valid FileContent
      */

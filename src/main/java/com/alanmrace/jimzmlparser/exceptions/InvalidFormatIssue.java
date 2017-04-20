@@ -103,9 +103,7 @@ public class InvalidFormatIssue extends NonFatalParseException {
      * 
      * @param param StringCVParam that replaced the original CVParam.
      */
-    public void fixAttemptedByChangingType(StringCVParam param) {
-        //TODO: attempted fix by switching to StringCVParam if type did not match
-        
+    public void fixAttemptedByChangingType(StringCVParam param) {        
         newParam = param;
         this.attemptedFix = true;
     }
@@ -136,6 +134,10 @@ public class InvalidFormatIssue extends NonFatalParseException {
                 message += " but the value attribute was ommited";
             else
                 message += " but got value \"" + value + "\"";
+        }
+        
+        if(attemptedFix) {
+            message += "\nAttempted to fix by changing CVParam value type to String.";
         }
         
         return message;
