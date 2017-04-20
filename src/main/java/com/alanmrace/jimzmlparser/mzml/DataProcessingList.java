@@ -77,7 +77,7 @@ public class DataProcessingList extends MzMLIDContentList<DataProcessing> {
      * Create base valid DataProcessingList. This is a wrapper method for 
      * {@code DataProcessingList.create(Software.create())}.
      * 
-     * @return
+     * @return Valid DataProcessingList
      */
     public static DataProcessingList create() {
         return create(Software.create());

@@ -37,7 +37,7 @@ public abstract class MzMLReference<T extends ReferenceableTag> extends MzMLCont
     }
     
     /**
-     * Returns the tag which is being referenced
+     * Returns the tag which is being referenced.
      * 
      * @return MzMLTag the reference points to
      */

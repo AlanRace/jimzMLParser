@@ -19,9 +19,6 @@ import com.alanmrace.jimzmlparser.writer.MzMLWritable;
 /**
  * BinaryDataArray tag.
  *
- * <p>TODO: Reassess the variables and the getter methods as the getter methods
- * mainly search the CVParams.
- *
  * @author Alan Race
  */
 public class BinaryDataArray extends MzMLContentWithParams implements Serializable {

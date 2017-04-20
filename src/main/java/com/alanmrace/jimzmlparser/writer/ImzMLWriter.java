@@ -44,12 +44,14 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
     public ImzMLWriter(String outputLocation) throws IOException {
         super(outputLocation);
 
-        int pos = outputLocation.lastIndexOf(".");
+        String ibdLocation = outputLocation;
+        
+        int pos = ibdLocation.lastIndexOf(".");
         if (pos > 0) {
-            outputLocation = outputLocation.substring(0, pos);
+            ibdLocation = ibdLocation.substring(0, pos);
         }
 
-        dataRAF = new RandomAccessFile(outputLocation + ".ibd", "rw");
+        dataRAF = new RandomAccessFile(ibdLocation + ".ibd", "rw");
         dataOutput = new DataOutputStream(new FileOutputStream(dataRAF.getFD()));
     }
 
@@ -91,5 +93,10 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
         dataOutput.flush();
 
         return dataRAF.getFilePointer();
+    }
+    
+    @Override
+    public boolean shouldOutputIndex() {
+        return false;
     }
 }

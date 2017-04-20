@@ -11,7 +11,6 @@ import com.alanmrace.jimzmlparser.data.DataLocation;
 import com.alanmrace.jimzmlparser.data.DataStorage;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import com.alanmrace.jimzmlparser.writer.MzMLWriter;
-import java.io.RandomAccessFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -125,9 +124,6 @@ public class MzML extends MzMLContentWithParams implements Serializable {
      */
     private OBO obo;
     
-    private boolean outputIndex = false;
-    private RandomAccessFile raf;
-
     /**
      * Constructor with the minimal required information (mzML version).
      * 
@@ -535,9 +531,7 @@ public class MzML extends MzMLContentWithParams implements Serializable {
      * @throws ImzMLWriteException IOException are wrapped into ImzMLWriteException
      */
     public void write(String filename) throws ImzMLWriteException {
-        try {
-            outputIndex = true;
-            
+        try {            
             String encoding = "ISO-8859-1";
 
             //raf = new RandomAccessFile(filename, "rw");
@@ -562,7 +556,7 @@ public class MzML extends MzMLContentWithParams implements Serializable {
 
     @Override
     public void outputXML(MzMLWritable output, int indent) throws IOException {
-        if (outputIndex) {
+        if (output.shouldOutputIndex()) {
             MzMLContent.indent(output, indent);
             output.write("<indexedmzML");
             output.write(" xmlns=\"http://psi.hupo.org/ms/mzml\"");
@@ -626,7 +620,7 @@ public class MzML extends MzMLContentWithParams implements Serializable {
         MzMLContent.indent(output, indent);
         output.write("</mzML>\n");
 
-        if (outputIndex) {
+        if (output.shouldOutputIndex()) {
             indent--;
             
             output.flush();

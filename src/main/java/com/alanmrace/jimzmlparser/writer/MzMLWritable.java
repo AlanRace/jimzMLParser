@@ -13,6 +13,13 @@ import java.io.IOException;
 public interface MzMLWritable {
     
     /**
+     * Returns whether the writer should output indexed mzML.
+     * 
+     * @return true if indexed mzML, false otherwise
+     */
+    public boolean shouldOutputIndex();
+    
+    /**
      * Returns the current file pointer location in the metadata file. When 
      * writing mzML this will be the same as getDataPointer(), but for writing 
      * imzML this will be different.

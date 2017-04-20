@@ -38,7 +38,7 @@ public class Contact extends MzMLContentWithParams implements Serializable {
     }
 
     /**
-     * Copy constructor
+     * Copy constructor.
      * 
      * @param contact Contact to copy
      * @param rpgList New ReferenceableParamGroupList to match references to

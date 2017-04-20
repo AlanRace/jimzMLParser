@@ -103,13 +103,6 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
         return scanList.size();
     }
 
-//	public double getScanStartTime() {
-//		// TODO: Take into account multiple scans
-//		if(scanList.size() > 0)
-//			return scanList.get(0).getScanStartTime();
-//		
-//		return -1;
-//	}
     @Override
     protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLTag> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/scan")) {

@@ -31,10 +31,7 @@ public class IntegerCVParam extends CVParam {
     /**
      * Initialise a IntegerCVParam from an ontology term for the parameter and a 
      * value.
-     * 
-     * <p>TODO: Reconsider the error message thrown here - should probably be a 
-     * InvalidArgumentException (or similar).
-     * 
+     *  
      * @param term  Ontology term for the parameter
      * @param value Value of the parameter
      */

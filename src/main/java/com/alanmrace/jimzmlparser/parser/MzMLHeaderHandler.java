@@ -1534,8 +1534,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
             processingPrecursor = false;
         } else if ("product".equals(qName)) {
             processingProduct = false;
-        } else if ("binaryDataArrayList".equals(qName)) {
-            currentBinaryDataArrayList.updatemzAndIntensityArray();
+//        } else if ("binaryDataArrayList".equals(qName)) {
+//            currentBinaryDataArrayList.updatemzAndIntensityArray();
         } else if ("offset".equals(qName) || "indexListOffset".equals(qName)) {
             long offset = getOffset();
 

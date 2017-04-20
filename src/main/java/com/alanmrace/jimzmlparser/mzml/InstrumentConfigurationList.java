@@ -28,6 +28,8 @@ public class InstrumentConfigurationList extends MzMLIDContentList<InstrumentCon
      *
      * @param icList Old InstrumentConfigurationList to copy
      * @param rpgList New ReferenceableParamGroupList to match references to
+     * @param ssList New ScanSettingsList to match references to
+     * @param softwareList New SoftwareList to match references to
      */
     public InstrumentConfigurationList(InstrumentConfigurationList icList, ReferenceableParamGroupList rpgList, ScanSettingsList ssList, SoftwareList softwareList) {
         this(icList.size());
@@ -74,6 +76,13 @@ public class InstrumentConfigurationList extends MzMLIDContentList<InstrumentCon
         return "instrumentConfigurationList";
     }
     
+    /**
+     * Create default valid InstrumentConfiguration List. This contains a single
+     * InstrumentConfiguration with the reference 'instrumentConfiguration', which
+     * has solely the term {@link InstrumentConfiguration#instrumentModelID}.
+     * 
+     * @return Valid InstrumentConfigurationList
+     */
     public static InstrumentConfigurationList create() {
         InstrumentConfigurationList icList = new InstrumentConfigurationList(1);
         

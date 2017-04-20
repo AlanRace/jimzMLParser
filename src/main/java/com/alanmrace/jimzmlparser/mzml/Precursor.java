@@ -97,7 +97,7 @@ public class Precursor extends MzMLContentWithParams {
      * is stored in the external document (see {@link Precursor#setSourceFileRef}) 
      * must also be supplied.
      * 
-     * @param sourceFileRef
+     * @param sourceFileRef Reference to the SourceFile containing the spectrum
      * @param externalSpectrumID Unique spectrum ID in external file
      */
     public void setExternalSpectrum(SourceFile sourceFileRef, String externalSpectrumID) {

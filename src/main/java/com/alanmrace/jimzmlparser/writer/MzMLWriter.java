@@ -101,4 +101,9 @@ public class MzMLWriter implements MzMLWritable {
         
         return metadataRAF.getFilePointer();
     }
+
+    @Override
+    public boolean shouldOutputIndex() {
+        return true;
+    }
 }

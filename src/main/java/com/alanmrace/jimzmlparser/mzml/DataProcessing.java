@@ -3,25 +3,41 @@ package com.alanmrace.jimzmlparser.mzml;
 import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 
+/**
+ * Class describing a data processing workflow.
+ * 
+ * @author Alan Race
+ */
 public class DataProcessing extends MzMLContentList<ProcessingMethod> implements ReferenceableTag {
 
     /**
-     *
+     * Serial version ID.
      */
     private static final long serialVersionUID = 1L;
 
-    protected static int idNumber = 0;
+    /**
+     * Unique identifier for the data processing [Required].
+     */
+    protected String id;
 
-    // Attributes
-    protected String id;		// Required
-
-
+    /**
+     * Create an empty DataProcessing with specified unique ID.
+     * 
+     * @param id Unique identifier.
+     */
     public DataProcessing(String id) {
         super(0);
         
         this.id = id;
     }
 
+    /**
+     * Copy constructor.
+     * 
+     * @param dp Old DataProcessing to copy
+     * @param rpgList New ReferenceableParamGroupList to match references to
+     * @param softwareList New SoftwareList to match references to
+     */
     public DataProcessing(DataProcessing dp, ReferenceableParamGroupList rpgList, SoftwareList softwareList) {
         this(dp.id);
 
@@ -30,14 +46,32 @@ public class DataProcessing extends MzMLContentList<ProcessingMethod> implements
         }
     }
 
+    /**
+     * Add ProcessingMethod. Helper method to retain API, calls 
+     * {@link DataProcessing#add(com.alanmrace.jimzmlparser.mzml.MzMLTag)}.
+     * 
+     * @param preprocessingMethod ProcessingMethod to add to list
+     */
     public void addProcessingMethod(ProcessingMethod preprocessingMethod) {
         add(preprocessingMethod);
     }
 
+    /**
+     * Returns ProcessingMethod at specified index in list. Helper method to retain 
+     * API, calls {@link DataProcessing#get(int)}.
+     * 
+     * @param index Index in the list
+     * @return ProcessingMethod at index, or null if none exists
+     */
     public ProcessingMethod getProcessingMethod(int index) {
         return get(index);
     }
 
+    /**
+     * Returns number of PreprocessingMethod items added to DataProcessing workflow.
+     * 
+     * @return Number of preprocessing methods
+     */
     public int getProcessingMethodCount() {
         return size();
     }

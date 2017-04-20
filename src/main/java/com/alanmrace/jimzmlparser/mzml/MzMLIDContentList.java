@@ -7,6 +7,8 @@ import com.alanmrace.jimzmlparser.writer.MzMLWritable;
 /**
  * Class describing a list of MzML tags which have an ID, for example Spectrum.
  * 
+ * <p>TODO: Consider throwing an error if we try and add an item with the same ID twice?
+ * 
  * @author Alan Race
  * @param <T> MzML tag which are children of the list
  * 
