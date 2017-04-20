@@ -12,7 +12,7 @@ import java.util.List;
 public class ScanSettings extends MzMLContentWithParams implements ReferenceableTag {
 
     /**
-     * Serialisaiton version ID.
+     * Serialisation version ID.
      */
     private static final long serialVersionUID = 1L;
 
@@ -141,7 +141,7 @@ public class ScanSettings extends MzMLContentWithParams implements Referenceable
     private SourceFileRefList sourceFileRefList;
     
     /**
-     * TargetList [Required]
+     * TargetList [Required].
      */
     private TargetList targetList;
 
@@ -202,7 +202,7 @@ public class ScanSettings extends MzMLContentWithParams implements Referenceable
     /**
      * Set SourceFileList.
      * 
-     * @param sourceFileRefList
+     * @param sourceFileRefList SourceFileList
      */
     public void setSourceFileRefList(SourceFileRefList sourceFileRefList) {
         sourceFileRefList.setParent(this);
@@ -213,7 +213,7 @@ public class ScanSettings extends MzMLContentWithParams implements Referenceable
     /**
      * Set TargetList.
      * 
-     * @param targetList
+     * @param targetList TargetList
      */
     public void setTargetList(TargetList targetList) {
         targetList.setParent(this);
@@ -224,7 +224,7 @@ public class ScanSettings extends MzMLContentWithParams implements Referenceable
     /**
      * Get CVParam or child CVParam of line scan direction, or null if one is not found.
      * 
-     * @return
+     * @return CVParam if found, null otherwise
      * @see ScanSettings#lineScanDirectionID
      * @see ScanSettings#lineScanDirectionLeftRightID
      * @see ScanSettings#lineScanDirectionRightLeftID
@@ -238,7 +238,7 @@ public class ScanSettings extends MzMLContentWithParams implements Referenceable
     /**
      * Get CVParam or child CVParam of scan direction, or null if one is not found.
      * 
-     * @return
+     * @return CVParam if found, null otherwise
      * @see ScanSettings#scanDirectionID
      * @see ScanSettings#scanDirectionLeftRightID
      * @see ScanSettings#scanDirectionRightLeftID
@@ -252,7 +252,7 @@ public class ScanSettings extends MzMLContentWithParams implements Referenceable
     /**
      * Get CVParam or child CVParam of scan pattern, or null if one is not found.
      * 
-     * @return
+     * @return CVParam if found, null otherwise
      * @see ScanSettings#scanPatternID
      * @see ScanSettings#scanPatternFlybackID
      * @see ScanSettings#scanPatternMeanderingID
@@ -265,7 +265,7 @@ public class ScanSettings extends MzMLContentWithParams implements Referenceable
     /**
      * Get CVParam or child CVParam of scan type, or null if one is not found.
      * 
-     * @return
+     * @return CVParam if found, null otherwise
      * @see ScanSettings#scanTypeID
      * @see ScanSettings#scanTypeVerticalID
      */

@@ -7,21 +7,45 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Class describing {@literal <scanList>} tag.
+ * 
+ * @author Alan Race
+ */
 public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan> {
 
     /**
-     *
+     * Serialisation version ID.
      */
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Accession: Spectra combination (MS:1000570).
+     */
     public static String spectraCombinationID = "MS:1000570";
 
+    /**
+     * List of Scans.
+     */
     protected List<Scan> scanList;
 
+    /**
+     * Create an empty list with specified capacity.
+     * 
+     * @param count Capacity
+     */
     public ScanList(int count) {
         scanList = new ArrayList<Scan>(count);
     }
 
+    /**
+     * Copy constructor.
+     *
+     * @param scanList Old ScanList to copy
+     * @param rpgList New ReferenceableParamGroupList to match references to
+     * @param sourceFileList New SourceFileList to match references to
+     * @param icList New InstrumentConfigurationList to match references to
+     */
     public ScanList(ScanList scanList, ReferenceableParamGroupList rpgList, SourceFileList sourceFileList,
             InstrumentConfigurationList icList) {
         super(scanList, rpgList);
@@ -40,10 +64,6 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
 
         return required;
     }
-
-    public void addScan(Scan scan) {
-        add(scan);
-    }
     
     @Override
     public void add(Scan scan) {
@@ -52,18 +72,35 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
         scanList.add(scan);
     }
 
-    @Override
-    public int size() {
-        return scanList.size();
+    /**
+     * Add Scan. Helper method to retain API, calls 
+     * {@link ScanList#add(com.alanmrace.jimzmlparser.mzml.MzMLTag)}.
+     * 
+     * @param scan Scan to add to list
+     */
+    public void addScan(Scan scan) {
+        add(scan);
     }
 
+    @Override
+    public Scan get(int index) {
+        return scanList.get(index);
+    }
+    
+    /**
+     * Returns Scan at specified index in list. Helper method to retain 
+     * API, calls {@link ScanList#get(int)}.
+     * 
+     * @param index Index in the list
+     * @return Scan at index, or null if none exists
+     */
     public Scan getScan(int index) {
         return scanList.get(index);
     }
     
     @Override
-    public Scan get(int index) {
-        return scanList.get(index);
+    public int size() {
+        return scanList.size();
     }
 
 //	public double getScanStartTime() {
