@@ -132,7 +132,7 @@ public class InstrumentConfiguration extends MzMLContentWithParams implements Re
     }
 
     @Override
-    protected String getXMLAttributeText() {
+    public String getXMLAttributeText() {
         String attributeText = super.getXMLAttributeText();
         
         if (scanSettingsRef != null) {

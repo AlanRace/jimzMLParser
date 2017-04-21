@@ -123,7 +123,7 @@ public abstract class MzMLContentList<T extends MzMLTag>
     }
 
     @Override
-    protected String getXMLAttributeText() {
+    public String getXMLAttributeText() {
         String attributeText = super.getXMLAttributeText();
         
         if(!attributeText.isEmpty())

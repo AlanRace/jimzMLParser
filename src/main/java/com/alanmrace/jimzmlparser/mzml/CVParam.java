@@ -112,28 +112,49 @@ public abstract class CVParam extends MzMLContent {
     public abstract void setValueAsString(String newValue);
 
     @Override
+    public String getXMLAttributeText() {
+        String attributes = "cvRef=\"" + XMLHelper.ensureSafeXML(term.getNamespace()) + "\"";
+        attributes += " accession=\"" + XMLHelper.ensureSafeXML(term.getID()) + "\"";
+        attributes += " name=\"" + XMLHelper.ensureSafeXML(term.getName()) + "\"";
+        
+        String value = getValueAsString();
+        
+        if (value != null && !value.equals("null")) {
+            attributes += " value=\"" + XMLHelper.ensureSafeXML(value) + "\"";
+        }
+
+        if (units != null) {
+            attributes += " unitCvRef=\"" + XMLHelper.ensureSafeXML(units.getNamespace()) + "\"";
+            attributes += " unitAccession=\"" + XMLHelper.ensureSafeXML(units.getID()) + "\"";
+            attributes += " unitName=\"" + XMLHelper.ensureSafeXML(units.getName()) + "\"";
+        }
+        
+        return attributes;
+    }
+    
+    @Override
     public void outputXML(MzMLWritable output, int indent) throws IOException {
         MzMLContent.indent(output, indent);
         
-        output.write("<cvParam");
+        output.writeMetadata("<cvParam");
 
-        output.write(" cvRef=\"" + XMLHelper.ensureSafeXML(term.getNamespace()) + "\"");
-        output.write(" accession=\"" + XMLHelper.ensureSafeXML(term.getID()) + "\"");
-        output.write(" name=\"" + XMLHelper.ensureSafeXML(term.getName()) + "\"");
+        output.writeMetadata(" cvRef=\"" + XMLHelper.ensureSafeXML(term.getNamespace()) + "\"");
+        output.writeMetadata(" accession=\"" + XMLHelper.ensureSafeXML(term.getID()) + "\"");
+        output.writeMetadata(" name=\"" + XMLHelper.ensureSafeXML(term.getName()) + "\"");
 
         String value = getValueAsString();
 
         if (value != null && !value.equals("null")) {
-            output.write(" value=\"" + XMLHelper.ensureSafeXML(value) + "\"");
+            output.writeMetadata(" value=\"" + XMLHelper.ensureSafeXML(value) + "\"");
         }
 
         if (units != null) {
-            output.write(" unitCvRef=\"" + XMLHelper.ensureSafeXML(units.getNamespace()) + "\"");
-            output.write(" unitAccession=\"" + XMLHelper.ensureSafeXML(units.getID()) + "\"");
-            output.write(" unitName=\"" + XMLHelper.ensureSafeXML(units.getName()) + "\"");
+            output.writeMetadata(" unitCvRef=\"" + XMLHelper.ensureSafeXML(units.getNamespace()) + "\"");
+            output.writeMetadata(" unitAccession=\"" + XMLHelper.ensureSafeXML(units.getID()) + "\"");
+            output.writeMetadata(" unitName=\"" + XMLHelper.ensureSafeXML(units.getName()) + "\"");
         }
 
-        output.write("/>\n");
+        output.writeMetadata("/>\n");
     }
 
     /**

@@ -69,26 +69,29 @@ public class CreateSpectrumTest {
         
             assertEquals("Getting intensities when data only stored in memory", 1000, intensitiesBack[0], 0.1);
             
-            MzMLWriter output;
+            MzMLWriter output = new MzMLWriter();
             // Now try outputing the spectral data
-            //output = new MzMLWriter(targetDir() + "/spectrum.xml");
+            //output ;
             //mzML.outputXML(output, 0);
             //output.close();
-            
-            mzML.write(targetDir() + "/spectrum.mzML");
+            output.write(mzML, targetDir() + "/spectrum.mzML");
+//            mzML.write(targetDir() + "/spectrum.mzML");
             
             MzML mzMLBack = MzMLHeaderHandler.parsemzMLHeader(targetDir() + "/spectrum.mzML");
             Spectrum mzMLSpectrum = mzMLBack.getRun().getSpectrumList().getSpectrum(0);
             double[] mzMLmzs = mzMLSpectrum.getmzArray(true);
             
+            System.out.println(mzMLmzs);
+            System.out.println(mzs);
+            
             assertEquals("Getting m/z back from mzML", mzs[0], mzMLmzs[0], 0.1);
             
             // Output as imzML
-            ImzMLWriter imzMLOutput = new ImzMLWriter(targetDir() + "/spectrum.imzML");
+            ImzMLWriter imzMLOutput = new ImzMLWriter();
             //spectrum.outputXML(imzMLOutput, 0);
             //imzMLOutput.close();
             
-            imzML.write(targetDir() + "/spectrum.imzML");
+            imzMLOutput.write(imzML, targetDir() + "/spectrum.imzML");
             
             // Now try outputing compressed spectral data
             spectrum.getBinaryDataArrayList().getmzArray().removeChildOfCVParam(BinaryDataArray.noCompressionID);
@@ -98,7 +101,9 @@ public class CreateSpectrumTest {
             //spectrum.outputXML(output, 0);
             //output.close();
             
-            mzML.write(targetDir() + "/compressed_spectrum.mzML");
+            MzMLWriter compressed = new MzMLWriter();
+            
+            compressed.write(mzML, targetDir() + "/compressed_spectrum.mzML");
         } catch (FileNotFoundException ex) {
             Logger.getLogger(CreateSpectrumTest.class.getName()).log(Level.SEVERE, null, ex);
             
@@ -115,11 +120,7 @@ public class CreateSpectrumTest {
             Logger.getLogger(CreateSpectrumTest.class.getName()).log(Level.SEVERE, null, ex);
             
             fail("Unexpected exception: " + ex);
-        } catch (ImzMLWriteException ex) {
-            Logger.getLogger(CreateSpectrumTest.class.getName()).log(Level.SEVERE, null, ex);
-            
-            fail("Unexpected exception: " + ex);
-        } 
+        }
         
     }
     
@@ -129,6 +130,8 @@ public class CreateSpectrumTest {
         
         double[] mzs = {100, 150, 200};
         double[] intensities = {1000, 432, 2439.439};
+        
+        ImzMLWriter writer = new ImzMLWriter();
         
         ImzML imzML = ImzML.create();
         
@@ -156,7 +159,7 @@ public class CreateSpectrumTest {
         imzML.getRun().getSpectrumList().add(spectrum);
         
         try {
-            imzML.write(targetDir() + "/modifySpectrumTest.imzML");
+            writer.write(imzML, targetDir() + "/modifySpectrumTest.imzML");
             
             // Check that we can read in the written imzML without any issues - i.e. whether
             // it is valid enough to parse
@@ -172,7 +175,7 @@ public class CreateSpectrumTest {
                 
             });
             
-        } catch (ImzMLWriteException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(CreateSpectrumTest.class.getName()).log(Level.SEVERE, null, ex);
             
             fail("Unexpected exception: " + ex);

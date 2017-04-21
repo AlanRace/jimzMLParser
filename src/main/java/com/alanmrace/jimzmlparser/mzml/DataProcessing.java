@@ -98,7 +98,7 @@ public class DataProcessing extends MzMLContentList<ProcessingMethod> implements
      * @return Attribute text
      */
     @Override
-    protected String getXMLAttributeText() {
+    public String getXMLAttributeText() {
         return "id=\"" + XMLHelper.ensureSafeXML(id) + "\"";
     }
 

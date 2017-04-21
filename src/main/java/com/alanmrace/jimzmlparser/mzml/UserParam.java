@@ -151,25 +151,25 @@ public class UserParam extends MzMLContent {
     public void outputXML(MzMLWritable output, int indent) throws IOException {
         MzMLContent.indent(output, indent);
         
-        output.write("<userParam");
+        output.writeMetadata("<userParam");
 
-        output.write(" name=\"" + XMLHelper.ensureSafeXML(name) + "\"");
+        output.writeMetadata(" name=\"" + XMLHelper.ensureSafeXML(name) + "\"");
 
         if (type != null) {
-            output.write(" type=\"" + XMLHelper.ensureSafeXML(type) + "\"");
+            output.writeMetadata(" type=\"" + XMLHelper.ensureSafeXML(type) + "\"");
         }
 
         if (value != null) {
-            output.write(" value=\"" + XMLHelper.ensureSafeXML(value) + "\"");
+            output.writeMetadata(" value=\"" + XMLHelper.ensureSafeXML(value) + "\"");
         }
 
         if (units != null) {
-            output.write(" unitCvRef=\"" + XMLHelper.ensureSafeXML(units.getNamespace()) + "\"");
-            output.write(" unitAccession=\"" + XMLHelper.ensureSafeXML(units.getID()) + "\"");
-            output.write(" unitName=\"" + XMLHelper.ensureSafeXML(units.getName()) + "\"");
+            output.writeMetadata(" unitCvRef=\"" + XMLHelper.ensureSafeXML(units.getNamespace()) + "\"");
+            output.writeMetadata(" unitAccession=\"" + XMLHelper.ensureSafeXML(units.getID()) + "\"");
+            output.writeMetadata(" unitName=\"" + XMLHelper.ensureSafeXML(units.getName()) + "\"");
         }
 
-        output.write("/>\n");
+        output.writeMetadata("/>\n");
     }
 
     @Override

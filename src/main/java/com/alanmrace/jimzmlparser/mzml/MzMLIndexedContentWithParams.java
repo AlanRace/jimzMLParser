@@ -75,7 +75,7 @@ public abstract class MzMLIndexedContentWithParams extends MzMLOrderedContentWit
      * 
      * @return File pointer location within mzML file
      */
-    protected long getmzMLLocation() {
+    public long getmzMLLocation() {
         return mzMLLocation;
     }
         
@@ -92,17 +92,17 @@ public abstract class MzMLIndexedContentWithParams extends MzMLOrderedContentWit
         String attributeText = getXMLAttributeText();
         
         MzMLContent.indent(output, indent);
-        output.write("<" + getTagName() + " index=\"" + index + "\"");
+        output.writeMetadata("<" + getTagName() + " index=\"" + index + "\"");
         
         if(attributeText != null && !attributeText.isEmpty())
-            output.write(" " + attributeText);
+            output.writeMetadata(" " + attributeText);
         
-        output.write(">\n");
+        output.writeMetadata(">\n");
 
         outputXMLContent(output, indent + 1);
 
         MzMLContent.indent(output, indent);
-        output.write("</" + getTagName() + ">\n");
+        output.writeMetadata("</" + getTagName() + ">\n");
     }
     
 }

@@ -154,7 +154,7 @@ public class Binary extends MzMLContent {
         MzMLContent.indent(output, indent);
 
         if (this.data != null) {
-            output.write("<binary>");
+            output.writeMetadata("<binary>");
 
             byte[] bytes = new byte[8 * data.length];
 
@@ -166,9 +166,9 @@ public class Binary extends MzMLContent {
             
             output.writeData(bytes);
             
-            output.write("</binary>\n");
+            output.writeMetadata("</binary>\n");
         } else {
-            output.write("<binary />\n");
+            output.writeMetadata("<binary />\n");
         }
     }
 

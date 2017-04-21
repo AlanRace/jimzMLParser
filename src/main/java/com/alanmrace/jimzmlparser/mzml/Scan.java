@@ -278,7 +278,7 @@ public class Scan extends MzMLContentWithParams implements Serializable {
     }
 
     @Override
-    protected String getXMLAttributeText() {
+    public String getXMLAttributeText() {
         String attributeText = super.getXMLAttributeText();
 
         if (externalSpectrumID != null) {

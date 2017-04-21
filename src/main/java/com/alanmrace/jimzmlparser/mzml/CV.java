@@ -109,7 +109,7 @@ public class CV extends MzMLIDContent implements Serializable {
     }
 
     @Override
-    protected String getXMLAttributeText() {
+    public String getXMLAttributeText() {
         String attributeText = "URI=\"" + XMLHelper.ensureSafeXML(uri) + "\"";
         attributeText += " fullName=\"" + XMLHelper.ensureSafeXML(fullName) + "\"";
         attributeText += " id=\"" + XMLHelper.ensureSafeXML(id) + "\"";

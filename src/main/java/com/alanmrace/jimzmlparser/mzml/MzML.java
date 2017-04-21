@@ -1,6 +1,5 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import com.alanmrace.jimzmlparser.exceptions.ImzMLWriteException;
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
 import java.io.IOException;
@@ -10,7 +9,6 @@ import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.data.DataLocation;
 import com.alanmrace.jimzmlparser.data.DataStorage;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
-import com.alanmrace.jimzmlparser.writer.MzMLWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -524,63 +522,63 @@ public class MzML extends MzMLContentWithParams implements Serializable {
         return run;
     }
 
-    /**
-     * Write out to XML file with specified filename. Uses ISO-8859-1 encoding.
-     * 
-     * @param filename      Location to output as XML
-     * @throws ImzMLWriteException IOException are wrapped into ImzMLWriteException
-     */
-    public void write(String filename) throws ImzMLWriteException {
-        try {            
-            String encoding = "ISO-8859-1";
-
-            //raf = new RandomAccessFile(filename, "rw");
-
-            //OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(raf.getFD()), encoding);
-            
-            MzMLWriter output = new MzMLWriter(filename);
-
-            output.write("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>\n");
-            outputXML(output, 0);
-
-            //output.flush();
-            
-            //raf.getChannel().truncate(raf.getFilePointer());
-            output.close();
-            
-            //out.close();
-        } catch (IOException ex) {
-            throw new ImzMLWriteException("Error writing mzML file " + filename + ". " + ex.getLocalizedMessage(), ex);
-        }
-    }
+//    /**
+//     * Write out to XML file with specified filename. Uses ISO-8859-1 encoding.
+//     * 
+//     * @param filename      Location to output as XML
+//     * @throws ImzMLWriteException IOException are wrapped into ImzMLWriteException
+//     */
+//    public void write(String filename) throws ImzMLWriteException {
+//        try {            
+//            String encoding = "ISO-8859-1";
+//
+//            //raf = new RandomAccessFile(filename, "rw");
+//
+//            //OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(raf.getFD()), encoding);
+//            
+//            MzMLWriter output = new MzMLWriter(filename);
+//
+//            output.write("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>\n");
+//            outputXML(output, 0);
+//
+//            //output.flush();
+//            
+//            //raf.getChannel().truncate(raf.getFilePointer());
+//            output.close();
+//            
+//            //out.close();
+//        } catch (IOException ex) {
+//            throw new ImzMLWriteException("Error writing mzML file " + filename + ". " + ex.getLocalizedMessage(), ex);
+//        }
+//    }
 
     @Override
     public void outputXML(MzMLWritable output, int indent) throws IOException {
         if (output.shouldOutputIndex()) {
             MzMLContent.indent(output, indent);
-            output.write("<indexedmzML");
-            output.write(" xmlns=\"http://psi.hupo.org/ms/mzml\"");
-            output.write(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
-            output.write(" xsi:schemaLocation=\"http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.2_idx.xsd\">\n");
+            output.writeMetadata("<indexedmzML");
+            output.writeMetadata(" xmlns=\"http://psi.hupo.org/ms/mzml\"");
+            output.writeMetadata(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
+            output.writeMetadata(" xsi:schemaLocation=\"http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.2_idx.xsd\">\n");
             
             indent++;
         }
 
         MzMLContent.indent(output, indent);
-        output.write("<mzML");
+        output.writeMetadata("<mzML");
         // Set up namespaces
-        output.write(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
-        output.write(" xsi:schemaLocation=\"http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.0.xsd\"");
-        output.write(" xmlns=\"http://psi.hupo.org/ms/mzml\"");
+        output.writeMetadata(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
+        output.writeMetadata(" xsi:schemaLocation=\"http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.0.xsd\"");
+        output.writeMetadata(" xmlns=\"http://psi.hupo.org/ms/mzml\"");
         // Attributes
-        output.write(" version=\"" + XMLHelper.ensureSafeXML(version) + "\"");
+        output.writeMetadata(" version=\"" + XMLHelper.ensureSafeXML(version) + "\"");
         if (accession != null) {
-            output.write(" accession=\"" + XMLHelper.ensureSafeXML(accession) + "\"");
+            output.writeMetadata(" accession=\"" + XMLHelper.ensureSafeXML(accession) + "\"");
         }
         if (id != null) {
-            output.write(" id=\"" + XMLHelper.ensureSafeXML(id) + "\"");
+            output.writeMetadata(" id=\"" + XMLHelper.ensureSafeXML(id) + "\"");
         }
-        output.write(">\n");
+        output.writeMetadata(">\n");
 
         // TODO: This shouldn't be the case ...there should always be a cvList
         if (cvList == null) {
@@ -618,7 +616,7 @@ public class MzML extends MzMLContentWithParams implements Serializable {
         run.outputXML(output, indent + 1);
 
         MzMLContent.indent(output, indent);
-        output.write("</mzML>\n");
+        output.writeMetadata("</mzML>\n");
 
         if (output.shouldOutputIndex()) {
             indent--;
@@ -627,25 +625,25 @@ public class MzML extends MzMLContentWithParams implements Serializable {
             long indexListOffset = output.getMetadataPointer();
 
             MzMLContent.indent(output, indent + 1);
-            output.write("<indexList count=\"1\">\n");
+            output.writeMetadata("<indexList count=\"1\">\n");
             MzMLContent.indent(output, indent + 2);
-            output.write("<index name=\"spectrum\">\n");
+            output.writeMetadata("<index name=\"spectrum\">\n");
 
             for (Spectrum spectrum : run.getSpectrumList()) {
                 MzMLContent.indent(output, indent + 3);
-                output.write("<offset idRef=\"" + spectrum.getID() + "\">" + spectrum.getmzMLLocation() + "</offset>\n");
+                output.writeMetadata("<offset idRef=\"" + spectrum.getID() + "\">" + spectrum.getmzMLLocation() + "</offset>\n");
             }
 
             MzMLContent.indent(output, indent + 2);
-            output.write("</index>\n");
+            output.writeMetadata("</index>\n");
             MzMLContent.indent(output, indent + 1);
-            output.write("</indexList>\n");
+            output.writeMetadata("</indexList>\n");
 
             MzMLContent.indent(output, indent + 1);
-            output.write("<indexListOffset>" + indexListOffset + "</indexListOffset>\n");
+            output.writeMetadata("<indexListOffset>" + indexListOffset + "</indexListOffset>\n");
 
             MzMLContent.indent(output, indent);
-            output.write("</indexedmzML>\n");
+            output.writeMetadata("</indexedmzML>\n");
         }
         
         output.flush();

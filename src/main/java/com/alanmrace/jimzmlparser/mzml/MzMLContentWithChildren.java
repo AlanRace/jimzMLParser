@@ -35,16 +35,16 @@ public abstract class MzMLContentWithChildren extends MzMLContent implements Has
         String attributeText = getXMLAttributeText();
         
         MzMLContent.indent(output, indent);
-        output.write("<" + getTagName());
+        output.writeMetadata("<" + getTagName());
         
         if(attributeText != null && !attributeText.isEmpty())
-            output.write(" " + attributeText);
+            output.writeMetadata(" " + attributeText);
         
-        output.write(">\n");
+        output.writeMetadata(">\n");
 
         outputXMLContent(output, indent + 1);
 
         MzMLContent.indent(output, indent);
-        output.write("</" + getTagName() + ">\n");
+        output.writeMetadata("</" + getTagName() + ">\n");
     }
 }

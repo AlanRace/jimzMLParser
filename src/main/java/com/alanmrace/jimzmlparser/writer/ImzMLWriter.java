@@ -5,6 +5,7 @@ import com.alanmrace.jimzmlparser.mzml.BinaryDataArray;
 import com.alanmrace.jimzmlparser.mzml.EmptyCVParam;
 import com.alanmrace.jimzmlparser.mzml.IntegerCVParam;
 import com.alanmrace.jimzmlparser.mzml.LongCVParam;
+import com.alanmrace.jimzmlparser.mzml.MzML;
 import com.alanmrace.jimzmlparser.obo.OBO;
 import java.io.DataOutputStream;
 import java.io.FileOutputStream;
@@ -31,19 +32,9 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
      * BufferedWriter created from the data RandomAccessFile for writing out to.
      */
     protected DataOutputStream dataOutput;
-
-    /**
-     * Create an imzML file and an IBD file at the specified outputLocation. 
-     * The extension of the outputLocation will be replaced with .ibd for the 
-     * location and name of the IBD file. These files will be open as 'rw' 
-     * in a RandomAccessFile.
-     * 
-     * @param outputLocation Location to write the new imzML file
-     * @throws IOException Issue with opening file for writing
-     */
-    public ImzMLWriter(String outputLocation) throws IOException {
-        super(outputLocation);
-
+    
+    @Override
+    public void write(MzML mzML, String outputLocation) throws IOException {
         String ibdLocation = outputLocation;
         
         int pos = ibdLocation.lastIndexOf(".");
@@ -53,6 +44,14 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
 
         dataRAF = new RandomAccessFile(ibdLocation + ".ibd", "rw");
         dataOutput = new DataOutputStream(new FileOutputStream(dataRAF.getFD()));
+        
+        // TODO: Update UUID
+        
+        super.write(mzML, outputLocation);
+        
+        // TODO: Update SHA-1
+        
+        dataOutput.close();
     }
 
     @Override

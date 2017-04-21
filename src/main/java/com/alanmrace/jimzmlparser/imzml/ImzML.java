@@ -16,6 +16,7 @@ import com.alanmrace.jimzmlparser.mzml.ScanSettingsList;
 import com.alanmrace.jimzmlparser.mzml.Software;
 import com.alanmrace.jimzmlparser.mzml.Spectrum;
 import com.alanmrace.jimzmlparser.mzml.SpectrumList;
+import com.alanmrace.jimzmlparser.writer.ImzMLHeaderWriter;
 import com.alanmrace.jimzmlparser.writer.ImzMLWriter;
 import com.alanmrace.jimzmlparser.writer.MzMLWritable;
 import java.io.DataInputStream;
@@ -850,44 +851,53 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
         return bb.array();
     }
     
-    /**
-     * Write imzML file.
-     * 
-     * @throws ImzMLWriteException Issue writing imzML file
-     */
-    public void write() throws ImzMLWriteException {
-        if (ibdFile == null) {
-            throw new ImzMLWriteException("No ibd file, can't write imzML file.");
-        }
-
-        write(ibdFile.getAbsolutePath().substring(0, ibdFile.getAbsolutePath().length() - ".ibd".length()) + ".imzML");
-    }
-    
-    @Override
-    public void write(String filename) throws ImzMLWriteException {
-        try {
-            ImzMLWriter output = new ImzMLWriter(filename);
-
-            write(filename, output);
-        } catch (IOException ex) {
-            Logger.getLogger(ImzML.class.getName()).log(Level.SEVERE, null, ex);
-            
-            throw new ImzMLWriteException("Error writing imzML file " + filename + ". " + ex.getLocalizedMessage(), ex);
-        }
-    }
-    
-    public void write(String filename, MzMLWritable output) throws ImzMLWriteException {
-        String encoding = "ISO-8859-1";
-        
-        try {
-            output.write("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>\n");
-            outputXML(output, 0);
-
-            output.close();
-        } catch (IOException ex) {
-            throw new ImzMLWriteException("Error writing imzML file " + filename + ". " + ex.getLocalizedMessage(), ex);
-        }
-    }
+//    /**
+//     * Write imzML file only, not IBD. To write the full IBD use {@link ImzML#write(java.lang.String)}
+//     * or {@link ImzML#write(com.alanmrace.jimzmlparser.writer.MzMLWritable)}.
+//     * 
+//     * @throws ImzMLWriteException Issue writing imzML file
+//     */
+//    public void write() throws ImzMLWriteException {
+//        if (ibdFile == null) {
+//            throw new ImzMLWriteException("No ibd file, can't write imzML file.");
+//        }
+//
+//        String imzMLFile = ibdFile.getAbsolutePath().substring(0, ibdFile.getAbsolutePath().length() - ".ibd".length()) + ".imzML";
+//        
+//        try {
+//            write(new ImzMLHeaderWriter(imzMLFile));
+//        } catch (IOException ex) {
+//            Logger.getLogger(ImzML.class.getName()).log(Level.SEVERE, null, ex);
+//            
+//            throw new ImzMLWriteException("Error writing imzML file " + imzMLFile + ". " + ex.getLocalizedMessage(), ex);
+//        }
+//    }
+//    
+//    @Override
+//    public void write(String filename) throws ImzMLWriteException {
+//        try {
+//            ImzMLWriter output = new ImzMLWriter(filename);
+//
+//            write(output);
+//        } catch (IOException ex) {
+//            Logger.getLogger(ImzML.class.getName()).log(Level.SEVERE, null, ex);
+//            
+//            throw new ImzMLWriteException("Error writing imzML file " + filename + ". " + ex.getLocalizedMessage(), ex);
+//        }
+//    }
+//    
+//    public void write(MzMLWritable output) throws ImzMLWriteException {
+//        String encoding = "ISO-8859-1";
+//        
+//        try {
+//            output.write("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>\n");
+//            outputXML(output, 0);
+//
+//            output.close();
+//        } catch (IOException ex) {
+//            throw new ImzMLWriteException("Error writing imzML file " + output.getMetadataLocation() + ". " + ex.getLocalizedMessage(), ex);
+//        }
+//    }
     
     public static ImzML create() {
         ImzML imzML = new ImzML(currentVersion);

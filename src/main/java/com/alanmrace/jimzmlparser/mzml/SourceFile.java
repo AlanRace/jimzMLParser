@@ -66,7 +66,7 @@ public class SourceFile extends MzMLContentWithParams implements ReferenceableTa
     }
 
     @Override
-    protected String getXMLAttributeText() {
+    public String getXMLAttributeText() {
         String attributeText = "id=\"" + XMLHelper.ensureSafeXML(id) + "\"";
         attributeText += " location=\"" + XMLHelper.ensureSafeXML(location) + "\"";
         attributeText += " name=\"" + XMLHelper.ensureSafeXML(name) + "\"";

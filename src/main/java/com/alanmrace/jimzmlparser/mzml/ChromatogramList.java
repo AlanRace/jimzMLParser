@@ -130,7 +130,7 @@ public class ChromatogramList extends MzMLIDContentList<Chromatogram> {
     }
     
     @Override
-    protected String getXMLAttributeText() {
+    public String getXMLAttributeText() {
         return super.getXMLAttributeText() + " defaultDataProcessingRef=\"" + XMLHelper.ensureSafeXML(defaultDataProcessingRef.getID()) + "\""; 
     }
 

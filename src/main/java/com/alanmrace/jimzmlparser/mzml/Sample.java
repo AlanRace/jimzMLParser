@@ -86,7 +86,7 @@ public class Sample extends MzMLContentWithParams implements ReferenceableTag {
     }
 
     @Override
-    protected String getXMLAttributeText() {
+    public String getXMLAttributeText() {
         String attributeText = "id=\"" + XMLHelper.ensureSafeXML(id) + "\"";
         
         if (name != null) {

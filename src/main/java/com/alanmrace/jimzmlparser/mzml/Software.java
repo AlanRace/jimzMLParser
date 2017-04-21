@@ -62,7 +62,7 @@ public class Software extends MzMLContentWithParams implements ReferenceableTag 
     }
     
     @Override
-    protected String getXMLAttributeText() {
+    public String getXMLAttributeText() {
         return "id=\"" + XMLHelper.ensureSafeXML(id) + "\"" +
             " version=\"" + XMLHelper.ensureSafeXML(version) + "\"";
     }

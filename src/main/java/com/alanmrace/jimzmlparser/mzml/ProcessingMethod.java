@@ -62,7 +62,7 @@ public class ProcessingMethod extends MzMLOrderedContentWithParams {
     }
     
     @Override
-    protected String getXMLAttributeText() {
+    public String getXMLAttributeText() {
         return "softwareRef=\"" + XMLHelper.ensureSafeXML(softwareRef.getID()) + "\"";
     }
     

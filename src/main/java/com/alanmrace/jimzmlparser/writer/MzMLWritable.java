@@ -1,6 +1,7 @@
 package com.alanmrace.jimzmlparser.writer;
 
 import com.alanmrace.jimzmlparser.mzml.BinaryDataArray;
+import com.alanmrace.jimzmlparser.mzml.MzML;
 import java.io.IOException;
 
 /**
@@ -18,6 +19,13 @@ public interface MzMLWritable {
      * @return true if indexed mzML, false otherwise
      */
     public boolean shouldOutputIndex();
+    
+    /**
+     * Returns the full path location of the metadata file.
+     * 
+     * @return File and path of the metadata file
+     */
+    public String getMetadataLocation();
     
     /**
      * Returns the current file pointer location in the metadata file. When 
@@ -55,12 +63,21 @@ public interface MzMLWritable {
     public byte[] prepareData(double[] data, BinaryDataArray binayDataArray) throws IOException;
     
     /**
+     * Write out mzML file.
+     * 
+     * @param mzML MzML to write
+     * @param outputLocation Location to write mzML to
+     * @throws IOException Issue writing data
+     */
+    public void write(MzML mzML, String outputLocation) throws IOException;
+    
+    /**
      * Write metadata out to metadata file.
      * 
      * @param str Metadata to write out
      * @throws IOException Issue writing data
      */
-    public void write(String str) throws IOException;
+    public void writeMetadata(String str) throws IOException;
 
     /**
      * Write binary data out to data file.

@@ -41,6 +41,13 @@ public interface MzMLTag {
     public void addElementsAtXPathToCollection(Collection<MzMLTag> elements, String fullXPath, String currentXPath) throws InvalidXPathException;
     
     /**
+     * Returns XML formatted text describing XML attributes for the MzMLTag.
+     * 
+     * @return XML formatted attribute text
+     */
+    public String getXMLAttributeText();
+    
+    /**
      * Format the contents of the class into XML at a specified number of tab
      * indents and output to a MzMLWritable.
      * 

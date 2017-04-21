@@ -341,7 +341,7 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
     }
 
     @Override
-    protected String getXMLAttributeText() {
+    public String getXMLAttributeText() {
         String attributeText = super.getXMLAttributeText();
 
         if (sourceFileRef != null) {

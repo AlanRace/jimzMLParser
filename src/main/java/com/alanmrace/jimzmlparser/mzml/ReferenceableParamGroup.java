@@ -80,7 +80,7 @@ public class ReferenceableParamGroup extends MzMLContentWithParams implements Re
     }
 
     @Override
-    protected String getXMLAttributeText() {
+    public String getXMLAttributeText() {
         return "id=\"" + XMLHelper.ensureSafeXML(this.getID()) + "\"";
     }
 

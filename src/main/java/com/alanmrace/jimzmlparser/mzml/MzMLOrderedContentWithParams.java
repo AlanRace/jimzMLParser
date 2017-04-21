@@ -54,16 +54,16 @@ public abstract class MzMLOrderedContentWithParams extends MzMLContentWithParams
         String attributeText = getXMLAttributeText();
         
         MzMLContent.indent(output, indent);
-        output.write("<" + getTagName() + " order=\"" + order + "\"");
+        output.writeMetadata("<" + getTagName() + " order=\"" + order + "\"");
         
         if(attributeText != null && !attributeText.isEmpty())
-            output.write(" " + attributeText);
+            output.writeMetadata(" " + attributeText);
         
-        output.write(">\n");
+        output.writeMetadata(">\n");
 
         outputXMLContent(output, indent + 1);
 
         MzMLContent.indent(output, indent);
-        output.write("</" + getTagName() + ">\n");
+        output.writeMetadata("</" + getTagName() + ">\n");
     }
 }

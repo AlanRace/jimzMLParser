@@ -407,29 +407,52 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
 //	public Chromatogram getChromatogram(int index) {
 //		return chromatogramList.get(index);
 //	}
+    
     @Override
-    public void outputXML(MzMLWritable output, int indent) throws IOException {
-        MzMLContent.indent(output, indent);
-        output.write("<run");
-        output.write(" defaultInstrumentConfigurationRef=\"" + XMLHelper.ensureSafeXML(defaultInstrumentConfigurationRef.getID()) + "\"");
+    public String getXMLAttributeText() {
+        String attributes = "defaultInstrumentConfigurationRef=\"" + XMLHelper.ensureSafeXML(defaultInstrumentConfigurationRef.getID()) + "\"";
+        
         if (defaultSourceFileRef != null) {
-            output.write(" defaultSourceFileRef=\"" + XMLHelper.ensureSafeXML(defaultSourceFileRef.getID()) + "\"");
+            attributes += " defaultSourceFileRef=\"" + XMLHelper.ensureSafeXML(defaultSourceFileRef.getID()) + "\"";
         }
-        output.write(" id=\"" + XMLHelper.ensureSafeXML(id) + "\"");
+        
+        attributes += " id=\"" + XMLHelper.ensureSafeXML(id) + "\"";
+        
         if (sampleRef != null) {
-            output.write(" sampleRef=\"" + XMLHelper.ensureSafeXML(sampleRef.getID()) + "\"");
+            attributes += " sampleRef=\"" + XMLHelper.ensureSafeXML(sampleRef.getID()) + "\"";
         }
         if (startTimeStamp != null) {
             SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-DD'T'hh:mm:ss");
             
-            output.write(" startTimeStamp=\"" + XMLHelper.ensureSafeXML(format.format(startTimeStamp)) + "\"");
+            attributes += " startTimeStamp=\"" + XMLHelper.ensureSafeXML(format.format(startTimeStamp)) + "\"";
+        }        
+        
+        return attributes;
+    }
+    
+    @Override
+    public void outputXML(MzMLWritable output, int indent) throws IOException {
+        MzMLContent.indent(output, indent);
+        output.writeMetadata("<run");
+        output.writeMetadata(" defaultInstrumentConfigurationRef=\"" + XMLHelper.ensureSafeXML(defaultInstrumentConfigurationRef.getID()) + "\"");
+        if (defaultSourceFileRef != null) {
+            output.writeMetadata(" defaultSourceFileRef=\"" + XMLHelper.ensureSafeXML(defaultSourceFileRef.getID()) + "\"");
         }
-        output.write(">\n");
+        output.writeMetadata(" id=\"" + XMLHelper.ensureSafeXML(id) + "\"");
+        if (sampleRef != null) {
+            output.writeMetadata(" sampleRef=\"" + XMLHelper.ensureSafeXML(sampleRef.getID()) + "\"");
+        }
+        if (startTimeStamp != null) {
+            SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-DD'T'hh:mm:ss");
+            
+            output.writeMetadata(" startTimeStamp=\"" + XMLHelper.ensureSafeXML(format.format(startTimeStamp)) + "\"");
+        }
+        output.writeMetadata(">\n");
 
         super.outputXMLContent(output, indent + 1);
 
         MzMLContent.indent(output, indent);
-        output.write("</run>\n");
+        output.writeMetadata("</run>\n");
     }
 
     @Override

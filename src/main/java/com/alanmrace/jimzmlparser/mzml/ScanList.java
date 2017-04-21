@@ -117,7 +117,7 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
     }
 
     @Override
-    protected String getXMLAttributeText() {
+    public String getXMLAttributeText() {
         return "count=\"" + scanList.size() + "\"";
     }
 

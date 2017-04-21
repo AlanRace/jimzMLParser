@@ -158,7 +158,7 @@ public abstract class MzMLDataContainer extends MzMLIndexedContentWithParams {
     }
     
     @Override
-    protected String getXMLAttributeText() {
+    public String getXMLAttributeText() {
         String attributeText = super.getXMLAttributeText();
         
         if(!attributeText.isEmpty())

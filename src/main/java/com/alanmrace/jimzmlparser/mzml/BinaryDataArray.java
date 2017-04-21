@@ -680,7 +680,7 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
     }
 
     @Override
-    protected String getXMLAttributeText() {
+    public String getXMLAttributeText() {
         String attributeText = "encodedLength=\"" + encodedLength + "\"";
 
         if (arrayLength != -1) {
@@ -701,7 +701,7 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
             super.outputXMLContent(output, indent);
 
             MzMLContent.indent(output, indent);
-            output.write("<binary />\n");
+            output.writeMetadata("<binary />\n");
         } else {
             byte[] byteData = output.prepareData(data, this);
 
@@ -710,12 +710,12 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
             MzMLContent.indent(output, indent);
             
             if(output instanceof ImzMLHeaderWriter) {
-                output.write("<binary />\n");
+                output.writeMetadata("<binary />\n");
                 output.writeData(byteData);
             } else {
-                output.write("<binary>");
+                output.writeMetadata("<binary>");
                 output.writeData(byteData);
-                output.write("</binary>\n");
+                output.writeMetadata("</binary>\n");
             }
         }
     }

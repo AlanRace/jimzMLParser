@@ -190,7 +190,7 @@ public class SpectrumList extends MzMLIDContentList<Spectrum> {
     }
     
     @Override
-    protected String getXMLAttributeText() {
+    public String getXMLAttributeText() {
         return super.getXMLAttributeText() + " defaultDataProcessingRef=\"" + XMLHelper.ensureSafeXML(defaultDataProcessingRef.getID()) + "\""; 
     }
 
