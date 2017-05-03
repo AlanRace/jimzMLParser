@@ -22,7 +22,6 @@ import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

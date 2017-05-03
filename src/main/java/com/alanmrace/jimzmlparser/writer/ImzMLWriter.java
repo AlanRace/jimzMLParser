@@ -2,6 +2,7 @@ package com.alanmrace.jimzmlparser.writer;
 
 import com.alanmrace.jimzmlparser.data.DataTransformation;
 import com.alanmrace.jimzmlparser.mzml.BinaryDataArray;
+import com.alanmrace.jimzmlparser.mzml.Chromatogram;
 import com.alanmrace.jimzmlparser.mzml.EmptyCVParam;
 import com.alanmrace.jimzmlparser.mzml.FileContent;
 import com.alanmrace.jimzmlparser.mzml.IntegerCVParam;
@@ -122,7 +123,15 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
                 }
             }
 
-            // TODO: Write out all chromatograms
+            // Write out all chromatograms
+            for (Chromatogram chromatogram : mzML.getRun().getChromatogramList()) {
+                for (BinaryDataArray bda : chromatogram.getBinaryDataArrayList()) {
+                    double[] ddata = bda.getDataAsDouble();
+                    byte[] bdata = prepareData(ddata, bda);
+
+                    writeData(bdata);
+                }
+            }
             
             dataRAF.setLength(dataRAF.getFilePointer());
             dataOutput.close();
@@ -131,7 +140,7 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
             fileContent.removeCVParam(FileContent.uuidIdntificationID);
             fileContent.addCVParam(new StringCVParam(OBO.getOBO().getTerm(FileContent.uuidIdntificationID), uuid.toString()));
 
-            // TODO: Update SHA-1
+            // Update SHA-1
             fileContent.removeChildOfCVParam(FileContent.ibdChecksumID);
             fileContent.addCVParam(new StringCVParam(OBO.getOBO().getTerm(FileContent.sha1ChecksumID), HexHelper.byteArrayToHexString(messageDigest.digest())));
 

@@ -2,14 +2,13 @@ package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import com.alanmrace.jimzmlparser.writer.MzMLWritable;
 
 /**
- *
+ * Class describing the components within a mass spectrometer.
+ * 
  * <p>TODO: Change this to use the base component list rather than the 3 lists within
  * this class.
  * 
@@ -18,20 +17,40 @@ import com.alanmrace.jimzmlparser.writer.MzMLWritable;
 public class ComponentList extends MzMLContentList<Component> {
 
     /**
-     *
+     * Serialisation version ID.
      */
     private static final long serialVersionUID = 1L;
 
-    private List<Source> sources;
-    private List<Analyser> analysers;
-    private List<Detector> detectors;
+    /**
+     * Ionisation source list.
+     */
+    final private List<Source> sources;
 
+    /**
+     * Mass analyser list.
+     */
+    final private List<Analyser> analysers;
+
+    /**
+     * Detector list.
+     */
+    final private List<Detector> detectors;
+
+    /**
+     * Create default component list with all component lists empty.
+     */
     public ComponentList() {
         sources = new ArrayList<Source>();
         analysers = new ArrayList<Analyser>();
         detectors = new ArrayList<Detector>();
     }
 
+    /**
+     * Copy constructor.
+     * 
+     * @param componentList Component list to copy
+     * @param rpgList ReferenceableParamGroupList to match references to
+     */
     public ComponentList(ComponentList componentList, ReferenceableParamGroupList rpgList) {
         sources = new ArrayList<Source>(componentList.sources.size());
 
@@ -62,44 +81,92 @@ public class ComponentList extends MzMLContentList<Component> {
             addDetector((Detector) component);
     }
     
+    /**
+     * Add a source to the source list.
+     *
+     * @param source Source to add to the list
+     */
     public void addSource(Source source) {
         source.setParent(this);
 
         sources.add(source);
     }
     
+    /**
+     * Add an analyser to the analyser list.
+     *
+     * @param analyser Analyser to add to the list
+     */
     public void addAnalyser(Analyser analyser) {
         analyser.setParent(this);
 
         analysers.add(analyser);
     }
 
+    /**
+     * Add a detector to the detector list.
+     *
+     * @param detector Detector to add to the list
+     */
     public void addDetector(Detector detector) {
         detector.setParent(this);
 
         detectors.add(detector);
     }
     
+    /**
+     * Returns the number of sources in the list.
+     * 
+     * @return Number of sources
+     */
     public int getSourceCount() {
         return sources.size();
     }
 
+    /**
+     * Returns the number of analysers in the list.
+     * 
+     * @return Number of analysers
+     */
     public int getAnalyserCount() {
         return analysers.size();
     }
 
+    /**
+     * Returns the number of detectors in the list.
+     * 
+     * @return Number of detectors
+     */
     public int getDetectorCount() {
         return detectors.size();
     }
 
+    /**
+     * Returns the source at the specified index, null otherwise.
+     * 
+     * @param index Index in the source list
+     * @return Source at the index, null if does not exist
+     */
     public Source getSource(int index) {
         return sources.get(index);
     }
 
+    /**
+     * Returns the analyser at the specified index, null otherwise.
+     * 
+     * @param index Index in the analyser list
+     * @return Analyser at the index, null if does not exist
+     */
     public Analyser getAnalyser(int index) {
         return analysers.get(index);
     }
 
+    /**
+     * Returns the detector at the specified index, null otherwise.
+     * 
+     * @param index Index in the detector list
+     * @return Detector at the index, null if does not exist
+     */
     public Detector getDetector(int index) {
         return detectors.get(index);
     }

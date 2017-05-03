@@ -1,9 +1,7 @@
 package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
-import java.io.IOException;
 import java.util.Collection;
-import com.alanmrace.jimzmlparser.writer.MzMLWritable;
 
 /**
  * Interface for any class which describes a tag within an MzML file.

@@ -6,6 +6,11 @@ import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * Class describing an mass spectrometer.
+ * 
+ * @author Alan Race
+ */
 public class InstrumentConfiguration extends MzMLContentWithParams implements ReferenceableTag {
 
     /**
@@ -13,23 +18,69 @@ public class InstrumentConfiguration extends MzMLContentWithParams implements Re
      */
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Accession: Instrument model (MS:1000031). [Required child]
+     */
     public static String instrumentModelID = "MS:1000031"; // Required child (1)
+
+    /**
+     * Accession: Instrument attribute (MS:1000496). [Optional child]
+     */
     public static String instrumentAttributeID = "MS:1000496"; // Optional child (1+)
+
+    /**
+     * Accession: Ion optics type (MS:1000597). [Optional child]
+     */
     public static String ionOpticsTypeID = "MS:1000597"; // Optional child (1)
+
+    /**
+     * Accession: Ion optics attribute (MS:1000487). [Optional child]
+     */
     public static String ionOpticsAttributeID = "MS:1000487"; // Optional child (1+)
 
-    protected static int idNumber = 0;
-
     // Attributes
-    private String id;						// Required
+
+    /**
+     * Unique ID for the instrument configuration.
+     */
+    private String id;				// Required
+
+    /**
+     * Scan settings for the instrument.
+     */
     private ScanSettings scanSettingsRef;	// Optional
 
     // Sub-elements
+
+    /**
+     * Components that make up the instrument.
+     */
     private ComponentList componentList;
+
+    /**
+     * Software used to control the instrument.
+     */
     private SoftwareRef softwareRef;
 
+    /**
+     * Create instrument configuration with the specified unique identifier.
+     * 
+     * @param id Unique identifier
+     */
     public InstrumentConfiguration(String id) {
         this.id = id;
+    }
+
+    /**
+     * Create instrument configuration with specified unique identifier and scan 
+     * settings.
+     * 
+     * @param id Unique identifier
+     * @param scanSettingsRef Scan settings
+     */
+    public InstrumentConfiguration(String id, ScanSettings scanSettingsRef) {
+        this.id = id;
+        this.scanSettingsRef = scanSettingsRef;
     }
 
     public InstrumentConfiguration(InstrumentConfiguration ic, ReferenceableParamGroupList rpgList, ScanSettingsList ssList, SoftwareList softwareList) {
@@ -60,11 +111,6 @@ public class InstrumentConfiguration extends MzMLContentWithParams implements Re
             }
         }
 
-    }
-
-    public InstrumentConfiguration(String id, ScanSettings scanSettingsRef) {
-        this.id = id;
-        this.scanSettingsRef = scanSettingsRef;
     }
 
     @Override

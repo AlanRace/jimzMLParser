@@ -1,9 +1,5 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import com.alanmrace.jimzmlparser.writer.MzMLWritable;
-
 /**
  * Class describing a list of MzML tags which have an ID, for example Spectrum.
  * 

@@ -1,8 +1,5 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import java.io.IOException;
-import com.alanmrace.jimzmlparser.writer.MzMLWritable;
-
 /**
  * MzMLTag which describes a reference to another MzMLTag.
  * 

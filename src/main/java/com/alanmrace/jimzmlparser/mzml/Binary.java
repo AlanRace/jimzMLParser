@@ -2,10 +2,6 @@ package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.data.DataTypeTransform;
 import com.alanmrace.jimzmlparser.data.DataTypeTransform.DataType;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import com.alanmrace.jimzmlparser.writer.MzMLWritable;
 
 /**
  * Binary tag. When an mzML file is parsed the data is output into a temporary

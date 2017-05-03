@@ -1,8 +1,5 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import java.io.IOException;
-import com.alanmrace.jimzmlparser.writer.MzMLWritable;
-
 /**
  * MzMLContent which can be indexed within the {@literal <indexList>} in the indexed
  * extension to mzML.

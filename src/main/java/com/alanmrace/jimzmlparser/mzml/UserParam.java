@@ -1,10 +1,7 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import java.io.IOException;
 
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
-import com.alanmrace.jimzmlparser.util.XMLHelper;
-import com.alanmrace.jimzmlparser.writer.MzMLWritable;
 
 /**
  * Parameters which are not part of any controlled vocabulary. 

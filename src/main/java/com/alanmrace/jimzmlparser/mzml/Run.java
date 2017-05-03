@@ -3,13 +3,11 @@ package com.alanmrace.jimzmlparser.mzml;
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 import java.util.Collection;
-import com.alanmrace.jimzmlparser.writer.MzMLWritable;
 
 /**
  * Class describing a {@literal <run>} tag.
