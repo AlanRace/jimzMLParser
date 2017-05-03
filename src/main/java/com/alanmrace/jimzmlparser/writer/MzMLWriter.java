@@ -8,7 +8,10 @@ import com.alanmrace.jimzmlparser.mzml.HasChildren;
 import com.alanmrace.jimzmlparser.mzml.MzML;
 import com.alanmrace.jimzmlparser.mzml.MzMLContent;
 import com.alanmrace.jimzmlparser.mzml.MzMLContentWithChildren;
+import com.alanmrace.jimzmlparser.mzml.MzMLIndexedContentWithParams;
+import com.alanmrace.jimzmlparser.mzml.MzMLOrderedContentWithParams;
 import com.alanmrace.jimzmlparser.mzml.MzMLTag;
+import com.alanmrace.jimzmlparser.mzml.MzMLTagList;
 import com.alanmrace.jimzmlparser.mzml.Spectrum;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
@@ -56,12 +59,15 @@ public class MzMLWriter implements MzMLWritable {
      */
     protected boolean shouldOutputIndex;
 
+    protected int currentIndex;
+    
     /**
      * Set up default MzMLWriter. Default encoding is ISO-8859-1 and will output
      * mzML index.
      */
     public MzMLWriter() {
-        this(true);
+        shouldOutputIndex = true;
+        encoding = "ISO-8859-1";
     }
 
     /**
@@ -72,7 +78,9 @@ public class MzMLWriter implements MzMLWritable {
      * not
      */
     public MzMLWriter(boolean shouldOutputIndex) {
-        this(shouldOutputIndex, "ISO-8859-1");
+        this();
+        
+        this.shouldOutputIndex = shouldOutputIndex;
     }
 
     /**
@@ -83,6 +91,8 @@ public class MzMLWriter implements MzMLWritable {
      * @param encoding XML encoding
      */
     public MzMLWriter(boolean shouldOutputIndex, String encoding) {
+        this();
+        
         this.encoding = encoding;
         this.shouldOutputIndex = shouldOutputIndex;
     }
@@ -147,6 +157,9 @@ public class MzMLWriter implements MzMLWritable {
             writeMetadata("</indexedmzML>\n");
         }
 
+        output.flush();
+        metadataRAF.setLength(metadataRAF.getFilePointer());
+        
         output.close();
     }
 
@@ -155,11 +168,16 @@ public class MzMLWriter implements MzMLWritable {
 
         MzMLContent.indent(this, indent);
         writeMetadata("<" + tag.getTagName());
-
+        
         if (attributeText != null && !attributeText.isEmpty()) {
             writeMetadata(" " + attributeText);
         }
 
+        if(tag instanceof MzMLIndexedContentWithParams)
+            writeMetadata(" index=\"" + currentIndex++ + "\"");
+        else if(tag instanceof MzMLOrderedContentWithParams)
+            writeMetadata(" order=\"" + ++currentIndex + "\"");
+        
         if (!(tag instanceof HasChildren)) {
             writeMetadata("/>\n");
         } else {
@@ -186,6 +204,10 @@ public class MzMLWriter implements MzMLWritable {
 
         tag.addChildrenToCollection(children);
 
+        // If the tag is a list, reset the counter for index / order
+        if(tag instanceof MzMLTagList)
+            currentIndex = 0;
+        
         for (MzMLTag child : children) {
             outputXML(child, indent);
         }

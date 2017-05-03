@@ -4,12 +4,8 @@
 package com.alanmrace.jimzmlparser.imzml;
 
 import com.alanmrace.jimzmlparser.exceptions.FatalParseException;
-import com.alanmrace.jimzmlparser.exceptions.ImzMLWriteException;
-import com.alanmrace.jimzmlparser.exceptions.MzMLParseException;
-import com.alanmrace.jimzmlparser.mzml.MzML;
 import com.alanmrace.jimzmlparser.mzml.Spectrum;
 import com.alanmrace.jimzmlparser.parser.ImzMLHandler;
-import com.alanmrace.jimzmlparser.parser.MzMLHeaderHandler;
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;

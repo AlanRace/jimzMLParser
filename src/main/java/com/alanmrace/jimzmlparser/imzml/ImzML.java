@@ -1,7 +1,6 @@
 package com.alanmrace.jimzmlparser.imzml;
 
 import com.alanmrace.jimzmlparser.exceptions.ImzMLParseException;
-import com.alanmrace.jimzmlparser.exceptions.ImzMLWriteException;
 import com.alanmrace.jimzmlparser.mzml.BinaryDataArray;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,9 +15,7 @@ import com.alanmrace.jimzmlparser.mzml.ScanSettingsList;
 import com.alanmrace.jimzmlparser.mzml.Software;
 import com.alanmrace.jimzmlparser.mzml.Spectrum;
 import com.alanmrace.jimzmlparser.mzml.SpectrumList;
-import com.alanmrace.jimzmlparser.writer.ImzMLHeaderWriter;
-import com.alanmrace.jimzmlparser.writer.ImzMLWriter;
-import com.alanmrace.jimzmlparser.writer.MzMLWritable;
+import com.alanmrace.jimzmlparser.util.HexHelper;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.nio.ByteBuffer;
@@ -756,7 +753,7 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
             throw new ImzMLParseException("Failed to close ibd file after generating " + algorithm + " hash", e);
         }
 
-        return byteArrayToHexString(hash);
+        return HexHelper.byteArrayToHexString(hash);
     }
     
     /**
@@ -781,75 +778,7 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
         return calculateChecksum(filename, "MD5");
     }
     
-    /**
-     * Convert hex string to byte[].
-     * 
-     * @param s Hex string to convert
-     * @return  Converted byte[]
-     */
-    public static byte[] hexStringToByteArray(String s) {
-        int len = s.length();
-        byte[] data = new byte[len / 2];
-
-        for (int i = 0; i < len; i += 2) {
-            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-                    + Character.digit(s.charAt(i + 1), 16));
-        }
-
-        return data;
-    }
-
-    /**
-     * Convert byte[] to hex string.
-     * 
-     * @param byteArray byte[] to convert
-     * @return          Converted string
-     */
-    public static String byteArrayToHexString(byte[] byteArray) {
-        StringBuilder sb = new StringBuilder(2 * byteArray.length);
-
-        byte[] Hexhars = {
-            '0', '1', '2', '3', '4', '5',
-            '6', '7', '8', '9', 'a', 'b',
-            'c', 'd', 'e', 'f'
-        };
-
-        for (int i = 0; i < byteArray.length; i++) {
-
-            int v = byteArray[i] & 0xff;
-
-            sb.append((char) Hexhars[v >> 4]);
-            sb.append((char) Hexhars[v & 0xf]);
-        }
-
-        return sb.toString();
-    }
     
-    /**
-     * Convert byte[] to UUID.
-     * 
-     * @param bytes byte[] to convert
-     * @return      UUID
-     */
-    public static UUID byteArrayToUuid(byte[] bytes) {
-        ByteBuffer bb = ByteBuffer.wrap(bytes);
-        long firstLong = bb.getLong();
-        long secondLong = bb.getLong();
-        return new UUID(firstLong, secondLong);
-    }
-
-    /**
-     * Convert UUID to byte[].
-     * 
-     * @param uuid  UUID to convert
-     * @return      byte[]
-     */
-    public static byte[] uuidToByteArray(UUID uuid) {
-        ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
-        bb.putLong(uuid.getMostSignificantBits());
-        bb.putLong(uuid.getLeastSignificantBits());
-        return bb.array();
-    }
     
 //    /**
 //     * Write imzML file only, not IBD. To write the full IBD use {@link ImzML#write(java.lang.String)}

@@ -13,7 +13,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import java.util.Collection;
-import com.alanmrace.jimzmlparser.writer.MzMLWritable;
 
 /**
  * Class capturing {@literal <mzML>} tag within an MzML file.
@@ -23,7 +22,7 @@ import com.alanmrace.jimzmlparser.writer.MzMLWritable;
 public class MzML extends MzMLContentWithParams implements Serializable {
 
     /**
-     * Serialisaiton version ID.
+     * Serialisation version ID.
      */
     private static final long serialVersionUID = 1L;
 
@@ -522,133 +521,26 @@ public class MzML extends MzMLContentWithParams implements Serializable {
         return run;
     }
 
-//    /**
-//     * Write out to XML file with specified filename. Uses ISO-8859-1 encoding.
-//     * 
-//     * @param filename      Location to output as XML
-//     * @throws ImzMLWriteException IOException are wrapped into ImzMLWriteException
-//     */
-//    public void write(String filename) throws ImzMLWriteException {
-//        try {            
-//            String encoding = "ISO-8859-1";
-//
-//            //raf = new RandomAccessFile(filename, "rw");
-//
-//            //OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(raf.getFD()), encoding);
-//            
-//            MzMLWriter output = new MzMLWriter(filename);
-//
-//            output.write("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>\n");
-//            outputXML(output, 0);
-//
-//            //output.flush();
-//            
-//            //raf.getChannel().truncate(raf.getFilePointer());
-//            output.close();
-//            
-//            //out.close();
-//        } catch (IOException ex) {
-//            throw new ImzMLWriteException("Error writing mzML file " + filename + ". " + ex.getLocalizedMessage(), ex);
-//        }
-//    }
-
     @Override
-    public void outputXML(MzMLWritable output, int indent) throws IOException {
-        if (output.shouldOutputIndex()) {
-            MzMLContent.indent(output, indent);
-            output.writeMetadata("<indexedmzML");
-            output.writeMetadata(" xmlns=\"http://psi.hupo.org/ms/mzml\"");
-            output.writeMetadata(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
-            output.writeMetadata(" xsi:schemaLocation=\"http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.2_idx.xsd\">\n");
-            
-            indent++;
-        }
-
-        MzMLContent.indent(output, indent);
-        output.writeMetadata("<mzML");
+    public String getXMLAttributeText() {
+        String attributeText = "";
+        
         // Set up namespaces
-        output.writeMetadata(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
-        output.writeMetadata(" xsi:schemaLocation=\"http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.0.xsd\"");
-        output.writeMetadata(" xmlns=\"http://psi.hupo.org/ms/mzml\"");
+        attributeText += "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"";
+        attributeText += " xsi:schemaLocation=\"http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.0.xsd\"";
+        attributeText += " xmlns=\"http://psi.hupo.org/ms/mzml\"";
         // Attributes
-        output.writeMetadata(" version=\"" + XMLHelper.ensureSafeXML(version) + "\"");
+        attributeText += " version=\"" + XMLHelper.ensureSafeXML(version) + "\"";
         if (accession != null) {
-            output.writeMetadata(" accession=\"" + XMLHelper.ensureSafeXML(accession) + "\"");
+            attributeText += " accession=\"" + XMLHelper.ensureSafeXML(accession) + "\"";
         }
         if (id != null) {
-            output.writeMetadata(" id=\"" + XMLHelper.ensureSafeXML(id) + "\"");
-        }
-        output.writeMetadata(">\n");
-
-        // TODO: This shouldn't be the case ...there should always be a cvList
-        if (cvList == null) {
-            cvList = new CVList(0);
-        }
-
-        cvList.outputXML(output, indent + 1);
-
-        // FileDescription
-        fileDescription.outputXML(output, indent + 1);
-
-        if (referenceableParamGroupList != null && referenceableParamGroupList.size() > 0) {
-            referenceableParamGroupList.outputXML(output, indent + 1);
-        }
-
-        if (sampleList != null && sampleList.size() > 0) {
-            sampleList.outputXML(output, indent + 1);
-        }
-
-        // SoftwareList
-        softwareList.outputXML(output, indent + 1);
-
-        // ScanSettingsList
-        if (scanSettingsList != null && scanSettingsList.size() > 0) {
-            scanSettingsList.outputXML(output, indent + 1);
-        }
-
-        // InstrumentConfigurationList
-        instrumentConfigurationList.outputXML(output, indent + 1);
-
-        // DataProcessingList
-        dataProcessingList.outputXML(output, indent + 1);
-
-        // Run
-        run.outputXML(output, indent + 1);
-
-        MzMLContent.indent(output, indent);
-        output.writeMetadata("</mzML>\n");
-
-        if (output.shouldOutputIndex()) {
-            indent--;
-            
-            output.flush();
-            long indexListOffset = output.getMetadataPointer();
-
-            MzMLContent.indent(output, indent + 1);
-            output.writeMetadata("<indexList count=\"1\">\n");
-            MzMLContent.indent(output, indent + 2);
-            output.writeMetadata("<index name=\"spectrum\">\n");
-
-            for (Spectrum spectrum : run.getSpectrumList()) {
-                MzMLContent.indent(output, indent + 3);
-                output.writeMetadata("<offset idRef=\"" + spectrum.getID() + "\">" + spectrum.getmzMLLocation() + "</offset>\n");
-            }
-
-            MzMLContent.indent(output, indent + 2);
-            output.writeMetadata("</index>\n");
-            MzMLContent.indent(output, indent + 1);
-            output.writeMetadata("</indexList>\n");
-
-            MzMLContent.indent(output, indent + 1);
-            output.writeMetadata("<indexListOffset>" + indexListOffset + "</indexListOffset>\n");
-
-            MzMLContent.indent(output, indent);
-            output.writeMetadata("</indexedmzML>\n");
+            attributeText += " id=\"" + XMLHelper.ensureSafeXML(id) + "\"";
         }
         
-        output.flush();
+        return attributeText;
     }
-
+    
     @Override
     public String toString() {
         return "mzML";

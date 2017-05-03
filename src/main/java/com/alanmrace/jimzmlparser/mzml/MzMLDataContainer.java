@@ -175,7 +175,7 @@ public abstract class MzMLDataContainer extends MzMLIndexedContentWithParams {
     
     @Override
     protected void ensureValidReferences() {
-        if(dataProcessingList != null)
+        if(dataProcessingList != null && dataProcessingRef != null)
             dataProcessingRef = dataProcessingList.getValidReference(dataProcessingRef);
     }
 }

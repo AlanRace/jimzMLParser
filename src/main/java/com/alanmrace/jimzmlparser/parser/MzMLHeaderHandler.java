@@ -26,6 +26,9 @@ import com.alanmrace.jimzmlparser.exceptions.Issue;
 import com.alanmrace.jimzmlparser.exceptions.MzMLParseException;
 import com.alanmrace.jimzmlparser.exceptions.NonFatalParseException;
 import com.alanmrace.jimzmlparser.exceptions.ObsoleteTermUsed;
+import java.io.InputStream;
+import java.io.RandomAccessFile;
+import java.nio.channels.Channels;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -352,13 +355,17 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
             SAXParserFactory spf = SAXParserFactory.newInstance();
 
+            // TODO: INDEXED RAF when reading!!!
+            RandomAccessFile raf = new RandomAccessFile(filename, "r");
+            InputStream is = Channels.newInputStream(raf.getChannel());
+            
             //get a new instance of parser
             SAXParser sp = spf.newSAXParser();
 
             File file = new File(filename);
 
             //parse the file and also register this class for call backs
-            sp.parse(file, handler);
+            sp.parse(is, handler);
 
             handler.getmzML().setOBO(obo);
 
