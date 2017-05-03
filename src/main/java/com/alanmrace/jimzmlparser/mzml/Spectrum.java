@@ -310,6 +310,32 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
 
         return pixelLocation;
     }
+    
+    public void setPixelLocation(PixelLocation location) {
+        if(scanList == null) {
+            scanList = ScanList.create();
+        }
+        
+        Scan scan = scanList.get(0);
+        
+        scan.removeCVParam(Scan.positionXID);
+        scan.removeCVParam(Scan.positionYID);
+        scan.removeCVParam(Scan.positionZID);
+        
+        scan.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(Scan.positionXID), location.getX()));
+        scan.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(Scan.positionYID), location.getY()));
+        
+        if(location.getZ() >= 1)
+            scan.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(Scan.positionZID), location.getZ()));
+    }
+    
+    public void setPixelLocation(int x, int y) {
+        setPixelLocation(new PixelLocation(x, y, -1));
+    }
+    
+    public void setPixelLocation(int x, int y, int z) {
+        setPixelLocation(new PixelLocation(x, y, z));
+    }
 
     @Override
     protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLTag> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
@@ -590,6 +616,14 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
 
         spectrum.setSpectralData(mzs, intensities);
 
+        return spectrum;
+    }
+    
+    public static Spectrum createSpectrum(double[] mzs, double[] intensities, int x, int y) {
+        Spectrum spectrum = createSpectrum(mzs, intensities, DataProcessing.create());
+        
+        spectrum.setPixelLocation(x, y);
+        
         return spectrum;
     }
 }

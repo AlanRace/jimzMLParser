@@ -149,28 +149,28 @@ public class Binary extends MzMLContent {
         return compression;
     }
 
-    @Override
-    public void outputXML(MzMLWritable output, int indent) throws IOException {
-        MzMLContent.indent(output, indent);
-
-        if (this.data != null) {
-            output.writeMetadata("<binary>");
-
-            byte[] bytes = new byte[8 * data.length];
-
-            for (int i = 0; i < data.length; i++) {
-                ByteBuffer buffer = ByteBuffer.wrap(bytes).putDouble(i * 8, data[i]);
-                buffer.order(ByteOrder.LITTLE_ENDIAN);
-                buffer.putDouble(i * 8, data[i]);
-            }
-            
-            output.writeData(bytes);
-            
-            output.writeMetadata("</binary>\n");
-        } else {
-            output.writeMetadata("<binary />\n");
-        }
-    }
+//    @Override
+//    public void outputXML(MzMLWritable output, int indent) throws IOException {
+//        MzMLContent.indent(output, indent);
+//
+//        if (this.data != null) {
+//            output.writeMetadata("<binary>");
+//
+//            byte[] bytes = new byte[8 * data.length];
+//
+//            for (int i = 0; i < data.length; i++) {
+//                ByteBuffer buffer = ByteBuffer.wrap(bytes).putDouble(i * 8, data[i]);
+//                buffer.order(ByteOrder.LITTLE_ENDIAN);
+//                buffer.putDouble(i * 8, data[i]);
+//            }
+//            
+//            output.writeData(bytes);
+//            
+//            output.writeMetadata("</binary>\n");
+//        } else {
+//            output.writeMetadata("<binary />\n");
+//        }
+//    }
 
     @Override
     public void setParent(MzMLTag parent) {

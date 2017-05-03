@@ -45,14 +45,14 @@ public abstract class MzMLReference<T extends ReferenceableTag> extends MzMLCont
         return reference;
     }
     
-    @Override
-    public void outputXML(MzMLWritable output, int indent) throws IOException {
-        MzMLContent.indent(output, indent);
-        
-        output.writeMetadata("<" + getTagName());
-        output.writeMetadata(" ref=\"" + reference.getID() + "\"");
-        output.writeMetadata("/>\n");
-    }
+//    @Override
+//    public void outputXML(MzMLWritable output, int indent) throws IOException {
+//        MzMLContent.indent(output, indent);
+//        
+//        output.writeMetadata("<" + getTagName());
+//        output.writeMetadata(" ref=\"" + reference.getID() + "\"");
+//        output.writeMetadata("/>\n");
+//    }
     
     @Override
     public String toString() {

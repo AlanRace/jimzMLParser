@@ -693,32 +693,32 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
         return attributeText;
     }
 
-    @Override
-    protected void outputXMLContent(MzMLWritable output, int indent) throws IOException {
-        double[] data = getDataAsDouble();
-
-        if (data == null) {
-            super.outputXMLContent(output, indent);
-
-            MzMLContent.indent(output, indent);
-            output.writeMetadata("<binary />\n");
-        } else {
-            byte[] byteData = output.prepareData(data, this);
-
-            super.outputXMLContent(output, indent);
-
-            MzMLContent.indent(output, indent);
-            
-            if(output instanceof ImzMLHeaderWriter) {
-                output.writeMetadata("<binary />\n");
-                output.writeData(byteData);
-            } else {
-                output.writeMetadata("<binary>");
-                output.writeData(byteData);
-                output.writeMetadata("</binary>\n");
-            }
-        }
-    }
+//    @Override
+//    protected void outputXMLContent(MzMLWritable output, int indent) throws IOException {
+//        double[] data = getDataAsDouble();
+//
+//        if (data == null) {
+//            super.outputXMLContent(output, indent);
+//
+//            MzMLContent.indent(output, indent);
+//            output.writeMetadata("<binary />\n");
+//        } else {
+//            byte[] byteData = output.prepareData(data, this);
+//
+//            super.outputXMLContent(output, indent);
+//
+//            MzMLContent.indent(output, indent);
+//            
+//            if(output instanceof ImzMLHeaderWriter) {
+//                output.writeMetadata("<binary />\n");
+//                output.writeData(byteData);
+//            } else {
+//                output.writeMetadata("<binary>");
+//                output.writeData(byteData);
+//                output.writeMetadata("</binary>\n");
+//            }
+//        }
+//    }
 
     @Override
     public String toString() {

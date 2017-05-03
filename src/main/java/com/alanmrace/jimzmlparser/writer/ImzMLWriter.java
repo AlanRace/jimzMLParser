@@ -123,6 +123,8 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
             }
 
             // TODO: Write out all chromatograms
+            
+            dataRAF.setLength(dataRAF.getFilePointer());
             dataOutput.close();
 
             // Update UUID in the metadata
@@ -143,9 +145,9 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
 
     @Override
     public void writeData(byte[] data) throws IOException {
-        dataOutput.write(data);
-
         if (data.length > 0) {
+            dataOutput.write(data);
+            
             messageDigest.update(data, 0, data.length);
         }
     }

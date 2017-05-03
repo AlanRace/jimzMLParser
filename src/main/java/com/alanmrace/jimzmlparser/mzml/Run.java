@@ -430,30 +430,30 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
         return attributes;
     }
     
-    @Override
-    public void outputXML(MzMLWritable output, int indent) throws IOException {
-        MzMLContent.indent(output, indent);
-        output.writeMetadata("<run");
-        output.writeMetadata(" defaultInstrumentConfigurationRef=\"" + XMLHelper.ensureSafeXML(defaultInstrumentConfigurationRef.getID()) + "\"");
-        if (defaultSourceFileRef != null) {
-            output.writeMetadata(" defaultSourceFileRef=\"" + XMLHelper.ensureSafeXML(defaultSourceFileRef.getID()) + "\"");
-        }
-        output.writeMetadata(" id=\"" + XMLHelper.ensureSafeXML(id) + "\"");
-        if (sampleRef != null) {
-            output.writeMetadata(" sampleRef=\"" + XMLHelper.ensureSafeXML(sampleRef.getID()) + "\"");
-        }
-        if (startTimeStamp != null) {
-            SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-DD'T'hh:mm:ss");
-            
-            output.writeMetadata(" startTimeStamp=\"" + XMLHelper.ensureSafeXML(format.format(startTimeStamp)) + "\"");
-        }
-        output.writeMetadata(">\n");
-
-        super.outputXMLContent(output, indent + 1);
-
-        MzMLContent.indent(output, indent);
-        output.writeMetadata("</run>\n");
-    }
+//    @Override
+//    public void outputXML(MzMLWritable output, int indent) throws IOException {
+//        MzMLContent.indent(output, indent);
+//        output.writeMetadata("<run");
+//        output.writeMetadata(" defaultInstrumentConfigurationRef=\"" + XMLHelper.ensureSafeXML(defaultInstrumentConfigurationRef.getID()) + "\"");
+//        if (defaultSourceFileRef != null) {
+//            output.writeMetadata(" defaultSourceFileRef=\"" + XMLHelper.ensureSafeXML(defaultSourceFileRef.getID()) + "\"");
+//        }
+//        output.writeMetadata(" id=\"" + XMLHelper.ensureSafeXML(id) + "\"");
+//        if (sampleRef != null) {
+//            output.writeMetadata(" sampleRef=\"" + XMLHelper.ensureSafeXML(sampleRef.getID()) + "\"");
+//        }
+//        if (startTimeStamp != null) {
+//            SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-DD'T'hh:mm:ss");
+//            
+//            output.writeMetadata(" startTimeStamp=\"" + XMLHelper.ensureSafeXML(format.format(startTimeStamp)) + "\"");
+//        }
+//        output.writeMetadata(">\n");
+//
+//        super.outputXMLContent(output, indent + 1);
+//
+//        MzMLContent.indent(output, indent);
+//        output.writeMetadata("</run>\n");
+//    }
 
     @Override
     public String toString() {

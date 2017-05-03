@@ -72,6 +72,7 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
      * 
      * @return XML formatted attribute text
      */
+    @Override
     public String getXMLAttributeText() {
         if(this instanceof ReferenceableTag)
             return "id=\"" + XMLHelper.ensureSafeXML(((ReferenceableTag)this).getID()) + "\"";
@@ -79,18 +80,18 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
         return "";
     }
     
-    @Override
-    public void outputXML(MzMLWritable output, int indent) throws IOException {
-        String attributeText = getXMLAttributeText();
-        
-        MzMLContent.indent(output, indent);
-        output.writeMetadata("<" + getTagName());
-        
-        if(attributeText != null && !attributeText.isEmpty())
-            output.writeMetadata(" " + attributeText);
-        
-        output.writeMetadata("/>\n");
-    }
+//    @Override
+//    public void outputXML(MzMLWritable output, int indent) throws IOException {
+//        String attributeText = getXMLAttributeText();
+//        
+//        MzMLContent.indent(output, indent);
+//        output.writeMetadata("<" + getTagName());
+//        
+//        if(attributeText != null && !attributeText.isEmpty())
+//            output.writeMetadata(" " + attributeText);
+//        
+//        output.writeMetadata("/>\n");
+//    }
 
     /**
      * Indent the output by the specified number of spaces (indent).

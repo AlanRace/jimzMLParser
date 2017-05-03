@@ -132,20 +132,20 @@ public abstract class MzMLContentList<T extends MzMLTag>
         return attributeText + "count=\"" + list.size() + "\"";
     }
 
-    @Override
-    protected void outputXMLContent(MzMLWritable output, int indent) throws IOException {
-        int counter = 0;
-        
-        for (T item : this) {
-            // 0 index for indexed content, but 1 for ordered content
-            if(item instanceof MzMLIndexedContentWithParams)
-                ((MzMLIndexedContentWithParams) item).outputXML(output, indent, counter++);
-            else if(item instanceof MzMLOrderedContentWithParams)
-                ((MzMLOrderedContentWithParams) item).outputXML(output, indent, ++counter);
-            else
-                item.outputXML(output, indent);
-        }
-    }
+//    @Override
+//    protected void outputXMLContent(MzMLWritable output, int indent) throws IOException {
+//        int counter = 0;
+//        
+//        for (T item : this) {
+//            // 0 index for indexed content, but 1 for ordered content
+//            if(item instanceof MzMLIndexedContentWithParams)
+//                ((MzMLIndexedContentWithParams) item).outputXML(output, indent, counter++);
+//            else if(item instanceof MzMLOrderedContentWithParams)
+//                ((MzMLOrderedContentWithParams) item).outputXML(output, indent, ++counter);
+//            else
+//                item.outputXML(output, indent);
+//        }
+//    }
 
     @Override
     public String toString() {

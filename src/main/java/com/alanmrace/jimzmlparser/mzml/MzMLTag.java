@@ -55,7 +55,7 @@ public interface MzMLTag {
      * @param indent Number of tabs to indent each tag in the XML
      * @throws IOException Exception occurred during writing data
      */
-    public void outputXML(MzMLWritable output, int indent) throws IOException;
+//    public void outputXML(MzMLWritable output, int indent) throws IOException;
     
     /**
      * Set the parent MzMLContent of this MzMLContent. This method currently 

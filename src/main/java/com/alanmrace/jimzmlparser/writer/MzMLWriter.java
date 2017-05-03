@@ -2,18 +2,15 @@ package com.alanmrace.jimzmlparser.writer;
 
 import com.alanmrace.jimzmlparser.data.DataTransformation;
 import com.alanmrace.jimzmlparser.mzml.BinaryDataArray;
-import com.alanmrace.jimzmlparser.mzml.CVList;
 import com.alanmrace.jimzmlparser.mzml.CVParam;
 import com.alanmrace.jimzmlparser.mzml.HasChildren;
 import com.alanmrace.jimzmlparser.mzml.MzML;
 import com.alanmrace.jimzmlparser.mzml.MzMLContent;
-import com.alanmrace.jimzmlparser.mzml.MzMLContentWithChildren;
 import com.alanmrace.jimzmlparser.mzml.MzMLIndexedContentWithParams;
 import com.alanmrace.jimzmlparser.mzml.MzMLOrderedContentWithParams;
 import com.alanmrace.jimzmlparser.mzml.MzMLTag;
 import com.alanmrace.jimzmlparser.mzml.MzMLTagList;
 import com.alanmrace.jimzmlparser.mzml.Spectrum;
-import com.alanmrace.jimzmlparser.util.XMLHelper;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
@@ -60,7 +57,7 @@ public class MzMLWriter implements MzMLWritable {
     protected boolean shouldOutputIndex;
 
     protected int currentIndex;
-    
+
     /**
      * Set up default MzMLWriter. Default encoding is ISO-8859-1 and will output
      * mzML index.
@@ -79,7 +76,7 @@ public class MzMLWriter implements MzMLWritable {
      */
     public MzMLWriter(boolean shouldOutputIndex) {
         this();
-        
+
         this.shouldOutputIndex = shouldOutputIndex;
     }
 
@@ -92,7 +89,7 @@ public class MzMLWriter implements MzMLWritable {
      */
     public MzMLWriter(boolean shouldOutputIndex, String encoding) {
         this();
-        
+
         this.encoding = encoding;
         this.shouldOutputIndex = shouldOutputIndex;
     }
@@ -112,24 +109,24 @@ public class MzMLWriter implements MzMLWritable {
         output = new BufferedWriter(out);
 
         output.write("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>\n");
-        
+
         int indent = 0;
-        
+
         if (shouldOutputIndex()) {
             MzMLContent.indent(this, indent);
             writeMetadata("<indexedmzML");
             writeMetadata(" xmlns=\"http://psi.hupo.org/ms/mzml\"");
             writeMetadata(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
             writeMetadata(" xsi:schemaLocation=\"http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.2_idx.xsd\">\n");
-            
+
             indent++;
         }
 
         outputXML(mzML, indent);
-        
+
         if (shouldOutputIndex()) {
             indent--;
-            
+
             output.flush();
             long indexListOffset = getMetadataPointer();
 
@@ -159,7 +156,7 @@ public class MzMLWriter implements MzMLWritable {
 
         output.flush();
         metadataRAF.setLength(metadataRAF.getFilePointer());
-        
+
         output.close();
     }
 
@@ -168,31 +165,23 @@ public class MzMLWriter implements MzMLWritable {
 
         MzMLContent.indent(this, indent);
         writeMetadata("<" + tag.getTagName());
-        
+
         if (attributeText != null && !attributeText.isEmpty()) {
             writeMetadata(" " + attributeText);
         }
 
-        if(tag instanceof MzMLIndexedContentWithParams)
+        if (tag instanceof MzMLIndexedContentWithParams) {
             writeMetadata(" index=\"" + currentIndex++ + "\"");
-        else if(tag instanceof MzMLOrderedContentWithParams)
+        } else if (tag instanceof MzMLOrderedContentWithParams) {
             writeMetadata(" order=\"" + ++currentIndex + "\"");
-        
+        }
+
         if (!(tag instanceof HasChildren)) {
             writeMetadata("/>\n");
         } else {
             writeMetadata(">\n");
 
             outputXMLContent((HasChildren) tag, indent + 1);
-
-            if (tag instanceof BinaryDataArray) {
-                CVParam externalData = ((BinaryDataArray) tag).getCVParam(BinaryDataArray.externalDataID);
-
-                if (externalData == null) {
-                    MzMLContent.indent(this, indent + 1);
-                    writeData((BinaryDataArray) tag);
-                }
-            }
 
             MzMLContent.indent(this, indent);
             writeMetadata("</" + tag.getTagName() + ">\n");
@@ -205,22 +194,32 @@ public class MzMLWriter implements MzMLWritable {
         tag.addChildrenToCollection(children);
 
         // If the tag is a list, reset the counter for index / order
-        if(tag instanceof MzMLTagList)
+        if (tag instanceof MzMLTagList) {
             currentIndex = 0;
-        
+        }
+
         for (MzMLTag child : children) {
             outputXML(child, indent);
         }
+
+        if (tag instanceof BinaryDataArray) {
+            //CVParam externalData = ((BinaryDataArray) tag).getCVParam(BinaryDataArray.externalDataID);
+
+            //if (externalData == null) {
+            MzMLContent.indent(this, indent);
+            writeBinaryTag((BinaryDataArray) tag);
+            //}
+        }
     }
 
-    protected void writeData(BinaryDataArray bda) throws IOException {
+    protected void writeBinaryTag(BinaryDataArray bda) throws IOException {
         double[] data = bda.getDataAsDouble();
 
         if (data == null) {
             writeMetadata("<binary />\n");
         } else {
             byte[] byteData = prepareData(data, bda);
-System.out.println(byteData);
+//            System.out.println(byteData);
             writeMetadata("<binary>");
             writeData(byteData);
             writeMetadata("</binary>\n");

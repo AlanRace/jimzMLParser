@@ -50,20 +50,20 @@ public abstract class MzMLOrderedContentWithParams extends MzMLContentWithParams
      * @param order order of the component within the list
      * @throws IOException Signals that an I/O exception has occurred.
      */
-    public void outputXML(MzMLWritable output, int indent, int order) throws IOException {
-        String attributeText = getXMLAttributeText();
-        
-        MzMLContent.indent(output, indent);
-        output.writeMetadata("<" + getTagName() + " order=\"" + order + "\"");
-        
-        if(attributeText != null && !attributeText.isEmpty())
-            output.writeMetadata(" " + attributeText);
-        
-        output.writeMetadata(">\n");
-
-        outputXMLContent(output, indent + 1);
-
-        MzMLContent.indent(output, indent);
-        output.writeMetadata("</" + getTagName() + ">\n");
-    }
+//    public void outputXML(MzMLWritable output, int indent, int order) throws IOException {
+//        String attributeText = getXMLAttributeText();
+//        
+//        MzMLContent.indent(output, indent);
+//        output.writeMetadata("<" + getTagName() + " order=\"" + order + "\"");
+//        
+//        if(attributeText != null && !attributeText.isEmpty())
+//            output.writeMetadata(" " + attributeText);
+//        
+//        output.writeMetadata(">\n");
+//
+//        outputXMLContent(output, indent + 1);
+//
+//        MzMLContent.indent(output, indent);
+//        output.writeMetadata("</" + getTagName() + ">\n");
+//    }
 }

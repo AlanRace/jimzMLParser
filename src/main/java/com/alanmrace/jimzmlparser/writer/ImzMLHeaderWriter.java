@@ -1,5 +1,6 @@
 package com.alanmrace.jimzmlparser.writer;
 
+import com.alanmrace.jimzmlparser.mzml.BinaryDataArray;
 import java.io.IOException;
 
 /**
@@ -13,5 +14,10 @@ public class ImzMLHeaderWriter extends MzMLWriter {
     @Override
     public void writeData(byte[] data) throws IOException {
         // Do nothing
+    }
+    
+    @Override
+    protected void writeBinaryTag(BinaryDataArray bda) throws IOException {
+        writeMetadata("<binary />\n");
     }
 }

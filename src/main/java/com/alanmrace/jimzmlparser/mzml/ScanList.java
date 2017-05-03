@@ -2,6 +2,7 @@ package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
+import com.alanmrace.jimzmlparser.obo.OBO;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -23,6 +24,11 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
      * Accession: Spectra combination (MS:1000570).
      */
     public static String spectraCombinationID = "MS:1000570";
+    
+    /**
+     * Accession: No spectral combination (MS:1000795).
+     */
+    public static String noCombinationID = "MS:1000795";
 
     /**
      * List of Scans.
@@ -152,5 +158,14 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
     @Override
     public boolean remove(Scan item) {
         return scanList.remove(item);
+    }
+    
+    public static ScanList create() {
+        ScanList scanList = new ScanList(1);
+        scanList.add(Scan.create());
+        
+        scanList.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ScanList.noCombinationID)));
+        
+        return scanList;
     }
 }

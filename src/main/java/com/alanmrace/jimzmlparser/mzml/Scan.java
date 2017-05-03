@@ -337,4 +337,10 @@ public class Scan extends MzMLContentWithParams implements Serializable {
             children.add(scanWindowList);
         }
     }
+    
+    public static Scan create() {
+        Scan scan = new Scan();
+        
+        return scan;
+    }
 }

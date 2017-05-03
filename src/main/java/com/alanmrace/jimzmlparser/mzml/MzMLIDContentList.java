@@ -60,22 +60,22 @@ public abstract class MzMLIDContentList<T extends ReferenceableTag & MzMLTag> ex
         return null;
     }
     
-    @Override
-    protected void outputXMLContent(MzMLWritable output, int indent) throws IOException {
-        ArrayList<MzMLTag> children = new ArrayList<MzMLTag>();
-        
-        addChildrenToCollection(children);
-        
-        for(MzMLTag child : children) {
-            if(child instanceof MzMLDataContainer) {
-                output.flush();
-                
-                ((MzMLDataContainer) child).setmzMLLocation(output.getDataPointer());
-            }
-        }
-        
-        super.outputXMLContent(output, indent);
-    }
+//    @Override
+//    protected void outputXMLContent(MzMLWritable output, int indent) throws IOException {
+//        ArrayList<MzMLTag> children = new ArrayList<MzMLTag>();
+//        
+//        addChildrenToCollection(children);
+//        
+//        for(MzMLTag child : children) {
+//            if(child instanceof MzMLDataContainer) {
+//                output.flush();
+//                
+//                ((MzMLDataContainer) child).setmzMLLocation(output.getDataPointer());
+//            }
+//        }
+//        
+//        super.outputXMLContent(output, indent);
+//    }
     
     @Override
     public T getValidReference(T processing) {
