@@ -245,6 +245,16 @@ public class MzML extends MzMLContentWithParams implements Serializable {
     public String getID() {
         return id;
     }
+    
+    /**
+     * Add a spectrum to the spectrumList in the run tag. Equivalent to calling
+     * {@code mzML.getRun().getSpectrumList().add(spectrum);}.
+     * 
+     * @param spectrum Spectrum to add
+     */
+    public void addSpectrum(Spectrum spectrum) {
+        getRun().getSpectrumList().add(spectrum);
+    }
 
     /**
      * Set the CVList for the mzML.

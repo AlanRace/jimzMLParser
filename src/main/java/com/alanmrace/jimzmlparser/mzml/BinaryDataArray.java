@@ -5,6 +5,7 @@ import com.alanmrace.jimzmlparser.data.DataTransformation;
 import com.alanmrace.jimzmlparser.data.DataTypeTransform;
 import com.alanmrace.jimzmlparser.data.DataTypeTransform.DataType;
 import com.alanmrace.jimzmlparser.data.ZlibDataTransform;
+import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.IOException;
 import java.io.Serializable;
@@ -668,6 +669,28 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
         return isIntensityArray;
     }
 
+    /**
+     * Sets the compression (or none).
+     * 
+     * @param compression Compression
+     */
+    public void setCompression(Binary.CompressionType compression) {
+        String compressionID = "";
+        
+        switch(compression) {
+            case zlibCompresion:
+                compressionID = BinaryDataArray.zlibCompressionID;
+                break;
+            case noCompression:
+            default:
+                compressionID = BinaryDataArray.noCompressionID;
+                break;
+        }
+        
+        this.removeChildOfCVParam(BinaryDataArray.compressionTypeID);
+        this.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(compressionID)));
+    }
+    
     /**
      * Gets the binary data array type. (e.g. m/z or intensity array)
      *

@@ -156,6 +156,15 @@ public abstract class MzMLDataContainer extends MzMLIndexedContentWithParams {
 
         return binaryDataArrayList.getIntensityArray().getDataAsDouble(keepInMemory);
     }
+        
+    /**
+     * Sets the compression (or none) to all BinaryDataArray within this data container.
+     * 
+     * @param compression Compression
+     */
+    public void setCompression(Binary.CompressionType compression) {
+        binaryDataArrayList.setCompression(compression);
+    }
     
     @Override
     public String getXMLAttributeText() {

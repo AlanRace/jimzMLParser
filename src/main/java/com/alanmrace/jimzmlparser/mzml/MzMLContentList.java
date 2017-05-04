@@ -2,12 +2,10 @@ package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import com.alanmrace.jimzmlparser.writer.MzMLWritable;
 
 /**
  * Abstract class implementing the basic functionality for a list tag in MzML.

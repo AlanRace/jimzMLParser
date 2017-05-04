@@ -96,6 +96,16 @@ public class BinaryDataArrayList extends MzMLContentList<BinaryDataArray> {
     public BinaryDataArray getBinaryDataArray(int index) {
         return get(index);
     }
+    
+    /**
+     * Sets the compression (or none) to all BinaryDataArray within the spectrum.
+     * 
+     * @param compression Compression
+     */
+    public void setCompression(Binary.CompressionType compression) {
+        for(BinaryDataArray bda : this)
+            bda.setCompression(compression);
+    }
 
     @Override
     public String getTagName() {

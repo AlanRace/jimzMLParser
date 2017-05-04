@@ -113,23 +113,27 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
             UUID uuid = UUID.randomUUID();
             writeData(UUIDHelper.uuidToByteArray(uuid));
 
-            // TODO: For continuous data only write the m/z list once
-            for (Spectrum spectrum : mzML.getRun().getSpectrumList()) {
-                for (BinaryDataArray bda : spectrum.getBinaryDataArrayList()) {
-                    double[] ddata = bda.getDataAsDouble();
-                    byte[] bdata = prepareData(ddata, bda);
+            if(mzML.getRun().getSpectrumList() != null) {
+                // TODO: For continuous data only write the m/z list once
+                for (Spectrum spectrum : mzML.getRun().getSpectrumList()) {
+                    for (BinaryDataArray bda : spectrum.getBinaryDataArrayList()) {
+                        double[] ddata = bda.getDataAsDouble();
+                        byte[] bdata = prepareData(ddata, bda);
 
-                    writeData(bdata);
+                        writeData(bdata);
+                    }
                 }
             }
 
             // Write out all chromatograms
-            for (Chromatogram chromatogram : mzML.getRun().getChromatogramList()) {
-                for (BinaryDataArray bda : chromatogram.getBinaryDataArrayList()) {
-                    double[] ddata = bda.getDataAsDouble();
-                    byte[] bdata = prepareData(ddata, bda);
+            if(mzML.getRun().getChromatogramList() != null) {
+                for (Chromatogram chromatogram : mzML.getRun().getChromatogramList()) {
+                    for (BinaryDataArray bda : chromatogram.getBinaryDataArrayList()) {
+                        double[] ddata = bda.getDataAsDouble();
+                        byte[] bdata = prepareData(ddata, bda);
 
-                    writeData(bdata);
+                        writeData(bdata);
+                    }
                 }
             }
             
