@@ -1,6 +1,7 @@
 package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.data.DataLocation;
+import com.alanmrace.jimzmlparser.data.DataTypeTransform.DataType;
 import com.alanmrace.jimzmlparser.data.MzMLSpectrumDataStorage;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.IOException;
@@ -158,12 +159,23 @@ public abstract class MzMLDataContainer extends MzMLIndexedContentWithParams {
     }
         
     /**
-     * Sets the compression (or none) to all BinaryDataArray within this data container.
+     * Sets the compression (or none) to all BinaryDataArray within this data 
+     * container. This only takes effect when the data is written out.
      * 
      * @param compression Compression
      */
-    public void setCompression(Binary.CompressionType compression) {
+    public void setCompression(BinaryDataArray.CompressionType compression) {
         binaryDataArrayList.setCompression(compression);
+    }
+    
+    /**
+     * Sets the data type to be used when storing data. This only takes effect
+     * when the data is written out.
+     * 
+     * @param dataType New data type
+     */
+    public void setDataType(DataType dataType) {
+        binaryDataArrayList.setDataType(dataType);
     }
     
     @Override

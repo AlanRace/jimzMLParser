@@ -5,7 +5,6 @@ import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
 import com.alanmrace.jimzmlparser.imzml.PixelLocation;
 import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.data.MzMLSpectrumDataStorage;
-import com.alanmrace.jimzmlparser.mzml.Binary.CompressionType;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.IOException;
 import java.io.Serializable;
@@ -455,9 +454,7 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
      * @param mzs New spectral data as double[]
      */
     protected void setmzArray(double[] mzs) {
-        Binary binary = new Binary(mzs);
-
-        binaryDataArrayList.getmzArray().setBinary(binary);
+        binaryDataArrayList.getmzArray().setData(mzs);
     }
 
     /**
@@ -470,9 +467,7 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
      * @param intensities New spectral data as double[]
      */
     protected void setIntensityArray(double[] intensities) {
-        Binary binary = new Binary(intensities);
-
-        binaryDataArrayList.getIntensityArray().setBinary(binary);
+        binaryDataArrayList.getIntensityArray().setData(intensities);
     }
 
     /**

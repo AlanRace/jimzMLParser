@@ -1,6 +1,5 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import com.alanmrace.jimzmlparser.data.DataTypeTransform;
 import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
 import java.nio.ByteBuffer;
@@ -87,66 +86,5 @@ public class BinaryTest {
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
-
-    /**
-     * Test of getDataTypeFromCV method, of class Binary.
-     */
-    @Test
-    @Ignore
-    public void testGetDataTypeFromCV() {
-        System.out.println("getDataTypeFromCV");
-        CVParam cvParam = null;
-        DataTypeTransform.DataType expResult = null;
-        DataTypeTransform.DataType result = Binary.getDataTypeFromCV(cvParam);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getDataTypeCVParam method, of class Binary.
-     */
-    @Test
-    @Ignore
-    public void testGetDataTypeCVParam() {
-        System.out.println("getDataTypeCVParam");
-        Binary instance = null;
-        CVParam expResult = null;
-        CVParam result = instance.getDataTypeCVParam();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getDataType method, of class Binary.
-     */
-    @Test
-    @Ignore
-    public void testGetDataType() {
-        System.out.println("getDataType");
-        Binary instance = null;
-        DataTypeTransform.DataType expResult = null;
-        DataTypeTransform.DataType result = instance.getDataType();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getCompressionType method, of class Binary.
-     */
-    @Test
-    @Ignore
-    public void testGetCompressionType() {
-        System.out.println("getCompressionType");
-        Binary instance = null;
-        Binary.CompressionType expResult = null;
-        Binary.CompressionType result = instance.getCompressionType();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
     
 }

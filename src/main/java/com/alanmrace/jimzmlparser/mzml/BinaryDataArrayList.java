@@ -1,5 +1,7 @@
 package com.alanmrace.jimzmlparser.mzml;
 
+import com.alanmrace.jimzmlparser.data.DataTypeTransform;
+
 /**
  * BinaryDataArrayList tag.
  *
@@ -99,14 +101,26 @@ public class BinaryDataArrayList extends MzMLContentList<BinaryDataArray> {
     
     /**
      * Sets the compression (or none) to all BinaryDataArray within the spectrum.
+     * This only takes effect when the data is written out.
      * 
      * @param compression Compression
      */
-    public void setCompression(Binary.CompressionType compression) {
+    public void setCompression(BinaryDataArray.CompressionType compression) {
         for(BinaryDataArray bda : this)
             bda.setCompression(compression);
     }
 
+    /**
+     * Sets the data type to be used when storing data. This only takes effect
+     * when the data is written out.
+     * 
+     * @param dataType New data type
+     */
+    public void setDataType(DataTypeTransform.DataType dataType) {
+        for(BinaryDataArray bda : this)
+            bda.setDataType(dataType);
+    }
+    
     @Override
     public String getTagName() {
         return "binaryDataArrayList";
