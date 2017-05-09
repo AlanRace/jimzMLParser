@@ -179,11 +179,6 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
     // </editor-fold>
     
     /**
-     * Buffer size to use when reading in data. Set to 2^20 bytes = 1 MB.
-     */
-    protected static final int BYTE_BUFFER_SIZE = 2 ^ 20;
-
-    /**
      * Attribute: The array length, overrides defaultArrayLength. OPTIONAL
      */
     private int arrayLength = -1;				// Optional
@@ -202,11 +197,6 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
      * Data array if storing in memory.
      */
     private double[] data;
-
-    /**
-     * Binary data type of the stored data array.
-     */
-//    private DataTypeTransform.DataType dataType;
     
     /**
      * True if this BinaryDataArray describes an m/z array, false otherwise.
@@ -471,6 +461,14 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
         return loadedData;
     }
     
+    /**
+     * Set the data internally. This does not update any metadata, and therefore
+     * should only be used when metadata is also updated. Alternatively use
+     * {@link Spectrum#updatemzArray(double[], DataProcessing)} or
+     * {@link Spectrum#updateIntensityArray(double[], com.alanmrace.jimzmlparser.mzml.DataProcessing)}.
+     * 
+     * @param data New data for the data array
+     */
     protected void setData(double[] data) {
         this.data = data;
     }
@@ -491,7 +489,8 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
 
     /**
      * Create a {@link DataTransformation} based on the relevant CVParams 
-     * included within this BinaryDataArray.
+     * included within this BinaryDataArray. This describes the forward transformation
+     * from a double[] to a (optionally new data type, optionally compressed) byte[].
      * 
      * @return DataTransformation describing CVParams
      */
@@ -606,7 +605,7 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
 
     @Override
     public void addReferenceableParamGroupRef(ReferenceableParamGroupRef rpgr) {
-        CVParam child = rpgr.getRef().getCVParamOrChild(binaryDataArrayID);
+        CVParam child = rpgr.getReference().getCVParamOrChild(binaryDataArrayID);
 
         if (child != null) {
             if (child.getTerm().getID().equals(mzArrayID)) {
@@ -717,33 +716,6 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
         return attributeText;
     }
 
-//    @Override
-//    protected void outputXMLContent(MzMLWritable output, int indent) throws IOException {
-//        double[] data = getDataAsDouble();
-//
-//        if (data == null) {
-//            super.outputXMLContent(output, indent);
-//
-//            MzMLContent.indent(output, indent);
-//            output.writeMetadata("<binary />\n");
-//        } else {
-//            byte[] byteData = output.prepareData(data, this);
-//
-//            super.outputXMLContent(output, indent);
-//
-//            MzMLContent.indent(output, indent);
-//            
-//            if(output instanceof ImzMLHeaderWriter) {
-//                output.writeMetadata("<binary />\n");
-//                output.writeData(byteData);
-//            } else {
-//                output.writeMetadata("<binary>");
-//                output.writeData(byteData);
-//                output.writeMetadata("</binary>\n");
-//            }
-//        }
-//    }
-
     @Override
     public String toString() {
         return "binaryDataArray: " + dataLocation;
@@ -757,8 +729,5 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
     @Override
     public void addChildrenToCollection(Collection<MzMLTag> children) {
         super.addChildrenToCollection(children);
-
-//        if(binary != null)
-//            children.add(binary);
     }
 }

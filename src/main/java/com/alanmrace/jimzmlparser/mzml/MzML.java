@@ -257,6 +257,19 @@ public class MzML extends MzMLContentWithParams implements Serializable {
     }
 
     /**
+     * 
+     * 
+     * @return
+     */
+    public SpectrumList getSpectrumList() {
+        return run.getSpectrumList();
+    }
+    
+    public ChromatogramList getChromatogramList() {
+        return run.getChromatogramList();
+    }
+    
+    /**
      * Set the CVList for the mzML.
      * 
      * @param cvList cvList

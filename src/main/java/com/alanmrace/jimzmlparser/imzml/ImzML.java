@@ -7,7 +7,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import com.alanmrace.jimzmlparser.mzml.CVParam;
+import com.alanmrace.jimzmlparser.mzml.EmptyCVParam;
 import com.alanmrace.jimzmlparser.mzml.FileContent;
+import com.alanmrace.jimzmlparser.mzml.IntegerCVParam;
 import com.alanmrace.jimzmlparser.mzml.MzML;
 import com.alanmrace.jimzmlparser.mzml.Scan;
 import com.alanmrace.jimzmlparser.mzml.ScanSettings;
@@ -15,6 +17,7 @@ import com.alanmrace.jimzmlparser.mzml.ScanSettingsList;
 import com.alanmrace.jimzmlparser.mzml.Software;
 import com.alanmrace.jimzmlparser.mzml.Spectrum;
 import com.alanmrace.jimzmlparser.mzml.SpectrumList;
+import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.util.HexHelper;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -833,5 +836,24 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
         createDefaults(imzML);
         
         return imzML;
+    }
+    
+    protected static void createDefaults(MzML mzML) {
+        MzML.createDefaults(mzML);
+        
+        // Add in scan setting defaults
+        ScanSettingsList scanSettingsList = new ScanSettingsList(1);
+        ScanSettings scanSettings = new ScanSettings("globalScanSettings");
+        scanSettingsList.add(scanSettings);
+        
+        scanSettings.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ScanSettings.scanPatternFlybackID)));
+        scanSettings.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ScanSettings.scanDirectionTopDownID)));
+        scanSettings.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ScanSettings.scanTypeHorizontalID)));
+        scanSettings.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ScanSettings.lineScanDirectionLeftRightID)));
+        
+        scanSettings.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(ScanSettings.maxCountPixelXID), 0));
+        scanSettings.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(ScanSettings.maxCountPixelYID), 0));
+        
+        mzML.setScanSettingsList(scanSettingsList);
     }
 }

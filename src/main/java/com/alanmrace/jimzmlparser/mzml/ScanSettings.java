@@ -90,6 +90,11 @@ public class ScanSettings extends MzMLContentWithParams implements Referenceable
      * Accession: scan type (IMS:1000048).
      */
     public static String scanTypeID = "IMS:1000048";
+    
+    /**
+     * Accession: scan type horizontal (IMS:1000480).
+     */
+    public static String scanTypeHorizontalID = "IMS:1000480";
 
     /**
      * Accession: scan type vertical (IMS:1000481).

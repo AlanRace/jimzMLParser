@@ -289,7 +289,6 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
      */
     public PixelLocation getPixelLocation() {
         if (pixelLocation == null) {
-            // 
             for (Scan scan : scanList) {
                 CVParam xValue = scan.getCVParam(Scan.positionXID);
                 CVParam yValue = scan.getCVParam(Scan.positionYID);
@@ -310,29 +309,30 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
 
         return pixelLocation;
     }
-    
+
     public void setPixelLocation(PixelLocation location) {
-        if(scanList == null) {
+        if (scanList == null) {
             scanList = ScanList.create();
         }
-        
+
         Scan scan = scanList.get(0);
-        
+
         scan.removeCVParam(Scan.positionXID);
         scan.removeCVParam(Scan.positionYID);
         scan.removeCVParam(Scan.positionZID);
-        
+
         scan.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(Scan.positionXID), location.getX()));
         scan.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(Scan.positionYID), location.getY()));
-        
-        if(location.getZ() >= 1)
+
+        if (location.getZ() >= 1) {
             scan.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(Scan.positionZID), location.getZ()));
+        }
     }
-    
+
     public void setPixelLocation(int x, int y) {
         setPixelLocation(new PixelLocation(x, y, -1));
     }
-    
+
     public void setPixelLocation(int x, int y, int z) {
         setPixelLocation(new PixelLocation(x, y, z));
     }
@@ -557,37 +557,42 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
 
     /**
      * Default Spectrum parameters are: MS1 Spectrum & Profile Spectrum. These
-     * MUST be changed if this is not the case. Data is stored in memory until 
+     * MUST be changed if this is not the case. Data is stored in memory until
      * written out. Default DataProcessing is used to describe the spectrum, see
      * {@link DataProcessing#create()}.
-     * 
-     * <p>TODO: Consider having these as part of the create spectrum interface.
-     * 
-     * <p>Data defaults are no compression, 64-bit float representation.
+     *
+     * <p>
+     * TODO: Consider having these as part of the create spectrum interface.
+     *
+     * <p>
+     * Data defaults are no compression, 64-bit float representation.
      *
      * @param mzs m/z array as double[]
      * @param intensities Intensity array as double[]
      * @return Spectrum instance with default metadata
      */
-    public static Spectrum createSpectrum(double[] mzs, double[] intensities) {
+    private static Spectrum createSpectrum(double[] mzs, double[] intensities) {
         return createSpectrum(mzs, intensities, DataProcessing.create());
     }
 
     /**
      * Default Spectrum parameters are: MS1 Spectrum & Profile Spectrum. These
-     * MUST be changed if this is not the case. Data is stored in memory until 
+     * MUST be changed if this is not the case. Data is stored in memory until
      * written out.
-     * 
-     * <p>TODO: Consider having these as part of the create spectrum interface.
-     * 
-     * <p>Data defaults are no compression, 64-bit float representation.
+     *
+     * <p>
+     * TODO: Consider having these as part of the create spectrum interface.
+     *
+     * <p>
+     * Data defaults are no compression, 64-bit float representation.
      *
      * @param mzs m/z array as double[]
      * @param intensities Intensity array as double[]
-     * @param processing Description of the DataProcessing applied to create spectrum
+     * @param processing Description of the DataProcessing applied to create
+     * spectrum
      * @return Spectrum instance with default metadata
      */
-    public static Spectrum createSpectrum(double[] mzs, double[] intensities, DataProcessing processing) {
+    private static Spectrum createSpectrum(double[] mzs, double[] intensities, DataProcessing processing) {
         String id = "spectrum=" + spectrumNumber++;
 
         Spectrum spectrum = new Spectrum(id, intensities.length);
@@ -614,12 +619,20 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
 
         return spectrum;
     }
-    
+
     public static Spectrum createSpectrum(double[] mzs, double[] intensities, int x, int y) {
         Spectrum spectrum = createSpectrum(mzs, intensities, DataProcessing.create());
-        
+
         spectrum.setPixelLocation(x, y);
-        
+
+        return spectrum;
+    }
+
+    public static Spectrum createSpectrum(double[] mzs, double[] intensities, DataProcessing processing, int x, int y) {
+        Spectrum spectrum = createSpectrum(mzs, intensities, processing);
+
+        spectrum.setPixelLocation(x, y);
+
         return spectrum;
     }
 }

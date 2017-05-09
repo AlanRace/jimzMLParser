@@ -53,7 +53,7 @@ public class CreateSpectrumTest {
         MzML mzML = MzML.create();
         ImzML imzML = ImzML.create();
         
-        Spectrum spectrum = Spectrum.createSpectrum(mzs, intensities);
+        Spectrum spectrum = Spectrum.createSpectrum(mzs, intensities, 1, 1);
         mzML.getRun().getSpectrumList().add(spectrum);
         imzML.getRun().getSpectrumList().add(spectrum);
         
@@ -134,10 +134,10 @@ public class CreateSpectrumTest {
         
         ImzML imzML = ImzML.create();
         
-        Spectrum spectrum = Spectrum.createSpectrum(mzs, intensities);
+        Spectrum spectrum = Spectrum.createSpectrum(mzs, intensities, 1, 1);
         imzML.getRun().getSpectrumList().add(spectrum);
         
-        spectrum = Spectrum.createSpectrum(mzs, intensities);
+        spectrum = Spectrum.createSpectrum(mzs, intensities, 1, 2);
         imzML.getRun().getSpectrumList().add(spectrum);
         
         
@@ -154,7 +154,7 @@ public class CreateSpectrumTest {
         processing.add(method);
         method.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ProcessingMethod.conversionTomzMLID)));
         
-        spectrum = Spectrum.createSpectrum(mzs, intensities, processing);
+        spectrum = Spectrum.createSpectrum(mzs, intensities, processing, 1, 3);
         imzML.getRun().getSpectrumList().add(spectrum);
         
         try {

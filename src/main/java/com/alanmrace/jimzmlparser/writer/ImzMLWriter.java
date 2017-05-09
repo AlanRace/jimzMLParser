@@ -1,6 +1,7 @@
 package com.alanmrace.jimzmlparser.writer;
 
 import com.alanmrace.jimzmlparser.data.DataTransformation;
+import com.alanmrace.jimzmlparser.imzml.PixelLocation;
 import com.alanmrace.jimzmlparser.mzml.BinaryDataArray;
 import com.alanmrace.jimzmlparser.mzml.Chromatogram;
 import com.alanmrace.jimzmlparser.mzml.EmptyCVParam;
@@ -8,6 +9,7 @@ import com.alanmrace.jimzmlparser.mzml.FileContent;
 import com.alanmrace.jimzmlparser.mzml.IntegerCVParam;
 import com.alanmrace.jimzmlparser.mzml.LongCVParam;
 import com.alanmrace.jimzmlparser.mzml.MzML;
+import com.alanmrace.jimzmlparser.mzml.ScanSettings;
 import com.alanmrace.jimzmlparser.mzml.Spectrum;
 import com.alanmrace.jimzmlparser.mzml.StringCVParam;
 import com.alanmrace.jimzmlparser.obo.OBO;
@@ -148,6 +150,28 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
             fileContent.removeChildOfCVParam(FileContent.ibdChecksumID);
             fileContent.addCVParam(new StringCVParam(OBO.getOBO().getTerm(FileContent.sha1ChecksumID), HexHelper.byteArrayToHexString(messageDigest.digest())));
 
+            // Update max x and max y coordinates
+            int maxX = 0;
+            int maxY = 0;
+            
+            if(mzML.getRun().getSpectrumList() != null) {
+                for(Spectrum spectrum : mzML.getRun().getSpectrumList()) {
+                    PixelLocation location = spectrum.getPixelLocation();
+                    
+                    if(location.getX() > maxX)
+                        maxX = location.getX();
+                    if(location.getY() > maxY)
+                        maxY = location.getY();
+                }
+            }
+            
+            // TODO: Check for other scan settings?
+            ScanSettings scanSettings = mzML.getScanSettingsList().getScanSettings(0);
+            scanSettings.removeCVParam(ScanSettings.maxCountPixelXID);
+            scanSettings.removeCVParam(ScanSettings.maxCountPixelYID);
+            scanSettings.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(ScanSettings.maxCountPixelXID), maxX));
+            scanSettings.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(ScanSettings.maxCountPixelYID), maxY));
+            
             // Write out metadata
             super.write(mzML, outputLocation);
         } catch (NoSuchAlgorithmException ex) {
