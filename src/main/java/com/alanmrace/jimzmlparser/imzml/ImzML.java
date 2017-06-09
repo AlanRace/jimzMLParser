@@ -503,27 +503,29 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
         if(ticImage == null) {
             ticImage = new double[getHeight()][getWidth()];
 
-            for (Spectrum spectrum : getRun().getSpectrumList()) {
-                int x = spectrum.getScanList().get(0).getCVParam(Scan.positionXID).getValueAsInteger() - 1;
-                int y = spectrum.getScanList().get(0).getCVParam(Scan.positionYID).getValueAsInteger() - 1;
+            if(getRun().getSpectrumList() != null) {
+                for (Spectrum spectrum : getRun().getSpectrumList()) {
+                    int x = spectrum.getScanList().get(0).getCVParam(Scan.positionXID).getValueAsInteger() - 1;
+                    int y = spectrum.getScanList().get(0).getCVParam(Scan.positionYID).getValueAsInteger() - 1;
 
-                try {
-                    double tic = spectrum.getCVParam(Spectrum.totalIonCurrentID).getValueAsDouble();
-                    
-                    ticImage[y][x] = tic;
-                } catch (NullPointerException ex) {
                     try {
-                        double[] intensityArray = spectrum.getIntensityArray();
+                        double tic = spectrum.getCVParam(Spectrum.totalIonCurrentID).getValueAsDouble();
 
-                        if(intensityArray != null) {
-                            for (int i = 0; i < intensityArray.length; i++) {
-                                ticImage[y][x] += intensityArray[i];
+                        ticImage[y][x] = tic;
+                    } catch (NullPointerException ex) {
+                        try {
+                            double[] intensityArray = spectrum.getIntensityArray();
+
+                            if(intensityArray != null) {
+                                for (int i = 0; i < intensityArray.length; i++) {
+                                    ticImage[y][x] += intensityArray[i];
+                                }
                             }
+                        } catch (FileNotFoundException e) {
+                            Logger.getLogger(ImzML.class.getName()).log(Level.SEVERE, null, e);
+                        } catch (IOException ex1) {
+                            Logger.getLogger(ImzML.class.getName()).log(Level.SEVERE, null, ex1);
                         }
-                    } catch (FileNotFoundException e) {
-                        Logger.getLogger(ImzML.class.getName()).log(Level.SEVERE, null, e);
-                    } catch (IOException ex1) {
-                        Logger.getLogger(ImzML.class.getName()).log(Level.SEVERE, null, ex1);
                     }
                 }
             }

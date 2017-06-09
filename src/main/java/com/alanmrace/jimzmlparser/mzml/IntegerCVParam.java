@@ -71,6 +71,8 @@ public class IntegerCVParam extends CVParam {
      */
     public void setValue(int value) {
         this.value = value;
+        
+        notifyListeners();
     }
 
     @Override
@@ -96,5 +98,7 @@ public class IntegerCVParam extends CVParam {
     @Override
     public void setValueAsString(String newValue) {
         value = Integer.parseInt(newValue);
+        
+        notifyListeners();
     }
 }

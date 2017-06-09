@@ -240,6 +240,9 @@ public abstract class CVParam extends MzMLContent {
 
         CVParam cvParam = (CVParam) o;
 
+        if(cvParam instanceof EmptyCVParam)
+            return cvParam.getTerm().equals(term);
+        
         return cvParam.getTerm().equals(term)
                 && (cvParam.getValueAsString().equals(getValueAsString()))
                 && //				((value == null || cvParam.getValue() == null) ? true : cvParam.getValue().equals(value)) && 
@@ -253,10 +256,5 @@ public abstract class CVParam extends MzMLContent {
         hash = 53 * hash + (this.units != null ? this.units.hashCode() : 0);
         hash = 53 * hash + (getValueAsString() != null ? getValueAsString().hashCode() : 0);
         return hash;
-    }
-
-    @Override
-    public void setParent(MzMLTag parent) {
-        // This is a dummy function only included to allow the removal
     }
 }

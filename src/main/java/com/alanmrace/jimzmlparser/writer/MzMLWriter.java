@@ -98,6 +98,19 @@ public class MzMLWriter implements MzMLWritable {
     public String getMetadataLocation() {
         return metadataLocation;
     }
+    
+    /**
+     * Indent the output by the specified number of spaces (indent).
+     *
+     * @param output BufferedReader to output the indents to
+     * @param indent Number of tabs to indent
+     * @throws IOException Exception occurred during writing data
+     */
+    public static void indent(MzMLWritable output, int indent) throws IOException {
+        for (int i = 0; i < indent; i++) {
+            output.writeMetadata("  ");
+        }
+    }
 
     @Override
     public void write(MzML mzML, String outputLocation) throws IOException {
@@ -113,7 +126,7 @@ public class MzMLWriter implements MzMLWritable {
         int indent = 0;
 
         if (shouldOutputIndex()) {
-            MzMLContent.indent(this, indent);
+            MzMLWriter.indent(this, indent);
             writeMetadata("<indexedmzML");
             writeMetadata(" xmlns=\"http://psi.hupo.org/ms/mzml\"");
             writeMetadata(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
@@ -130,27 +143,27 @@ public class MzMLWriter implements MzMLWritable {
             output.flush();
             long indexListOffset = getMetadataPointer();
 
-            MzMLContent.indent(this, indent + 1);
+            MzMLWriter.indent(this, indent + 1);
             writeMetadata("<indexList count=\"1\">\n");
-            MzMLContent.indent(this, indent + 2);
+            MzMLWriter.indent(this, indent + 2);
             writeMetadata("<index name=\"spectrum\">\n");
 
             // TODO: Move this away from the Spectrum - this doesn't care where it 
             // is stored - this should be kept track of in the MzMLWriter
             for (Spectrum spectrum : mzML.getRun().getSpectrumList()) {
-                MzMLContent.indent(this, indent + 3);
+                MzMLWriter.indent(this, indent + 3);
                 writeMetadata("<offset idRef=\"" + spectrum.getID() + "\">" + spectrum.getmzMLLocation() + "</offset>\n");
             }
 
-            MzMLContent.indent(this, indent + 2);
+            MzMLWriter.indent(this, indent + 2);
             writeMetadata("</index>\n");
-            MzMLContent.indent(this, indent + 1);
+            MzMLWriter.indent(this, indent + 1);
             writeMetadata("</indexList>\n");
 
-            MzMLContent.indent(this, indent + 1);
+            MzMLWriter.indent(this, indent + 1);
             writeMetadata("<indexListOffset>" + indexListOffset + "</indexListOffset>\n");
 
-            MzMLContent.indent(this, indent);
+            MzMLWriter.indent(this, indent);
             writeMetadata("</indexedmzML>\n");
         }
 
@@ -163,7 +176,7 @@ public class MzMLWriter implements MzMLWritable {
     protected void outputXML(MzMLTag tag, int indent) throws IOException {
         String attributeText = tag.getXMLAttributeText();
 
-        MzMLContent.indent(this, indent);
+        MzMLWriter.indent(this, indent);
         writeMetadata("<" + tag.getTagName());
 
         if (attributeText != null && !attributeText.isEmpty()) {
@@ -183,7 +196,7 @@ public class MzMLWriter implements MzMLWritable {
 
             outputXMLContent((HasChildren) tag, indent + 1);
 
-            MzMLContent.indent(this, indent);
+            MzMLWriter.indent(this, indent);
             writeMetadata("</" + tag.getTagName() + ">\n");
         }
     }
@@ -206,7 +219,7 @@ public class MzMLWriter implements MzMLWritable {
             //CVParam externalData = ((BinaryDataArray) tag).getCVParam(BinaryDataArray.externalDataID);
 
             //if (externalData == null) {
-            MzMLContent.indent(this, indent);
+            MzMLWriter.indent(this, indent);
             writeBinaryTag((BinaryDataArray) tag);
             //}
         }

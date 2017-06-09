@@ -71,6 +71,8 @@ public class StringCVParam extends CVParam {
      */
     public void setValue(String value) {
         this.value = value;
+        
+        notifyListeners();
     }
 
     @Override

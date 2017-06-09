@@ -2,10 +2,10 @@ package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collection;
-import com.alanmrace.jimzmlparser.writer.MzMLWritable;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Base class for all mzML tags. This includes default handling for inclusion of
@@ -21,6 +21,56 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
      */
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Parent of the current MzMLTag;
+     */
+    protected MzMLTag parent;
+    
+    protected List<MzMLContentListener> listeners;
+    
+    public void addListener(MzMLContentListener listener) {
+        if(listeners == null)
+            listeners = new LinkedList<MzMLContentListener>();
+        
+        listeners.add(listener);
+    }
+    
+    public void removeListener(MzMLContentListener listener) {
+        if(listeners != null)
+            listeners.remove(listener);
+    }
+    
+    protected void notifyListeners() {        
+        if(listeners != null) {
+            for(MzMLContentListener listener : listeners) {
+                listener.changeMade(this);
+            }
+        }
+        
+        if(parent != null && parent instanceof MzMLContent)
+            ((MzMLContent)parent).notifyListeners();
+    }
+    
+    @Override
+    public void setParent(MzMLTag parent) {
+        this.parent = parent;
+    }
+    
+//    @Override
+//    public MzMLTag getParent() {
+//        return parent;
+//    }
+//    
+//    @Override
+//    public String getXPath() {
+//        String xPath;
+//        
+//        if(parent == null)
+//            return getTagName();
+//        
+//        return getParent().getXPath() + "/" + getTagName();
+//    }
+    
     /**
      * Add all child MzMLContent (mzML tags) that match the specified XPath,
      * which are specific to this tag (i.e. child tags which are not
@@ -93,23 +143,7 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
 //        output.writeMetadata("/>\n");
 //    }
 
-    /**
-     * Indent the output by the specified number of spaces (indent).
-     *
-     * @param output BufferedReader to output the indents to
-     * @param indent Number of tabs to indent
-     * @throws IOException Exception occurred during writing data
-     */
-    public static void indent(MzMLWritable output, int indent) throws IOException {
-        for (int i = 0; i < indent; i++) {
-            output.writeMetadata("  ");
-        }
-    }
-
-    @Override
-    public void setParent(MzMLTag parent) {
-        // This is a dummy function only included to allow the removal
-    }
+    
     
     @Override
     public String toString() {

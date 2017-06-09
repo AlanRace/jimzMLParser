@@ -71,6 +71,8 @@ public class DoubleCVParam extends CVParam {
      */
     public void setValue(double value) {
         this.value = value;
+        
+        notifyListeners();
     }
 
     @Override
@@ -96,6 +98,8 @@ public class DoubleCVParam extends CVParam {
     @Override
     public void setValueAsString(String newValue) {
         value = Double.parseDouble(newValue);
+        
+        notifyListeners();
 
     }
 }

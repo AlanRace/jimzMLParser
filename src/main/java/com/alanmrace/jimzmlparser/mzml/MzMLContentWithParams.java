@@ -224,6 +224,9 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
     @Override
     public void addCVParam(CVParam cvParam) {
         getCVParamList().add(cvParam);
+        
+        cvParam.setParent(this);
+        notifyListeners();
     }
 
     @Override
@@ -231,8 +234,21 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
         if (cvParams == null) {
             return;
         }
-
-        getCVParamList().remove(index);
+        
+        CVParam paramRemoved = getCVParamList().remove(index);
+        paramRemoved.setParent(null);
+        notifyListeners();
+    }
+    
+    @Override
+    public void removeCVParam(CVParam param) {
+        if(cvParams != null) {
+            if(cvParams.remove(param)) {
+                param.setParent(null);
+                
+                notifyListeners();
+            }
+        }
     }
 
     @Override
@@ -251,7 +267,9 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
 
         for (CVParam cvParam : cvParamList) {
             cvParams.remove(cvParam);
+            cvParam.setParent(null);
         }
+        notifyListeners();
     }
 
     @Override
@@ -264,12 +282,15 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
 
         for (CVParam cvParam : children) {
             cvParams.remove(cvParam);
+            cvParam.setParent(null);
         }
+        notifyListeners();
     }
 
     @Override
     public void addUserParam(UserParam userParam) {
         getUserParamList().add(userParam);
+        userParam.setParent(this);
     }
 
     @Override
@@ -278,7 +299,9 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
             return;
         }
 
-        userParams.remove(index);
+        UserParam removedParam = userParams.remove(index);
+        removedParam.setParent(null);
+        notifyListeners();
     }
 
     @Override

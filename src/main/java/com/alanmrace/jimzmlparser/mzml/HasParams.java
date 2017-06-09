@@ -83,6 +83,8 @@ public interface HasParams {
      */
     public void removeCVParam(String id);
     
+    public void removeCVParam(CVParam param);
+    
     /**
      * Remove all cvParams which are defined as children of the specified ontology term 
      * with the ID id. 

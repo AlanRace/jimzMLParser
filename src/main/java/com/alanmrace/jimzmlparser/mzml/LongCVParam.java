@@ -71,6 +71,8 @@ public class LongCVParam extends CVParam {
      */
     public void setValue(long value) {
         this.value = value;
+        
+        notifyListeners();
     }
 
     @Override
@@ -96,6 +98,8 @@ public class LongCVParam extends CVParam {
     @Override
     public void setValueAsString(String newValue) {
         value = Long.parseLong(newValue);
+        
+        notifyListeners();
     }
 
 }

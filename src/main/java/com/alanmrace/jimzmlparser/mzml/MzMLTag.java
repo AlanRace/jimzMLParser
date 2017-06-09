@@ -66,4 +66,18 @@ public interface MzMLTag {
      */
     @Deprecated
     public void setParent(MzMLTag parent);
+    
+//    /**
+//     * Returns the parent MzMLTag of this MzMLTag, or null if top level (I)mzML tag.
+//     *  
+//     * @return Parent MzMLContent to add
+//     */    
+//    public MzMLTag getParent();
+//    
+//    /**
+//     * Returns the XPath of the current MzMLTag.
+//     * 
+//     * @return XPath
+//     */
+//    public String getXPath();
 }

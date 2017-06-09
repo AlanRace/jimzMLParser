@@ -10,6 +10,7 @@ import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -521,22 +522,26 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
         //return getCVParam(dataTypeID);
 
         CVParam dataTypeParam = this.getCVParamOrChild(dataTypeID);
-
-        String term = dataTypeParam.getTerm().getID();
         DataType dataType = null;
 
-        if (term.equals(doublePrecisionID)) {
-            dataType = DataTypeTransform.DataType.Double;
-        } else if (term.equals(singlePrecisionID)) {
-            dataType = DataTypeTransform.DataType.Float;
-        } else if (term.equals(signed64bitIntegerID) || term.equals(imsSigned64bitIntegerID)) {
-            dataType = DataTypeTransform.DataType.Integer64bit;
-        } else if (term.equals(signed32bitIntegerID) || term.equals(imsSigned32bitIntegerID)) {
-            dataType = DataTypeTransform.DataType.Integer32bit;
-        } else if (term.equals(signed16bitIntegerID)) {
-            dataType = DataTypeTransform.DataType.Integer16bit;
-        } else if (term.equals(signed8bitIntegerID)) {
-            dataType = DataTypeTransform.DataType.Integer8bit;
+        if(dataTypeParam != null) {
+            String term = dataTypeParam.getTerm().getID();
+
+            if (term.equals(doublePrecisionID)) {
+                dataType = DataTypeTransform.DataType.Double;
+            } else if (term.equals(singlePrecisionID)) {
+                dataType = DataTypeTransform.DataType.Float;
+            } else if (term.equals(signed64bitIntegerID) || term.equals(imsSigned64bitIntegerID)) {
+                dataType = DataTypeTransform.DataType.Integer64bit;
+            } else if (term.equals(signed32bitIntegerID) || term.equals(imsSigned32bitIntegerID)) {
+                dataType = DataTypeTransform.DataType.Integer32bit;
+            } else if (term.equals(signed16bitIntegerID)) {
+                dataType = DataTypeTransform.DataType.Integer16bit;
+            } else if (term.equals(signed8bitIntegerID)) {
+                dataType = DataTypeTransform.DataType.Integer8bit;
+            }
+        } else {
+            System.out.println(Arrays.toString(this.getCVParamList().toArray()));
         }
 
         return dataType;

@@ -64,7 +64,8 @@ public abstract class MzMLContentList<T extends MzMLTag>
 
     @Override
     public void add(T item) {
-        item.setParent(this);
+        if(item instanceof MzMLContent)
+            item.setParent(this);
 
         list.add(item);
     }
