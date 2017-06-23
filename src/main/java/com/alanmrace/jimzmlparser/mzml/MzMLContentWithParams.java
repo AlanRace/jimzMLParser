@@ -1,5 +1,7 @@
 package com.alanmrace.jimzmlparser.mzml;
 
+import com.alanmrace.jimzmlparser.event.CVParamAddedEvent;
+import com.alanmrace.jimzmlparser.event.CVParamRemovedEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -226,7 +228,9 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
         getCVParamList().add(cvParam);
         
         cvParam.setParent(this);
-        notifyListeners();
+        
+        if(hasListeners())
+            notifyListeners(new CVParamAddedEvent(this, cvParam));
     }
 
     @Override
@@ -237,7 +241,9 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
         
         CVParam paramRemoved = getCVParamList().remove(index);
         paramRemoved.setParent(null);
-        notifyListeners();
+        
+        if(hasListeners())
+            notifyListeners(new CVParamRemovedEvent(this, paramRemoved));
     }
     
     @Override
@@ -246,7 +252,8 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
             if(cvParams.remove(param)) {
                 param.setParent(null);
                 
-                notifyListeners();
+                if(hasListeners())
+                    notifyListeners(new CVParamRemovedEvent(this, param));
             }
         }
     }
@@ -268,8 +275,10 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
         for (CVParam cvParam : cvParamList) {
             cvParams.remove(cvParam);
             cvParam.setParent(null);
+            
+            if(hasListeners())
+                notifyListeners(new CVParamRemovedEvent(this, cvParam));
         }
-        notifyListeners();
     }
 
     @Override
@@ -283,8 +292,10 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
         for (CVParam cvParam : children) {
             cvParams.remove(cvParam);
             cvParam.setParent(null);
+            
+            if(hasListeners())
+                notifyListeners(new CVParamRemovedEvent(this, cvParam));
         }
-        notifyListeners();
     }
 
     @Override
@@ -301,7 +312,6 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
 
         UserParam removedParam = userParams.remove(index);
         removedParam.setParent(null);
-        notifyListeners();
     }
 
     @Override

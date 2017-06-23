@@ -7,7 +7,8 @@ package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.mzml.FileContent;
 import com.alanmrace.jimzmlparser.mzml.MzMLContent;
-import com.alanmrace.jimzmlparser.mzml.MzMLContentListener;
+import com.alanmrace.jimzmlparser.event.MzMLContentListener;
+import com.alanmrace.jimzmlparser.event.MzMLEvent;
 import com.alanmrace.jimzmlparser.mzml.Scan;
 import com.alanmrace.jimzmlparser.mzml.IntegerCVParam;
 import com.alanmrace.jimzmlparser.obo.OBO;
@@ -31,7 +32,9 @@ public class ChangeListenerTest {
         FileContent content = FileContent.create();
         content.addListener(new MzMLContentListener() {
             @Override
-            public void changeMade(MzMLContent content) {
+            public void eventOccured(MzMLEvent event) {
+                System.out.println(event);
+                
                 count++;
             }
         });

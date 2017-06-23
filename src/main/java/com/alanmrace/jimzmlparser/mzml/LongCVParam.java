@@ -1,5 +1,6 @@
 package com.alanmrace.jimzmlparser.mzml;
 
+import com.alanmrace.jimzmlparser.event.CVParamChangeEvent;
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 
 /**
@@ -72,7 +73,8 @@ public class LongCVParam extends CVParam {
     public void setValue(long value) {
         this.value = value;
         
-        notifyListeners();
+        if(hasListeners())
+            notifyListeners(new CVParamChangeEvent(this));
     }
 
     @Override
@@ -99,7 +101,8 @@ public class LongCVParam extends CVParam {
     public void setValueAsString(String newValue) {
         value = Long.parseLong(newValue);
         
-        notifyListeners();
+        if(hasListeners())
+            notifyListeners(new CVParamChangeEvent(this));
     }
 
 }

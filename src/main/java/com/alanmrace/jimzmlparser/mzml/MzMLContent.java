@@ -1,5 +1,7 @@
 package com.alanmrace.jimzmlparser.mzml;
 
+import com.alanmrace.jimzmlparser.event.MzMLContentListener;
+import com.alanmrace.jimzmlparser.event.MzMLEvent;
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.Serializable;
@@ -40,15 +42,24 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
             listeners.remove(listener);
     }
     
-    protected void notifyListeners() {        
+    protected void notifyListeners(MzMLEvent event) {        
         if(listeners != null) {
             for(MzMLContentListener listener : listeners) {
-                listener.changeMade(this);
+                listener.eventOccured(event);
             }
         }
         
+        if(event.notifyParents() && parent != null && parent instanceof MzMLContent)
+            ((MzMLContent)parent).notifyListeners(event);
+    }
+    
+    public boolean hasListeners() {
+        boolean hasListeners = listeners != null && !listeners.isEmpty();
+        
         if(parent != null && parent instanceof MzMLContent)
-            ((MzMLContent)parent).notifyListeners();
+            hasListeners |= ((MzMLContent)parent).hasListeners();
+        
+        return hasListeners;
     }
     
     @Override

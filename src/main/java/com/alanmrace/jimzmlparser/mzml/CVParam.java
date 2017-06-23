@@ -210,6 +210,7 @@ public abstract class CVParam extends MzMLContent {
                 break;
             case Float:
             case Double:
+            case NonNegativeFloat:
                 type = CVParamType.Double;
                 break;
             case Int:
@@ -226,6 +227,33 @@ public abstract class CVParam extends MzMLContent {
         }
         
         return type;
+    }
+    
+    public static CVParam createCVParam(OBOTerm term, OBOTerm units) throws NonFatalParseException {
+        CVParam param;
+        
+        switch(getCVParamType(term)) {
+            case String:
+                param = new StringCVParam(term, "", units);
+                break;
+            case Double:
+                param = new DoubleCVParam(term, 0.0, units);
+                break;
+            case Long:
+                param = new LongCVParam(term, 0, units);
+                break;
+            case Integer:
+                param = new IntegerCVParam(term, 0, units);
+                break;
+            case Boolean:
+                param = new BooleanCVParam(term, false, units);
+                break;
+            default:
+                param = new EmptyCVParam(term, units);
+                break;
+        }
+        
+        return param;
     }
     
     @Override
