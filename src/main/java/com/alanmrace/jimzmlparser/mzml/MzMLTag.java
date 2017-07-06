@@ -17,6 +17,8 @@ public interface MzMLTag {
      */
     public String getTagName();
       
+    public String getXPath();
+    
     /**
      * Add all child MzMLContent (mzML tags) that match the specified XPath to 
      * the specified collection.
@@ -59,13 +61,14 @@ public interface MzMLTag {
      * Set the parent MzMLContent of this MzMLContent. This method currently 
      * does nothing.
      * 
-     * <p>TODO: Remove this.
+     * <p>TODO: Remove this from interface and make it a protected method in MzMLContent.
      * 
      * @param parent Parent MzMLContent to add
-     * @deprecated This was removed when the Tree code was decoupled
      */
-    @Deprecated
     public void setParent(MzMLTag parent);
+    
+    
+    public MzMLTag getParent();
     
 //    /**
 //     * Returns the parent MzMLTag of this MzMLTag, or null if top level (I)mzML tag.

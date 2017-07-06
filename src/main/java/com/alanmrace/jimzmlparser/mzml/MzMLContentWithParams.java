@@ -87,6 +87,8 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
                     cvParams.add(new LongCVParam((LongCVParam) cvParam));
                 } else if (cvParam instanceof DoubleCVParam) {
                     cvParams.add(new DoubleCVParam((DoubleCVParam) cvParam));
+                } else if (cvParam instanceof IntegerCVParam) {
+                    cvParams.add(new IntegerCVParam((IntegerCVParam) cvParam));
                 } else if (cvParam instanceof EmptyCVParam) {
                     cvParams.add(new EmptyCVParam((EmptyCVParam) cvParam));
                 } else {
@@ -225,12 +227,14 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
 
     @Override
     public void addCVParam(CVParam cvParam) {
-        getCVParamList().add(cvParam);
-        
-        cvParam.setParent(this);
-        
-        if(hasListeners())
-            notifyListeners(new CVParamAddedEvent(this, cvParam));
+        if(cvParam != null) {
+            getCVParamList().add(cvParam);
+
+            cvParam.setParent(this);
+
+            if(hasListeners())
+                notifyListeners(new CVParamAddedEvent(this, cvParam));
+        }
     }
 
     @Override

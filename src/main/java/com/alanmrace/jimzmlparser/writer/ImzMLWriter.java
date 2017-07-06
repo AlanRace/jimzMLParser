@@ -10,6 +10,7 @@ import com.alanmrace.jimzmlparser.mzml.IntegerCVParam;
 import com.alanmrace.jimzmlparser.mzml.LongCVParam;
 import com.alanmrace.jimzmlparser.mzml.MzML;
 import com.alanmrace.jimzmlparser.mzml.ScanSettings;
+import com.alanmrace.jimzmlparser.mzml.ScanSettingsList;
 import com.alanmrace.jimzmlparser.mzml.Spectrum;
 import com.alanmrace.jimzmlparser.mzml.StringCVParam;
 import com.alanmrace.jimzmlparser.obo.OBO;
@@ -115,20 +116,30 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
             UUID uuid = UUID.randomUUID();
             writeData(UUIDHelper.uuidToByteArray(uuid));
 
-            if(mzML.getRun().getSpectrumList() != null) {
+            if (mzML.getRun().getSpectrumList() != null) {
                 // TODO: For continuous data only write the m/z list once
                 for (Spectrum spectrum : mzML.getRun().getSpectrumList()) {
-                    for (BinaryDataArray bda : spectrum.getBinaryDataArrayList()) {
-                        double[] ddata = bda.getDataAsDouble();
-                        byte[] bdata = prepareData(ddata, bda);
 
-                        writeData(bdata);
+                    for (BinaryDataArray bda : spectrum.getBinaryDataArrayList()) {
+                        //if (bda.getCVParamList().isEmpty()) {
+                        //    System.out.println("Empty CVParamList: " + spectrum + " [" + bda.getReferenceableParamGroupRef(0).getReference().getCVParamCount() + "]");
+                        //}
+
+                        double[] ddata = bda.getDataAsDouble();
+
+                        if (ddata != null) {
+                            byte[] bdata = prepareData(ddata, bda);
+
+                            writeData(bdata);
+                        } else {
+                            Logger.getLogger(ImzMLWriter.class.getName()).log(Level.SEVERE, "Null data in BinaryDataArray {0}", bda);
+                        }
                     }
                 }
             }
 
             // Write out all chromatograms
-            if(mzML.getRun().getChromatogramList() != null) {
+            if (mzML.getRun().getChromatogramList() != null) {
                 for (Chromatogram chromatogram : mzML.getRun().getChromatogramList()) {
                     for (BinaryDataArray bda : chromatogram.getBinaryDataArrayList()) {
                         double[] ddata = bda.getDataAsDouble();
@@ -138,7 +149,7 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
                     }
                 }
             }
-            
+
             dataRAF.setLength(dataRAF.getFilePointer());
             dataOutput.close();
 
@@ -153,25 +164,41 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
             // Update max x and max y coordinates
             int maxX = 0;
             int maxY = 0;
-            
-            if(mzML.getRun().getSpectrumList() != null) {
-                for(Spectrum spectrum : mzML.getRun().getSpectrumList()) {
+
+            if (mzML.getRun().getSpectrumList() != null) {
+                for (Spectrum spectrum : mzML.getRun().getSpectrumList()) {
                     PixelLocation location = spectrum.getPixelLocation();
-                    
-                    if(location.getX() > maxX)
+
+                    if (location.getX() > maxX) {
                         maxX = location.getX();
-                    if(location.getY() > maxY)
+                    }
+                    if (location.getY() > maxY) {
                         maxY = location.getY();
+                    }
                 }
             }
-            
-            // TODO: Check for other scan settings?
-            ScanSettings scanSettings = mzML.getScanSettingsList().getScanSettings(0);
-            scanSettings.removeCVParam(ScanSettings.maxCountPixelXID);
-            scanSettings.removeCVParam(ScanSettings.maxCountPixelYID);
+
+            // If the scan settings does not currently exist, make sure to add one
+            ScanSettings scanSettings;
+
+            if (mzML.getScanSettingsList() == null) {
+                mzML.setScanSettingsList(new ScanSettingsList(1));
+            }
+
+            ScanSettingsList scanSettingsList = mzML.getScanSettingsList();
+
+            if (scanSettingsList.size() == 0) {
+                scanSettings = new ScanSettings("scanSettings");
+                scanSettingsList.add(scanSettings);
+            } else {
+                scanSettings = mzML.getScanSettingsList().getScanSettings(0);
+                scanSettings.removeCVParam(ScanSettings.maxCountPixelXID);
+                scanSettings.removeCVParam(ScanSettings.maxCountPixelYID);
+            }
+
             scanSettings.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(ScanSettings.maxCountPixelXID), maxX));
             scanSettings.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(ScanSettings.maxCountPixelYID), maxY));
-            
+
             // Write out metadata
             super.write(mzML, outputLocation);
         } catch (NoSuchAlgorithmException ex) {
@@ -184,7 +211,7 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
     public void writeData(byte[] data) throws IOException {
         if (data.length > 0) {
             dataOutput.write(data);
-            
+
             messageDigest.update(data, 0, data.length);
         }
     }

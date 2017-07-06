@@ -443,6 +443,20 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
         if(data != null)
             return data;
 
+        // If there is no dataLocation stored for the BinaryDataArray then it is 
+        // likely that the data storage is MzMLDataStorage and so needs to be converted 
+        // to Base64Storage prior to being able to load any data
+        if (dataLocation == null) {
+            if(parent != null) {
+                MzMLTag grandParent = parent.getParent();
+                
+                if(grandParent instanceof MzMLDataContainer) {
+                    ((MzMLDataContainer) grandParent).convertMzMLDataStorageToBase64();
+                }
+            }
+        }
+         
+        // If there is still no dataLocation after the conversion, then no data to load
         if (dataLocation == null) {
             return null;
         }
@@ -499,14 +513,14 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
         DataTransformation transformation = new DataTransformation();
 
         // Always add in the conversion to data type first
-        if (!getDataType().equals(DataType.Double)) {
+        if (!DataType.Double.equals(getDataType())) {
             transformation.addTransform(new DataTypeTransform(DataType.Double, getDataType()));
         }
 
         CVParam compressionCVParam = this.getCVParamOrChild(BinaryDataArray.compressionTypeID);
 
         // Add in any compression
-        if (compressionCVParam.getTerm().getID().equals(BinaryDataArray.zlibCompressionID)) {
+        if (BinaryDataArray.zlibCompressionID.equals(compressionCVParam.getTerm().getID())) {
             transformation.addTransform(new ZlibDataTransform());
         }
 
@@ -523,7 +537,7 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
 
         CVParam dataTypeParam = this.getCVParamOrChild(dataTypeID);
         DataType dataType = null;
-
+        
         if(dataTypeParam != null) {
             String term = dataTypeParam.getTerm().getID();
 

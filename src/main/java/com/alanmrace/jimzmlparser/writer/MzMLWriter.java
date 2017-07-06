@@ -2,10 +2,8 @@ package com.alanmrace.jimzmlparser.writer;
 
 import com.alanmrace.jimzmlparser.data.DataTransformation;
 import com.alanmrace.jimzmlparser.mzml.BinaryDataArray;
-import com.alanmrace.jimzmlparser.mzml.CVParam;
 import com.alanmrace.jimzmlparser.mzml.HasChildren;
 import com.alanmrace.jimzmlparser.mzml.MzML;
-import com.alanmrace.jimzmlparser.mzml.MzMLContent;
 import com.alanmrace.jimzmlparser.mzml.MzMLIndexedContentWithParams;
 import com.alanmrace.jimzmlparser.mzml.MzMLOrderedContentWithParams;
 import com.alanmrace.jimzmlparser.mzml.MzMLTag;

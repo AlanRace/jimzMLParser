@@ -2,6 +2,7 @@ package com.alanmrace.jimzmlparser.data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.zip.DataFormatException;
 
 /**
@@ -79,10 +80,24 @@ public class DataTransformation {
     public double[] performReverseTransform(byte[] data) throws DataFormatException {
         byte[] transformedData = data;
         
-        for(DataTransform transform : transformation) {
+        ListIterator<DataTransform> listIterator = transformation.listIterator(transformation.size());
+        
+        while(listIterator.hasPrevious()) {
+            DataTransform transform = listIterator.previous();
             transformedData = transform.reverseTransform(transformedData);
         }
         
         return DataTypeTransform.convertDataToDouble(transformedData, DataTypeTransform.DataType.Double);
+    }
+    
+    @Override
+    public String toString() {
+        String description = "DataTransform\n";
+        
+        for(DataTransform tranform : transformation) {
+            description += "\t Transform - " + tranform;
+        }
+        
+        return description;
     }
 }

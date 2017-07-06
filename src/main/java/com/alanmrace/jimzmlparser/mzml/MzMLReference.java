@@ -1,5 +1,7 @@
 package com.alanmrace.jimzmlparser.mzml;
 
+import com.alanmrace.jimzmlparser.util.XMLHelper;
+
 /**
  * MzMLTag which describes a reference to another MzMLTag.
  * 
@@ -50,6 +52,11 @@ public abstract class MzMLReference<T extends ReferenceableTag> extends MzMLCont
 //        output.writeMetadata(" ref=\"" + reference.getID() + "\"");
 //        output.writeMetadata("/>\n");
 //    }
+    
+    @Override
+    public String getXMLAttributeText() {
+        return "ref=\"" + XMLHelper.ensureSafeXML(reference.getID()) + "\"";
+    }
     
     @Override
     public String toString() {

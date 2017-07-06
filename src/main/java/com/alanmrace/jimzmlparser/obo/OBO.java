@@ -139,13 +139,15 @@ public class OBO implements Serializable {
         }
     }
 
+    protected static OBO obo = new OBO("imagingMS.obo");
+    
     /**
      * Static function to load in the imagingMS.obo file stored as a project resource.
      * 
      * @return Loaded ontology
      */
     public static OBO getOBO() {
-        return new OBO("imagingMS.obo");
+        return obo;
     }
 
     /**

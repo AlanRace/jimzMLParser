@@ -331,6 +331,7 @@ public class OBOTerm implements Serializable {
      * @param id Unique identifier for the ontology term
      */
     public OBOTerm(String id) {
+        // TODO: Assign these only when necessary
         is_a = new ArrayList<String>();
         part_of = new ArrayList<String>();
         children = new ArrayList<OBOTerm>();

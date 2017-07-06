@@ -67,6 +67,21 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
         this.parent = parent;
     }
     
+    @Override
+    public MzMLTag getParent() {
+        return parent;
+    }
+    
+    @Override
+    public String getXPath() {
+        String xPath = "";
+        
+        if(parent != null)
+            xPath = parent.getXPath();
+        
+        return xPath + "/" + getTagName();
+    }
+    
 //    @Override
 //    public MzMLTag getParent() {
 //        return parent;

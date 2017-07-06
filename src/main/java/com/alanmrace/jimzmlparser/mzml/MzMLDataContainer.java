@@ -87,45 +87,53 @@ public abstract class MzMLDataContainer extends MzMLIndexedContentWithParams {
         this.dataLocation = dataLocation;
     }
     
+    public void ensureLoadableData() throws IOException {
+        if (dataLocation != null && dataLocation.getDataStorage() instanceof MzMLSpectrumDataStorage) {
+            convertMzMLDataStorageToBase64();
+        }
+    }
+    
     protected void convertMzMLDataStorageToBase64() throws IOException {
-        // Load in the data from the data storage
-        byte[] data = dataLocation.getBytes();
-        String spectrumData = new String(data);
+        if (dataLocation != null && dataLocation.getDataStorage() instanceof MzMLSpectrumDataStorage) {
+            // Load in the data from the data storage
+            byte[] data = dataLocation.getBytes();
+            String spectrumData = new String(data);
 
-        MzMLSpectrumDataStorage mzMLDataStorage = (MzMLSpectrumDataStorage) dataLocation.getDataStorage();
+            MzMLSpectrumDataStorage mzMLDataStorage = (MzMLSpectrumDataStorage) dataLocation.getDataStorage();
 
-        // Identify where each binary data array is within the spectrum mzML
-        if (binaryDataArrayList != null) {
-            for (BinaryDataArray bda : binaryDataArrayList) {
-                
-                CVParam cvParam = bda.getCVParamOrChild(BinaryDataArray.binaryDataArrayID);
-                String cvParamID = cvParam.getTerm().getID();
+            // Identify where each binary data array is within the spectrum mzML
+            if (binaryDataArrayList != null) {
+                for (BinaryDataArray bda : binaryDataArrayList) {
 
-//                System.out.println("Looking for " + cvParam + " in " + this.id);
-                
-                int cvParamLocation = spectrumData.indexOf(cvParamID);
-                //		    System.out.println(cvParamLocation);
-                //		    System.out.println(cvParamID);
-                
-                if(cvParamLocation != -1) {
-                    String subSpectrumData = spectrumData.substring(cvParamLocation);
+                    CVParam cvParam = bda.getCVParamOrChild(BinaryDataArray.binaryDataArrayID);
+                    String cvParamID = cvParam.getTerm().getID();
 
-                    int binaryStart = subSpectrumData.indexOf("<binary>") + cvParamLocation + "<binary>".length();
-                    int binaryEnd = subSpectrumData.indexOf("</binary>") + cvParamLocation;
+    //                System.out.println("Looking for " + cvParam + " in " + this.id);
 
-                    DataLocation location = new DataLocation(mzMLDataStorage.getBase64DataStorage(), binaryStart + dataLocation.getOffset(), binaryEnd - binaryStart);
-                    bda.setDataLocation(location);
-                    location.setDataTransformation(bda.generateDataTransformation());
-                    
-                    //		    System.out.println(cvParam);
-                    //		    System.out.println(spectrumData.substring(binaryStart, binaryEnd));
-                } else {
-                    System.out.println("Data: " + spectrumData);
+                    int cvParamLocation = spectrumData.indexOf(cvParamID);
+                    //		    System.out.println(cvParamLocation);
+                    //		    System.out.println(cvParamID);
+
+                    if(cvParamLocation != -1) {
+                        String subSpectrumData = spectrumData.substring(cvParamLocation);
+
+                        int binaryStart = subSpectrumData.indexOf("<binary>") + cvParamLocation + "<binary>".length();
+                        int binaryEnd = subSpectrumData.indexOf("</binary>") + cvParamLocation;
+
+                        DataLocation location = new DataLocation(mzMLDataStorage.getBase64DataStorage(), binaryStart + dataLocation.getOffset(), binaryEnd - binaryStart);
+                        bda.setDataLocation(location);
+                        location.setDataTransformation(bda.generateDataTransformation());
+
+                        //		    System.out.println(cvParam);
+                        //		    System.out.println(spectrumData.substring(binaryStart, binaryEnd));
+                    } else {
+                        System.out.println("Data: " + spectrumData);
+                    }
                 }
             }
+
+            dataLocation = null;
         }
-        
-        dataLocation = null;
     }
     
     /**
@@ -151,9 +159,7 @@ public abstract class MzMLDataContainer extends MzMLIndexedContentWithParams {
             return null;
         }
 
-        if (dataLocation != null && dataLocation.getDataStorage() instanceof MzMLSpectrumDataStorage) {
-            convertMzMLDataStorageToBase64();
-        }
+        ensureLoadableData();
 
         return binaryDataArrayList.getIntensityArray().getDataAsDouble(keepInMemory);
     }

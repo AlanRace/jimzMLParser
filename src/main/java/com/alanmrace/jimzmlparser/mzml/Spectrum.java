@@ -438,9 +438,7 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
             return null;
         }
 
-        if (dataLocation != null && dataLocation.getDataStorage() instanceof MzMLSpectrumDataStorage) {
-            convertMzMLDataStorageToBase64();
-        }
+        ensureLoadableData();
 
         return binaryDataArrayList.getmzArray().getDataAsDouble(keepInMemory);
     }

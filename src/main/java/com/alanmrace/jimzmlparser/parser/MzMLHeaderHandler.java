@@ -1567,6 +1567,15 @@ public class MzMLHeaderHandler extends DefaultHandler {
 //                    }
 //                    
 //                    break;
+        } else if("mzML".equals(qName) || "indexedmzML".equals(qName)) {
+            // Go through spectra and chromatograms to convert the data storage if necessary
+            for(Spectrum spectrum : spectrumList) {
+                try {
+                    spectrum.ensureLoadableData();
+                } catch (IOException ex) {
+                    Logger.getLogger(MzMLHeaderHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
     }
 
