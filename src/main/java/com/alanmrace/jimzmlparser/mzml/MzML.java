@@ -586,19 +586,13 @@ public class MzML extends MzMLContentWithParams implements Serializable {
 
         SpectrumList spectrumList = getRun().getSpectrumList();
 
-        if (spectrumList.size() > 0) {
-            Spectrum spectrum = spectrumList.getSpectrum(0);
-            //for(Spectrum spectrum : spectrumList) {
+        
+        for(Spectrum spectrum : spectrumList) {
             closeDataStorage(spectrum.getDataLocation());
 
-            BinaryDataArrayList bdal = spectrum.getBinaryDataArrayList();
-
-            if (bdal.size() > 0) {
-                BinaryDataArray bda = bdal.get(0);
-
+            for(BinaryDataArray bda : spectrum.getBinaryDataArrayList()) {
                 closeDataStorage(bda.getDataLocation());
             }
-            //}
         }
     }
 

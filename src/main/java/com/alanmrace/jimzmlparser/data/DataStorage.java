@@ -89,7 +89,7 @@ public abstract class DataStorage {
      * @throws IOException Exception thrown when trying to close randomAccessFile
      */
     public void close() throws IOException {
-        if(fileStreamOpen){
+        if(fileStreamOpen) {
             randomAccessFile.close();
 	    
 	    logger.log(Level.FINER, MessageFormat.format("[Closed] {0} ({1})", new Object[]{dataFile, randomAccessFile}));

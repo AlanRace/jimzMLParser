@@ -36,12 +36,12 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
         /**
          * No compression.
          */
-        noCompression,
+        None,
 
         /**
          * ZLib compression.
          */
-        zlibCompresion;
+        Zlib;
     }
 
     // <editor-fold defaultstate="collapsed" desc="Accessions">
@@ -664,10 +664,10 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
         String compressionID;
         
         switch(compression) {
-            case zlibCompresion:
+            case Zlib:
                 compressionID = BinaryDataArray.zlibCompressionID;
                 break;
-            case noCompression:
+            case None:
             default:
                 compressionID = BinaryDataArray.noCompressionID;
                 break;

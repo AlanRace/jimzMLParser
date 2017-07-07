@@ -1,6 +1,16 @@
 package com.alanmrace.jimzmlparser.data;
 
 import com.alanmrace.jimzmlparser.mzml.BinaryDataArray;
+import static com.alanmrace.jimzmlparser.mzml.BinaryDataArray.doublePrecisionID;
+import static com.alanmrace.jimzmlparser.mzml.BinaryDataArray.imsSigned32bitIntegerID;
+import static com.alanmrace.jimzmlparser.mzml.BinaryDataArray.imsSigned64bitIntegerID;
+import static com.alanmrace.jimzmlparser.mzml.BinaryDataArray.signed16bitIntegerID;
+import static com.alanmrace.jimzmlparser.mzml.BinaryDataArray.signed32bitIntegerID;
+import static com.alanmrace.jimzmlparser.mzml.BinaryDataArray.signed64bitIntegerID;
+import static com.alanmrace.jimzmlparser.mzml.BinaryDataArray.signed8bitIntegerID;
+import static com.alanmrace.jimzmlparser.mzml.BinaryDataArray.singlePrecisionID;
+import com.alanmrace.jimzmlparser.obo.OBO;
+import com.alanmrace.jimzmlparser.obo.OBOTerm;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -49,6 +59,45 @@ public class DataTypeTransform implements DataTransform {
          * Signed 64-bit integer.
          */
         Integer64bit;
+        
+        public static OBOTerm toOBOTerm(DataType dataType) {
+            switch(dataType) {
+                case Double:
+                    return OBO.getOBO().getTerm(doublePrecisionID);
+                case Float:
+                    return OBO.getOBO().getTerm(singlePrecisionID);
+                case Integer64bit:
+                    return OBO.getOBO().getTerm(signed64bitIntegerID);
+                case Integer32bit:
+                    return OBO.getOBO().getTerm(signed32bitIntegerID);
+                case Integer16bit:
+                    return OBO.getOBO().getTerm(signed16bitIntegerID);
+                case Integer8bit:
+                    return OBO.getOBO().getTerm(signed8bitIntegerID);
+            }
+            
+            return null;
+        }
+        
+        public static DataType fromOBOTerm(OBOTerm term) {
+            String accession = term.getID();
+            
+            if (accession.equals(doublePrecisionID)) {
+                return DataTypeTransform.DataType.Double;
+            } else if (accession.equals(singlePrecisionID)) {
+                return DataTypeTransform.DataType.Float;
+            } else if (accession.equals(signed64bitIntegerID) || accession.equals(imsSigned64bitIntegerID)) {
+                return DataTypeTransform.DataType.Integer64bit;
+            } else if (accession.equals(signed32bitIntegerID) || accession.equals(imsSigned32bitIntegerID)) {
+                return DataTypeTransform.DataType.Integer32bit;
+            } else if (accession.equals(signed16bitIntegerID)) {
+                return DataTypeTransform.DataType.Integer16bit;
+            } else if (accession.equals(signed8bitIntegerID)) {
+                return DataTypeTransform.DataType.Integer8bit;
+            }
+            
+            return null;
+        }
     }
 
     /**
