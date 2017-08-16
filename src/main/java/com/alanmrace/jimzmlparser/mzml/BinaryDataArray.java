@@ -4,8 +4,10 @@ import com.alanmrace.jimzmlparser.data.DataLocation;
 import com.alanmrace.jimzmlparser.data.DataTransformation;
 import com.alanmrace.jimzmlparser.data.DataTypeTransform;
 import com.alanmrace.jimzmlparser.data.DataTypeTransform.DataType;
+import com.alanmrace.jimzmlparser.data.XZDataTransform;
 import com.alanmrace.jimzmlparser.data.ZlibDataTransform;
 import com.alanmrace.jimzmlparser.obo.OBO;
+import com.alanmrace.jimzmlparser.obo.OBOTerm;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.IOException;
 import java.io.Serializable;
@@ -41,7 +43,25 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
         /**
          * ZLib compression.
          */
-        Zlib;
+        Zlib,
+        
+        /**
+         * XZ compression.
+         */
+        XZ;
+        
+        public static OBOTerm toOBOTerm(CompressionType dataType) {
+            switch(dataType) {
+                case None:
+                    return OBO.getOBO().getTerm(noCompressionID);
+                case Zlib:
+                    return OBO.getOBO().getTerm(zlibCompressionID);
+                case XZ:
+                    return OBO.getOBO().getTerm(xyCompressionID);
+            }
+            
+            return null;
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="Accessions">
@@ -157,6 +177,8 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
      */
     public static final String zlibCompressionID = "MS:1000574";
 
+    public static final String xyCompressionID = "IMS:1005001";
+    
     /**
      * Accession: External array length (IMS:1000103). MUST supply once
      */
@@ -522,6 +544,8 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
         // Add in any compression
         if (BinaryDataArray.zlibCompressionID.equals(compressionCVParam.getTerm().getID())) {
             transformation.addTransform(new ZlibDataTransform());
+        } else if(BinaryDataArray.xyCompressionID.equals(compressionCVParam.getTerm().getID())) {
+            transformation.addTransform(new XZDataTransform());
         }
 
         return transformation;
@@ -555,7 +579,7 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
                 dataType = DataTypeTransform.DataType.Integer8bit;
             }
         } else {
-            System.out.println(Arrays.toString(this.getCVParamList().toArray()));
+            System.out.println("BinaryDataArray#getDataType(): " + Arrays.toString(this.getCVParamList().toArray()));
         }
 
         return dataType;

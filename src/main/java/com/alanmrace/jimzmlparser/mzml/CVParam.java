@@ -1,5 +1,7 @@
 package com.alanmrace.jimzmlparser.mzml;
 
+import com.alanmrace.jimzmlparser.event.CVParamChangeEvent;
+import com.alanmrace.jimzmlparser.event.OBOTermCVParamChangeEvent;
 import com.alanmrace.jimzmlparser.exceptions.InvalidFormatIssue;
 import com.alanmrace.jimzmlparser.exceptions.NonFatalParseException;
 
@@ -43,6 +45,25 @@ public abstract class CVParam extends MzMLContent {
     public OBOTerm getTerm() {
         return term;
     }
+    
+    /**
+     * Set the OBOTerm and reset value and units to null
+     * 
+     * @param term 
+     */
+    public void setTerm(OBOTerm term) {
+        OBOTerm oldTerm = this.term;
+        
+        this.term = term;
+        this.units = null;
+        
+        resetValue();
+        
+        if(hasListeners())
+            notifyListeners(new OBOTermCVParamChangeEvent(this, oldTerm, term));
+    }
+    
+    protected abstract void resetValue();
 
     /**
      * Get the ontology term for the units of the value of this cvParam, or null if none.
@@ -53,6 +74,13 @@ public abstract class CVParam extends MzMLContent {
         return units;
     }
 
+    public void setUnits(OBOTerm units) {
+        this.units = units;
+        
+        if(hasListeners())
+            notifyListeners(new CVParamChangeEvent(this));
+    }
+    
     @Override
     public String getTagName() {
         return "cvParam";

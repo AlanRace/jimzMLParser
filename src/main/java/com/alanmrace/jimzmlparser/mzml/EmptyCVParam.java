@@ -73,4 +73,8 @@ public class EmptyCVParam extends CVParam {
         throw new UnsupportedOperationException("Cannot change the value of an EmptyCVParam");
     }
 
+    @Override
+    protected void resetValue() {
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.event.CVParamChangeEvent;
+import com.alanmrace.jimzmlparser.event.ValueCVParamChangeEvent;
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 
 /**
@@ -71,10 +72,11 @@ public class DoubleCVParam extends CVParam {
      * @param value Value as a double
      */
     public void setValue(double value) {
+        double oldValue = this.value;
         this.value = value;
         
         if(hasListeners())
-            notifyListeners(new CVParamChangeEvent(this));
+            notifyListeners(new ValueCVParamChangeEvent<Double>(this, oldValue, value));
     }
 
     @Override
@@ -99,9 +101,13 @@ public class DoubleCVParam extends CVParam {
 
     @Override
     public void setValueAsString(String newValue) {
-        value = Double.parseDouble(newValue);
+        double parsedValue = Double.parseDouble(newValue);
         
-        if(hasListeners())
-            notifyListeners(new CVParamChangeEvent(this));
+        setValue(parsedValue);
+    }
+
+    @Override
+    protected void resetValue() {
+        value = 0;
     }
 }

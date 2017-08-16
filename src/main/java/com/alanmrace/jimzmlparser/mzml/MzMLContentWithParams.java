@@ -237,6 +237,10 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
         }
     }
 
+    public boolean containsCVParam(CVParam param) {
+        return cvParams.contains(param);
+    }
+    
     @Override
     public void removeCVParam(int index) {
         if (cvParams == null) {

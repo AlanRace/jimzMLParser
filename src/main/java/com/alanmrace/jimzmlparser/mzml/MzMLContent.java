@@ -42,14 +42,24 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
             listeners.remove(listener);
     }
     
-    protected void notifyListeners(MzMLEvent event) {        
+    public void removeAllListeners() {
+        if(listeners != null)
+            listeners.clear();
+    }
+    
+    public List<MzMLContentListener> getListeners() {
+        return listeners;
+    }
+    
+    protected void notifyListeners(MzMLEvent event) {
         if(listeners != null) {
             for(MzMLContentListener listener : listeners) {
                 listener.eventOccured(event);
             }
         }
         
-        if(event.notifyParents() && parent != null && parent instanceof MzMLContent)
+        if(event.notifyParents() && parent != null && 
+                parent instanceof MzMLContent && ((MzMLContent) parent).hasListeners())
             ((MzMLContent)parent).notifyListeners(event);
     }
     

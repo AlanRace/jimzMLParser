@@ -9,6 +9,14 @@ package com.alanmrace.jimzmlparser.mzml;
 public abstract class MzMLContentWithChildren extends MzMLContent implements HasChildren {
 
     /**
+     * Returns a copy of a list of children of this MzMLTag. Changing this list
+     * does not affect the imzML structure.
+     * 
+     * @return Copy of list of children.
+     */
+//    public abstract List<MzMLTag> getChildren();
+    
+    /**
      * Format the all children of the MzMLContent into XML and writes to the 
      * MzMLWriter at the specified indent.
      * 

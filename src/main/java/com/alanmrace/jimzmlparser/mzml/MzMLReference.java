@@ -8,7 +8,7 @@ import com.alanmrace.jimzmlparser.util.XMLHelper;
  * @author Alan Race
  * @param <T> MzMLTag the reference is to
  */
-public abstract class MzMLReference<T extends ReferenceableTag> extends MzMLContent {
+public abstract class MzMLReference<T extends ReferenceableTag & MzMLTag> extends MzMLContent {
 
     /**
      * Referenced MzMLTag.

@@ -1,5 +1,6 @@
 package com.alanmrace.jimzmlparser.mzml;
 
+import com.alanmrace.jimzmlparser.event.ValueCVParamChangeEvent;
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 
 /**
@@ -77,7 +78,17 @@ public class BooleanCVParam extends CVParam {
 
     @Override
     public void setValueAsString(String newValue) {
+        boolean oldValue = this.value;
+        
         value = Boolean.parseBoolean(newValue);
+        
+        if(hasListeners())
+            notifyListeners(new ValueCVParamChangeEvent<Boolean>(this, oldValue, value));
+    }
+
+    @Override
+    protected void resetValue() {
+        value = false;
     }
     
 }
