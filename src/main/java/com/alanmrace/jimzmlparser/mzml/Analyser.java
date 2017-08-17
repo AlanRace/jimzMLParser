@@ -42,21 +42,21 @@ public class Analyser extends Component {
         super(analyser, rpgList);
     }
 
-    @Override
-    public ArrayList<OBOTermInclusion> getListOfRequiredCVParams() {
-        ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
-        required.add(new OBOTermInclusion(analyserTypeID, true, true, true));
-
-        return required;
-    }
-
-    @Override
-    public ArrayList<OBOTermInclusion> getListOfOptionalCVParams() {
-        ArrayList<OBOTermInclusion> optional = new ArrayList<OBOTermInclusion>();
-        optional.add(new OBOTermInclusion(analyserAttributeID, false, true, false));
-
-        return optional;
-    }
+//    @Override
+//    public ArrayList<OBOTermInclusion> getListOfRequiredCVParams() {
+//        ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
+//        required.add(new OBOTermInclusion(analyserTypeID, true, true, true));
+//
+//        return required;
+//    }
+//
+//    @Override
+//    public ArrayList<OBOTermInclusion> getListOfOptionalCVParams() {
+//        ArrayList<OBOTermInclusion> optional = new ArrayList<OBOTermInclusion>();
+//        optional.add(new OBOTermInclusion(analyserAttributeID, false, true, false));
+//
+//        return optional;
+//    }
 
     @Override
     public String toString() {

@@ -38,13 +38,13 @@ public class IsolationWindow extends MzMLContentWithParams {
         super(isolationWindow, rpgList);
     }
 
-    @Override
-    public List<OBOTermInclusion> getListOfRequiredCVParams() {
-        ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
-        required.add(new OBOTermInclusion(isolationWindowAttributeID, false, true, false));
-
-        return required;
-    }
+//    @Override
+//    public List<OBOTermInclusion> getListOfRequiredCVParams() {
+//        ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
+//        required.add(new OBOTermInclusion(isolationWindowAttributeID, false, true, false));
+//
+//        return required;
+//    }
 
     @Override
     public String getTagName() {

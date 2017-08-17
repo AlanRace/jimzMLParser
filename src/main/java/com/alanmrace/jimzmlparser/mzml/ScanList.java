@@ -63,13 +63,13 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
         }
     }
 
-    @Override
-    public List<OBOTermInclusion> getListOfRequiredCVParams() {
-        ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
-        required.add(new OBOTermInclusion(spectraCombinationID, true, true, false));
-
-        return required;
-    }
+//    @Override
+//    public List<OBOTermInclusion> getListOfRequiredCVParams() {
+//        ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
+//        required.add(new OBOTermInclusion(spectraCombinationID, true, true, false));
+//
+//        return required;
+//    }
     
     @Override
     public void add(Scan scan) {

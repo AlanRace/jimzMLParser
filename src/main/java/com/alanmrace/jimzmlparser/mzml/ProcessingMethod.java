@@ -37,21 +37,21 @@ public class ProcessingMethod extends MzMLOrderedContentWithParams {
         }
     }
 
-    @Override
-    public ArrayList<OBOTermInclusion> getListOfRequiredCVParams() {
-        ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
-        required.add(new OBOTermInclusion(dataTransformationID, false, true, false));
-
-        return required;
-    }
-
-    @Override
-    public ArrayList<OBOTermInclusion> getListOfOptionalCVParams() {
-        ArrayList<OBOTermInclusion> optional = new ArrayList<OBOTermInclusion>();
-        optional.add(new OBOTermInclusion(dataProcessingParameterID, false, true, false));
-
-        return optional;
-    }
+//    @Override
+//    public ArrayList<OBOTermInclusion> getListOfRequiredCVParams() {
+//        ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
+//        required.add(new OBOTermInclusion(dataTransformationID, false, true, false));
+//
+//        return required;
+//    }
+//
+//    @Override
+//    public ArrayList<OBOTermInclusion> getListOfOptionalCVParams() {
+//        ArrayList<OBOTermInclusion> optional = new ArrayList<OBOTermInclusion>();
+//        optional.add(new OBOTermInclusion(dataProcessingParameterID, false, true, false));
+//
+//        return optional;
+//    }
 
     public void setSoftwareRef(Software softwareRef) {
         this.softwareRef = softwareRef;

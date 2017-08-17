@@ -180,24 +180,24 @@ public class ScanSettings extends MzMLContentWithParams implements Referenceable
         }
     }
 
-    @Override
-    public List<OBOTermInclusion> getListOfRequiredCVParams() {
-        ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
-        required.add(new OBOTermInclusion(lineScanDirectionID, true, true, false));
-        required.add(new OBOTermInclusion(scanDirectionID, true, true, false));
-        required.add(new OBOTermInclusion(scanPatternID, true, true, false));
-        required.add(new OBOTermInclusion(scanTypeID, true, true, false));
-
-        return required;
-    }
-
-    @Override
-    public List<OBOTermInclusion> getListOfOptionalCVParams() {
-        ArrayList<OBOTermInclusion> optional = new ArrayList<OBOTermInclusion>();
-        optional.add(new OBOTermInclusion(imageID, false, true, false));
-
-        return optional;
-    }
+//    @Override
+//    public List<OBOTermInclusion> getListOfRequiredCVParams() {
+//        ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
+//        required.add(new OBOTermInclusion(lineScanDirectionID, true, true, false));
+//        required.add(new OBOTermInclusion(scanDirectionID, true, true, false));
+//        required.add(new OBOTermInclusion(scanPatternID, true, true, false));
+//        required.add(new OBOTermInclusion(scanTypeID, true, true, false));
+//
+//        return required;
+//    }
+//
+//    @Override
+//    public List<OBOTermInclusion> getListOfOptionalCVParams() {
+//        ArrayList<OBOTermInclusion> optional = new ArrayList<OBOTermInclusion>();
+//        optional.add(new OBOTermInclusion(imageID, false, true, false));
+//
+//        return optional;
+//    }
 
     @Override
     public String getID() {

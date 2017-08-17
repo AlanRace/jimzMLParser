@@ -50,23 +50,23 @@ public class Source extends Component {
         super(source, rpgList);
     }
 
-    @Override
-    public ArrayList<OBOTermInclusion> getListOfRequiredCVParams() {
-        ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
-        required.add(new OBOTermInclusion(ionisationTypeID, true, true, true));
-
-        return required;
-    }
-
-    @Override
-    public ArrayList<OBOTermInclusion> getListOfOptionalCVParams() {
-        ArrayList<OBOTermInclusion> optional = new ArrayList<OBOTermInclusion>();
-        optional.add(new OBOTermInclusion(sourceAttributeID, false, true, false));
-        optional.add(new OBOTermInclusion(inletTypeID, true, true, false));
-        optional.add(new OBOTermInclusion(sampleStageID, false, true, false));
-
-        return optional;
-    }
+//    @Override
+//    public ArrayList<OBOTermInclusion> getListOfRequiredCVParams() {
+//        ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
+//        required.add(new OBOTermInclusion(ionisationTypeID, true, true, true));
+//
+//        return required;
+//    }
+//
+//    @Override
+//    public ArrayList<OBOTermInclusion> getListOfOptionalCVParams() {
+//        ArrayList<OBOTermInclusion> optional = new ArrayList<OBOTermInclusion>();
+//        optional.add(new OBOTermInclusion(sourceAttributeID, false, true, false));
+//        optional.add(new OBOTermInclusion(inletTypeID, true, true, false));
+//        optional.add(new OBOTermInclusion(sampleStageID, false, true, false));
+//
+//        return optional;
+//    }
 
     @Override
     public String getTagName() {

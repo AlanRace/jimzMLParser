@@ -113,23 +113,23 @@ public class InstrumentConfiguration extends MzMLContentWithParams implements Re
 
     }
 
-    @Override
-    public ArrayList<OBOTermInclusion> getListOfRequiredCVParams() {
-        ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
-        required.add(new OBOTermInclusion(instrumentModelID, true, true, true));
-
-        return required;
-    }
-
-    @Override
-    public ArrayList<OBOTermInclusion> getListOfOptionalCVParams() {
-        ArrayList<OBOTermInclusion> optional = new ArrayList<OBOTermInclusion>();
-        optional.add(new OBOTermInclusion(instrumentAttributeID, false, true, false));
-        optional.add(new OBOTermInclusion(ionOpticsTypeID, true, true, false));
-        optional.add(new OBOTermInclusion(ionOpticsAttributeID, false, true, false));
-
-        return optional;
-    }
+//    @Override
+//    public ArrayList<OBOTermInclusion> getListOfRequiredCVParams() {
+//        ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
+//        required.add(new OBOTermInclusion(instrumentModelID, true, true, true));
+//
+//        return required;
+//    }
+//
+//    @Override
+//    public ArrayList<OBOTermInclusion> getListOfOptionalCVParams() {
+//        ArrayList<OBOTermInclusion> optional = new ArrayList<OBOTermInclusion>();
+//        optional.add(new OBOTermInclusion(instrumentAttributeID, false, true, false));
+//        optional.add(new OBOTermInclusion(ionOpticsTypeID, true, true, false));
+//        optional.add(new OBOTermInclusion(ionOpticsAttributeID, false, true, false));
+//
+//        return optional;
+//    }
 
     public void setScanSettingsRef(ScanSettings scanSettingsRef) {
         this.scanSettingsRef = scanSettingsRef;

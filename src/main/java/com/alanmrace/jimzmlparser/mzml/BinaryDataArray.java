@@ -271,19 +271,19 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
         }
     }
 
-    @Override
-    public ArrayList<OBOTermInclusion> getListOfRequiredCVParams() {
-        ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
-        required.add(new OBOTermInclusion(compressionTypeID, true, true, false));
-        required.add(new OBOTermInclusion(binaryDataArrayID, true, true, false));
-        required.add(new OBOTermInclusion(dataTypeID, true, true, false));
-        required.add(new OBOTermInclusion(externalArrayLengthID, true, false, true));
-        required.add(new OBOTermInclusion(externalDataID, true, false, true));
-        required.add(new OBOTermInclusion(externalEncodedLengthID, true, false, true));
-        required.add(new OBOTermInclusion(externalOffsetID, true, false, true));
-
-        return required;
-    }
+//    @Override
+//    public ArrayList<OBOTermInclusion> getListOfRequiredCVParams() {
+//        ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
+//        required.add(new OBOTermInclusion(compressionTypeID, true, true, false));
+//        required.add(new OBOTermInclusion(binaryDataArrayID, true, true, false));
+//        required.add(new OBOTermInclusion(dataTypeID, true, true, false));
+//        required.add(new OBOTermInclusion(externalArrayLengthID, true, false, true));
+//        required.add(new OBOTermInclusion(externalDataID, true, false, true));
+//        required.add(new OBOTermInclusion(externalEncodedLengthID, true, false, true));
+//        required.add(new OBOTermInclusion(externalOffsetID, true, false, true));
+//
+//        return required;
+//    }
 
     /**
      * Get the length in bytes of the encoded data (number of bytes for the data

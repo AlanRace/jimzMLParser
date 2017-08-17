@@ -93,25 +93,25 @@ public class FileContent extends MzMLContentWithParams {
         super(fileContent, rpgList);
     }
 
-    @Override
-    public ArrayList<OBOTermInclusion> getListOfRequiredCVParams() {
-        ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
-        required.add(new OBOTermInclusion(dataFileContentID, false, true, false));
-        required.add(new OBOTermInclusion(binaryTypeID, true, true, false));
-        required.add(new OBOTermInclusion(ibdChecksumID, true, true, false));
-        required.add(new OBOTermInclusion(ibdIdentificationID, true, true, false));
-
-        return required;
-    }
-
-    @Override
-    public ArrayList<OBOTermInclusion> getListOfOptionalCVParams() {
-        ArrayList<OBOTermInclusion> optional = new ArrayList<OBOTermInclusion>();
-        optional.add(new OBOTermInclusion(spectrumRepresentationID, true, true, false));
-        optional.add(new OBOTermInclusion(ibdFileID, true, true, false));
-
-        return optional;
-    }
+//    @Override
+//    public ArrayList<OBOTermInclusion> getListOfRequiredCVParams() {
+//        ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
+//        required.add(new OBOTermInclusion(dataFileContentID, false, true, false));
+//        required.add(new OBOTermInclusion(binaryTypeID, true, true, false));
+//        required.add(new OBOTermInclusion(ibdChecksumID, true, true, false));
+//        required.add(new OBOTermInclusion(ibdIdentificationID, true, true, false));
+//
+//        return required;
+//    }
+//
+//    @Override
+//    public ArrayList<OBOTermInclusion> getListOfOptionalCVParams() {
+//        ArrayList<OBOTermInclusion> optional = new ArrayList<OBOTermInclusion>();
+//        optional.add(new OBOTermInclusion(spectrumRepresentationID, true, true, false));
+//        optional.add(new OBOTermInclusion(ibdFileID, true, true, false));
+//
+//        return optional;
+//    }
 
     /**
      * Returns all CV parameters which have  child terms of 

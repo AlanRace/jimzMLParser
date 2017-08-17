@@ -171,8 +171,8 @@ public interface HasParams {
      * @return List of cvParams that MUST be included
      * @deprecated Use jimzMLValidator instead.
      */
-    @Deprecated
-    public List<MzMLContentWithParams.OBOTermInclusion> getListOfRequiredCVParams();
+//    @Deprecated
+//    public List<MzMLContentWithParams.OBOTermInclusion> getListOfRequiredCVParams();
     
     /**
      * Get the list of MAY include CVParam for this MzMLContent. These are 
@@ -182,8 +182,8 @@ public interface HasParams {
      * @return List of cvParams that MAY be included
      * @deprecated Use jimzMLValidator instead.
      */
-    @Deprecated
-    public List<MzMLContentWithParams.OBOTermInclusion> getListOfOptionalCVParams();
+//    @Deprecated
+//    public List<MzMLContentWithParams.OBOTermInclusion> getListOfOptionalCVParams();
     
     /**
      * Description of the inclusion of an ontology term within the current MzMLContent.

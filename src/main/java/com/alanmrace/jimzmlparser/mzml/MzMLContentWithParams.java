@@ -164,15 +164,15 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
         return userParams;
     }
 
-    @Override
-    public List<OBOTermInclusion> getListOfRequiredCVParams() {
-        return null;
-    }
+//    @Override
+//    public List<OBOTermInclusion> getListOfRequiredCVParams() {
+//        return null;
+//    }
 
-    @Override
-    public List<OBOTermInclusion> getListOfOptionalCVParams() {
-        return null;
-    }
+//    @Override
+//    public List<OBOTermInclusion> getListOfOptionalCVParams() {
+//        return null;
+//    }
 
     @Override
     public void addReferenceableParamGroupRef(ReferenceableParamGroupRef rpg) {
