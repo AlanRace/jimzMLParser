@@ -36,9 +36,16 @@ public abstract class DataStorage {
      * @throws FileNotFoundException Could not find the file specified
      */
     public DataStorage(File dataFile) throws FileNotFoundException {
+        this(dataFile, false);
+    }
+    
+    public DataStorage(File dataFile, boolean openForWriting) throws FileNotFoundException {
         this.dataFile = dataFile;
         
-        randomAccessFile = new RandomAccessFile(dataFile, "r");
+        if(openForWriting)
+            randomAccessFile = new RandomAccessFile(dataFile, "rw");
+        else
+            randomAccessFile = new RandomAccessFile(dataFile, "r");
 
 	logger.log(Level.FINER, MessageFormat.format("[Opened] {0} ({1})", new Object[]{dataFile, randomAccessFile}));
 	

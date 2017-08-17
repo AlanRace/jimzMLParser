@@ -1,6 +1,10 @@
 package com.alanmrace.jimzmlparser.parser;
 
+import com.alanmrace.jimzmlparser.exceptions.FatalParseException;
 import com.alanmrace.jimzmlparser.mzml.MzML;
+import com.alanmrace.jimzmlparser.writer.MzMLWriter;
+import java.io.File;
+import java.io.IOException;
 import java.util.logging.Logger;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -24,6 +28,7 @@ public class MzMLHeaderHandlerTest {
      * Resource mzML file for testing.
      */
     private static final String TEST_RESOURCE = "/2012_5_2_medium_81.mzML";
+    private static final String TINY_PWIZ_RESOURCE = "/tiny.pwiz.1.1.mzML";
 
     /**
      * Test of setDocumentLocator method, of class MzMLHeaderHandler.
@@ -159,5 +164,35 @@ public class MzMLHeaderHandlerTest {
         fail("The test case is a prototype.");
     }
 
+    @Test
+    public void testmzML() throws FatalParseException, IOException {
+        String resourcePath = MzMLHeaderHandlerTest.class.getResource(TINY_PWIZ_RESOURCE).getFile();
+        
+        System.out.println(" ---- testmzML() ---- ");
+        System.out.println(resourcePath);
+        MzML mzML = MzMLHandler.parsemzML(resourcePath);
+        
+        MzMLWriter writer = new MzMLWriter();
+        writer.write(mzML, resourcePath.replace(".mzML", ".output.mzML"));
+        
+        MzML mzMLReloaded = MzMLHandler.parsemzML(resourcePath);
+        
+        // TODO: Compare?
+    }
     
+    @Test
+    public void testmzMLHeader() throws FatalParseException, IOException {
+        String resourcePath = MzMLHeaderHandlerTest.class.getResource(TINY_PWIZ_RESOURCE).getFile();
+        
+        System.out.println(" ---- testmzML() ---- ");
+        System.out.println(resourcePath);
+        MzML mzML = MzMLHeaderHandler.parsemzMLHeader(resourcePath);
+        
+        MzMLWriter writer = new MzMLWriter();
+        writer.write(mzML, resourcePath.replace(".mzML", ".outputHeader.mzML"));
+        
+        MzML mzMLReloaded = MzMLHeaderHandler.parsemzMLHeader(resourcePath);
+        
+        // TODO: Compare?
+    }
 }

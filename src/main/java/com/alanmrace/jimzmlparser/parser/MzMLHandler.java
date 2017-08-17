@@ -46,7 +46,7 @@ public class MzMLHandler extends MzMLHeaderHandler {
 
         binaryData = new StringBuffer();
         this.temporaryBinaryFile = temporaryBinaryFile;
-        this.dataStorage = new BinaryDataStorage(temporaryBinaryFile);
+        this.dataStorage = new BinaryDataStorage(temporaryBinaryFile, true);
 
         temporaryFileStream = new DataOutputStream(new FileOutputStream(temporaryBinaryFile));
     }
@@ -54,7 +54,11 @@ public class MzMLHandler extends MzMLHeaderHandler {
     public static MzML parsemzML(String filename) throws FatalParseException {
         try {
             OBO obo = new OBO("imagingMS.obo");
-
+                       
+            // Necessary if the passed in filename is a resource
+            //File resource = new File(filename);
+            //String absolutePath = resource.getAbsolutePath();
+            
             File tmpFile = new File(filename.substring(0, filename.lastIndexOf('.')) + ".tmp");
             tmpFile.deleteOnExit();
 
@@ -77,19 +81,19 @@ public class MzMLHandler extends MzMLHeaderHandler {
         } catch (SAXException ex) {
             logger.log(Level.SEVERE, null, ex);
 
-            throw new MzMLParseException("SAXException: " + ex);
+            throw new MzMLParseException("SAXException: " + ex, ex);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(MzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
 
-            throw new MzMLParseException("File not found: " + filename);
+            throw new MzMLParseException("File not found: " + ex, ex);
         } catch (IOException ex) {
             Logger.getLogger(MzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
 
-            throw new MzMLParseException("IOException: " + ex);
+            throw new MzMLParseException("IOException: " + ex, ex);
         } catch (ParserConfigurationException ex) {
             Logger.getLogger(MzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
 
-            throw new MzMLParseException("ParserConfigurationException: " + ex);
+            throw new MzMLParseException("ParserConfigurationException: " + ex, ex);
         }
     }
 

@@ -113,7 +113,7 @@ public class ImzMLHandler extends MzMLHeaderHandler {
         this.ibdFile = ibdFile;
 
         if (openDataStorage) {
-            this.dataStorage = new BinaryDataStorage(ibdFile);
+            this.dataStorage = new BinaryDataStorage(ibdFile, false);
         }
     }
 
