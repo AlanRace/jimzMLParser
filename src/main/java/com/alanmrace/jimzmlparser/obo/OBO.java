@@ -149,6 +149,14 @@ public class OBO implements Serializable {
     public static OBO getOBO() {
         return obo;
     }
+    
+    public List<OBO> getImports() {
+        return this.imports;
+    }
+    
+    public Collection<OBOTerm> getTerms() {
+        return this.terms.values();
+    }
 
     /**
      * Get the term from the ontology with the ID id.
