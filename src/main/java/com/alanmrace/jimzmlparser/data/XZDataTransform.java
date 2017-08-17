@@ -8,6 +8,10 @@ package com.alanmrace.jimzmlparser.data;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
@@ -20,7 +24,9 @@ import org.tukaani.xz.XZOutputStream;
  * @author alan.race
  */
 public class XZDataTransform implements DataTransform {
-
+    
+    static protected final int BYTE_BUFFER_SIZE = 2 ^ 20;
+    
     @Override
     public byte[] forwardTransform(byte[] data) throws DataFormatException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
@@ -41,6 +47,12 @@ public class XZDataTransform implements DataTransform {
         }
         
         if(gzos != null) {
+            try {
+                outputStream.flush();
+            } catch (IOException ex) {
+                Logger.getLogger(XZDataTransform.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
             return outputStream.toByteArray();
         }
         
@@ -53,14 +65,35 @@ public class XZDataTransform implements DataTransform {
             XZInputStream xzInputStream = new XZInputStream(
                     new ByteArrayInputStream(data));
             
-            byte firstByte = (byte) xzInputStream.read();
-            byte[] buffer = new byte[xzInputStream.available() + 1];
-            buffer[0] = firstByte;
-            xzInputStream.read(buffer, 1, buffer.length-1);
+            List<Byte> uncompressedData = new ArrayList<Byte>(data.length);
             
+            int uncompressed = 0;
+            int firstByte;
+            
+            while((firstByte = xzInputStream.read()) != -1 && 
+                    (uncompressed = xzInputStream.available()) > 0) {
+                // Take into account the first byte
+                uncompressed++;
+                
+                byte[] temp = new byte[uncompressed]; // 2^20
+                temp[0] = (byte) firstByte;
+
+                xzInputStream.read(temp, 1, temp.length-1);
+
+                for (int i = 0; i < uncompressed; i++) {
+                    uncompressedData.add(temp[i]);
+                }
+            }
+                        
             xzInputStream.close();
+
+            byte[] uncompressedBytes = new byte[uncompressedData.size()];
             
-            return buffer;
+            for (int i = 0; i < uncompressedData.size(); i++) {
+                uncompressedBytes[i] = uncompressedData.get(i);
+            }
+            
+            return uncompressedBytes;
         } catch (IOException ex) {
             Logger.getLogger(XZDataTransform.class.getName()).log(Level.SEVERE, null, ex);
         }

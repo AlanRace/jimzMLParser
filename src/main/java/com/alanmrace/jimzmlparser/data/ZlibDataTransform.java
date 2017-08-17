@@ -1,6 +1,8 @@
 package com.alanmrace.jimzmlparser.data;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
@@ -51,7 +53,7 @@ public class ZlibDataTransform implements DataTransform {
         Inflater decompressor = new Inflater();
         decompressor.setInput(data);
 
-        ArrayList<Byte> uncompressedData = new ArrayList<Byte>();
+        List<Byte> uncompressedData = new ArrayList<Byte>(data.length);
         int uncompressed;
 
         do {
