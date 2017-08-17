@@ -83,22 +83,6 @@ public class Chromatogram extends MzMLDataContainer {
         }
     }
 
-//    @Override
-//    public ArrayList<OBOTermInclusion> getListOfRequiredCVParams() {
-//        ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
-//        required.add(new OBOTermInclusion(chromatogramTypeID, true, true, false));
-//
-//        return required;
-//    }
-//
-//    @Override
-//    public ArrayList<OBOTermInclusion> getListOfOptionalCVParams() {
-//        ArrayList<OBOTermInclusion> optional = new ArrayList<OBOTermInclusion>();
-//        optional.add(new OBOTermInclusion(chromatogramAttributeID, false, true, false));
-//
-//        return optional;
-//    }
-
     /**
      * Set the child precursor tag.
      * 

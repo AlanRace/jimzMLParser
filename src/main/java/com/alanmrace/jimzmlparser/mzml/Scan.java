@@ -144,26 +144,6 @@ public class Scan extends MzMLContentWithParams implements Serializable {
         }
     }
 
-//    @Override
-//    public List<OBOTermInclusion> getListOfRequiredCVParams() {
-//        ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
-//        required.add(new OBOTermInclusion(positionXID, true, false, true));
-//        required.add(new OBOTermInclusion(positionYID, true, false, true));
-//
-//        return required;
-//    }
-//
-//    @Override
-//    public List<OBOTermInclusion> getListOfOptionalCVParams() {
-//        ArrayList<OBOTermInclusion> optional = new ArrayList<OBOTermInclusion>();
-//        optional.add(new OBOTermInclusion(positionZID, true, false, true));
-//        optional.add(new OBOTermInclusion(scanAttributeID, false, true, false));
-//        optional.add(new OBOTermInclusion(scanDirectionID, false, true, false));
-//        optional.add(new OBOTermInclusion(scanLawID, true, true, false));
-//
-//        return optional;
-//    }
-
     /**
      * Set externalSpectrumID for use as attribute when exporting to XML.
      *

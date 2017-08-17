@@ -37,16 +37,6 @@ public class SourceFile extends MzMLContentWithParams implements ReferenceableTa
         this.name = sourceFile.name;
     }
 
-//    @Override
-//    public List<OBOTermInclusion> getListOfRequiredCVParams() {
-//        ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
-//        required.add(new OBOTermInclusion(nativeSpectrumIdentifierFormat, true, true, false));
-//        required.add(new OBOTermInclusion(dataFileChecksumType, false, true, false));
-//        required.add(new OBOTermInclusion(massSpectrometerFileFormat, true, true, false));
-//
-//        return required;
-//    }
-
     @Override
     public String getID() {
         return id;

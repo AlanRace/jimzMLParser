@@ -62,15 +62,12 @@ public class BinaryTest {
      * Test of getTagName method, of class Binary.
      */
     @Test
-    @Ignore
     public void testGetTagName() {
         System.out.println("getTagName");
-        Binary instance = null;
-        String expResult = "";
+        Binary instance = new Binary();
+        String expResult = "binary";
         String result = instance.getTagName();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**

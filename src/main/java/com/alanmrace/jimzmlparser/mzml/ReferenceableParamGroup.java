@@ -60,15 +60,6 @@ public class ReferenceableParamGroup extends MzMLContentWithParams implements Re
         id = rpg.id;
     }
 
-//    @Override
-//    public List<OBOTermInclusion> getListOfOptionalCVParams() {
-//        ArrayList<OBOTermInclusion> optional = new ArrayList<OBOTermInclusion>();
-//        optional.add(new OBOTermInclusion("IMS:0000000", false, true, true));
-//        optional.add(new OBOTermInclusion("MS:0000000", false, true, true));
-//
-//        return optional;
-//    }
-
     @Override
     public String getID() {
         return id;

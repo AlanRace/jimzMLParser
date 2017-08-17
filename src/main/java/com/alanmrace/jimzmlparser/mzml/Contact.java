@@ -47,23 +47,6 @@ public class Contact extends MzMLContentWithParams implements Serializable {
         super(contact, rpgList);
     }
 
-//    @Override
-//    public ArrayList<OBOTermInclusion> getListOfRequiredCVParams() {
-//        ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
-//        required.add(new OBOTermInclusion(contactNameID, true, false, true));
-//        required.add(new OBOTermInclusion(contactOrganisationID, true, false, true));
-//
-//        return required;
-//    }
-//
-//    @Override
-//    public ArrayList<OBOTermInclusion> getListOfOptionalCVParams() {
-//        ArrayList<OBOTermInclusion> optional = new ArrayList<OBOTermInclusion>();
-//        optional.add(new OBOTermInclusion(contactPersonAttributeID, false, true, false));
-//
-//        return optional;
-//    }
-
     @Override
     public String toString() {
         String name = getCVParam(contactNameID).getValueAsString();

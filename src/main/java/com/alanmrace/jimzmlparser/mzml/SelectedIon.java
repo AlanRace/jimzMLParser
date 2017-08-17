@@ -37,14 +37,6 @@ public class SelectedIon extends MzMLContentWithParams implements Serializable {
         super(selectedIon, rpgList);
     }
 
-//    @Override
-//    public ArrayList<OBOTermInclusion> getListOfRequiredCVParams() {
-//        ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
-//        required.add(new OBOTermInclusion(ionSelectionAttributeID, false, true, false));
-//
-//        return required;
-//    }
-
     @Override
     public String getTagName() {
         return "selectedIon";

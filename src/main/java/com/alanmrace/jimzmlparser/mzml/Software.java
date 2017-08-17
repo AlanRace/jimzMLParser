@@ -35,14 +35,6 @@ public class Software extends MzMLContentWithParams implements ReferenceableTag 
         this.version = software.version;
     }
 
-//    @Override
-//    public ArrayList<OBOTermInclusion> getListOfRequiredCVParams() {
-//        ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
-//        required.add(new OBOTermInclusion(softwareID, true, true, false));
-//
-//        return required;
-//    }
-
     @Override
     public String getID() {
         return id;

@@ -29,6 +29,7 @@ public class MzMLHeaderHandlerTest {
      */
     private static final String TEST_RESOURCE = "/2012_5_2_medium_81.mzML";
     private static final String TINY_PWIZ_RESOURCE = "/tiny.pwiz.1.1.mzML";
+    private static final String FULL_PWIZ_RESOURCE = "/full.pwiz.1.1.mzML";
 
     /**
      * Test of setDocumentLocator method, of class MzMLHeaderHandler.
@@ -194,5 +195,17 @@ public class MzMLHeaderHandlerTest {
         MzML mzMLReloaded = MzMLHeaderHandler.parsemzMLHeader(resourcePath);
         
         // TODO: Compare?
+    }
+    
+    @Test
+    public void testfullmzMLHeader() throws FatalParseException, IOException {
+        String resourcePath = MzMLHeaderHandlerTest.class.getResource(FULL_PWIZ_RESOURCE).getFile();
+        
+        MzML mzML = MzMLHeaderHandler.parsemzMLHeader(resourcePath);
+        
+        MzMLWriter writer = new MzMLWriter();
+        writer.write(mzML, resourcePath.replace(".mzML", ".outputHeader.mzML"));
+        
+        MzML mzMLReloaded = MzMLHeaderHandler.parsemzMLHeader(resourcePath);
     }
 }
