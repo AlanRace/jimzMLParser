@@ -4,6 +4,7 @@ import com.alanmrace.jimzmlparser.data.MzMLSpectrumDataStorage;
 import com.alanmrace.jimzmlparser.data.DataLocation;
 import com.alanmrace.jimzmlparser.data.DataStorage;
 import com.alanmrace.jimzmlparser.exceptions.CVParamAccessionNotFoundException;
+import com.alanmrace.jimzmlparser.exceptions.FatalParseException;
 import com.alanmrace.jimzmlparser.exceptions.InvalidFormatIssue;
 import com.alanmrace.jimzmlparser.exceptions.MissingReferenceIssue;
 import java.io.File;
@@ -345,13 +346,25 @@ public class MzMLHeaderHandler extends DefaultHandler {
         }
     }
 
-    public static MzML parsemzMLHeader(String filename, boolean openDataFile) throws MzMLParseException {
+
+    public static MzML parsemzMLHeader(String filename) throws FatalParseException {
+        return parsemzMLHeader(filename, true);
+    }
+    
+    public static MzML parsemzMLHeader(String filename, boolean openDataFile) throws FatalParseException {
+        return parsemzMLHeader(filename, openDataFile, null);
+    }
+    
+    public static MzML parsemzMLHeader(String filename, boolean openDataFile, ParserListener listener) throws FatalParseException {
         try {
             OBO obo = new OBO("imagingMS.obo");
 
             // Parse mzML
             MzMLHeaderHandler handler = new MzMLHeaderHandler(obo, new File(filename), openDataFile);
             handler.setOpenDataStorage(openDataFile);
+            
+            if(listener != null)
+                handler.registerParserListener(listener);
 
             SAXParserFactory spf = SAXParserFactory.newInstance();
 
@@ -388,11 +401,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             throw new MzMLParseException("ParserConfigurationException: " + ex);
         }
     }
-
-    public static MzML parsemzMLHeader(String filename) throws MzMLParseException {
-        return parsemzMLHeader(filename, true);
-    }
-
+    
     protected int getCountAttribute(Attributes attributes) {
         String countString = attributes.getValue("count");
         int count;

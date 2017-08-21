@@ -50,10 +50,6 @@ public interface MzMLTag {
      * Set the parent MzMLContent of this MzMLContent. This method currently
      * does nothing.
      *
-     * <p>
-     * TODO: Remove this from interface and make it a protected method in
-     * MzMLContent.
-     *
      * @param parent Parent MzMLContent to add
      */
     public void setParent(MzMLTag parent);

@@ -22,6 +22,14 @@ public class OBO implements Serializable {
     /** Serial version ID. */
     private static final long serialVersionUID = 1L;
 
+    public static final String MS_OBO_URI = "http://psidev.cvs.sourceforge.net/*checkout*/psidev/psi/psi-ms/mzML/controlledVocabulary/psi-ms.obo";
+    public static final String UO_OBO_URI = "http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/phenotype/unit.obo";
+    
+    public static final String IMS_OBO_URI = "http://ms-imaging.org.org/download/imzml/imagingMS.obo";
+    public static final String IMS_OBO_FULLNAME = "Mass Spectrometry Imaging Ontology";
+    public static final String IMS_OBO_ID = "IMS";
+    public static final String IMS_OBO_VERSION = "???";
+    
     /** Path to the OBO file. */
     private String path;
 

@@ -12,12 +12,6 @@ public abstract class MzMLIndexedContentWithParams extends MzMLOrderedContentWit
      * Unique identifier for the MzML tag.
      */
     protected String id;
-
-    /**
-     * The file pointer within the mzML file of the start point for this specific 
-     * MzML tag.
-     */
-    protected long mzMLLocation;
     
     /**
      * Set up default constructor, does nothing.
@@ -56,24 +50,6 @@ public abstract class MzMLIndexedContentWithParams extends MzMLOrderedContentWit
     @Override
     public void setID(String id) {
         this.id = id;
-    }
-    
-    /**
-     * Set the location of this mzML tag within the mzML file.
-     * 
-     * @param mzMLLocation File pointer location within mzML file
-     */
-    protected void setmzMLLocation(long mzMLLocation) {
-        this.mzMLLocation = mzMLLocation;
-    }
-    
-    /**
-     * Returns the location of this mzML tag within the mzML file.
-     * 
-     * @return File pointer location within mzML file
-     */
-    public long getmzMLLocation() {
-        return mzMLLocation;
     }
         
     /**

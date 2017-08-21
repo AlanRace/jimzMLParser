@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import com.alanmrace.jimzmlparser.mzml.CVParam;
+import com.alanmrace.jimzmlparser.mzml.DoubleCVParam;
 import com.alanmrace.jimzmlparser.mzml.EmptyCVParam;
 import com.alanmrace.jimzmlparser.mzml.FileContent;
 import com.alanmrace.jimzmlparser.mzml.IntegerCVParam;
@@ -520,6 +521,8 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
                                 for (int i = 0; i < intensityArray.length; i++) {
                                     ticImage[y][x] += intensityArray[i];
                                 }
+                                
+                                spectrum.addCVParam(new DoubleCVParam(OBO.getOBO().getTerm(Spectrum.totalIonCurrentID), ticImage[y][x]));
                             }
                         } catch (FileNotFoundException e) {
                             Logger.getLogger(ImzML.class.getName()).log(Level.SEVERE, null, e);

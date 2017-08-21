@@ -2,8 +2,10 @@ package com.alanmrace.jimzmlparser.writer;
 
 import com.alanmrace.jimzmlparser.data.DataTransformation;
 import com.alanmrace.jimzmlparser.mzml.BinaryDataArray;
+import com.alanmrace.jimzmlparser.mzml.Chromatogram;
 import com.alanmrace.jimzmlparser.mzml.HasChildren;
 import com.alanmrace.jimzmlparser.mzml.MzML;
+import com.alanmrace.jimzmlparser.mzml.MzMLDataContainer;
 import com.alanmrace.jimzmlparser.mzml.MzMLIndexedContentWithParams;
 import com.alanmrace.jimzmlparser.mzml.MzMLOrderedContentWithParams;
 import com.alanmrace.jimzmlparser.mzml.MzMLTag;
@@ -16,6 +18,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
@@ -55,6 +59,8 @@ public class MzMLWriter implements MzMLWritable {
     protected boolean shouldOutputIndex;
 
     protected int currentIndex;
+    
+    protected Map<MzMLDataContainer, Long> dataContainerLocations;
 
     /**
      * Set up default MzMLWriter. Default encoding is ISO-8859-1 and will output
@@ -113,6 +119,7 @@ public class MzMLWriter implements MzMLWritable {
     @Override
     public void write(MzML mzML, String outputLocation) throws IOException {
         this.metadataLocation = outputLocation;
+        dataContainerLocations = new HashMap<MzMLDataContainer, Long>();
 
         metadataRAF = new RandomAccessFile(metadataLocation, "rw");
         OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(metadataRAF.getFD()), encoding);
@@ -146,15 +153,27 @@ public class MzMLWriter implements MzMLWritable {
             MzMLWriter.indent(this, indent + 2);
             writeMetadata("<index name=\"spectrum\">\n");
 
-            // TODO: Move this away from the Spectrum - this doesn't care where it 
-            // is stored - this should be kept track of in the MzMLWriter
             for (Spectrum spectrum : mzML.getRun().getSpectrumList()) {
                 MzMLWriter.indent(this, indent + 3);
-                writeMetadata("<offset idRef=\"" + spectrum.getID() + "\">" + spectrum.getmzMLLocation() + "</offset>\n");
+                writeMetadata("<offset idRef=\"" + spectrum.getID() + "\">" + dataContainerLocations.get(spectrum) + "</offset>\n");
             }
 
             MzMLWriter.indent(this, indent + 2);
             writeMetadata("</index>\n");
+            
+            if(mzML.getRun().getChromatogramList() != null && mzML.getRun().getChromatogramList().size() > 0) {
+                MzMLWriter.indent(this, indent + 2);
+                writeMetadata("<index name=\"chromatogram\">\n");
+
+                for (Chromatogram chromatogram : mzML.getRun().getChromatogramList()) {
+                    MzMLWriter.indent(this, indent + 3);
+                    writeMetadata("<offset idRef=\"" + chromatogram.getID() + "\">" + dataContainerLocations.get(chromatogram) + "</offset>\n");
+                }
+
+                MzMLWriter.indent(this, indent + 2);
+                writeMetadata("</index>\n");
+            }
+            
             MzMLWriter.indent(this, indent + 1);
             writeMetadata("</indexList>\n");
 
@@ -174,6 +193,9 @@ public class MzMLWriter implements MzMLWritable {
     protected void outputXML(MzMLTag tag, int indent) throws IOException {
         String attributeText = tag.getXMLAttributeText();
 
+        if(tag instanceof MzMLDataContainer)
+            dataContainerLocations.put((MzMLDataContainer) tag, this.getMetadataPointer());
+        
         MzMLWriter.indent(this, indent);
         writeMetadata("<" + tag.getTagName());
 

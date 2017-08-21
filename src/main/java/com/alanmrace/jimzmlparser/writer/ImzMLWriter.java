@@ -3,7 +3,10 @@ package com.alanmrace.jimzmlparser.writer;
 import com.alanmrace.jimzmlparser.data.DataTransformation;
 import com.alanmrace.jimzmlparser.imzml.PixelLocation;
 import com.alanmrace.jimzmlparser.mzml.BinaryDataArray;
+import com.alanmrace.jimzmlparser.mzml.CV;
+import com.alanmrace.jimzmlparser.mzml.CVParam;
 import com.alanmrace.jimzmlparser.mzml.Chromatogram;
+import com.alanmrace.jimzmlparser.mzml.DoubleCVParam;
 import com.alanmrace.jimzmlparser.mzml.EmptyCVParam;
 import com.alanmrace.jimzmlparser.mzml.FileContent;
 import com.alanmrace.jimzmlparser.mzml.IntegerCVParam;
@@ -77,6 +80,19 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
                 ibdLocation = ibdLocation.substring(0, pos);
             }
 
+            // Ensure that the IMS ontology is included
+            boolean imsCVFound = false;
+            
+            for(CV cv : mzML.getCVList()) {
+                if(cv.getID().equals("IMS")) {
+                    imsCVFound = true;
+                    break;
+                }
+            }
+            
+            if(!imsCVFound)
+                mzML.getCVList().add(new CV(OBO.IMS_OBO_URI, OBO.IMS_OBO_FULLNAME, OBO.IMS_OBO_ID, OBO.IMS_OBO_VERSION));
+            
             // Update the imzML header information about storage type
             FileContent fileContent = mzML.getFileDescription().getFileContent();
             fileContent.removeChildOfCVParam(FileContent.binaryTypeID);
@@ -133,6 +149,22 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
                             writeData(bdata);
                         } else {
                             Logger.getLogger(ImzMLWriter.class.getName()).log(Level.SEVERE, "Null data in BinaryDataArray {0}", bda);
+                        }
+                        
+                        // Update the TIC 
+                        if(bda.isIntensityArray()) {
+                            double total = 0;
+                            
+                            for(int i = 0; i < ddata.length; i++)
+                                total += ddata[i];
+                            
+                            CVParam ticParam = spectrum.getCVParam(Spectrum.totalIonCurrentID);
+                            
+                            if(ticParam == null) {
+                                ticParam = new DoubleCVParam(OBO.getOBO().getTerm(Spectrum.totalIonCurrentID), total);
+                                spectrum.addCVParam(ticParam);
+                            } else
+                                ((DoubleCVParam) ticParam).setValue(total);
                         }
                     }
                 }

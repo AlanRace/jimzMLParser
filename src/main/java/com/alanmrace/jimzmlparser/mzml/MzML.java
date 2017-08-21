@@ -481,11 +481,11 @@ public class MzML extends MzMLContentWithParams implements Serializable {
         } else if (currentXPath.startsWith("/softwareList")) {
             softwareList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         } else if (currentXPath.startsWith("/scanSettingsList")) {
-            if (scanSettingsList == null) {
-                throw new UnfollowableXPathException("No scanSettingsList exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
-            }
-
-            scanSettingsList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
+//            if (scanSettingsList == null) {
+//                throw new UnfollowableXPathException("No scanSettingsList exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
+//            }
+            if (scanSettingsList != null)
+                scanSettingsList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         } else if (currentXPath.startsWith("/instrumentConfigurationList")) {
             instrumentConfigurationList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         } else if (currentXPath.startsWith("/dataProcessingList")) {

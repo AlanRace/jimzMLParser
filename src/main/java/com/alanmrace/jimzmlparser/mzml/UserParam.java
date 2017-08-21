@@ -144,31 +144,6 @@ public class UserParam extends MzMLContent {
         return value;
     }
 
-//    @Override
-//    public void outputXML(MzMLWritable output, int indent) throws IOException {
-//        MzMLContent.indent(output, indent);
-//        
-//        output.writeMetadata("<userParam");
-//
-//        output.writeMetadata(" name=\"" + XMLHelper.ensureSafeXML(name) + "\"");
-//
-//        if (type != null) {
-//            output.writeMetadata(" type=\"" + XMLHelper.ensureSafeXML(type) + "\"");
-//        }
-//
-//        if (value != null) {
-//            output.writeMetadata(" value=\"" + XMLHelper.ensureSafeXML(value) + "\"");
-//        }
-//
-//        if (units != null) {
-//            output.writeMetadata(" unitCvRef=\"" + XMLHelper.ensureSafeXML(units.getNamespace()) + "\"");
-//            output.writeMetadata(" unitAccession=\"" + XMLHelper.ensureSafeXML(units.getID()) + "\"");
-//            output.writeMetadata(" unitName=\"" + XMLHelper.ensureSafeXML(units.getName()) + "\"");
-//        }
-//
-//        output.writeMetadata("/>\n");
-//    }
-
     @Override
     public String toString() {
         return "userParam: " + name + ((value != null && !value.isEmpty()) ? (" - " + value) : "");

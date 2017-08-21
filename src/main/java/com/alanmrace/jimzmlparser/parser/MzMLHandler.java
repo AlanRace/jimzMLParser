@@ -52,6 +52,10 @@ public class MzMLHandler extends MzMLHeaderHandler {
     }
 
     public static MzML parsemzML(String filename) throws FatalParseException {
+        return parsemzML(filename, null);
+    }
+    
+    public static MzML parsemzML(String filename, ParserListener listener) throws FatalParseException {
         try {
             OBO obo = new OBO("imagingMS.obo");
                        
@@ -64,6 +68,9 @@ public class MzMLHandler extends MzMLHeaderHandler {
 
             // Parse mzML
             MzMLHandler handler = new MzMLHandler(obo, tmpFile);
+            
+            if(listener != null)
+                handler.registerParserListener(listener);
 
             SAXParserFactory spf = SAXParserFactory.newInstance();
 
@@ -136,48 +143,48 @@ public class MzMLHandler extends MzMLHeaderHandler {
 
             int lengthToWrite = processedData.length;
 
-            if (currentBinaryDataArray.isCompressed()) {
-                Inflater decompressor = new Inflater();
-                decompressor.setInput(processedData);
-
-                if (uncompressedData == null) {
-                    uncompressedData = new ArrayList<Byte>(2 ^ 20);
-                }
-
-                lengthToWrite = 0;
-                int uncompressed = 0;
-
-                if (temp == null) {
-                    temp = new byte[1048576]; // 2^20
-                }
-                do {
-                    try {
-                        uncompressed = decompressor.inflate(temp);
-
-                        for (int i = 0; i < uncompressed; i++) {
-                            if (uncompressedData.size() <= lengthToWrite) {
-                                uncompressedData.add(temp[i]);
-                                lengthToWrite++;
-                            } else {
-                                uncompressedData.set(lengthToWrite++, temp[i]);
-                            }
-                        }
-                    } catch (DataFormatException ex) {
-                        logger.log(Level.SEVERE, null, ex);
-                    }
-
-                } while (uncompressed != 0);
-
-                if (processedData.length < lengthToWrite) {
-                    processedData = new byte[lengthToWrite];
-                }
-
-                for (int i = 0; i < lengthToWrite; i++) {
-                    processedData[i] = uncompressedData.get(i);
-                }
-                
-                decompressor.end();
-            }
+//            if (currentBinaryDataArray.isCompressed()) {
+//                Inflater decompressor = new Inflater();
+//                decompressor.setInput(processedData);
+//
+//                if (uncompressedData == null) {
+//                    uncompressedData = new ArrayList<Byte>(2 ^ 20);
+//                }
+//
+//                lengthToWrite = 0;
+//                int uncompressed = 0;
+//
+//                if (temp == null) {
+//                    temp = new byte[1048576]; // 2^20
+//                }
+//                do {
+//                    try {
+//                        uncompressed = decompressor.inflate(temp);
+//
+//                        for (int i = 0; i < uncompressed; i++) {
+//                            if (uncompressedData.size() <= lengthToWrite) {
+//                                uncompressedData.add(temp[i]);
+//                                lengthToWrite++;
+//                            } else {
+//                                uncompressedData.set(lengthToWrite++, temp[i]);
+//                            }
+//                        }
+//                    } catch (DataFormatException ex) {
+//                        logger.log(Level.SEVERE, null, ex);
+//                    }
+//
+//                } while (uncompressed != 0);
+//
+//                if (processedData.length < lengthToWrite) {
+//                    processedData = new byte[lengthToWrite];
+//                }
+//
+//                for (int i = 0; i < lengthToWrite; i++) {
+//                    processedData[i] = uncompressedData.get(i);
+//                }
+//                
+//                decompressor.end();
+//            }
 
             try {
                 temporaryFileStream.write(processedData, 0, lengthToWrite);
