@@ -1,27 +1,34 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.alanmrace.jimzmlparser.event;
 
 import com.alanmrace.jimzmlparser.mzml.CVParam;
 import com.alanmrace.jimzmlparser.mzml.MzMLContentWithParams;
 
 /**
- *
+ * Event describing that a CV parameter has been added to or removed from a specific MzML tag.
+ * 
  * @author alan.race
  */
-public class CVParamAddRemoveEvent extends ChildAddRemoveEvent {
+public abstract class CVParamAddRemoveEvent extends ChildAddRemoveEvent {
     CVParam param;
     
-    public CVParamAddRemoveEvent(MzMLContentWithParams parent, CVParam param) {
-        super(parent);
+    /**
+     * Abstract constructor, pass through source to parent and store CV parameter 
+     * which has been added or removed.
+     * 
+     * @param source MzML tag which is the source of the event.
+     * @param param CV parameter that has been added or removed
+     */
+    public CVParamAddRemoveEvent(MzMLContentWithParams source, CVParam param) {
+        super(source);
         
         this.param = param;
     }
     
-    
+    /**
+     * Returns the CV parameter that was either added or removed.
+     * 
+     * @return CV parameter
+     */
     public CVParam getCVParam() {
         return param;
     }

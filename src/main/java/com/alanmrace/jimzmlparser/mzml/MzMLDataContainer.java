@@ -5,7 +5,6 @@ import com.alanmrace.jimzmlparser.data.DataTypeTransform.DataType;
 import com.alanmrace.jimzmlparser.data.MzMLSpectrumDataStorage;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 
 /**
  * Base class with default implementations of methods for MzMLTags which describe 
@@ -18,38 +17,69 @@ import java.io.RandomAccessFile;
 public abstract class MzMLDataContainer extends MzMLIndexedContentWithParams {
 
     /**
-     * The location of the data that this tag instance describes.
+     * The physical location of the data that this tag instance describes.
      */
     protected DataLocation dataLocation;
 
     /**
-     * 
+     * Binary data associated with this Spectrum or Chromatogram.
      */
     protected BinaryDataArrayList binaryDataArrayList;
     
+    /**
+     * Default length of the binary data array (number of elements).
+     */
     protected int defaultArrayLength;
     
+    /**
+     * Default description of the data processing applied to this Spectrum or Chromatogram.
+     */
     protected DataProcessing dataProcessingRef;
-    
-    protected ReferenceList<DataProcessing> dataProcessingList;
-    
-    protected RandomAccessFile raf;
-    
+   
+    /**
+     * List of DataProcessing that is used when creating a new MzMLDataContainer and 
+     * subsequently ensuring that the references have remained valid.
+     */
+    private ReferenceList<DataProcessing> dataProcessingList;
+        
+    /**
+     * Copy constructor, requiring new versions of lists to match old references to.
+     * 
+     * @param mzMLContent   Content to copy
+     * @param rpgList       New ReferenceableParamGroupList
+     */
     public MzMLDataContainer(MzMLDataContainer mzMLContent, ReferenceableParamGroupList rpgList) {
         super(mzMLContent, rpgList);
     }
     
+    /**
+     * Create a MzMLDataContainer tag with an ID and a default array length (in values).
+     * 
+     * @param id Unique identifier
+     * @param defaultArrayLength Length of the chromatogram in data points
+     */
     public MzMLDataContainer(String id, int defaultArrayLength) { 
         this.id = id;
         this.defaultArrayLength = defaultArrayLength;
     }
     
+    /**
+     * Set the BinaryDatayArrayList tag.
+     * 
+     * @param binaryDataArrayList BinaryDatayArrayList 
+     */
     public void setBinaryDataArrayList(BinaryDataArrayList binaryDataArrayList) {
         binaryDataArrayList.setParent(this);
 
         this.binaryDataArrayList = binaryDataArrayList;
     }
 
+    /**
+     * Returns the BinaryDatayArrayList, or creates and returns an empty list if 
+     * none currently exists.
+     * 
+     * @return BinaryDatayArrayList
+     */
     public BinaryDataArrayList getBinaryDataArrayList() {
         if (binaryDataArrayList == null) {
             binaryDataArrayList = new BinaryDataArrayList(0);
@@ -59,40 +89,75 @@ public abstract class MzMLDataContainer extends MzMLIndexedContentWithParams {
     }
     
     // Set optional attributes
+
+    /**
+     * Set the DataProcessing which describes how this data has been processed.
+     * 
+     * @param dataProcessingRef Description of data processing applied
+     */
     public void setDataProcessingRef(DataProcessing dataProcessingRef) {
         this.dataProcessingRef = dataProcessingRef;
         
         ensureValidReferences();
     }
     
+    /**
+     * Returns the description of any data processing applied to this data.
+     * 
+     * @return DataProcessing
+     */
     public DataProcessing getDataProcessingRef() {
         return dataProcessingRef;
     }
     
+    /**
+     * Set the DataProcessingList to be used when creating a copy of this tag.
+     * 
+     * @param dataProcessingList DataProcessingList
+     */
     protected void setDataProcessingList(ReferenceList<DataProcessing> dataProcessingList) {
         this.dataProcessingList = dataProcessingList;
         
         ensureValidReferences();
     }
     
+    /**
+     * Get the location of the data this mzML tag describes.
+     * 
+     * @return Reference to the exact data location
+     */
     public DataLocation getDataLocation() {
         return dataLocation;
     }
 
     /**
-     *
-     * @param dataLocation
+     * Set the location of the data this mzML tag describes.
+     * 
+     * @param dataLocation Reference to the exact data location
      */
     public void setDataLocation(DataLocation dataLocation) {
         this.dataLocation = dataLocation;
     }
     
+    /**
+     * Ensure that the data can be loaded. If the DataLocation is a MzMLSpectrumDataStorage
+     * then this must be converted to Base64DataStorage before it can actually be used. 
+     * 
+     * @throws IOException Issue when trying to access DataLocation
+     */
     public void ensureLoadableData() throws IOException {
         if (dataLocation != null && dataLocation.getDataStorage() instanceof MzMLSpectrumDataStorage) {
             convertMzMLDataStorageToBase64();
         }
     }
     
+    /**
+     * Convert MzMLDataStorage (which is a reference to the location of a {@literal <spectrum>}
+     * tag in an MzML file to Base64DataStorage (which is a reference to the binary data
+     * in the MzML file in Base64 format).
+     * 
+     * @throws IOException Issue when trying to access DataLocation
+     */
     protected void convertMzMLDataStorageToBase64() throws IOException {
         if (dataLocation != null && dataLocation.getDataStorage() instanceof MzMLSpectrumDataStorage) {
             // Load in the data from the data storage
@@ -141,7 +206,7 @@ public abstract class MzMLDataContainer extends MzMLIndexedContentWithParams {
      * Get the intensity array as a double[].
      * 
      * @return Intensity array
-     * @throws IOException
+     * @throws IOException Issue when trying to access DataLocation
      */
     public double[] getIntensityArray() throws IOException {
         return getIntensityArray(false);
@@ -152,8 +217,8 @@ public abstract class MzMLDataContainer extends MzMLIndexedContentWithParams {
      * array within memory.
      * 
      * @param keepInMemory true to keep the data within memory, false otherwise
-     * @return
-     * @throws IOException
+     * @return Intensity array
+     * @throws IOException Issue when trying to access DataLocation
      */
     public double[] getIntensityArray(boolean keepInMemory) throws IOException {
         if (binaryDataArrayList == null) {
