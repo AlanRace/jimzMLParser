@@ -1,8 +1,6 @@
 package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.util.XMLHelper;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Class to describe a group of CV parameters. These groups can be referenced 

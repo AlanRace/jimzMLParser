@@ -9,7 +9,7 @@ import com.alanmrace.jimzmlparser.mzml.MzMLContentWithParams;
  * @author alan.race
  */
 public abstract class CVParamAddRemoveEvent extends ChildAddRemoveEvent {
-    CVParam param;
+    private final CVParam param;
     
     /**
      * Abstract constructor, pass through source to parent and store CV parameter 

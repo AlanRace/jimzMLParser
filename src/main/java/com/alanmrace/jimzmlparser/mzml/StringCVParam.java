@@ -1,6 +1,5 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import com.alanmrace.jimzmlparser.event.CVParamChangeEvent;
 import com.alanmrace.jimzmlparser.event.ValueCVParamChangeEvent;
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 

@@ -1,8 +1,5 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Class describing the isolation (or selection) window configuration used to 
  * isolated one or more ions.

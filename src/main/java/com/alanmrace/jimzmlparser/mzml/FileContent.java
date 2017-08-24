@@ -1,7 +1,6 @@
 package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.obo.OBO;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

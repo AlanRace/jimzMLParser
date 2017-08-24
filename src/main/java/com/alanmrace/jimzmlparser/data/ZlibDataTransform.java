@@ -1,7 +1,6 @@
 package com.alanmrace.jimzmlparser.data;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;

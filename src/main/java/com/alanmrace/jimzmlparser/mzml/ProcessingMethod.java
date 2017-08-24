@@ -1,7 +1,6 @@
 package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.util.XMLHelper;
-import java.util.ArrayList;
 
 public class ProcessingMethod extends MzMLOrderedContentWithParams {
 

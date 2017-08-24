@@ -1,7 +1,5 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import com.alanmrace.jimzmlparser.mzml.ReferenceableTag;
-
 /**
  * Used when a reference is modified, for example the addition or change of the 
  * dataProcessingRef attribute on a Spectrum. The implementation must ensure that 

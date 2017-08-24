@@ -22,12 +22,18 @@ public class OBO implements Serializable {
     /** Serial version ID. */
     private static final long serialVersionUID = 1L;
 
+    /** Location of the PSI MS ontology. */
     public static final String MS_OBO_URI = "http://psidev.cvs.sourceforge.net/*checkout*/psidev/psi/psi-ms/mzML/controlledVocabulary/psi-ms.obo";
+    /** Location of the Units ontology. */
     public static final String UO_OBO_URI = "http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/phenotype/unit.obo";
     
+    /** Location of the MSI ontology. */
     public static final String IMS_OBO_URI = "http://ms-imaging.org.org/download/imzml/imagingMS.obo";
+    /** Full name of the MSI ontology. */
     public static final String IMS_OBO_FULLNAME = "Mass Spectrometry Imaging Ontology";
+    /** Shorthand identifier for the MSI ontology. */
     public static final String IMS_OBO_ID = "IMS";
+    /** Version number for the MSI ontology. */
     public static final String IMS_OBO_VERSION = "???";
     
     /** Path to the OBO file. */
@@ -38,6 +44,11 @@ public class OBO implements Serializable {
 
     /** Dictionary of ontology terms, using their ID as the key. */
     private Map<String, OBOTerm> terms;
+    
+    /**
+     * Singleton OBO instance.
+     */
+    protected static OBO obo = new OBO("imagingMS.obo");
 
     /**
      * Generate ontology database from the specified .obo file. 
@@ -146,8 +157,6 @@ public class OBO implements Serializable {
             }
         }
     }
-
-    protected static OBO obo = new OBO("imagingMS.obo");
     
     /**
      * Static function to load in the imagingMS.obo file stored as a project resource.
@@ -158,10 +167,20 @@ public class OBO implements Serializable {
         return obo;
     }
     
+    /**
+     * Return all imported ontologys.
+     * 
+     * @return List of imported ontologys
+     */
     public List<OBO> getImports() {
         return this.imports;
     }
     
+    /**
+     * Return a complete list of ontology terms present within this ontolgoy.
+     * 
+     * @return All ontology terms
+     */
     public Collection<OBOTerm> getTerms() {
         return this.terms.values();
     }

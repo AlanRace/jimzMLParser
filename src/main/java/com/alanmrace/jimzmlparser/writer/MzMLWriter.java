@@ -67,13 +67,27 @@ public class MzMLWriter implements MzMLWritable {
 
 //    protected int currentIndex;
     
-    protected Map<MzMLDataContainer, Long> dataContainerLocations;
+    /**
+     * Locations of each MzMLDataContainer (offset within the metadata file), for use 
+     * when writing out the index.
+     */
+    private Map<MzMLDataContainer, Long> dataContainerLocations;
     
-    protected List<WriterListener> listeners = new ArrayList<WriterListener>();
+    /**
+     * List of WriterListeners to be notified on progress of this writer.
+     */
+    private List<WriterListener> listeners = new ArrayList<WriterListener>();
     
-    Deque<AtomicInteger> indexStack = new ArrayDeque<AtomicInteger>();
+    /**
+     * Stack of index counters, used to add in both the 'index' and 'count' attributes
+     * of different MzML tag elements.
+     */
+    private Deque<AtomicInteger> indexStack = new ArrayDeque<AtomicInteger>();
     
-    MessageDigest sha1HashDigest;
+    /**
+     * Current SHA-1 hash of the metadata file, for use when writing out the index.
+     */
+    private MessageDigest sha1HashDigest;
 
     /**
      * Set up default MzMLWriter. Default encoding is ISO-8859-1 and will output

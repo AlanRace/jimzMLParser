@@ -1,7 +1,6 @@
 package com.alanmrace.jimzmlparser.mzml;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 /**
  * Class describing a selected ion.

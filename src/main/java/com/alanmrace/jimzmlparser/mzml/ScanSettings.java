@@ -1,8 +1,6 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Class describing a {@literal <scanSettings>} tag.

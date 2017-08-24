@@ -1,7 +1,5 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import java.util.ArrayList;
-
 /**
  * Class describing a mass detector.
  * 
