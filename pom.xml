@@ -36,7 +36,31 @@
             </plugin>
             <!--
             -   Download the necessary controlled vocabulary 
-            -->
+            
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.0.2</version>
+                <executions>
+                    <execution>
+                        <id>update-imaging-obo</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>src/main/resources/obo</outputDirectory>
+                            <resources>          
+                                <resource>
+                                    <directory>D:/Alan/GitProjects/imzML/</directory>
+                                    <includes>
+                                        <include>imagingMS.obo</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>-->
             <plugin>
                 <groupId>com.googlecode.maven-download-plugin</groupId>
                 <artifactId>download-maven-plugin</artifactId>
@@ -45,15 +69,14 @@
                     <execution>
                         <id>update-imaging-obo</id>
                         <phase>generate-sources</phase>
-                        <goals>
-                            <goal>wget</goal>
-                        </goals>
-                        <configuration>
-                            <url>http://www.imzml.org/imagingMS.obo</url>
-                            <overwrite>true</overwrite>
-                            <!--<skipCache>true</skipCache>-->
-                            <outputDirectory>src/main/resources/obo</outputDirectory>
-                        </configuration>
+                            <goals>
+                                <goal>wget</goal>
+                            </goals>
+                            <configuration>
+                                <url>https://raw.githubusercontent.com/AlanRace/imzML/master/imagingMS.obo</url>
+                                <overwrite>true</overwrite>
+                                <outputDirectory>src/main/resources/obo</outputDirectory>
+                            </configuration>
                     </execution>
                     <execution>
                         <id>update-ms-obo</id>
@@ -175,5 +198,13 @@
             <version>4.10</version>
             <scope>test</scope>
         </dependency>
+<!-- TODO: ADD BACK IN WHEN PUBLISHED - MzMLHeaderHandlerTest, CreateSpectrumTest
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>jimzMLValidator</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        -->
     </dependencies>
 </project>
