@@ -11,15 +11,22 @@ import com.alanmrace.jimzmlparser.mzml.MzMLOrderedContentWithParams;
 import com.alanmrace.jimzmlparser.mzml.MzMLTag;
 import com.alanmrace.jimzmlparser.mzml.MzMLTagList;
 import com.alanmrace.jimzmlparser.mzml.Spectrum;
+import com.alanmrace.jimzmlparser.util.HexHelper;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
@@ -58,9 +65,15 @@ public class MzMLWriter implements MzMLWritable {
      */
     protected boolean shouldOutputIndex;
 
-    protected int currentIndex;
+//    protected int currentIndex;
     
     protected Map<MzMLDataContainer, Long> dataContainerLocations;
+    
+    protected List<WriterListener> listeners = new ArrayList<WriterListener>();
+    
+    Deque<AtomicInteger> indexStack = new ArrayDeque<AtomicInteger>();
+    
+    MessageDigest sha1HashDigest;
 
     /**
      * Set up default MzMLWriter. Default encoding is ISO-8859-1 and will output
@@ -118,6 +131,8 @@ public class MzMLWriter implements MzMLWritable {
 
     @Override
     public void write(MzML mzML, String outputLocation) throws IOException {
+        notifyStart();
+        
         this.metadataLocation = outputLocation;
         dataContainerLocations = new HashMap<MzMLDataContainer, Long>();
 
@@ -126,7 +141,15 @@ public class MzMLWriter implements MzMLWritable {
 
         output = new BufferedWriter(out);
 
-        output.write("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>\n");
+        if (shouldOutputIndex()) {
+            try {
+                sha1HashDigest = MessageDigest.getInstance("SHA-1");
+            } catch (NoSuchAlgorithmException ex) {
+                Logger.getLogger(MzMLWriter.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        writeMetadata("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>\n");
 
         int indent = 0;
 
@@ -180,6 +203,13 @@ public class MzMLWriter implements MzMLWritable {
             MzMLWriter.indent(this, indent + 1);
             writeMetadata("<indexListOffset>" + indexListOffset + "</indexListOffset>\n");
 
+            MzMLWriter.indent(this, indent + 1);
+            writeMetadata("<fileChecksum>");
+            // Write out directly
+            writeMetadata(HexHelper.byteArrayToHexString(sha1HashDigest.digest()));
+            writeMetadata("</fileChecksum>\n");
+            MzMLWriter.indent(this, indent + 1);
+            
             MzMLWriter.indent(this, indent);
             writeMetadata("</indexedmzML>\n");
         }
@@ -188,6 +218,23 @@ public class MzMLWriter implements MzMLWritable {
         metadataRAF.setLength(metadataRAF.getFilePointer());
 
         output.close();
+        
+        notifyEnd();
+    }
+    
+    private void notifyStart() {
+        for(WriterListener listener : listeners)
+            listener.start();
+    }
+    
+    private void notifyEnd() {
+        for(WriterListener listener : listeners)
+            listener.end();
+    }
+    
+    private void updateProgress(long current) {
+        for(WriterListener listener : listeners)
+            listener.progress(current);
     }
 
     protected void outputXML(MzMLTag tag, int indent) throws IOException {
@@ -204,10 +251,13 @@ public class MzMLWriter implements MzMLWritable {
         }
 
         if (tag instanceof MzMLIndexedContentWithParams) {
-            writeMetadata(" index=\"" + currentIndex++ + "\"");
+            writeMetadata(" index=\"" + indexStack.peekLast().getAndIncrement() + "\"");
         } else if (tag instanceof MzMLOrderedContentWithParams) {
-            writeMetadata(" order=\"" + ++currentIndex + "\"");
+            writeMetadata(" order=\"" + indexStack.peekLast().incrementAndGet() + "\"");
         }
+        
+        if(tag instanceof MzMLDataContainer)
+            updateProgress(indexStack.peekLast().get());
 
         if (!(tag instanceof HasChildren)) {
             writeMetadata("/>\n");
@@ -228,7 +278,7 @@ public class MzMLWriter implements MzMLWritable {
 
         // If the tag is a list, reset the counter for index / order
         if (tag instanceof MzMLTagList) {
-            currentIndex = 0;
+            indexStack.push(new AtomicInteger(0));
         }
 
         for (MzMLTag child : children) {
@@ -242,6 +292,10 @@ public class MzMLWriter implements MzMLWritable {
             MzMLWriter.indent(this, indent);
             writeBinaryTag((BinaryDataArray) tag);
             //}
+        }
+        
+        if (tag instanceof MzMLTagList) {
+            indexStack.pop();
         }
     }
 
@@ -282,6 +336,11 @@ public class MzMLWriter implements MzMLWritable {
 
     @Override
     public void writeMetadata(String str) throws IOException {
+        if (shouldOutputIndex() && sha1HashDigest != null) {
+            // TODO: pass str to SHA1 checksum
+            sha1HashDigest.update(str.getBytes(encoding));
+        }
+        
         output.write(str);
     }
 
@@ -315,5 +374,10 @@ public class MzMLWriter implements MzMLWritable {
     @Override
     public boolean shouldOutputIndex() {
         return shouldOutputIndex;
+    }
+
+    @Override
+    public void addListener(WriterListener listener) {
+        this.listeners.add(listener);
     }
 }

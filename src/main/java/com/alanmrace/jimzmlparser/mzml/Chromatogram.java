@@ -158,6 +158,8 @@ public class Chromatogram extends MzMLDataContainer {
 
     @Override
     public void addChildrenToCollection(Collection<MzMLTag> children) {
+        super.addChildrenToCollection(children);
+        
         if (precursor != null) {
             children.add(precursor);
         }
@@ -167,7 +169,5 @@ public class Chromatogram extends MzMLDataContainer {
         if (binaryDataArrayList != null) {
             children.add(binaryDataArrayList);
         }
-
-        super.addChildrenToCollection(children);
     }
 }

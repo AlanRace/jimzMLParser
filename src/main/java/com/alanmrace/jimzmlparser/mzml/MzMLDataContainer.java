@@ -127,7 +127,8 @@ public abstract class MzMLDataContainer extends MzMLIndexedContentWithParams {
                         //		    System.out.println(cvParam);
                         //		    System.out.println(spectrumData.substring(binaryStart, binaryEnd));
                     } else {
-                        System.out.println("Data: " + spectrumData);
+                        // TODO: WARNING??
+//                        System.out.println("Data: " + spectrumData);
                     }
                 }
             }

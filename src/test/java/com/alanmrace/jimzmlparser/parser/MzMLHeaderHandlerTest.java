@@ -3,7 +3,6 @@ package com.alanmrace.jimzmlparser.parser;
 import com.alanmrace.jimzmlparser.exceptions.FatalParseException;
 import com.alanmrace.jimzmlparser.mzml.MzML;
 import com.alanmrace.jimzmlparser.writer.MzMLWriter;
-import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 import org.junit.Test;
@@ -51,7 +50,7 @@ public class MzMLHeaderHandlerTest {
     @Test
     @Ignore
     public void testSetOpenDataStorage() {
-        System.out.println("setOpenDataStorage");
+        System.out.println(" --- setOpenDataStorage ---");
         boolean openDataStorage = false;
         MzMLHeaderHandler instance = null;
         instance.setOpenDataStorage(openDataStorage);
@@ -66,7 +65,7 @@ public class MzMLHeaderHandlerTest {
      */
     @Test
     public void testParsemzMLHeader_String_boolean() throws Exception {
-        System.out.println("parsemzMLHeader");
+        System.out.println(" --- testParsemzMLHeader_String_boolean ---");
         
         assertNotNull("Test file missing", MzMLHeaderHandlerTest.class.getResource(TEST_RESOURCE));
         
@@ -85,7 +84,7 @@ public class MzMLHeaderHandlerTest {
      */
     @Test
     public void testParsemzMLHeader_String() throws Exception {
-        System.out.println("parsemzMLHeader");
+        System.out.println(" --- testParsemzMLHeader_String --- ");
         
         assertNotNull("Test file missing", MzMLHeaderHandlerTest.class.getResource(TEST_RESOURCE));
         
@@ -174,38 +173,83 @@ public class MzMLHeaderHandlerTest {
         MzML mzML = MzMLHandler.parsemzML(resourcePath);
         
         MzMLWriter writer = new MzMLWriter();
-        writer.write(mzML, resourcePath.replace(".mzML", ".output.mzML"));
+        resourcePath = resourcePath.replace(".mzML", ".output.mzML");
+        
+        writer.write(mzML, resourcePath);
         
         MzML mzMLReloaded = MzMLHandler.parsemzML(resourcePath);
         
+        validateMzML(resourcePath);
+
         // TODO: Compare?
+    }
+    
+    
+    boolean encounteredIssue;
+    
+    protected void validateMzML(String resourcePath) {
+//        MzMLValidator instance = new MzMLValidator();
+//        instance.setFile(resourcePath);
+//
+//        encounteredIssue = false;
+//        
+//        instance.registerImzMLValidatorListener(new ImzMLValidatorListener() {
+//            @Override
+//            public void startingStep(ImzMLValidator.ValidatorStep step) {
+//            }
+//
+//            @Override
+//            public void finishingStep(ImzMLValidator.ValidatorStep step) {
+//            }
+//
+//            @Override
+//            public void issueFound(Issue issue) {
+//                Logger.getLogger(CreateSpectrumTest.class.getName()).log(Level.INFO, "({0}) {1}", new Object[]{issue.getIssueTitle(), issue.getIssueMessage()});
+//                encounteredIssue = true;
+//            }
+//        });
+//        
+//        instance.validate();
+//        
+//        if(encounteredIssue)
+//            fail("Encountered too many issues!");
     }
     
     @Test
     public void testmzMLHeader() throws FatalParseException, IOException {
         String resourcePath = MzMLHeaderHandlerTest.class.getResource(TINY_PWIZ_RESOURCE).getFile();
         
-        System.out.println(" ---- testmzML() ---- ");
+        System.out.println(" ---- testmzMLHeader() ---- ");
         System.out.println(resourcePath);
         MzML mzML = MzMLHeaderHandler.parsemzMLHeader(resourcePath);
         
         MzMLWriter writer = new MzMLWriter();
-        writer.write(mzML, resourcePath.replace(".mzML", ".outputHeader.mzML"));
+        resourcePath = resourcePath.replace(".mzML", ".outputHeader.mzML");
+        
+        writer.write(mzML, resourcePath);
         
         MzML mzMLReloaded = MzMLHeaderHandler.parsemzMLHeader(resourcePath);
+        
+        validateMzML(resourcePath);
         
         // TODO: Compare?
     }
     
     @Test
     public void testfullmzMLHeader() throws FatalParseException, IOException {
+        System.out.println(" ---- testfullmzMLHeader() ---- ");
+        
         String resourcePath = MzMLHeaderHandlerTest.class.getResource(FULL_PWIZ_RESOURCE).getFile();
         
         MzML mzML = MzMLHeaderHandler.parsemzMLHeader(resourcePath);
         
         MzMLWriter writer = new MzMLWriter();
-        writer.write(mzML, resourcePath.replace(".mzML", ".outputHeader.mzML"));
+        resourcePath = resourcePath.replace(".mzML", ".outputHeader.mzML");
+        
+        writer.write(mzML, resourcePath);
         
         MzML mzMLReloaded = MzMLHeaderHandler.parsemzMLHeader(resourcePath);
+        
+        validateMzML(resourcePath);
     }
 }

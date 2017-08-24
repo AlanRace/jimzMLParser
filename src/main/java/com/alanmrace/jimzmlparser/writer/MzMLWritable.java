@@ -13,6 +13,8 @@ import java.io.IOException;
  */
 public interface MzMLWritable {
     
+    public void addListener(WriterListener listener);
+    
     /**
      * Returns whether the writer should output indexed mzML.
      * 

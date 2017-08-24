@@ -30,9 +30,12 @@ import com.alanmrace.jimzmlparser.exceptions.ObsoleteTermUsed;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.nio.channels.Channels;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
+import javax.xml.bind.DatatypeConverter;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
@@ -1004,19 +1007,32 @@ public class MzMLHeaderHandler extends DefaultHandler {
             String startTimeStamp = attributes.getValue("startTimeStamp");
 
             if (startTimeStamp != null) {
-                Date parsed = new Date();
-
                 try {
-                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-                    parsed = format.parse(startTimeStamp);
-
-                    run.setStartTimeStamp(parsed);
-                } catch (ParseException pe) {
-                    //throw new IllegalArgumentException();
-                    InvalidFormatIssue formatIssue = new InvalidFormatIssue("startTimeStamp", "yyyy-MM-dd'T'HH:mm:ss", startTimeStamp);
+                    // This should handle the datetime, assuming it is formatted correctly
+                    Calendar dateTime = DatatypeConverter.parseDateTime(startTimeStamp);
+                    run.setStartTimeStamp(dateTime);
+                } catch (IllegalArgumentException ex) {
+                    // Inform validator that invalid timestamp used
+                    InvalidFormatIssue formatIssue = new InvalidFormatIssue("startTimeStamp", "xsd:dateTime", startTimeStamp);
                     formatIssue.setIssueLocation(currentContent);
 
-                    notifyParserListeners(formatIssue);
+                    notifyParserListeners(formatIssue); 
+                    
+                    try {
+                        SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz YYYY");
+                        Date parsed = format.parse(startTimeStamp);
+
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(parsed);
+
+                        run.setStartTimeStamp(calendar);
+                    } catch (ParseException pe) {
+                        //throw new IllegalArgumentException();
+                        InvalidFormatIssue secondFormatIssue = new InvalidFormatIssue("startTimeStamp", "EEE MMM dd HH:mm:ss zzz YYYY", startTimeStamp);
+                        secondFormatIssue.setIssueLocation(currentContent);
+
+                        notifyParserListeners(secondFormatIssue); 
+                    }
                 }
             }
 

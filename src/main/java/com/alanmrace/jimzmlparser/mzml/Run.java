@@ -5,9 +5,12 @@ import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import java.util.Collection;
+import java.util.GregorianCalendar;
+import javax.xml.bind.DatatypeConverter;
 
 /**
  * Class describing a {@literal <run>} tag.
@@ -49,7 +52,7 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
     /**
      * Start time of the run.
      */
-    private Date startTimeStamp;										// Optional
+    private Calendar startTimeStamp;										// Optional
 
     /**
      * DataProcessingList to be passed to SpectrumList and ChromatogramList to ensure
@@ -96,7 +99,7 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
         this.id = run.id;
 
         if (run.startTimeStamp != null) {
-            this.startTimeStamp = new Date(run.startTimeStamp.getTime());
+            this.startTimeStamp = (Calendar) run.startTimeStamp.clone();
         }
 
         if (run.defaultInstrumentConfigurationRef != null && icList != null) {
@@ -191,7 +194,7 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
      * 
      * @param startTimeStamp Point in time when run started.
      */
-    public void setStartTimeStamp(Date startTimeStamp) {
+    public void setStartTimeStamp(Calendar startTimeStamp) {
         this.startTimeStamp = startTimeStamp;
     }
 
@@ -412,9 +415,7 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
             attributes += " sampleRef=\"" + XMLHelper.ensureSafeXML(sampleRef.getID()) + "\"";
         }
         if (startTimeStamp != null) {
-            SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-DD'T'hh:mm:ss");
-            
-            attributes += " startTimeStamp=\"" + XMLHelper.ensureSafeXML(format.format(startTimeStamp)) + "\"";
+            attributes += " startTimeStamp=\"" + DatatypeConverter.printDateTime(startTimeStamp) + "\"";
         }        
         
         return attributes;

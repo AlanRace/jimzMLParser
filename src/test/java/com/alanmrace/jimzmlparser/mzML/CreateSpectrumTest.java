@@ -144,7 +144,7 @@ public class CreateSpectrumTest {
         DataProcessing processing = new DataProcessing("modification");
         ProcessingMethod method = new ProcessingMethod(Software.create());
         processing.add(method);
-        method.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ProcessingMethod.dataTransformationID)));
+        method.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ProcessingMethod.conversionTomzMLID)));
         
         spectrum.updatemzArray(intensities, processing);
         
@@ -174,6 +174,29 @@ public class CreateSpectrumTest {
                 
             });
             
+//            ImzMLValidator instance = new ImzMLValidator();
+//            instance.setFile(targetDir() + "/modifySpectrumTest.imzML");
+//
+//            instance.registerImzMLValidatorListener(new ImzMLValidatorListener() {
+//                @Override
+//                public void startingStep(ImzMLValidator.ValidatorStep step) {
+//                }
+//
+//                @Override
+//                public void finishingStep(ImzMLValidator.ValidatorStep step) {
+//                }
+//
+//                @Override
+//                public void issueFound(Issue issue) {
+//                    if (issue instanceof UnexpectedCVParamMappingRuleException) {
+//                        Logger.getLogger(CreateSpectrumTest.class.getName()).info(issue.getIssueMessage());
+//                    } else {
+//                        fail("Unexpected issue found: " + issue);
+//                    }
+//                }
+//            });
+//
+//            instance.validate();
         } catch (IOException ex) {
             Logger.getLogger(CreateSpectrumTest.class.getName()).log(Level.SEVERE, null, ex);
             

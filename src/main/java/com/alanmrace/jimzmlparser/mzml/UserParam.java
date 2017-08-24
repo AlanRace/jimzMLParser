@@ -2,6 +2,7 @@ package com.alanmrace.jimzmlparser.mzml;
 
 
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
+import com.alanmrace.jimzmlparser.util.XMLHelper;
 
 /**
  * Parameters which are not part of any controlled vocabulary. 
@@ -152,6 +153,28 @@ public class UserParam extends MzMLContent {
     @Override
     public String getTagName() {
         return "userParam";
+    }
+    
+    @Override
+    public String getXMLAttributeText() {
+        String attributes = " name=\"" + XMLHelper.ensureSafeXML(getName()) + "\"";
+        
+        if(getType() != null && !getType().isEmpty())
+            attributes += " type=\"" + XMLHelper.ensureSafeXML(getType()) + "\"";
+        
+        String value = getValue();
+        
+        if (value != null && !value.equals("null")) {
+            attributes += " value=\"" + XMLHelper.ensureSafeXML(value) + "\"";
+        }
+
+        if (units != null) {
+            attributes += " unitCvRef=\"" + XMLHelper.ensureSafeXML(units.getNamespace()) + "\"";
+            attributes += " unitAccession=\"" + XMLHelper.ensureSafeXML(units.getID()) + "\"";
+            attributes += " unitName=\"" + XMLHelper.ensureSafeXML(units.getName()) + "\"";
+        }
+        
+        return attributes;
     }
     
 }
