@@ -1,15 +1,9 @@
 package com.alanmrace.jimzmlparser.parser;
 
 import com.alanmrace.jimzmlparser.exceptions.FatalParseException;
-import com.alanmrace.jimzmlparser.exceptions.Issue;
-import com.alanmrace.jimzmlparser.mzml.CreateSpectrumTest;
 import com.alanmrace.jimzmlparser.mzml.MzML;
 import com.alanmrace.jimzmlparser.writer.MzMLWriter;
-import com.alanmrace.jimzmlvalidator.ImzMLValidator;
-import com.alanmrace.jimzmlvalidator.ImzMLValidatorListener;
-import com.alanmrace.jimzmlvalidator.MzMLValidator;
 import java.io.IOException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -61,7 +55,7 @@ public class MzMLHeaderHandlerTest {
         boolean openDataFile = false;
         MzML result = MzMLHeaderHandler.parsemzMLHeader(resourcePath, openDataFile);
         
-        //result.write("test.mzML");
+        assertNotNull(result);
     }
 
     /**
