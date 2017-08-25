@@ -257,14 +257,19 @@ public class MzML extends MzMLContentWithParams implements Serializable {
     }
 
     /**
+     * Returns the spectrum list associated with this MzML.
      * 
-     * 
-     * @return
+     * @return SpectrumList
      */
     public SpectrumList getSpectrumList() {
         return run.getSpectrumList();
     }
     
+    /**
+     * Returns the chromatogram list associated with this MzML.
+     * 
+     * @return ChromatogramList
+     */
     public ChromatogramList getChromatogramList() {
         return run.getChromatogramList();
     }
@@ -617,6 +622,11 @@ public class MzML extends MzMLContentWithParams implements Serializable {
         }
     }
     
+    /**
+     * Adds default MS parameters values to supplied mzML. 
+     * 
+     * @param mzML MzML to add parameters to.
+     */
     protected static void createDefaults(MzML mzML) {
         CVList cvList = CVList.create();
         mzML.setCVList(cvList);
@@ -640,6 +650,11 @@ public class MzML extends MzMLContentWithParams implements Serializable {
         run.setSpectrumList(spectrumList);
     }
     
+    /**
+     * Create default valid MzML. Calls {@link MzML#createDefaults(com.alanmrace.jimzmlparser.mzml.MzML)}.
+     *  
+     * @return Default MzML instance
+     */
     public static MzML create() {
         MzML mzML = new MzML(currentVersion);
         

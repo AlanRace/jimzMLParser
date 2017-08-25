@@ -25,7 +25,7 @@ public abstract class MzMLReference<T extends ReferenceableTag & MzMLTag> extend
     }
     
     /**
-     * Returns the tag which is being referenced
+     * Returns the tag which is being referenced.
      * 
      * @return MzMLTag the reference points to
      * @deprecated Use getReference() instead

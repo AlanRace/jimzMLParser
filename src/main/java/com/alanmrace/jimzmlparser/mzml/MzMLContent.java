@@ -29,10 +29,15 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
     protected MzMLTag parent;
     
     /**
-     * 
+     * Content change listener list.
      */
     protected List<MzMLContentListener> listeners;
     
+    /**
+     * Add content change listener.
+     * 
+     * @param listener Listener to add
+     */
     public void addListener(MzMLContentListener listener) {
         if(listeners == null)
             listeners = new LinkedList<MzMLContentListener>();
@@ -40,20 +45,39 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
         listeners.add(listener);
     }
     
+    /**
+     * Remove the specified content change listener.
+     * 
+     * @param listener Listener to remove
+     */
     public void removeListener(MzMLContentListener listener) {
         if(listeners != null)
             listeners.remove(listener);
     }
     
+    /**
+     * Remove all listeners currently added to the content.
+     */
     public void removeAllListeners() {
         if(listeners != null)
             listeners.clear();
     }
     
+    /**
+     * Get all content change listeners added to this content.
+     * 
+     * @return Content listener list
+     */
     public List<MzMLContentListener> getListeners() {
         return listeners;
     }
     
+    /**
+     * Notify all listeners of the specified event. If the event should be reported
+     * to parents then also the listeners of the parent are also notified.
+     * 
+     * @param event Event
+     */
     protected void notifyListeners(MzMLEvent event) {
         if(listeners != null) {
             for(MzMLContentListener listener : listeners) {
@@ -66,6 +90,12 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
             ((MzMLContent)parent).notifyListeners(event);
     }
     
+    /**
+     * Return whether any listeners have been added to this content or to any
+     * parent or grandparent etc.
+     * 
+     * @return true if one or more listeners are found
+     */
     public boolean hasListeners() {
         boolean hasListeners = listeners != null && !listeners.isEmpty();
         
@@ -94,21 +124,6 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
         
         return xPath + "/" + getTagName();
     }
-    
-//    @Override
-//    public MzMLTag getParent() {
-//        return parent;
-//    }
-//    
-//    @Override
-//    public String getXPath() {
-//        String xPath;
-//        
-//        if(parent == null)
-//            return getTagName();
-//        
-//        return getParent().getXPath() + "/" + getTagName();
-//    }
     
     /**
      * Add all child MzMLContent (mzML tags) that match the specified XPath,
@@ -168,22 +183,7 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
         
         return "";
     }
-    
-//    @Override
-//    public void outputXML(MzMLWritable output, int indent) throws IOException {
-//        String attributeText = getXMLAttributeText();
-//        
-//        MzMLContent.indent(output, indent);
-//        output.writeMetadata("<" + getTagName());
-//        
-//        if(attributeText != null && !attributeText.isEmpty())
-//            output.writeMetadata(" " + attributeText);
-//        
-//        output.writeMetadata("/>\n");
-//    }
-
-    
-    
+        
     @Override
     public String toString() {
         return getTagName();

@@ -47,7 +47,7 @@ public abstract class CVParam extends MzMLContent {
     }
     
     /**
-     * Set the OBOTerm and reset value and units to null
+     * Set the OBOTerm and reset value and units to null.
      * 
      * @param term 
      */

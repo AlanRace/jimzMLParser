@@ -13,6 +13,11 @@ import java.io.IOException;
  */
 public interface MzMLWritable {
     
+    /**
+     * Add a writer listener to the writer.
+     * 
+     * @param listener Listener to add
+     */
     public void addListener(WriterListener listener);
     
     /**
