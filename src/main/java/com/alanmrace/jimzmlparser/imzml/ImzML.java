@@ -81,14 +81,29 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
     // (and faster) work around is to go to mzML and then to imzML.
     // Default to no zero indexing, however if we find a 0, then turn it on
 //	private boolean zeroIndexing = false;
+
+    /**
+     *
+     * @param version
+     */
     public ImzML(String version) {
         super(version);
     }
 
+    /**
+     * Copy constructor, create new ImzML from supplied ImzML instance.
+     * 
+     * @param imzML ImzML to make copy of
+     */
     public ImzML(ImzML imzML) {
         super(imzML);
     }
 
+    /**
+     * Copy constructor, create new ImzML from supplied MzML instance.
+     * 
+     * @param mzML MzML to make copy of
+     */
     public ImzML(MzML mzML) {
         super(mzML);
     }
@@ -834,7 +849,12 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
 //            throw new ImzMLWriteException("Error writing imzML file " + output.getMetadataLocation() + ". " + ex.getLocalizedMessage(), ex);
 //        }
 //    }
-    
+
+    /**
+     * Create default valid ImzML. Calls {@link ImzML#createDefaults(com.alanmrace.jimzmlparser.mzml.MzML)}.
+     *  
+     * @return Default ImzML instance
+     */
     public static ImzML create() {
         ImzML imzML = new ImzML(currentVersion);
         
@@ -843,6 +863,12 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
         return imzML;
     }
     
+    /**
+     * Adds default MS imaging parameters values to supplied mzML. Assumes flyback,
+     * top down, horizontal, left to right line scan.
+     * 
+     * @param mzML MzML to add parameters to.
+     */
     protected static void createDefaults(MzML mzML) {
         MzML.createDefaults(mzML);
         

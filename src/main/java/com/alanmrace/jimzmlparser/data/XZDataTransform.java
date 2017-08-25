@@ -18,12 +18,13 @@ import org.tukaani.xz.XZInputStream;
 import org.tukaani.xz.XZOutputStream;
 
 /**
- *
+ * DataTransform describing the compression (forward) and decompression (reverse)
+ * of data using the XZ algorithm.
+ * 
  * @author alan.race
  */
 public class XZDataTransform implements DataTransform {
     
-    static protected final int BYTE_BUFFER_SIZE = 2 ^ 20;
     
     @Override
     public byte[] forwardTransform(byte[] data) throws DataFormatException {

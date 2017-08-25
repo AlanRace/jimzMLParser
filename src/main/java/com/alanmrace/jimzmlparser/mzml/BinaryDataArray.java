@@ -49,17 +49,24 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
          */
         XZ;
         
-        public static OBOTerm toOBOTerm(CompressionType dataType) {
-            switch(dataType) {
+        /**
+         * Convert CompressionType enum to OBOTerm, using ontology terms found in the 
+         * MS ontology.
+         * 
+         * @param compressionType CompressionType to convert
+         * @return Ontology term which describes the CompressionType, or null if no match
+         */
+        public static OBOTerm toOBOTerm(CompressionType compressionType) {
+            switch(compressionType) {
                 case None:
                     return OBO.getOBO().getTerm(noCompressionID);
                 case Zlib:
                     return OBO.getOBO().getTerm(zlibCompressionID);
                 case XZ:
                     return OBO.getOBO().getTerm(xyCompressionID);
+                default:
+                    return null;
             }
-            
-            return null;
         }
     }
 
@@ -176,6 +183,9 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
      */
     public static final String zlibCompressionID = "MS:1000574";
 
+    /**
+     * Accession: xz compression (IMS:1005001).
+     */
     public static final String xyCompressionID = "IMS:1005001";
     
     /**

@@ -63,6 +63,9 @@ public abstract class CVParam extends MzMLContent {
             notifyListeners(new OBOTermCVParamChangeEvent(this, oldTerm, term));
     }
     
+    /**
+     * Set the value of the CV parameter to be the default value.
+     */
     protected abstract void resetValue();
 
     /**
@@ -74,6 +77,11 @@ public abstract class CVParam extends MzMLContent {
         return units;
     }
 
+    /**
+     * Set the units of the CV parameter as the specified ontology term.
+     * 
+     * @param units Ontology term describing the units
+     */
     public void setUnits(OBOTerm units) {
         this.units = units;
         
@@ -257,6 +265,14 @@ public abstract class CVParam extends MzMLContent {
         return type;
     }
     
+    /**
+     * Create a CV parameter with the correct type based on the ontology term.
+     * 
+     * @param term Ontology term around which a CV parameter to be created
+     * @param units Ontology term describing the units of the CV parameter
+     * @return Subclass instance of CVParam depending on ontology term supplied
+     * @throws NonFatalParseException If no type can be determined from {@code term} then NonFatalParseException is thrown
+     */
     public static CVParam createCVParam(OBOTerm term, OBOTerm units) throws NonFatalParseException {
         CVParam param;
         

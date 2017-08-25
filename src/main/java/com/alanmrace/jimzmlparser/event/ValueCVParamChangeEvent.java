@@ -6,6 +6,7 @@ import com.alanmrace.jimzmlparser.mzml.CVParam;
  * Event triggered when the value of a CV parameter is changed.
  * 
  * @author alan.race
+ * @param <T> Value type (defined by the OBOTerm in the CVParam)
  */
 public class ValueCVParamChangeEvent<T> extends CVParamChangeEvent {
     private final T oldValue;

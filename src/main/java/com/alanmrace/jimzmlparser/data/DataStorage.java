@@ -39,6 +39,15 @@ public abstract class DataStorage {
         this(dataFile, false);
     }
     
+    /**
+     * Define a data storage by specifying the File containing the data, optionally
+     * opening the file for writing. When parsing MzML and using temporary binary data
+     * storage, openForWriting must be true.
+     * 
+     * @param dataFile File where the data is stored
+     * @param openForWriting Whether to open the data storage for writing as well as reading
+     * @throws FileNotFoundException Could not find the file specified
+     */
     public DataStorage(File dataFile, boolean openForWriting) throws FileNotFoundException {
         this.dataFile = dataFile;
         

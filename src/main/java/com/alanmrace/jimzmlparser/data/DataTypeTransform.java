@@ -60,6 +60,13 @@ public class DataTypeTransform implements DataTransform {
          */
         Integer64bit;
         
+        /**
+         * Convert DataType enum to OBOTerm, using ontology terms found in the 
+         * MS ontology.
+         * 
+         * @param dataType DataType to convert
+         * @return Ontology term which describes the DataType, or null if no match
+         */
         public static OBOTerm toOBOTerm(DataType dataType) {
             switch(dataType) {
                 case Double:
@@ -74,11 +81,18 @@ public class DataTypeTransform implements DataTransform {
                     return OBO.getOBO().getTerm(signed16bitIntegerID);
                 case Integer8bit:
                     return OBO.getOBO().getTerm(signed8bitIntegerID);
+                default:
+                    return null;
             }
-            
-            return null;
         }
         
+        /**
+         * Convert OBOTerm ontology term to DataType enum, based on ontology terms
+         * found within the MS ontology.
+         * 
+         * @param term Ontology term to convert
+         * @return DataType which is described by the ontology term, or null if no match
+         */
         public static DataType fromOBOTerm(OBOTerm term) {
             String accession = term.getID();
             
