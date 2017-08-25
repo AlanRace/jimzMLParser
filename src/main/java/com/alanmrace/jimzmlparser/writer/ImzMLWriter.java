@@ -48,21 +48,57 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
      */
     protected DataOutputStream dataOutput;
 
+    /**
+     * Possible means of outputting data, as defined by the ImzML standard. 
+     * Continuous type means that each spectrum of an image has the same m/z values.
+     * Processed type means that each spectrum has its own m/z array.
+     */
     public enum OutputType {
+        /**
+         * Continuous type means that each spectrum of an image has the same m/z values.
+         */
         Continuous,
+        
+        /**
+         * Processed type means that each spectrum has its own m/z array.
+         */
         Processed
     }
 
+    /**
+     * How to write the ImzML file, continuous or processed.
+     */
     protected OutputType outputType;
 
+    /**
+     * Possible algorithms to use when generating a checksum of the IBD file.
+     */
     public enum Checksum {
+
+        /**
+         * SHA-1.
+         */
         SHA1,
+
+        /**
+         * MD5.
+         */
         MD5
     }
 
+    /**
+     * Checksum algorithm to use for IBD file.
+     */
     protected Checksum checksum;
+
+    /**
+     * Current message digest for the checksum.
+     */
     protected MessageDigest messageDigest;
 
+    /**
+     * Create an ImzMLWriter with defaults (processed output type and SHA-1 checksum).
+     */
     public ImzMLWriter() {
         super();
 

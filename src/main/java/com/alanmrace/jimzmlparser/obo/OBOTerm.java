@@ -35,25 +35,24 @@ public class OBOTerm implements Serializable {
      * The ontology namespace.
      */
     private String namespace;
-    
-    /**
-     * Name of the units for the ontology term (or null if no units).
-     * TODO: Consider removing this, as has_units should replace this.
-     */
-    private String unitName = null;
-    
+        
     /**
      * List of all OBOTerms which were listed as relationship: has_units.
      */
     private final List<OBOTerm> has_units;
+    
+    /**
+     * List of Strings containing all values which were listed as relationship: has_units.
+     */
+    protected final List<String> unitList;
 
     /**
-     * List of all OBOTerms which were listed as relationship: is_a.
+     * List of Strings containing all values which were listed as relationship: is_a.
      */
     private final List<String> is_a;
 
     /**
-     * List of all OBOTerms which were listed as relationship: part_of.
+     * List of Strings containing all values which were listed as relationship: part_of.
      */
     private final List<String> part_of;
 
@@ -65,7 +64,6 @@ public class OBOTerm implements Serializable {
 
     /**
      * List of all parent terms of this ontology term.
-     * TODO: Possibly consider removing this - is this different to is_a?
      */
     private final List<OBOTerm> parents;
     
@@ -337,6 +335,7 @@ public class OBOTerm implements Serializable {
         children = new ArrayList<OBOTerm>();
         parents = new ArrayList<OBOTerm>();
         has_units = new ArrayList<OBOTerm>();
+        unitList = new ArrayList<String>();
 
         this.id = id;
 
@@ -365,10 +364,6 @@ public class OBOTerm implements Serializable {
             this.name = value;
         } else if ("namespace".equals(tag)) {
             this.namespace = value;
-//        } else if ("def".equals(tag)) {
-//			this.def = value;
-//        } else if ("comment".equals(tag)) {
-//			this.comment = value;
         } else if ("relationship".equals(tag)) {
             int indexOfSpace = value.indexOf(" ");
             String relationshipTag = value.substring(0, indexOfSpace).trim();
@@ -377,11 +372,9 @@ public class OBOTerm implements Serializable {
             if ("is_a".equals(relationshipTag)) {
                 is_a.add(relationshipValue);
             } else if ("has_units".equals(relationshipTag)) {
-                unitName = relationshipValue;
+                unitList.add(relationshipValue);
             } else if ("part_of".equals(relationshipTag)) {
                 part_of.add(relationshipValue);
-            } else {
-                //System.out.println("INFO: Relationship tag not implemented '" + relationshipTag + "'");
             }
         } else if ("is_a".equals(tag)) {
             is_a.add(value);
@@ -422,10 +415,10 @@ public class OBOTerm implements Serializable {
                 } else {
                     logger.log(Level.INFO, "INFO: Unknown value-type encountered ''{0}'' @ {1}", new Object[] {value, id});
                 }
-            } else {
+//            } else {
                 //logger.log(Level.INFO, "INFO: Unknown xref encountered ''{0}'' @ {1}", new Object[] {value, id});
             }
-        } else {
+//        } else {
             //logger.log(Level.INFO, "INFO: Tag not implemented ''{0}''", tag);
         }
     }
@@ -664,17 +657,6 @@ public class OBOTerm implements Serializable {
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * Get the name of the units for the value of the ontology term.
-     * 
-     * TODO: Consider removing due to has_units
-     * 
-     * @return Name of units of the value
-     */
-    public String getUnitName() {
-        return unitName;
     }
 
     /**

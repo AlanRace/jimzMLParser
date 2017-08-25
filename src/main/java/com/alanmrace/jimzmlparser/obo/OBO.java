@@ -152,8 +152,9 @@ public class OBO implements Serializable {
             }
 
             // Units
-            if (term.getUnitName() != null) {
-                term.addUnit(getTerm(term.getUnitName()));
+            for(String unitName : term.unitList) {
+            //if (term.getUnitName() != null) {
+                term.addUnit(getTerm(unitName));
             }
         }
     }

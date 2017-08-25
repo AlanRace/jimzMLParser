@@ -290,6 +290,13 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
         return pixelLocation;
     }
 
+    /**
+     * Set the pixel location of the spectrum. If a ScanList does not 
+     * exist then one will be created. Alternatively the first Scan in the ScanList
+     * is updated with the new PixelLocation.
+     * 
+     * @param location New pixel location
+     */
     public void setPixelLocation(PixelLocation location) {
         if (scanList == null) {
             scanList = ScanList.create();
@@ -307,12 +314,31 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
         if (location.getZ() >= 1) {
             scan.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(Scan.positionZID), location.getZ()));
         }
+        
+        pixelLocation = location;
     }
 
+    /**
+     * Set the pixel location of the spectrum. If a ScanList does not 
+     * exist then one will be created. Alternatively the first Scan in the ScanList
+     * is updated with the new PixelLocation.
+     * 
+     * @param x x-coordinate
+     * @param y y-coordinate
+     */
     public void setPixelLocation(int x, int y) {
         setPixelLocation(new PixelLocation(x, y, -1));
     }
 
+    /**
+     * Set the pixel location of the spectrum. If a ScanList does not 
+     * exist then one will be created. Alternatively the first Scan in the ScanList
+     * is updated with the new PixelLocation.
+     * 
+     * @param x x-coordinate
+     * @param y y-coordinate
+     * @param z z-coordinate
+     */
     public void setPixelLocation(int x, int y, int z) {
         setPixelLocation(new PixelLocation(x, y, z));
     }

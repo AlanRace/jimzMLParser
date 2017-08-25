@@ -67,14 +67,35 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
      */
     private File ibdFile;
 
+    /**
+     * List of all possible m/z values associated with this dataset.
+     */
     private double[] fullmzList;
+    
+    /**
+     * Total ion count image of the entire ImzML file.
+     */
     private double[][] ticImage;
 
+    /**
+     * 3-D Array of Spectrum instances with each Spectrum in the location in the 
+     * array as defined by the x, y, and z coordinates of the Spectrum.
+     */
     private Spectrum[][][] spectrumGrid;
 
+    /**
+     * Minimum m/z value detected within this ImzML file.
+     */
     private static double minMZ = Double.MAX_VALUE;
+    
+    /**
+     * Maximum m/z value detected within this ImzML file.
+     */
     private static double maxMZ = Double.MIN_VALUE;
 
+    /**
+     * Dimensionality of the ImzML file (normal imaging = 2, 3D data = 3).
+     */
     private int dimensionality = -1;
 
     // REMOVED - zero filling code because it caused more issues. Alternative 
@@ -83,8 +104,9 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
 //	private boolean zeroIndexing = false;
 
     /**
-     *
-     * @param version
+     * Create basic ImzML with specified version.
+     * 
+     * @param version ImzML version
      */
     public ImzML(String version) {
         super(version);

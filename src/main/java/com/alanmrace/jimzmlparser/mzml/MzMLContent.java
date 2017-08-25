@@ -24,10 +24,13 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Parent of the current MzMLTag;
+     * Parent of the current MzMLTag.
      */
     protected MzMLTag parent;
     
+    /**
+     * 
+     */
     protected List<MzMLContentListener> listeners;
     
     public void addListener(MzMLContentListener listener) {
