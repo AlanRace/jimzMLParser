@@ -176,7 +176,7 @@ public class SpectrumList extends MzMLIDContentList<Spectrum> {
         // Below method only included in Java 1.8
 //        spectrumMap.remove(spectrum.getID(), spectrum);
         
-        return success & (removedSpectrum.equals(spectrum));
+        return success && (removedSpectrum.equals(spectrum));
     }
 
     /**

@@ -5,7 +5,7 @@ package com.alanmrace.jimzmlparser.exceptions;
  * 
  * @author Alan Race
  */
-public class FatalParseException extends Exception implements ParseIssue {
+public class FatalParseException extends RuntimeException implements ParseIssue {
 
     /**
      * Construct FatalParseException with a message describing the issue.

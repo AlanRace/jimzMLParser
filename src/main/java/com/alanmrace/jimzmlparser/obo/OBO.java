@@ -48,7 +48,7 @@ public class OBO implements Serializable {
     /**
      * Singleton OBO instance.
      */
-    protected static OBO obo = new OBO("imagingMS.obo");
+    protected static final OBO obo = new OBO("imagingMS.obo");
 
     /**
      * Generate ontology database from the specified .obo file. 

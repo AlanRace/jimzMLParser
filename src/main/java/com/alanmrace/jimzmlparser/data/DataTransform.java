@@ -1,5 +1,6 @@
 package com.alanmrace.jimzmlparser.data;
 
+import java.io.Serializable;
 import java.util.zip.DataFormatException;
 
 /**
@@ -8,7 +9,7 @@ import java.util.zip.DataFormatException;
  * 
  * @author Alan Race
  */
-public interface DataTransform {
+public interface DataTransform extends Serializable {
     
     /**
      * Perform the data transformation. For example, this could be applying 

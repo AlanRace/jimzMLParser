@@ -377,8 +377,6 @@ public class MzMLHeaderHandler extends DefaultHandler {
             //get a new instance of parser
             SAXParser sp = spf.newSAXParser();
 
-            File file = new File(filename);
-
             //parse the file and also register this class for call backs
             sp.parse(is, handler);
 

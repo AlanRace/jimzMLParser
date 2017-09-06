@@ -9,7 +9,13 @@ import com.alanmrace.jimzmlparser.mzml.CVParam;
  * @param <T> Value type (defined by the OBOTerm in the CVParam)
  */
 public class ValueCVParamChangeEvent<T> extends CVParamChangeEvent {
+    /**
+     * Value prior to the event.
+     */
     private final T oldValue;
+    /**
+     * Value following the event.
+     */
     private final T newValue;
     
     /**

@@ -23,12 +23,12 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
     /**
      * Accession: Spectra combination (MS:1000570).
      */
-    public static String spectraCombinationID = "MS:1000570";
+    public static final String spectraCombinationID = "MS:1000570";
     
     /**
      * Accession: No spectral combination (MS:1000795).
      */
-    public static String noCombinationID = "MS:1000795";
+    public static final String noCombinationID = "MS:1000795";
 
     /**
      * List of Scans.

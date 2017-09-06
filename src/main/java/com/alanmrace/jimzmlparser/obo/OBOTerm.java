@@ -584,46 +584,6 @@ public class OBOTerm implements Serializable {
     }
 
     /**
-     * Get the names of all child terms, as well as the names of all their children 
-     * (repeated recursively).
-     * 
-     * @return List of all child names
-     */
-    public List<String> getAllChildNames() {
-        ArrayList<String> allChildren = new ArrayList<String>();
-
-        for (OBOTerm child : children) {
-            child.getAllChildNames(allChildren, 0);
-        }
-
-        return allChildren;
-    }
-
-    /**
-     * Get the names of all child terms, as well as the names of all their children 
-     * (repeated recursively) where each child is indented by intent '-'
-     * and their children are indented by indent+1 '-' (repeated recursively).
-     * 
-     * <p>TODO: Consider refactoring - this shouldn't care about indenting.
-     * 
-     * @param allChildren List to add all children to
-     * @param indent Number of '-' to indent child names by
-     */
-    private void getAllChildNames(List<String> allChildren, int indent) {
-        String indented = "";
-
-        for (int i = 0; i < indent; i++) {
-            indented += "-";
-        }
-
-        allChildren.add(indented + toString());
-
-        for (OBOTerm child : children) {
-            child.getAllChildNames(allChildren, indent + 1);
-        }
-    }
-
-    /**
      * Get list of is_a relationships.
      * 
      * @return List of is_a relationships

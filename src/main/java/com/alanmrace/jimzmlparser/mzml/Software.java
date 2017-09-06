@@ -125,12 +125,16 @@ public class Software extends MzMLContentWithParams implements ReferenceableTag 
         try {
             prop.load(in);
             version = prop.getProperty("version");
-            
-            in.close();
         } catch (IOException ex) {
             Logger.getLogger(SoftwareList.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                in.close();
+            } catch (IOException ex) {
+                Logger.getLogger(SoftwareList.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-        
+
         Software software = new Software("jimzMLParser", version);
         software.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(Software.customUnreleasedToolID)));
         

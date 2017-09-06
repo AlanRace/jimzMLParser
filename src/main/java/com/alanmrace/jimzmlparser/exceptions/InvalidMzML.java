@@ -6,7 +6,7 @@ package com.alanmrace.jimzmlparser.exceptions;
  * 
  * @author Alan Race
  */
-public class InvalidMzML extends RuntimeException implements ParseIssue {
+public class InvalidMzML extends FatalParseException implements ParseIssue {
 
     /**
      * Serialisation version ID.

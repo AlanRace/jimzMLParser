@@ -102,7 +102,7 @@ public class MzMLHandler extends MzMLHeaderHandler {
         }
     }
 
-    public void deleteTemporaryFile() {
+    public boolean deleteTemporaryFile() {
         try {
             temporaryFileStream.close();
         } catch (IOException e) {
@@ -110,7 +110,7 @@ public class MzMLHandler extends MzMLHeaderHandler {
         }
 
         temporaryFileStream = null;
-        temporaryBinaryFile.delete();
+        return temporaryBinaryFile.delete();
     }
 
     @Override

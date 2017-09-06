@@ -1,6 +1,7 @@
 package com.alanmrace.jimzmlparser.data;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
@@ -10,7 +11,12 @@ import java.util.zip.DataFormatException;
  * 
  * @author Alan Race
  */
-public class DataLocation {
+public class DataLocation implements Serializable {
+    
+    /**
+     * Serialisation version ID.
+     */
+    private static final long serialVersionUID = 1L;
     
     /**
      * Logger for the class.
@@ -24,7 +30,7 @@ public class DataLocation {
      * 
      * <p>EXTENDED_OFFSET = 2^32 = 4294967296.
      */
-    public static long EXTENDED_OFFSET = 4294967296L; // 2^32
+    public static final long EXTENDED_OFFSET = 4294967296L; // 2^32
     
     /**
      * The location and storage type of the data.

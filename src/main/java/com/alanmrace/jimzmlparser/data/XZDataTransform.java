@@ -39,7 +39,8 @@ public class XZDataTransform implements DataTransform {
             Logger.getLogger(XZDataTransform.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
-                gzos.close();
+                if(gzos != null)
+                    gzos.close();
             } catch (IOException ex) {
                 Logger.getLogger(XZDataTransform.class.getName()).log(Level.SEVERE, null, ex);
             }

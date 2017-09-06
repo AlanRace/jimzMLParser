@@ -20,22 +20,22 @@ public class InstrumentConfiguration extends MzMLContentWithParams implements Re
     /**
      * Accession: Instrument model (MS:1000031). [Required child]
      */
-    public static String instrumentModelID = "MS:1000031"; // Required child (1)
+    public static final String instrumentModelID = "MS:1000031"; // Required child (1)
 
     /**
      * Accession: Instrument attribute (MS:1000496). [Optional child]
      */
-    public static String instrumentAttributeID = "MS:1000496"; // Optional child (1+)
+    public static final String instrumentAttributeID = "MS:1000496"; // Optional child (1+)
 
     /**
      * Accession: Ion optics type (MS:1000597). [Optional child]
      */
-    public static String ionOpticsTypeID = "MS:1000597"; // Optional child (1)
+    public static final String ionOpticsTypeID = "MS:1000597"; // Optional child (1)
 
     /**
      * Accession: Ion optics attribute (MS:1000487). [Optional child]
      */
-    public static String ionOpticsAttributeID = "MS:1000487"; // Optional child (1+)
+    public static final String ionOpticsAttributeID = "MS:1000487"; // Optional child (1+)
 
     // Attributes
 

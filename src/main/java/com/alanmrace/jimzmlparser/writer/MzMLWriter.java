@@ -170,9 +170,9 @@ public class MzMLWriter implements MzMLWritable {
         if (shouldOutputIndex()) {
             MzMLWriter.indent(this, indent);
             writeMetadata("<indexedmzML");
-            writeMetadata(" xmlns=\"http://psi.hupo.org/ms/mzml\"");
-            writeMetadata(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
-            writeMetadata(" xsi:schemaLocation=\"http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.2_idx.xsd\">\n");
+            writeMetadata(" xmlns=\"" + MzML.NAMESPACE + "\"");
+            writeMetadata(" xmlns:xsi=\"" + MzML.XSI + "\"");
+            writeMetadata(" xsi:schemaLocation=\"" + MzML.IDX_SCHEMA_LOCATION + "\">\n");
 
             indent++;
         }

@@ -29,17 +29,22 @@ public class MzML extends MzMLContentWithParams implements Serializable {
     /**
      * Default XML namespace for an mzML file.
      */
-    public static String namespace = "http://psi.hupo.org/ms/mzml";
+    public static final String NAMESPACE = "http://psi.hupo.org/ms/mzml";
 
     /**
      * Default XML schema instance (XSI) for an mzML file.
      */
-    public static String xsi = "http://www.w3.org/2001/XMLSchema-instance";
+    public static final String XSI = "http://www.w3.org/2001/XMLSchema-instance";
 
     /**
      * Default XML schema location for an mzML file.
      */
-    public static String schemaLocation = "http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.0_idx.xsd";
+    public static final String SCHEMA_LOCATION = "http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.0.xsd";
+    
+    /**
+     * Default XML schema location for an indexed mzML file.
+     */
+    public static final String IDX_SCHEMA_LOCATION = "http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.2_idx.xsd";
 
     /**
      * Current mzML version.
@@ -554,9 +559,9 @@ public class MzML extends MzMLContentWithParams implements Serializable {
         String attributeText = "";
         
         // Set up namespaces
-        attributeText += "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"";
-        attributeText += " xsi:schemaLocation=\"http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.0.xsd\"";
-        attributeText += " xmlns=\"http://psi.hupo.org/ms/mzml\"";
+        attributeText += "xmlns:xsi=\"" + MzML.XSI + "\"";
+        attributeText += " xsi:schemaLocation=\"" + MzML.SCHEMA_LOCATION + "\"";
+        attributeText += " xmlns=\"" + MzML.NAMESPACE + "\"";
         // Attributes
         attributeText += " version=\"" + XMLHelper.ensureSafeXML(version) + "\"";
         if (accession != null) {

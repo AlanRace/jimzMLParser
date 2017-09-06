@@ -18,21 +18,21 @@ public class ProcessingMethod extends MzMLOrderedContentWithParams {
     /**
      * Accession: Data transformation (MS:1000452).
      */
-    public static String dataTransformationID = "MS:1000452"; // Required child (1+)
+    public static final String dataTransformationID = "MS:1000452"; // Required child (1+)
     /**
      * Accession: Data processing parameter (MS:1000630).
      */
-    public static String dataProcessingParameterID = "MS:1000630"; // Optional child (1+)
+    public static final String dataProcessingParameterID = "MS:1000630"; // Optional child (1+)
 
     /**
      * Accession: File format conversion (MS:1000530).
      */
-    public static String fileFormatConversionID = "MS:1000530";
+    public static final String fileFormatConversionID = "MS:1000530";
     
     /**
      * Accession: Conversion to mzML (MS:1000544).
      */
-    public static String conversionTomzMLID = "MS:1000544";
+    public static final String conversionTomzMLID = "MS:1000544";
 
     /**
      * Software which performed the processing method.

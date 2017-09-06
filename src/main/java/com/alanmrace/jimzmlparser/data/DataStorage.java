@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,7 +18,13 @@ import java.util.logging.Logger;
  * @see BinaryDataStorage
  * @see MzMLSpectrumDataStorage
  */
-public abstract class DataStorage {
+public abstract class DataStorage implements Serializable {
+    
+    /**
+     * Serialisation version ID.
+     */
+    private static final long serialVersionUID = 1L;
+    
     /** Class logger. */
     private static final Logger logger = Logger.getLogger(DataStorage.class.getName());
     

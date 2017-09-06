@@ -1,5 +1,6 @@
 package com.alanmrace.jimzmlparser.data;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -11,7 +12,12 @@ import java.util.zip.DataFormatException;
  * 
  * @author Alan Race
  */
-public class DataTransformation {
+public class DataTransformation implements Serializable {
+    
+    /**
+     * Serialisation version ID.
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * The set of DataTransform instances that make up the DataTransformation.
