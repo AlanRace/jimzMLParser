@@ -1,20 +1,18 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.alanmrace.jimzmlparser.mzml;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-
 /**
- *
+ * A base class for MzML tags which include ordered children.
+ * 
  * @author Alan Race
+ * 
+ * @see ProcessingMethod
+ * @see Component
  */
 public abstract class MzMLOrderedContentWithParams extends MzMLContentWithParams {
     
+    /**
+     * Default constructor, does nothing.
+     */
     protected MzMLOrderedContentWithParams() {
     }
     
@@ -44,26 +42,25 @@ public abstract class MzMLOrderedContentWithParams extends MzMLContentWithParams
     /**
      * Output attribute in the form of XML.
      *
-     * @param raf   RandomAccessFile being output to - used for getting current file location
      * @param output where to write the XML
      * @param indent how large an indent is needed for this tag
      * @param order order of the component within the list
      * @throws IOException Signals that an I/O exception has occurred.
      */
-    public void outputXML(RandomAccessFile raf, BufferedWriter output, int indent, int order) throws IOException {
-        String attributeText = getXMLAttributeText();
-        
-        MzMLContent.indent(output, indent);
-        output.write("<" + getTagName() + " order=\"" + order + "\"");
-        
-        if(attributeText != null && !attributeText.isEmpty())
-            output.write(" " + attributeText);
-        
-        output.write(">\n");
-
-        outputXMLContent(raf, output, indent + 1);
-
-        MzMLContent.indent(output, indent);
-        output.write("</" + getTagName() + ">\n");
-    }
+//    public void outputXML(MzMLWritable output, int indent, int order) throws IOException {
+//        String attributeText = getXMLAttributeText();
+//        
+//        MzMLContent.indent(output, indent);
+//        output.writeMetadata("<" + getTagName() + " order=\"" + order + "\"");
+//        
+//        if(attributeText != null && !attributeText.isEmpty())
+//            output.writeMetadata(" " + attributeText);
+//        
+//        output.writeMetadata(">\n");
+//
+//        outputXMLContent(output, indent + 1);
+//
+//        MzMLContent.indent(output, indent);
+//        output.writeMetadata("</" + getTagName() + ">\n");
+//    }
 }

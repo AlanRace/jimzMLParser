@@ -1,14 +1,16 @@
 package com.alanmrace.jimzmlparser.imzml;
 
 import com.alanmrace.jimzmlparser.exceptions.ImzMLParseException;
-import com.alanmrace.jimzmlparser.exceptions.ImzMLWriteException;
 import com.alanmrace.jimzmlparser.mzml.BinaryDataArray;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import com.alanmrace.jimzmlparser.mzml.CVParam;
+import com.alanmrace.jimzmlparser.mzml.DoubleCVParam;
+import com.alanmrace.jimzmlparser.mzml.EmptyCVParam;
 import com.alanmrace.jimzmlparser.mzml.FileContent;
+import com.alanmrace.jimzmlparser.mzml.IntegerCVParam;
 import com.alanmrace.jimzmlparser.mzml.MzML;
 import com.alanmrace.jimzmlparser.mzml.Scan;
 import com.alanmrace.jimzmlparser.mzml.ScanSettings;
@@ -16,13 +18,14 @@ import com.alanmrace.jimzmlparser.mzml.ScanSettingsList;
 import com.alanmrace.jimzmlparser.mzml.Software;
 import com.alanmrace.jimzmlparser.mzml.Spectrum;
 import com.alanmrace.jimzmlparser.mzml.SpectrumList;
+import com.alanmrace.jimzmlparser.obo.OBO;
+import com.alanmrace.jimzmlparser.util.HexHelper;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -64,28 +67,65 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
      */
     private File ibdFile;
 
+    /**
+     * List of all possible m/z values associated with this dataset.
+     */
     private double[] fullmzList;
+    
+    /**
+     * Total ion count image of the entire ImzML file.
+     */
     private double[][] ticImage;
 
+    /**
+     * 3-D Array of Spectrum instances with each Spectrum in the location in the 
+     * array as defined by the x, y, and z coordinates of the Spectrum.
+     */
     private Spectrum[][][] spectrumGrid;
 
-    private static double minMZ = Double.MAX_VALUE;
-    private static double maxMZ = Double.MIN_VALUE;
+    /**
+     * Minimum m/z value detected within this ImzML file.
+     */
+    private double minMZ = Double.MAX_VALUE;
+    
+    /**
+     * Maximum m/z value detected within this ImzML file.
+     */
+    private double maxMZ = Double.MIN_VALUE;
 
+    /**
+     * Dimensionality of the ImzML file (normal imaging = 2, 3D data = 3).
+     */
     private int dimensionality = -1;
 
     // REMOVED - zero filling code because it caused more issues. Alternative 
     // (and faster) work around is to go to mzML and then to imzML.
     // Default to no zero indexing, however if we find a 0, then turn it on
 //	private boolean zeroIndexing = false;
+
+    /**
+     * Create basic ImzML with specified version.
+     * 
+     * @param version ImzML version
+     */
     public ImzML(String version) {
         super(version);
     }
 
+    /**
+     * Copy constructor, create new ImzML from supplied ImzML instance.
+     * 
+     * @param imzML ImzML to make copy of
+     */
     public ImzML(ImzML imzML) {
         super(imzML);
     }
 
+    /**
+     * Copy constructor, create new ImzML from supplied MzML instance.
+     * 
+     * @param mzML MzML to make copy of
+     */
     public ImzML(MzML mzML) {
         super(mzML);
     }
@@ -501,27 +541,31 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
         if(ticImage == null) {
             ticImage = new double[getHeight()][getWidth()];
 
-            for (Spectrum spectrum : getRun().getSpectrumList()) {
-                int x = spectrum.getScanList().get(0).getCVParam(Scan.positionXID).getValueAsInteger() - 1;
-                int y = spectrum.getScanList().get(0).getCVParam(Scan.positionYID).getValueAsInteger() - 1;
+            if(getRun().getSpectrumList() != null) {
+                for (Spectrum spectrum : getRun().getSpectrumList()) {
+                    int x = spectrum.getScanList().get(0).getCVParam(Scan.positionXID).getValueAsInteger() - 1;
+                    int y = spectrum.getScanList().get(0).getCVParam(Scan.positionYID).getValueAsInteger() - 1;
 
-                try {
-                    double tic = spectrum.getCVParam(Spectrum.totalIonCurrentID).getValueAsDouble();
-                    
-                    ticImage[y][x] = tic;
-                } catch (NullPointerException ex) {
                     try {
-                        double[] intensityArray = spectrum.getIntensityArray();
+                        double tic = spectrum.getCVParam(Spectrum.totalIonCurrentID).getValueAsDouble();
 
-                        if(intensityArray != null) {
-                            for (int i = 0; i < intensityArray.length; i++) {
-                                ticImage[y][x] += intensityArray[i];
+                        ticImage[y][x] = tic;
+                    } catch (NullPointerException ex) {
+                        try {
+                            double[] intensityArray = spectrum.getIntensityArray();
+
+                            if(intensityArray != null) {
+                                for (int i = 0; i < intensityArray.length; i++) {
+                                    ticImage[y][x] += intensityArray[i];
+                                }
+                                
+                                spectrum.addCVParam(new DoubleCVParam(OBO.getOBO().getTerm(Spectrum.totalIonCurrentID), ticImage[y][x]));
                             }
+                        } catch (FileNotFoundException e) {
+                            Logger.getLogger(ImzML.class.getName()).log(Level.SEVERE, null, e);
+                        } catch (IOException ex1) {
+                            Logger.getLogger(ImzML.class.getName()).log(Level.SEVERE, null, ex1);
                         }
-                    } catch (FileNotFoundException e) {
-                        Logger.getLogger(ImzML.class.getName()).log(Level.SEVERE, null, e);
-                    } catch (IOException ex1) {
-                        Logger.getLogger(ImzML.class.getName()).log(Level.SEVERE, null, ex1);
                     }
                 }
             }
@@ -678,19 +722,6 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
         this.ibdFile = ibdFile;
     }
 
-    /**
-     * Write imzML file.
-     * 
-     * @throws ImzMLWriteException Issue writing imzML file
-     */
-    public void write() throws ImzMLWriteException {
-        if (ibdFile == null) {
-            throw new ImzMLWriteException("No ibd file, can't write imzML file.");
-        }
-
-        write(ibdFile.getAbsolutePath().substring(0, ibdFile.getAbsolutePath().length() - ".ibd".length()) + ".imzML");
-    }
-
 //    @Override
 //    public void write(String filename) throws ImzMLWriteException {
 //        String encoding = "ISO-8859-1";
@@ -766,7 +797,7 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
             throw new ImzMLParseException("Failed to close ibd file after generating " + algorithm + " hash", e);
         }
 
-        return byteArrayToHexString(hash);
+        return HexHelper.byteArrayToHexString(hash);
     }
     
     /**
@@ -792,72 +823,40 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
     }
     
     /**
-     * Convert hex string to byte[].
-     * 
-     * @param s Hex string to convert
-     * @return  Converted byte[]
+     * Create default valid ImzML. Calls {@link ImzML#createDefaults(com.alanmrace.jimzmlparser.mzml.MzML)}.
+     *  
+     * @return Default ImzML instance
      */
-    public static byte[] hexStringToByteArray(String s) {
-        int len = s.length();
-        byte[] data = new byte[len / 2];
-
-        for (int i = 0; i < len; i += 2) {
-            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-                    + Character.digit(s.charAt(i + 1), 16));
-        }
-
-        return data;
-    }
-
-    /**
-     * Convert byte[] to hex string.
-     * 
-     * @param byteArray byte[] to convert
-     * @return          Converted string
-     */
-    public static String byteArrayToHexString(byte[] byteArray) {
-        StringBuilder sb = new StringBuilder(2 * byteArray.length);
-
-        byte[] Hexhars = {
-            '0', '1', '2', '3', '4', '5',
-            '6', '7', '8', '9', 'a', 'b',
-            'c', 'd', 'e', 'f'
-        };
-
-        for (int i = 0; i < byteArray.length; i++) {
-
-            int v = byteArray[i] & 0xff;
-
-            sb.append((char) Hexhars[v >> 4]);
-            sb.append((char) Hexhars[v & 0xf]);
-        }
-
-        return sb.toString();
+    public static ImzML create() {
+        ImzML imzML = new ImzML(currentVersion);
+        
+        createDefaults(imzML);
+        
+        return imzML;
     }
     
     /**
-     * Convert byte[] to UUID.
+     * Adds default MS imaging parameters values to supplied mzML. Assumes flyback,
+     * top down, horizontal, left to right line scan.
      * 
-     * @param bytes byte[] to convert
-     * @return      UUID
+     * @param mzML MzML to add parameters to.
      */
-    public static UUID byteArrayToUuid(byte[] bytes) {
-        ByteBuffer bb = ByteBuffer.wrap(bytes);
-        long firstLong = bb.getLong();
-        long secondLong = bb.getLong();
-        return new UUID(firstLong, secondLong);
-    }
-
-    /**
-     * Convert UUID to byte[].
-     * 
-     * @param uuid  UUID to convert
-     * @return      byte[]
-     */
-    public static byte[] uuidToByteArray(UUID uuid) {
-        ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
-        bb.putLong(uuid.getMostSignificantBits());
-        bb.putLong(uuid.getLeastSignificantBits());
-        return bb.array();
+    protected static void createDefaults(MzML mzML) {
+        MzML.createDefaults(mzML);
+        
+        // Add in scan setting defaults
+        ScanSettingsList scanSettingsList = new ScanSettingsList(1);
+        ScanSettings scanSettings = new ScanSettings("globalScanSettings");
+        scanSettingsList.add(scanSettings);
+        
+        scanSettings.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ScanSettings.scanPatternFlybackID)));
+        scanSettings.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ScanSettings.scanDirectionTopDownID)));
+        scanSettings.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ScanSettings.scanTypeHorizontalID)));
+        scanSettings.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ScanSettings.lineScanDirectionLeftRightID)));
+        
+        scanSettings.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(ScanSettings.maxCountPixelXID), 0));
+        scanSettings.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(ScanSettings.maxCountPixelYID), 0));
+        
+        mzML.setScanSettingsList(scanSettingsList);
     }
 }

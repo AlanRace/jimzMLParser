@@ -2,9 +2,6 @@ package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -67,7 +64,8 @@ public abstract class MzMLContentList<T extends MzMLTag>
 
     @Override
     public void add(T item) {
-        item.setParent(this);
+        if(item instanceof MzMLContent)
+            item.setParent(this);
 
         list.add(item);
     }
@@ -80,6 +78,11 @@ public abstract class MzMLContentList<T extends MzMLTag>
     @Override
     public T remove(int index) {
         return list.remove(index);
+    }
+    
+    @Override
+    public boolean remove(T item) {
+        return list.remove(item);
     }
 
     @Override
@@ -101,16 +104,16 @@ public abstract class MzMLContentList<T extends MzMLTag>
 
     @Override
     protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLTag> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
+        if (!fullXPath.equals(currentXPath) && list == null) {
+            throw new UnfollowableXPathException("No " + getTagName() + " exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
+        }
+        
         if (list.size() > 0) {
             // Get the first element from the list so that we can use it to get 
             // the name of the tag.
             T firstElement = list.get(0);
 
             if (currentXPath.startsWith("/" + firstElement.getTagName())) {
-                if (list == null) {
-                    throw new UnfollowableXPathException("No " + getTagName() + " exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
-                }
-
                 for (T item : list) {
                     item.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
                 }
@@ -119,7 +122,7 @@ public abstract class MzMLContentList<T extends MzMLTag>
     }
 
     @Override
-    protected String getXMLAttributeText() {
+    public String getXMLAttributeText() {
         String attributeText = super.getXMLAttributeText();
         
         if(!attributeText.isEmpty())
@@ -128,20 +131,20 @@ public abstract class MzMLContentList<T extends MzMLTag>
         return attributeText + "count=\"" + list.size() + "\"";
     }
 
-    @Override
-    protected void outputXMLContent(RandomAccessFile raf, BufferedWriter output, int indent) throws IOException {
-        int counter = 0;
-        
-        for (T item : this) {
-            // 0 index for indexed content, but 1 for ordered content
-            if(item instanceof MzMLIndexedContentWithParams)
-                ((MzMLIndexedContentWithParams) item).outputXML(raf, output, indent, counter++);
-            else if(item instanceof MzMLOrderedContentWithParams)
-                ((MzMLOrderedContentWithParams) item).outputXML(raf, output, indent, ++counter);
-            else
-                item.outputXML(raf, output, indent);
-        }
-    }
+//    @Override
+//    protected void outputXMLContent(MzMLWritable output, int indent) throws IOException {
+//        int counter = 0;
+//        
+//        for (T item : this) {
+//            // 0 index for indexed content, but 1 for ordered content
+//            if(item instanceof MzMLIndexedContentWithParams)
+//                ((MzMLIndexedContentWithParams) item).outputXML(output, indent, counter++);
+//            else if(item instanceof MzMLOrderedContentWithParams)
+//                ((MzMLOrderedContentWithParams) item).outputXML(output, indent, ++counter);
+//            else
+//                item.outputXML(output, indent);
+//        }
+//    }
 
     @Override
     public String toString() {

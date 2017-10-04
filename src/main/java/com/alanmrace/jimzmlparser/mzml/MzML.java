@@ -1,19 +1,14 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import com.alanmrace.jimzmlparser.exceptions.ImzMLWriteException;
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
-import java.io.BufferedWriter;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.Serializable;
 
 import com.alanmrace.jimzmlparser.obo.OBO;
-import com.alanmrace.jimzmlparser.parser.DataLocation;
-import com.alanmrace.jimzmlparser.parser.DataStorage;
+import com.alanmrace.jimzmlparser.data.DataLocation;
+import com.alanmrace.jimzmlparser.data.DataStorage;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
-import java.io.RandomAccessFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,24 +22,29 @@ import java.util.Collection;
 public class MzML extends MzMLContentWithParams implements Serializable {
 
     /**
-     * Serialisaiton version ID.
+     * Serialisation version ID.
      */
     private static final long serialVersionUID = 1L;
 
     /**
      * Default XML namespace for an mzML file.
      */
-    public static String namespace = "http://psi.hupo.org/ms/mzml";
+    public static final String NAMESPACE = "http://psi.hupo.org/ms/mzml";
 
     /**
      * Default XML schema instance (XSI) for an mzML file.
      */
-    public static String xsi = "http://www.w3.org/2001/XMLSchema-instance";
+    public static final String XSI = "http://www.w3.org/2001/XMLSchema-instance";
 
     /**
      * Default XML schema location for an mzML file.
      */
-    public static String schemaLocation = "http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.0_idx.xsd";
+    public static final String SCHEMA_LOCATION = "http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.0.xsd";
+    
+    /**
+     * Default XML schema location for an indexed mzML file.
+     */
+    public static final String IDX_SCHEMA_LOCATION = "http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.2_idx.xsd";
 
     /**
      * Current mzML version.
@@ -126,9 +126,6 @@ public class MzML extends MzMLContentWithParams implements Serializable {
      */
     private OBO obo;
     
-    private boolean outputIndex = false;
-    private RandomAccessFile raf;
-
     /**
      * Constructor with the minimal required information (mzML version).
      * 
@@ -253,7 +250,35 @@ public class MzML extends MzMLContentWithParams implements Serializable {
     public String getID() {
         return id;
     }
+    
+    /**
+     * Add a spectrum to the spectrumList in the run tag. Equivalent to calling
+     * {@code mzML.getRun().getSpectrumList().add(spectrum);}.
+     * 
+     * @param spectrum Spectrum to add
+     */
+    public void addSpectrum(Spectrum spectrum) {
+        getRun().getSpectrumList().add(spectrum);
+    }
 
+    /**
+     * Returns the spectrum list associated with this MzML.
+     * 
+     * @return SpectrumList
+     */
+    public SpectrumList getSpectrumList() {
+        return run.getSpectrumList();
+    }
+    
+    /**
+     * Returns the chromatogram list associated with this MzML.
+     * 
+     * @return ChromatogramList
+     */
+    public ChromatogramList getChromatogramList() {
+        return run.getChromatogramList();
+    }
+    
     /**
      * Set the CVList for the mzML.
      * 
@@ -466,11 +491,11 @@ public class MzML extends MzMLContentWithParams implements Serializable {
         } else if (currentXPath.startsWith("/softwareList")) {
             softwareList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         } else if (currentXPath.startsWith("/scanSettingsList")) {
-            if (scanSettingsList == null) {
-                throw new UnfollowableXPathException("No scanSettingsList exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
-            }
-
-            scanSettingsList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
+//            if (scanSettingsList == null) {
+//                throw new UnfollowableXPathException("No scanSettingsList exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
+//            }
+            if (scanSettingsList != null)
+                scanSettingsList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         } else if (currentXPath.startsWith("/instrumentConfigurationList")) {
             instrumentConfigurationList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         } else if (currentXPath.startsWith("/dataProcessingList")) {
@@ -489,6 +514,9 @@ public class MzML extends MzMLContentWithParams implements Serializable {
         dataProcessingList.setParent(this);
 
         this.dataProcessingList = dataProcessingList;
+        
+        if(run != null)
+            run.setDataProcessingList(dataProcessingList);
     }
 
     /**
@@ -513,6 +541,8 @@ public class MzML extends MzMLContentWithParams implements Serializable {
         run.setParent(this);
 
         this.run = run;
+        
+        run.setDataProcessingList(dataProcessingList);
     }
 
     /**
@@ -524,134 +554,26 @@ public class MzML extends MzMLContentWithParams implements Serializable {
         return run;
     }
 
-    /**
-     * Write out to XML file with specified filename. Uses ISO-8859-1 encoding.
-     * 
-     * @param filename      Location to output as XML
-     * @throws ImzMLWriteException IOException are wrapped into ImzMLWriteException
-     */
-    public void write(String filename) throws ImzMLWriteException {
-        try {
-            String encoding = "ISO-8859-1";
-
-            raf = new RandomAccessFile(filename, "rw");
-
-            outputIndex = true;
-
-            OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(raf.getFD()), encoding);
-            BufferedWriter output = new BufferedWriter(out);
-
-            output.write("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>\n");
-            outputXML(raf, output, 0);
-
-            output.flush();
-            
-            raf.getChannel().truncate(raf.getFilePointer());
-            output.close();
-            
-            out.close();
-        } catch (IOException ex) {
-            throw new ImzMLWriteException("Error writing mzML file " + filename + ". " + ex.getLocalizedMessage(), ex);
-        }
-    }
-
     @Override
-    public void outputXML(RandomAccessFile raf, BufferedWriter output, int indent) throws IOException {
-        if (outputIndex) {
-            MzMLContent.indent(output, indent);
-            output.write("<indexedmzML");
-            output.write(" xmlns=\"http://psi.hupo.org/ms/mzml\"");
-            output.write(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
-            output.write(" xsi:schemaLocation=\"http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.2_idx.xsd\">\n");
-            
-            indent++;
-        }
-
-        MzMLContent.indent(output, indent);
-        output.write("<mzML");
+    public String getXMLAttributeText() {
+        String attributeText = "";
+        
         // Set up namespaces
-        output.write(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
-        output.write(" xsi:schemaLocation=\"http://psi.hupo.org/ms/mzml http://psidev.info/files/ms/mzML/xsd/mzML1.1.0.xsd\"");
-        output.write(" xmlns=\"http://psi.hupo.org/ms/mzml\"");
+        attributeText += "xmlns:xsi=\"" + MzML.XSI + "\"";
+        attributeText += " xsi:schemaLocation=\"" + MzML.SCHEMA_LOCATION + "\"";
+        attributeText += " xmlns=\"" + MzML.NAMESPACE + "\"";
         // Attributes
-        output.write(" version=\"" + XMLHelper.ensureSafeXML(version) + "\"");
+        attributeText += " version=\"" + XMLHelper.ensureSafeXML(version) + "\"";
         if (accession != null) {
-            output.write(" accession=\"" + XMLHelper.ensureSafeXML(accession) + "\"");
+            attributeText += " accession=\"" + XMLHelper.ensureSafeXML(accession) + "\"";
         }
         if (id != null) {
-            output.write(" id=\"" + XMLHelper.ensureSafeXML(id) + "\"");
-        }
-        output.write(">\n");
-
-        // TODO: This shouldn't be the case ...there should always be a cvList
-        if (cvList == null) {
-            cvList = new CVList(0);
-        }
-
-        cvList.outputXML(raf, output, indent + 1);
-
-        // FileDescription
-        fileDescription.outputXML(raf, output, indent + 1);
-
-        if (referenceableParamGroupList != null && referenceableParamGroupList.size() > 0) {
-            referenceableParamGroupList.outputXML(raf, output, indent + 1);
-        }
-
-        if (sampleList != null && sampleList.size() > 0) {
-            sampleList.outputXML(raf, output, indent + 1);
-        }
-
-        // SoftwareList
-        softwareList.outputXML(raf, output, indent + 1);
-
-        // ScanSettingsList
-        if (scanSettingsList != null && scanSettingsList.size() > 0) {
-            scanSettingsList.outputXML(raf, output, indent + 1);
-        }
-
-        // InstrumentConfigurationList
-        instrumentConfigurationList.outputXML(raf, output, indent + 1);
-
-        // DataProcessingList
-        dataProcessingList.outputXML(raf, output, indent + 1);
-
-        // Run
-        run.outputXML(raf, output, indent + 1);
-
-        MzMLContent.indent(output, indent);
-        output.write("</mzML>\n");
-
-        if (outputIndex) {
-            indent--;
-            
-            output.flush();
-            long indexListOffset = raf.getFilePointer();
-
-            MzMLContent.indent(output, indent + 1);
-            output.write("<indexList count=\"1\">\n");
-            MzMLContent.indent(output, indent + 2);
-            output.write("<index name=\"spectrum\">\n");
-
-            for (Spectrum spectrum : run.getSpectrumList()) {
-                MzMLContent.indent(output, indent + 3);
-                output.write("<offset idRef=\"" + spectrum.getID() + "\">" + spectrum.getmzMLLocation() + "</offset>\n");
-            }
-
-            MzMLContent.indent(output, indent + 2);
-            output.write("</index>\n");
-            MzMLContent.indent(output, indent + 1);
-            output.write("</indexList>\n");
-
-            MzMLContent.indent(output, indent + 1);
-            output.write("<indexListOffset>" + indexListOffset + "</indexListOffset>\n");
-
-            MzMLContent.indent(output, indent);
-            output.write("</indexedmzML>\n");
+            attributeText += " id=\"" + XMLHelper.ensureSafeXML(id) + "\"";
         }
         
-        output.flush();
+        return attributeText;
     }
-
+    
     @Override
     public String toString() {
         return "mzML";
@@ -674,19 +596,13 @@ public class MzML extends MzMLContentWithParams implements Serializable {
 
         SpectrumList spectrumList = getRun().getSpectrumList();
 
-        if (spectrumList.size() > 0) {
-            Spectrum spectrum = spectrumList.getSpectrum(0);
-            //for(Spectrum spectrum : spectrumList) {
+        
+        for(Spectrum spectrum : spectrumList) {
             closeDataStorage(spectrum.getDataLocation());
 
-            BinaryDataArrayList bdal = spectrum.getBinaryDataArrayList();
-
-            if (bdal.size() > 0) {
-                BinaryDataArray bda = bdal.get(0);
-
+            for(BinaryDataArray bda : spectrum.getBinaryDataArrayList()) {
                 closeDataStorage(bda.getDataLocation());
             }
-            //}
         }
     }
 
@@ -709,5 +625,46 @@ public class MzML extends MzMLContentWithParams implements Serializable {
                 }
             }
         }
+    }
+    
+    /**
+     * Adds default MS parameters values to supplied mzML. 
+     * 
+     * @param mzML MzML to add parameters to.
+     */
+    protected static void createDefaults(MzML mzML) {
+        CVList cvList = CVList.create();
+        mzML.setCVList(cvList);
+        
+        FileDescription fd = FileDescription.create();
+        mzML.setFileDescription(fd);
+        
+        SoftwareList softwareList = SoftwareList.create();
+        mzML.setSoftwareList(softwareList);
+        
+        InstrumentConfigurationList icList = InstrumentConfigurationList.create();
+        mzML.setInstrumentConfigurationList(icList);
+        
+        DataProcessingList dpList = DataProcessingList.create(softwareList.get(0));
+        mzML.setDataProcessingList(dpList);
+        
+        Run run = new Run("run", icList.get(0));
+        mzML.setRun(run);
+        
+        SpectrumList spectrumList = new SpectrumList(0, dpList.get(0));
+        run.setSpectrumList(spectrumList);
+    }
+    
+    /**
+     * Create default valid MzML. Calls {@link MzML#createDefaults(com.alanmrace.jimzmlparser.mzml.MzML)}.
+     *  
+     * @return Default MzML instance
+     */
+    public static MzML create() {
+        MzML mzML = new MzML(currentVersion);
+        
+        createDefaults(mzML);
+        
+        return mzML;
     }
 }

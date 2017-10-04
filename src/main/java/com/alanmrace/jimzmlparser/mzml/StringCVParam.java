@@ -1,6 +1,6 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import com.alanmrace.jimzmlparser.exceptions.CVParamAccessionNotFoundException;
+import com.alanmrace.jimzmlparser.event.ValueCVParamChangeEvent;
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 
 /**
@@ -22,9 +22,8 @@ public class StringCVParam extends CVParam {
      * @param term  Ontology term for the parameter
      * @param value Value of the parameter
      * @param units Ontology term for the units of the parameter
-     * @throws CVParamAccessionNotFoundException    Supplied a null value term
      */
-    public StringCVParam(OBOTerm term, String value, OBOTerm units) throws CVParamAccessionNotFoundException {
+    public StringCVParam(OBOTerm term, String value, OBOTerm units) {
         this(term, value);
 
         this.units = units;
@@ -33,17 +32,13 @@ public class StringCVParam extends CVParam {
     /**
      * Initialise a StringCVParam from an ontology term for the parameter and a 
      * value.
-     * 
-     * <p>TODO: Reconsider the error message thrown here - should probably be a 
-     * InvalidArgumentException (or similar).
-     * 
+     *  
      * @param term  Ontology term for the parameter
      * @param value Value of the parameter
-     * @throws CVParamAccessionNotFoundException    Supplied a null value term
      */
-    public StringCVParam(OBOTerm term, String value) throws CVParamAccessionNotFoundException {
+    public StringCVParam(OBOTerm term, String value) {
         if (term == null) {
-            throw (new CVParamAccessionNotFoundException("" + value));
+            throw (new IllegalArgumentException("OBOTerm cannot be null for StringCVParam"));
         }
 
         this.term = term;
@@ -76,7 +71,12 @@ public class StringCVParam extends CVParam {
      * @param value Value as a String
      */
     public void setValue(String value) {
+        String oldValue = this.value;
+        
         this.value = value;
+        
+        if(hasListeners())
+            notifyListeners(new ValueCVParamChangeEvent<String>(this, oldValue, value));
     }
 
     @Override
@@ -126,6 +126,11 @@ public class StringCVParam extends CVParam {
     @Override
     public void setValueAsString(String newValue) {
         setValue(newValue);
+    }
+
+    @Override
+    protected void resetValue() {
+        value = "";
     }
 
 }

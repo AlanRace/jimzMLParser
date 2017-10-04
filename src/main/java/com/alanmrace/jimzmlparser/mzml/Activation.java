@@ -1,7 +1,5 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import java.util.ArrayList;
-
 /**
  * Activation tag.
  *
@@ -41,22 +39,6 @@ public class Activation extends MzMLContentWithParams {
      */
     public Activation(Activation activation, ReferenceableParamGroupList rpgList) {
         super(activation, rpgList);
-    }
-
-    @Override
-    public ArrayList<OBOTermInclusion> getListOfRequiredCVParams() {
-        ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
-        required.add(new OBOTermInclusion(dissociationMethodID, false, true, true));
-
-        return required;
-    }
-
-    @Override
-    public ArrayList<OBOTermInclusion> getListOfOptionalCVParams() {
-        ArrayList<OBOTermInclusion> optional = new ArrayList<OBOTermInclusion>();
-        optional.add(new OBOTermInclusion(precursorActivationAttributeID, false, true, false));
-
-        return optional;
     }
 
     @Override

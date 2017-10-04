@@ -1,5 +1,7 @@
 package com.alanmrace.jimzmlparser.parser;
 
+import com.alanmrace.jimzmlparser.data.DataLocation;
+import com.alanmrace.jimzmlparser.data.BinaryDataStorage;
 import com.alanmrace.jimzmlparser.exceptions.FatalParseException;
 import com.alanmrace.jimzmlparser.exceptions.ImzMLParseException;
 import com.alanmrace.jimzmlparser.exceptions.InvalidImzML;
@@ -111,7 +113,7 @@ public class ImzMLHandler extends MzMLHeaderHandler {
         this.ibdFile = ibdFile;
 
         if (openDataStorage) {
-            this.dataStorage = new BinaryDataStorage(ibdFile);
+            this.dataStorage = new BinaryDataStorage(ibdFile, false);
         }
     }
 
@@ -280,7 +282,7 @@ public class ImzMLHandler extends MzMLHeaderHandler {
             try {
                 super.startElement(uri, localName, qName, attributes);
             } catch (InvalidMzML ex) {
-                throw new InvalidImzML(ex.getLocalizedMessage());
+                throw new InvalidImzML(ex.getLocalizedMessage(), ex);
             }
         }
 
@@ -304,7 +306,9 @@ public class ImzMLHandler extends MzMLHeaderHandler {
     public void endElement(String uri, String localName, String qName) throws SAXException {
         
         if (ibdFile != null && qName.equals("binaryDataArray")) {
-            currentBinaryDataArray.setDataLocation(new DataLocation(this.dataStorage, currentOffset, (int) this.currentNumBytes));
+            DataLocation location = new DataLocation(this.dataStorage, currentOffset, (int) this.currentNumBytes);
+            currentBinaryDataArray.setDataLocation(location);
+            location.setDataTransformation(currentBinaryDataArray.generateDataTransformation());
         }
 
         if ("scan".equals(qName) && processingSCiLS3DData) {

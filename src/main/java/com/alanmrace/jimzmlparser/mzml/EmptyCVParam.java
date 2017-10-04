@@ -5,9 +5,6 @@ import com.alanmrace.jimzmlparser.obo.OBOTerm;
 /**
  * CVParam with no value.
  * 
- * <p>TODO: Change the get values to throw an exception and change the RuntimeException 
- * to this exception too. 
- * 
  * @author Alan Race
  */
 public class EmptyCVParam extends CVParam {
@@ -18,6 +15,10 @@ public class EmptyCVParam extends CVParam {
      * @param term  Ontology term for the parameter
      */
     public EmptyCVParam(OBOTerm term) {
+        if (term == null) {
+            throw (new IllegalArgumentException("OBOTerm cannot be null for EmptyCVParam"));
+        }
+        
         this.term = term;
     }
     
@@ -29,6 +30,10 @@ public class EmptyCVParam extends CVParam {
      * @param units Ontology term for the units of the parameter
      */
     public EmptyCVParam(OBOTerm term, OBOTerm units) {
+        if (term == null) {
+            throw (new IllegalArgumentException("OBOTerm term cannot be null for EmptyCVParam"));
+        }
+        
         this.term = term;
         this.units = units;
     }
@@ -50,22 +55,26 @@ public class EmptyCVParam extends CVParam {
 
     @Override
     public double getValueAsDouble() {
-        return Double.NaN;
+        throw new UnsupportedOperationException("No value to get in EmptyCVParam");
     }
 
     @Override
     public int getValueAsInteger() {
-        return Integer.MIN_VALUE;
+        throw new UnsupportedOperationException("No value to get in EmptyCVParam");
     }
 
     @Override
     public long getValueAsLong() {
-        return Long.MIN_VALUE;
+        throw new UnsupportedOperationException("No value to get in EmptyCVParam");
     }
 
     @Override
     public void setValueAsString(String newValue) {
-        throw new RuntimeException("Cannot change the value of an empty CV param");
+        throw new UnsupportedOperationException("Cannot change the value of an EmptyCVParam");
+    }
+
+    @Override
+    protected void resetValue() {
     }
 
 }

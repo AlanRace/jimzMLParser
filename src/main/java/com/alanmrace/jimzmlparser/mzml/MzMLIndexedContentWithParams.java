@@ -1,13 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.alanmrace.jimzmlparser.mzml;
-
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.RandomAccessFile;
 
 /**
  * MzMLContent which can be indexed within the {@literal <indexList>} in the indexed
@@ -17,9 +8,14 @@ import java.io.RandomAccessFile;
  */
 public abstract class MzMLIndexedContentWithParams extends MzMLOrderedContentWithParams implements ReferenceableTag {
     
+    /**
+     * Unique identifier for the MzML tag.
+     */
     protected String id;
-    protected long mzMLLocation;
     
+    /**
+     * Set up default constructor, does nothing.
+     */
     protected MzMLIndexedContentWithParams() {
     }
     
@@ -55,15 +51,7 @@ public abstract class MzMLIndexedContentWithParams extends MzMLOrderedContentWit
     public void setID(String id) {
         this.id = id;
     }
-    
-    protected void setmzMLLocation(long mzMLLocation) {
-        this.mzMLLocation = mzMLLocation;
-    }
-    
-    protected long getmzMLLocation() {
-        return mzMLLocation;
-    }
-    
+        
     /**
      * Output attribute in the form of XML.
      *
@@ -72,22 +60,22 @@ public abstract class MzMLIndexedContentWithParams extends MzMLOrderedContentWit
      * @param index index of the content
      * @throws IOException Signals that an I/O exception has occurred.
      */
-    @Override
-    public void outputXML(RandomAccessFile raf, BufferedWriter output, int indent, int index) throws IOException {
-        String attributeText = getXMLAttributeText();
-        
-        MzMLContent.indent(output, indent);
-        output.write("<" + getTagName() + " index=\"" + index + "\"");
-        
-        if(attributeText != null && !attributeText.isEmpty())
-            output.write(" " + attributeText);
-        
-        output.write(">\n");
-
-        outputXMLContent(raf, output, indent + 1);
-
-        MzMLContent.indent(output, indent);
-        output.write("</" + getTagName() + ">\n");
-    }
+//    @Override
+//    public void outputXML(MzMLWritable output, int indent, int index) throws IOException {
+//        String attributeText = getXMLAttributeText();
+//        
+//        MzMLContent.indent(output, indent);
+//        output.writeMetadata("<" + getTagName() + " index=\"" + index + "\"");
+//        
+//        if(attributeText != null && !attributeText.isEmpty())
+//            output.writeMetadata(" " + attributeText);
+//        
+//        output.writeMetadata(">\n");
+//
+//        outputXMLContent(output, indent + 1);
+//
+//        MzMLContent.indent(output, indent);
+//        output.writeMetadata("</" + getTagName() + ">\n");
+//    }
     
 }

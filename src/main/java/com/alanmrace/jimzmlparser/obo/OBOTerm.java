@@ -35,25 +35,24 @@ public class OBOTerm implements Serializable {
      * The ontology namespace.
      */
     private String namespace;
-    
-    /**
-     * Name of the units for the ontology term (or null if no units).
-     * TODO: Consider removing this, as has_units should replace this.
-     */
-    private String unitName = null;
-    
+        
     /**
      * List of all OBOTerms which were listed as relationship: has_units.
      */
     private final List<OBOTerm> has_units;
+    
+    /**
+     * List of Strings containing all values which were listed as relationship: has_units.
+     */
+    protected final List<String> unitList;
 
     /**
-     * List of all OBOTerms which were listed as relationship: is_a.
+     * List of Strings containing all values which were listed as relationship: is_a.
      */
     private final List<String> is_a;
 
     /**
-     * List of all OBOTerms which were listed as relationship: part_of.
+     * List of Strings containing all values which were listed as relationship: part_of.
      */
     private final List<String> part_of;
 
@@ -65,7 +64,6 @@ public class OBOTerm implements Serializable {
 
     /**
      * List of all parent terms of this ontology term.
-     * TODO: Possibly consider removing this - is this different to is_a?
      */
     private final List<OBOTerm> parents;
     
@@ -331,11 +329,13 @@ public class OBOTerm implements Serializable {
      * @param id Unique identifier for the ontology term
      */
     public OBOTerm(String id) {
+        // TODO: Assign these only when necessary
         is_a = new ArrayList<String>();
         part_of = new ArrayList<String>();
         children = new ArrayList<OBOTerm>();
         parents = new ArrayList<OBOTerm>();
         has_units = new ArrayList<OBOTerm>();
+        unitList = new ArrayList<String>();
 
         this.id = id;
 
@@ -364,10 +364,6 @@ public class OBOTerm implements Serializable {
             this.name = value;
         } else if ("namespace".equals(tag)) {
             this.namespace = value;
-//        } else if ("def".equals(tag)) {
-//			this.def = value;
-//        } else if ("comment".equals(tag)) {
-//			this.comment = value;
         } else if ("relationship".equals(tag)) {
             int indexOfSpace = value.indexOf(" ");
             String relationshipTag = value.substring(0, indexOfSpace).trim();
@@ -376,11 +372,9 @@ public class OBOTerm implements Serializable {
             if ("is_a".equals(relationshipTag)) {
                 is_a.add(relationshipValue);
             } else if ("has_units".equals(relationshipTag)) {
-                unitName = relationshipValue;
+                unitList.add(relationshipValue);
             } else if ("part_of".equals(relationshipTag)) {
                 part_of.add(relationshipValue);
-            } else {
-                //System.out.println("INFO: Relationship tag not implemented '" + relationshipTag + "'");
             }
         } else if ("is_a".equals(tag)) {
             is_a.add(value);
@@ -421,10 +415,10 @@ public class OBOTerm implements Serializable {
                 } else {
                     logger.log(Level.INFO, "INFO: Unknown value-type encountered ''{0}'' @ {1}", new Object[] {value, id});
                 }
-            } else {
+//            } else {
                 //logger.log(Level.INFO, "INFO: Unknown xref encountered ''{0}'' @ {1}", new Object[] {value, id});
             }
-        } else {
+//        } else {
             //logger.log(Level.INFO, "INFO: Tag not implemented ''{0}''", tag);
         }
     }
@@ -590,46 +584,6 @@ public class OBOTerm implements Serializable {
     }
 
     /**
-     * Get the names of all child terms, as well as the names of all their children 
-     * (repeated recursively).
-     * 
-     * @return List of all child names
-     */
-    public List<String> getAllChildNames() {
-        ArrayList<String> allChildren = new ArrayList<String>();
-
-        for (OBOTerm child : children) {
-            child.getAllChildNames(allChildren, 0);
-        }
-
-        return allChildren;
-    }
-
-    /**
-     * Get the names of all child terms, as well as the names of all their children 
-     * (repeated recursively) where each child is indented by intent '-'
-     * and their children are indented by indent+1 '-' (repeated recursively).
-     * 
-     * <p>TODO: Consider refactoring - this shouldn't care about indenting.
-     * 
-     * @param allChildren List to add all children to
-     * @param indent Number of '-' to indent child names by
-     */
-    private void getAllChildNames(List<String> allChildren, int indent) {
-        String indented = "";
-
-        for (int i = 0; i < indent; i++) {
-            indented += "-";
-        }
-
-        allChildren.add(indented + toString());
-
-        for (OBOTerm child : children) {
-            child.getAllChildNames(allChildren, indent + 1);
-        }
-    }
-
-    /**
      * Get list of is_a relationships.
      * 
      * @return List of is_a relationships
@@ -663,17 +617,6 @@ public class OBOTerm implements Serializable {
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * Get the name of the units for the value of the ontology term.
-     * 
-     * TODO: Consider removing due to has_units
-     * 
-     * @return Name of units of the value
-     */
-    public String getUnitName() {
-        return unitName;
     }
 
     /**

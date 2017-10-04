@@ -1,6 +1,6 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import com.alanmrace.jimzmlparser.exceptions.CVParamAccessionNotFoundException;
+import com.alanmrace.jimzmlparser.event.ValueCVParamChangeEvent;
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 
 /**
@@ -22,9 +22,8 @@ public class LongCVParam extends CVParam {
      * @param term  Ontology term for the parameter
      * @param value Value of the parameter
      * @param units Ontology term for the units of the parameter
-     * @throws CVParamAccessionNotFoundException    Supplied a null value term
      */
-    public LongCVParam(OBOTerm term, long value, OBOTerm units) throws CVParamAccessionNotFoundException {
+    public LongCVParam(OBOTerm term, long value, OBOTerm units) {
         this(term, value);
 
         this.units = units;
@@ -34,16 +33,12 @@ public class LongCVParam extends CVParam {
      * Initialise a LongCVParam from an ontology term for the parameter and a 
      * value.
      * 
-     * <p>TODO: Reconsider the error message thrown here - should probably be a 
-     * InvalidArgumentException (or similar).
-     * 
      * @param term  Ontology term for the parameter
      * @param value Value of the parameter
-     * @throws CVParamAccessionNotFoundException    Supplied a null value term
      */
-    public LongCVParam(OBOTerm term, long value) throws CVParamAccessionNotFoundException {
+    public LongCVParam(OBOTerm term, long value) {
         if (term == null) {
-            throw (new CVParamAccessionNotFoundException("" + value));
+            throw (new IllegalArgumentException("OBOTerm cannot be null for LongCVParam"));
         }
 
         this.term = term;
@@ -76,7 +71,11 @@ public class LongCVParam extends CVParam {
      * @param value Value as a long
      */
     public void setValue(long value) {
+        long oldValue = this.value;
         this.value = value;
+        
+        if(hasListeners())
+            notifyListeners(new ValueCVParamChangeEvent<Long>(this, oldValue, this.value));
     }
 
     @Override
@@ -101,7 +100,14 @@ public class LongCVParam extends CVParam {
 
     @Override
     public void setValueAsString(String newValue) {
-        value = Long.parseLong(newValue);
+        long parsedValue = Long.parseLong(newValue);
+        
+        setValue(parsedValue);
+    }
+
+    @Override
+    protected void resetValue() {
+        value = 0;
     }
 
 }

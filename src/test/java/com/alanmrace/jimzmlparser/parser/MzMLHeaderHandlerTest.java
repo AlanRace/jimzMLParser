@@ -1,12 +1,12 @@
 package com.alanmrace.jimzmlparser.parser;
 
+import com.alanmrace.jimzmlparser.exceptions.FatalParseException;
 import com.alanmrace.jimzmlparser.mzml.MzML;
+import com.alanmrace.jimzmlparser.writer.MzMLWriter;
+import java.io.IOException;
 import java.util.logging.Logger;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.Ignore;
-import org.xml.sax.Attributes;
-import org.xml.sax.Locator;
 
 /**
  * Tests for MzMLHeaderHandler.
@@ -24,34 +24,20 @@ public class MzMLHeaderHandlerTest {
      * Resource mzML file for testing.
      */
     private static final String TEST_RESOURCE = "/2012_5_2_medium_81.mzML";
-
     /**
-     * Test of setDocumentLocator method, of class MzMLHeaderHandler.
+     * Resource mzML file for testing (from http://www.psidev.info/mzml_1_0_0%20).
      */
-    @Test
-    @Ignore
-    public void testSetDocumentLocator() {
-        System.out.println("setDocumentLocator");
-        Locator locator = null;
-        MzMLHeaderHandler instance = null;
-        instance.setDocumentLocator(locator);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
+    private static final String TINY_PWIZ_RESOURCE = "/tiny.pwiz.1.1.mzML";
     /**
-     * Test of setOpenDataStorage method, of class MzMLHeaderHandler.
+     * Resource mzML file for testing (modified version of above to have more fields).
      */
-    @Test
-    @Ignore
-    public void testSetOpenDataStorage() {
-        System.out.println("setOpenDataStorage");
-        boolean openDataStorage = false;
-        MzMLHeaderHandler instance = null;
-        instance.setOpenDataStorage(openDataStorage);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+    private static final String FULL_PWIZ_RESOURCE = "/full.pwiz.1.1.mzML";
+    
+    /**
+     * Boolean used to check whether an issue has been encountered during validation.
+     * Has to be class variable so that it can be used within lambda function/anonymous class.
+     */
+    private boolean encounteredIssue;
 
     /**
      * Test of parsemzMLHeader method, of class MzMLHeaderHandler.
@@ -60,7 +46,7 @@ public class MzMLHeaderHandlerTest {
      */
     @Test
     public void testParsemzMLHeader_String_boolean() throws Exception {
-        System.out.println("parsemzMLHeader");
+        System.out.println(" --- testParsemzMLHeader_String_boolean ---");
         
         assertNotNull("Test file missing", MzMLHeaderHandlerTest.class.getResource(TEST_RESOURCE));
         
@@ -69,7 +55,7 @@ public class MzMLHeaderHandlerTest {
         boolean openDataFile = false;
         MzML result = MzMLHeaderHandler.parsemzMLHeader(resourcePath, openDataFile);
         
-        //result.write("test.mzML");
+        assertNotNull(result);
     }
 
     /**
@@ -79,7 +65,7 @@ public class MzMLHeaderHandlerTest {
      */
     @Test
     public void testParsemzMLHeader_String() throws Exception {
-        System.out.println("parsemzMLHeader");
+        System.out.println(" --- testParsemzMLHeader_String --- ");
         
         assertNotNull("Test file missing", MzMLHeaderHandlerTest.class.getResource(TEST_RESOURCE));
         
@@ -90,74 +76,108 @@ public class MzMLHeaderHandlerTest {
     }
 
     /**
-     * Test of startElement method, of class MzMLHeaderHandler.
+     * Validate the generated MzML.
      * 
-     * @throws Exception ParseException thrown if invalid mzML or file missing
+     * @param resourcePath Location of the file to validate
      */
-    @Test
-    @Ignore
-    public void testStartElement() throws Exception {
-        System.out.println("startElement");
-        String uri = "";
-        String localName = "";
-        String qName = "";
-        Attributes attributes = null;
-        MzMLHeaderHandler instance = null;
-        instance.startElement(uri, localName, qName, attributes);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    protected void validateMzML(String resourcePath) {
+        encounteredIssue = false;
+        
+//        MzMLValidator instance = new MzMLValidator();
+//        instance.setFile(resourcePath);
+//
+//        instance.registerImzMLValidatorListener(new ImzMLValidatorListener() {
+//            @Override
+//            public void startingStep(ImzMLValidator.ValidatorStep step) {
+//            }
+//
+//            @Override
+//            public void finishingStep(ImzMLValidator.ValidatorStep step) {
+//            }
+//
+//            @Override
+//            public void issueFound(Issue issue) {
+//                Logger.getLogger(CreateSpectrumTest.class.getName()).log(Level.INFO, "({0}) {1}", new Object[]{issue.getIssueTitle(), issue.getIssueMessage()});
+//                encounteredIssue = true;
+//            }
+//        });
+//        
+//        instance.validate();
+        
+        if(encounteredIssue)
+            fail("Encountered too many issues!");
     }
-
-    /**
-     * Test of characters method, of class MzMLHeaderHandler.
-     * 
-     * @throws Exception ParseException thrown if invalid mzML or file missing
-     */
-    @Test
-    @Ignore
-    public void testCharacters() throws Exception {
-        System.out.println("characters");
-        char[] ch = null;
-        int start = 0;
-        int length = 0;
-        MzMLHeaderHandler instance = null;
-        instance.characters(ch, start, length);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of endElement method, of class MzMLHeaderHandler.
-     * 
-     * @throws Exception ParseException thrown if invalid mzML or file missing
-     */
-    @Test
-    @Ignore
-    public void testEndElement() throws Exception {
-        System.out.println("endElement");
-        String uri = "";
-        String localName = "";
-        String qName = "";
-        MzMLHeaderHandler instance = null;
-        instance.endElement(uri, localName, qName);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getmzML method, of class MzMLHeaderHandler.
-     */
-    @Test
-    @Ignore
-    public void testGetmzML() {
-        System.out.println("getmzML");
-        MzMLHeaderHandler instance = null;
-        MzML expResult = null;
-        MzML result = instance.getmzML();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
     
+    /**
+     * Test of parsing and subsequent writing out of MzML (using MzMLHandler.parsemzML) using
+     * example file from http://www.psidev.info/mzml_1_0_0%20.
+     * 
+     * @throws com.alanmrace.jimzmlparser.exceptions.FatalParseException Unrecoverable parse error occurred
+     * @throws java.io.IOException Issue reading or writing out the MzML
+     */
+    @Test
+    public void testmzML() throws FatalParseException, IOException {
+        String resourcePath = MzMLHeaderHandlerTest.class.getResource(TINY_PWIZ_RESOURCE).getFile();
+        
+        System.out.println(" ---- testmzML() ---- ");
+        System.out.println(resourcePath);
+        MzML mzML = MzMLHandler.parsemzML(resourcePath);
+        
+        MzMLWriter writer = new MzMLWriter();
+        resourcePath = resourcePath.replace(".mzML", ".output.mzML");
+        
+        writer.write(mzML, resourcePath);
+        
+        //MzML mzMLReloaded = MzMLHandler.parsemzML(resourcePath);
+        
+        validateMzML(resourcePath);
+    }
+    
+    /**
+     * Test of parsing and subsequent writing out of MzML (using MzMLHandler.parsemzMLHeader).
+     * 
+     * @throws com.alanmrace.jimzmlparser.exceptions.FatalParseException Unrecoverable parse error occurred
+     * @throws java.io.IOException Issue reading or writing out the MzML
+     */
+    @Test
+    public void testmzMLHeader() throws FatalParseException, IOException {
+        String resourcePath = MzMLHeaderHandlerTest.class.getResource(TINY_PWIZ_RESOURCE).getFile();
+        
+        System.out.println(" ---- testmzMLHeader() ---- ");
+        System.out.println(resourcePath);
+        MzML mzML = MzMLHeaderHandler.parsemzMLHeader(resourcePath);
+        
+        MzMLWriter writer = new MzMLWriter();
+        resourcePath = resourcePath.replace(".mzML", ".outputHeader.mzML");
+        
+        writer.write(mzML, resourcePath);
+        
+        //MzML mzMLReloaded = MzMLHeaderHandler.parsemzMLHeader(resourcePath);
+        
+        validateMzML(resourcePath);
+    }
+    
+    /**
+     * Test of parsing and subsequent writing out of MzML (using MzMLHandler.parsemzMLHeader).
+     * 
+     * @throws com.alanmrace.jimzmlparser.exceptions.FatalParseException Unrecoverable parse error occurred
+     * @throws java.io.IOException Issue reading or writing out the MzML
+     */
+    @Test
+    public void testfullmzMLHeader() throws FatalParseException, IOException {
+        System.out.println(" ---- testfullmzMLHeader() ---- ");
+        
+        String resourcePath = MzMLHeaderHandlerTest.class.getResource(FULL_PWIZ_RESOURCE).getFile();
+        
+        MzML mzML = MzMLHeaderHandler.parsemzMLHeader(resourcePath);
+        
+        MzMLWriter writer = new MzMLWriter();
+        resourcePath = resourcePath.replace(".mzML", ".outputHeader.mzML");
+        
+        writer.write(mzML, resourcePath);
+        
+        //MzML mzMLReloaded = MzMLHeaderHandler.parsemzMLHeader(resourcePath);
+        
+        validateMzML(resourcePath);
+    }
 }

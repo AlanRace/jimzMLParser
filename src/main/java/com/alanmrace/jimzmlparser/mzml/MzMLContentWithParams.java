@@ -1,12 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.alanmrace.jimzmlparser.mzml;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
+import com.alanmrace.jimzmlparser.event.CVParamAddedEvent;
+import com.alanmrace.jimzmlparser.event.CVParamRemovedEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -38,6 +33,9 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
      */
     private List<UserParam> userParams;
     
+    /**
+     * Default constructor which sets all lists of references to be ArrayLists.
+     */
     public MzMLContentWithParams() {
         referenceableParamGroupRefs = new ArrayList<ReferenceableParamGroupRef>();
         cvParams = new ArrayList<CVParam>();
@@ -89,10 +87,12 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
                     cvParams.add(new LongCVParam((LongCVParam) cvParam));
                 } else if (cvParam instanceof DoubleCVParam) {
                     cvParams.add(new DoubleCVParam((DoubleCVParam) cvParam));
+                } else if (cvParam instanceof IntegerCVParam) {
+                    cvParams.add(new IntegerCVParam((IntegerCVParam) cvParam));
                 } else if (cvParam instanceof EmptyCVParam) {
                     cvParams.add(new EmptyCVParam((EmptyCVParam) cvParam));
                 } else {
-                    throw new RuntimeException("Unknown CVParam type, unable to replicate: " + cvParam.getClass());
+                    throw new IllegalArgumentException("Unknown CVParam type, unable to replicate: " + cvParam.getClass());
                 }
             }
         }
@@ -164,15 +164,15 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
         return userParams;
     }
 
-    @Override
-    public List<OBOTermInclusion> getListOfRequiredCVParams() {
-        return null;
-    }
+//    @Override
+//    public List<OBOTermInclusion> getListOfRequiredCVParams() {
+//        return null;
+//    }
 
-    @Override
-    public List<OBOTermInclusion> getListOfOptionalCVParams() {
-        return null;
-    }
+//    @Override
+//    public List<OBOTermInclusion> getListOfOptionalCVParams() {
+//        return null;
+//    }
 
     @Override
     public void addReferenceableParamGroupRef(ReferenceableParamGroupRef rpg) {
@@ -227,16 +227,43 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
 
     @Override
     public void addCVParam(CVParam cvParam) {
-        getCVParamList().add(cvParam);
+        if(cvParam != null) {
+            getCVParamList().add(cvParam);
+
+            cvParam.setParent(this);
+
+            if(hasListeners())
+                notifyListeners(new CVParamAddedEvent(this, cvParam));
+        }
     }
 
+    public boolean containsCVParam(CVParam param) {
+        return cvParams.contains(param);
+    }
+    
     @Override
     public void removeCVParam(int index) {
         if (cvParams == null) {
             return;
         }
-
-        getCVParamList().remove(index);
+        
+        CVParam paramRemoved = getCVParamList().remove(index);
+        paramRemoved.setParent(null);
+        
+        if(hasListeners())
+            notifyListeners(new CVParamRemovedEvent(this, paramRemoved));
+    }
+    
+    @Override
+    public void removeCVParam(CVParam param) {
+        if(cvParams != null) {
+            if(cvParams.remove(param)) {
+                param.setParent(null);
+                
+                if(hasListeners())
+                    notifyListeners(new CVParamRemovedEvent(this, param));
+            }
+        }
     }
 
     @Override
@@ -255,6 +282,10 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
 
         for (CVParam cvParam : cvParamList) {
             cvParams.remove(cvParam);
+            cvParam.setParent(null);
+            
+            if(hasListeners())
+                notifyListeners(new CVParamRemovedEvent(this, cvParam));
         }
     }
 
@@ -268,12 +299,17 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
 
         for (CVParam cvParam : children) {
             cvParams.remove(cvParam);
+            cvParam.setParent(null);
+            
+            if(hasListeners())
+                notifyListeners(new CVParamRemovedEvent(this, cvParam));
         }
     }
 
     @Override
     public void addUserParam(UserParam userParam) {
         getUserParamList().add(userParam);
+        userParam.setParent(this);
     }
 
     @Override
@@ -282,7 +318,8 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
             return;
         }
 
-        userParams.remove(index);
+        UserParam removedParam = userParams.remove(index);
+        removedParam.setParent(null);
     }
 
     @Override
@@ -427,35 +464,6 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
             }
         }
 
-        // TODO: userParams
         return children;
     }
-
-//    @Override
-//    protected void outputXMLContent(BufferedWriter output, int indent) throws IOException {
-//        if (referenceableParamGroupRefs != null) {
-//            for (ReferenceableParamGroupRef ref : referenceableParamGroupRefs) {
-//                // TODO: Remove quick fix
-//                if (ref == null || ref.getReference() == null || ref.getReference().getID() == null) {
-//                    continue;
-//                }
-//
-//                ref.outputXML(output, indent);
-//            }
-//        }
-//
-//        if (cvParams != null) {
-//            for (CVParam cvParam : cvParams) {
-//                if (cvParam != null) {
-//                    cvParam.outputXML(output, indent);
-//                }
-//            }
-//        }
-//
-//        if (userParams != null) {
-//            for (UserParam userParam : userParams) {
-//                userParam.outputXML(output, indent);
-//            }
-//        }
-//    }
 }

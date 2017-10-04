@@ -32,21 +32,27 @@ public class ImzMLContainer implements MassSpectrometryImagingData {
     protected ImzML[][][] pixelImzML;
     
     /**
-     * List of imzML files, should be kept in sync with {@link ImzMLContainer.ibdFiles}.
+     * List of imzML files, should be kept in sync with {@link ImzMLContainer#ibdFiles}.
      */
     protected ArrayList<ImzML> imzMLFiles;
 
     /**
-     * List of IBD files, should be kept in sync with {@link ImzMLContainer.imzMLFiles}.
+     * List of IBD files, should be kept in sync with {@link ImzMLContainer#imzMLFiles}.
      */
     protected ArrayList<File> ibdFiles;
     
+    /**
+     * Create an imzML container with a specific size in pixels.
+     * 
+     * @param width     Number of pixels wide.
+     * @param height    Number of pixels hight.
+     */
     public ImzMLContainer(int width, int height) {
         this(width, height, 1);
     }
     
     /**
-     * Create an imzML container with specific size.
+     * Create an imzML container with specific size in pixels.
      * 
      * @param width     Number of pixels wide.
      * @param height    Number of pixels hight.

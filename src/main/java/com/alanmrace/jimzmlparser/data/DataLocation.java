@@ -1,15 +1,22 @@
-package com.alanmrace.jimzmlparser.parser;
+package com.alanmrace.jimzmlparser.data;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.DataFormatException;
 
 /**
  * The location of specific data within a {@link DataStorage}.
  * 
  * @author Alan Race
  */
-public class DataLocation {
+public class DataLocation implements Serializable {
+    
+    /**
+     * Serialisation version ID.
+     */
+    private static final long serialVersionUID = 1L;
     
     /**
      * Logger for the class.
@@ -23,7 +30,7 @@ public class DataLocation {
      * 
      * <p>EXTENDED_OFFSET = 2^32 = 4294967296.
      */
-    public static long EXTENDED_OFFSET = 4294967296L; // 2^32
+    public static final long EXTENDED_OFFSET = 4294967296L; // 2^32
     
     /**
      * The location and storage type of the data.
@@ -40,6 +47,13 @@ public class DataLocation {
      * The length in bytes of the data.
      */
     protected int length;
+    
+    /**
+     * The data transformation such that when {@link DataTransformation#performReverseTransform(byte[])}
+     * is applied it will convert the raw input binary as it appears in the 
+     * {@link DataLocation#dataStorage} to a double[].
+     */
+    protected DataTransformation dataTransformation;
     
     /**
      * Construct a DataLocation at a specific offset, with a specific length within
@@ -89,7 +103,7 @@ public class DataLocation {
      * @return byte[] containing the data 
      * @throws IOException can be thrown by dataStorage if the data storage is on disk
      */
-    public byte[] getData() throws IOException {
+    public byte[] getBytes() throws IOException {
         if(length <= 0) {
             logger.log(Level.FINER, "Data is of size {0} for {1}", new Object[] {length, dataStorage});
 
@@ -102,6 +116,51 @@ public class DataLocation {
         }
         
         return dataStorage.getData(offset, length);
+    }
+    
+//    public byte[] getConvertedBytes() throws DataFormatException, IOException {
+//        byte[] data = getBytes();
+//        
+//        if(dataTransformation == null)
+//            return data;
+//        
+//        return dataTransformation.performReverseTransform(data);
+//    }
+
+    /**
+     * Gets the raw data from the DataStorage using {@link DataLocation#getBytes()} and
+     * applies the {@link DataLocation#dataTransformation} to convert the byte[] 
+     * to a double[]. If no {@link DataTransformation} has been supplied then this 
+     * method will just convert the byte[] to a double[] directly, therefore if
+     * the data is not stored as a double[], then a DataTransformation should be
+     * added which performs the necessary data type -> double transformation.
+     * 
+     * @return Converted and decompressed data as double[]
+     * @throws DataFormatException Issue with converting the data
+     * @throws IOException Issue reading the raw data
+     * 
+     * @see DataTransformation
+     */
+    
+    public double[] getData() throws DataFormatException, IOException {
+        byte[] data = getBytes();
+        
+        if(dataTransformation == null)
+            return DataTypeTransform.convertDataToDouble(data, DataTypeTransform.DataType.Double);
+        
+        return dataTransformation.performReverseTransform(data);
+    }
+    
+    /**
+     * Set the data transformation which describes how the data was originally 
+     * converted from a byte[] representation of double[] to how it was stored in
+     * the {@link DataStorage}. This could one or more steps such as data type conversion 
+     * and compression.
+     *
+     * @param transformation DataTransformation applied to generate the data in the DataLocation
+     */
+    public void setDataTransformation(DataTransformation transformation) {
+        this.dataTransformation = transformation;
     }
     
     @Override

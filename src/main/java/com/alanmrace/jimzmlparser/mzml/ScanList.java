@@ -2,26 +2,56 @@ package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
+import com.alanmrace.jimzmlparser.obo.OBO;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Class describing {@literal <scanList>} tag.
+ * 
+ * @author Alan Race
+ */
 public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan> {
 
     /**
-     *
+     * Serialisation version ID.
      */
     private static final long serialVersionUID = 1L;
 
-    public static String spectraCombinationID = "MS:1000570";
+    /**
+     * Accession: Spectra combination (MS:1000570).
+     */
+    public static final String spectraCombinationID = "MS:1000570";
+    
+    /**
+     * Accession: No spectral combination (MS:1000795).
+     */
+    public static final String noCombinationID = "MS:1000795";
 
+    /**
+     * List of Scans.
+     */
     protected List<Scan> scanList;
 
+    /**
+     * Create an empty list with specified capacity.
+     * 
+     * @param count Capacity
+     */
     public ScanList(int count) {
         scanList = new ArrayList<Scan>(count);
     }
 
+    /**
+     * Copy constructor.
+     *
+     * @param scanList Old ScanList to copy
+     * @param rpgList New ReferenceableParamGroupList to match references to
+     * @param sourceFileList New SourceFileList to match references to
+     * @param icList New InstrumentConfigurationList to match references to
+     */
     public ScanList(ScanList scanList, ReferenceableParamGroupList rpgList, SourceFileList sourceFileList,
             InstrumentConfigurationList icList) {
         super(scanList, rpgList);
@@ -32,18 +62,6 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
             this.scanList.add(new Scan(scan, rpgList, icList, sourceFileList));
         }
     }
-
-    @Override
-    public List<OBOTermInclusion> getListOfRequiredCVParams() {
-        ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
-        required.add(new OBOTermInclusion(spectraCombinationID, true, true, false));
-
-        return required;
-    }
-
-    public void addScan(Scan scan) {
-        add(scan);
-    }
     
     @Override
     public void add(Scan scan) {
@@ -52,27 +70,37 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
         scanList.add(scan);
     }
 
-    @Override
-    public int size() {
-        return scanList.size();
+    /**
+     * Add Scan. Helper method to retain API, calls 
+     * {@link ScanList#add(com.alanmrace.jimzmlparser.mzml.MzMLTag)}.
+     * 
+     * @param scan Scan to add to list
+     */
+    public void addScan(Scan scan) {
+        add(scan);
     }
 
+    @Override
+    public Scan get(int index) {
+        return scanList.get(index);
+    }
+    
+    /**
+     * Returns Scan at specified index in list. Helper method to retain 
+     * API, calls {@link ScanList#get(int)}.
+     * 
+     * @param index Index in the list
+     * @return Scan at index, or null if none exists
+     */
     public Scan getScan(int index) {
         return scanList.get(index);
     }
     
     @Override
-    public Scan get(int index) {
-        return scanList.get(index);
+    public int size() {
+        return scanList.size();
     }
 
-//	public double getScanStartTime() {
-//		// TODO: Take into account multiple scans
-//		if(scanList.size() > 0)
-//			return scanList.get(0).getScanStartTime();
-//		
-//		return -1;
-//	}
     @Override
     protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLTag> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/scan")) {
@@ -87,7 +115,7 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
     }
 
     @Override
-    protected String getXMLAttributeText() {
+    public String getXMLAttributeText() {
         return "count=\"" + scanList.size() + "\"";
     }
 
@@ -117,5 +145,19 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
     @Override
     public Scan remove(int index) {
         return scanList.remove(index);
+    }
+    
+    @Override
+    public boolean remove(Scan item) {
+        return scanList.remove(item);
+    }
+    
+    public static ScanList create() {
+        ScanList scanList = new ScanList(1);
+        scanList.add(Scan.create());
+        
+        scanList.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ScanList.noCombinationID)));
+        
+        return scanList;
     }
 }

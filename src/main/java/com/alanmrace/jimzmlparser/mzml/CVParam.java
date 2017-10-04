@@ -1,13 +1,12 @@
 package com.alanmrace.jimzmlparser.mzml;
 
+import com.alanmrace.jimzmlparser.event.CVParamChangeEvent;
+import com.alanmrace.jimzmlparser.event.OBOTermCVParamChangeEvent;
 import com.alanmrace.jimzmlparser.exceptions.InvalidFormatIssue;
 import com.alanmrace.jimzmlparser.exceptions.NonFatalParseException;
-import java.io.BufferedWriter;
-import java.io.IOException;
 
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
-import java.io.RandomAccessFile;
 
 /**
  * Base class of CVParam with no type. Describes the {@literal <cvParam>} tag.
@@ -46,6 +45,28 @@ public abstract class CVParam extends MzMLContent {
     public OBOTerm getTerm() {
         return term;
     }
+    
+    /**
+     * Set the OBOTerm and reset value and units to null.
+     * 
+     * @param term 
+     */
+    public void setTerm(OBOTerm term) {
+        OBOTerm oldTerm = this.term;
+        
+        this.term = term;
+        this.units = null;
+        
+        resetValue();
+        
+        if(hasListeners())
+            notifyListeners(new OBOTermCVParamChangeEvent(this, oldTerm, term));
+    }
+    
+    /**
+     * Set the value of the CV parameter to be the default value.
+     */
+    protected abstract void resetValue();
 
     /**
      * Get the ontology term for the units of the value of this cvParam, or null if none.
@@ -56,6 +77,18 @@ public abstract class CVParam extends MzMLContent {
         return units;
     }
 
+    /**
+     * Set the units of the CV parameter as the specified ontology term.
+     * 
+     * @param units Ontology term describing the units
+     */
+    public void setUnits(OBOTerm units) {
+        this.units = units;
+        
+        if(hasListeners())
+            notifyListeners(new CVParamChangeEvent(this));
+    }
+    
     @Override
     public String getTagName() {
         return "cvParam";
@@ -113,29 +146,50 @@ public abstract class CVParam extends MzMLContent {
     public abstract void setValueAsString(String newValue);
 
     @Override
-    public void outputXML(RandomAccessFile raf, BufferedWriter output, int indent) throws IOException {
-        MzMLContent.indent(output, indent);
+    public String getXMLAttributeText() {
+        String attributes = "cvRef=\"" + XMLHelper.ensureSafeXML(term.getNamespace()) + "\"";
+        attributes += " accession=\"" + XMLHelper.ensureSafeXML(term.getID()) + "\"";
+        attributes += " name=\"" + XMLHelper.ensureSafeXML(term.getName()) + "\"";
         
-        output.write("<cvParam");
-
-        output.write(" cvRef=\"" + XMLHelper.ensureSafeXML(term.getNamespace()) + "\"");
-        output.write(" accession=\"" + XMLHelper.ensureSafeXML(term.getID()) + "\"");
-        output.write(" name=\"" + XMLHelper.ensureSafeXML(term.getName()) + "\"");
-
         String value = getValueAsString();
-
+        
         if (value != null && !value.equals("null")) {
-            output.write(" value=\"" + XMLHelper.ensureSafeXML(value) + "\"");
+            attributes += " value=\"" + XMLHelper.ensureSafeXML(value) + "\"";
         }
 
         if (units != null) {
-            output.write(" unitCvRef=\"" + XMLHelper.ensureSafeXML(units.getNamespace()) + "\"");
-            output.write(" unitAccession=\"" + XMLHelper.ensureSafeXML(units.getID()) + "\"");
-            output.write(" unitName=\"" + XMLHelper.ensureSafeXML(units.getName()) + "\"");
+            attributes += " unitCvRef=\"" + XMLHelper.ensureSafeXML(units.getNamespace()) + "\"";
+            attributes += " unitAccession=\"" + XMLHelper.ensureSafeXML(units.getID()) + "\"";
+            attributes += " unitName=\"" + XMLHelper.ensureSafeXML(units.getName()) + "\"";
         }
-
-        output.write("/>\n");
+        
+        return attributes;
     }
+    
+//    @Override
+//    public void outputXML(MzMLWritable output, int indent) throws IOException {
+//        MzMLContent.indent(output, indent);
+//        
+//        output.writeMetadata("<cvParam");
+//
+//        output.writeMetadata(" cvRef=\"" + XMLHelper.ensureSafeXML(term.getNamespace()) + "\"");
+//        output.writeMetadata(" accession=\"" + XMLHelper.ensureSafeXML(term.getID()) + "\"");
+//        output.writeMetadata(" name=\"" + XMLHelper.ensureSafeXML(term.getName()) + "\"");
+//
+//        String value = getValueAsString();
+//
+//        if (value != null && !value.equals("null")) {
+//            output.writeMetadata(" value=\"" + XMLHelper.ensureSafeXML(value) + "\"");
+//        }
+//
+//        if (units != null) {
+//            output.writeMetadata(" unitCvRef=\"" + XMLHelper.ensureSafeXML(units.getNamespace()) + "\"");
+//            output.writeMetadata(" unitAccession=\"" + XMLHelper.ensureSafeXML(units.getID()) + "\"");
+//            output.writeMetadata(" unitName=\"" + XMLHelper.ensureSafeXML(units.getName()) + "\"");
+//        }
+//
+//        output.writeMetadata("/>\n");
+//    }
 
     /**
      * List of possible cvParam sub types, corresponding to a value type.
@@ -192,6 +246,7 @@ public abstract class CVParam extends MzMLContent {
                 break;
             case Float:
             case Double:
+            case NonNegativeFloat:
                 type = CVParamType.Double;
                 break;
             case Int:
@@ -210,6 +265,41 @@ public abstract class CVParam extends MzMLContent {
         return type;
     }
     
+    /**
+     * Create a CV parameter with the correct type based on the ontology term.
+     * 
+     * @param term Ontology term around which a CV parameter to be created
+     * @param units Ontology term describing the units of the CV parameter
+     * @return Subclass instance of CVParam depending on ontology term supplied
+     * @throws NonFatalParseException If no type can be determined from {@code term} then NonFatalParseException is thrown
+     */
+    public static CVParam createCVParam(OBOTerm term, OBOTerm units) throws NonFatalParseException {
+        CVParam param;
+        
+        switch(getCVParamType(term)) {
+            case String:
+                param = new StringCVParam(term, "", units);
+                break;
+            case Double:
+                param = new DoubleCVParam(term, 0.0, units);
+                break;
+            case Long:
+                param = new LongCVParam(term, 0, units);
+                break;
+            case Integer:
+                param = new IntegerCVParam(term, 0, units);
+                break;
+            case Boolean:
+                param = new BooleanCVParam(term, false, units);
+                break;
+            default:
+                param = new EmptyCVParam(term, units);
+                break;
+        }
+        
+        return param;
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (o == this) {
@@ -222,6 +312,9 @@ public abstract class CVParam extends MzMLContent {
 
         CVParam cvParam = (CVParam) o;
 
+        if(cvParam instanceof EmptyCVParam)
+            return cvParam.getTerm().equals(term);
+        
         return cvParam.getTerm().equals(term)
                 && (cvParam.getValueAsString().equals(getValueAsString()))
                 && //				((value == null || cvParam.getValue() == null) ? true : cvParam.getValue().equals(value)) && 
@@ -235,10 +328,5 @@ public abstract class CVParam extends MzMLContent {
         hash = 53 * hash + (this.units != null ? this.units.hashCode() : 0);
         hash = 53 * hash + (getValueAsString() != null ? getValueAsString().hashCode() : 0);
         return hash;
-    }
-
-    @Override
-    public void setParent(MzMLTag parent) {
-        // This is a dummy function only included to allow the removal
     }
 }

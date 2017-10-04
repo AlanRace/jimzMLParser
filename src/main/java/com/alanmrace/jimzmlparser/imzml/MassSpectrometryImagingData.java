@@ -13,7 +13,7 @@ public interface MassSpectrometryImagingData {
      * Get the full m/z list that is the union of all individual m/z lists
      * from each spectrum within the dataset.
      * 
-     * @return
+     * @return List of all m/z values within the dataset
      */
     public double[] getFullmzList();
 
@@ -21,7 +21,7 @@ public interface MassSpectrometryImagingData {
      * Get the spatial dimensionality. 1 if MS experiment, 2 if MSI experiment 
      * or 3 if 3D MSI experiment.
      * 
-     * @return
+     * @return Spatial dimensionality
      */
     public int getSpatialDimensionality();
 
@@ -31,7 +31,7 @@ public interface MassSpectrometryImagingData {
      * for m/z dimension. If MS/MS or ion mobility then dimensionality is increased
      * by a further 1.
      * 
-     * @return
+     * @return Dimensionality
      */
     public int getDimensionality();
 
@@ -40,7 +40,7 @@ public interface MassSpectrometryImagingData {
      * as ion mobility or MS/MS. For example, for travelling wave ion
      * mobility data on a Synapt G2S-i this will be 200. 
      * 
-     * @return
+     * @return Number of spectra per pixel
      */
     public int getNumberOfSpectraPerPixel();
 

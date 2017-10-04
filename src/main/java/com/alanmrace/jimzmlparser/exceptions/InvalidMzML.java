@@ -6,13 +6,24 @@ package com.alanmrace.jimzmlparser.exceptions;
  * 
  * @author Alan Race
  */
-public class InvalidMzML extends RuntimeException implements ParseIssue {
+public class InvalidMzML extends FatalParseException implements ParseIssue {
 
     /**
      * Serialisation version ID.
      */
     private static final long serialVersionUID = -5265931318748556126L;
 
+    /**
+     * Set up InvalidMzML with a message and a previous exception which triggered
+     * this being created.
+     * 
+     * @param message Description of the exception
+     * @param ex Issue that caused this exception
+     */
+    public InvalidMzML(String message, Exception ex) {
+        super(message, ex);
+    }
+    
     /**
      * Set up InvalidMzML with a message.
      * 

@@ -3,7 +3,6 @@ package com.alanmrace.jimzmlparser.exceptions;
 /**
  * Issue interface.
  * 
- * 
  * @author Alan Race
  */
 public interface Issue {

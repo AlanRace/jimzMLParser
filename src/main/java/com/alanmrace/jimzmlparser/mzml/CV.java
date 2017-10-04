@@ -19,6 +19,16 @@ public class CV extends MzMLIDContent implements Serializable {
      * Default location for the mass spectrometry imaging ontology.
      */
     public static final String IMS_URI = "http://www.maldi-msi.org/download/imzml/imagingMS.obo";
+    
+    /**
+     * Default location for the mass spectrometry ontology.
+     */
+    public static final String MS_URI = "http://purl.obolibrary.org/obo/ms.obo";
+    
+    /**
+     * Default location for the units ontology.
+     */
+    public static final String UO_URI = "http://obo.cvs.sourceforge.net/viewvc/obo/obo/ontology/phenotype/unit.obo";
 
     /**
      * The URI for the ontology [Required].
@@ -99,7 +109,7 @@ public class CV extends MzMLIDContent implements Serializable {
     }
 
     @Override
-    protected String getXMLAttributeText() {
+    public String getXMLAttributeText() {
         String attributeText = "URI=\"" + XMLHelper.ensureSafeXML(uri) + "\"";
         attributeText += " fullName=\"" + XMLHelper.ensureSafeXML(fullName) + "\"";
         attributeText += " id=\"" + XMLHelper.ensureSafeXML(id) + "\"";

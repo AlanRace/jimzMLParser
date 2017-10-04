@@ -1,6 +1,6 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import com.alanmrace.jimzmlparser.exceptions.CVParamAccessionNotFoundException;
+import com.alanmrace.jimzmlparser.event.ValueCVParamChangeEvent;
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 
 /**
@@ -22,9 +22,8 @@ public class BooleanCVParam extends CVParam {
      * @param term  Ontology term for the parameter
      * @param value Value of the parameter
      * @param units Ontology term for the units of the parameter
-     * @throws CVParamAccessionNotFoundException    Supplied a null value term
      */
-    public BooleanCVParam(OBOTerm term, boolean value, OBOTerm units) throws CVParamAccessionNotFoundException {
+    public BooleanCVParam(OBOTerm term, boolean value, OBOTerm units) {
         this(term, value);
 
         this.units = units;
@@ -34,16 +33,12 @@ public class BooleanCVParam extends CVParam {
      * Initialise a BooleanCVParam from an ontology term for the parameter and a 
      * value.
      * 
-     * <p>TODO: Reconsider the error message thrown here - should probably be a 
-     * InvalidArgumentException (or similar).
-     * 
      * @param term  Ontology term for the parameter
      * @param value Value of the parameter
-     * @throws CVParamAccessionNotFoundException    Supplied a null value term
      */
-    public BooleanCVParam(OBOTerm term, boolean value) throws CVParamAccessionNotFoundException {
+    public BooleanCVParam(OBOTerm term, boolean value) {
         if (term == null) {
-            throw (new CVParamAccessionNotFoundException("" + value));
+            throw (new IllegalArgumentException("OBOTerm cannot be null for BooleanCVParam"));
         }
 
         this.term = term;
@@ -83,7 +78,17 @@ public class BooleanCVParam extends CVParam {
 
     @Override
     public void setValueAsString(String newValue) {
+        boolean oldValue = this.value;
+        
         value = Boolean.parseBoolean(newValue);
+        
+        if(hasListeners())
+            notifyListeners(new ValueCVParamChangeEvent<Boolean>(this, oldValue, value));
+    }
+
+    @Override
+    protected void resetValue() {
+        value = false;
     }
     
 }

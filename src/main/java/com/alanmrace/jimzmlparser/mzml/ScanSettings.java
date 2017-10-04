@@ -1,8 +1,6 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Class describing a {@literal <scanSettings>} tag.
@@ -12,119 +10,124 @@ import java.util.List;
 public class ScanSettings extends MzMLContentWithParams implements ReferenceableTag {
 
     /**
-     * Serialisaiton version ID.
+     * Serialisation version ID.
      */
     private static final long serialVersionUID = 1L;
 
     /**
      * Accession: line scan direction (IMS:1000049).
      */
-    public static String lineScanDirectionID = "IMS:1000049";
+    public static final String lineScanDirectionID = "IMS:1000049";
 
     /**
      * Accession: line scan direction left-right (IMS:1000491).
      */
-    public static String lineScanDirectionLeftRightID = "IMS:1000491";
+    public static final String lineScanDirectionLeftRightID = "IMS:1000491";
 
     /**
      * Accession: line scan direction right-left (IMS:1000490).
      */
-    public static String lineScanDirectionRightLeftID = "IMS:1000490";
+    public static final String lineScanDirectionRightLeftID = "IMS:1000490";
 
     /**
      * Accession: line scan direction top-down (IMS:1000493).
      */
-    public static String lineScanDirectionTopDownID = "IMS:1000493";
+    public static final String lineScanDirectionTopDownID = "IMS:1000493";
 
     /**
      * Accession: line scan direction bottom-up (IMS:1000492).
      */
-    public static String lineScanDirectionBottomUpID = "IMS:1000492";
+    public static final String lineScanDirectionBottomUpID = "IMS:1000492";
 
     /**
      * Accession: scan direction (IMS:1000040).
      */
-    public static String scanDirectionID = "IMS:1000040";
+    public static final String scanDirectionID = "IMS:1000040";
 
     /**
      * Accession: scan direction top-down (IMS:1000401).
      */
-    public static String scanDirectionTopDownID = "IMS:1000401";
+    public static final String scanDirectionTopDownID = "IMS:1000401";
 
     /**
      * Accession: scan direction bottom-up (IMS:1000400).
      */
-    public static String scanDirectionBottomUpID = "IMS:1000400";
+    public static final String scanDirectionBottomUpID = "IMS:1000400";
 
     /**
      * Accession: scan direction left-right (IMS:1000402).
      */
-    public static String scanDirectionLeftRightID = "IMS:1000402";
+    public static final String scanDirectionLeftRightID = "IMS:1000402";
 
     /**
      * Accession: scan direction right-left (IMS:1000403).
      */
-    public static String scanDirectionRightLeftID = "IMS:1000403";
+    public static final String scanDirectionRightLeftID = "IMS:1000403";
 
     /**
      * Accession: scan pattern (IMS:1000041).
      */
-    public static String scanPatternID = "IMS:1000041";
+    public static final String scanPatternID = "IMS:1000041";
 
     /**
      * Accession: scan pattern flyback (IMS:1000413).
      */
-    public static String scanPatternFlybackID = "IMS:1000413";
+    public static final String scanPatternFlybackID = "IMS:1000413";
 
     /**
      * Accession: scan pattern meandering (IMS:1000410).
      */
-    public static String scanPatternMeanderingID = "IMS:1000410";
+    public static final String scanPatternMeanderingID = "IMS:1000410";
 
     /**
      * Accession: scan pattern random access (IMS:1000412).
      */
-    public static String scanPatternRandomAccessID = "IMS:1000412";
+    public static final String scanPatternRandomAccessID = "IMS:1000412";
 
     /**
      * Accession: scan type (IMS:1000048).
      */
-    public static String scanTypeID = "IMS:1000048";
+    public static final String scanTypeID = "IMS:1000048";
+    
+    /**
+     * Accession: scan type horizontal (IMS:1000480).
+     */
+    public static final String scanTypeHorizontalID = "IMS:1000480";
 
     /**
      * Accession: scan type vertical (IMS:1000481).
      */
-    public static String scanTypeVerticalID = "IMS:1000481";
+    public static final String scanTypeVerticalID = "IMS:1000481";
 
     /**
      * Accession: image (IMS:1000004).
      */
-    public static String imageID = "IMS:1000004";
+    public static final String imageID = "IMS:1000004";
 
     /**
      * Accession: max count pixel x (IMS:1000042).
      */
-    public static String maxCountPixelXID = "IMS:1000042";
+    public static final String maxCountPixelXID = "IMS:1000042";
 
     /**
      * Accession: max count pixel y (IMS:1000043).
      */
-    public static String maxCountPixelYID = "IMS:1000043";
+    public static final String maxCountPixelYID = "IMS:1000043";
 
     /**
      * Accession: max dimension x (IMS:1000044).
      */
-    public static String maxDimensionXID = "IMS:1000044";
+    public static final String maxDimensionXID = "IMS:1000044";
 
     /**
      * Accession: max dimension y (IMS:1000045).
      */
-    public static String maxDimensionYID = "IMS:1000045";
+    public static final String maxDimensionYID = "IMS:1000045";
 
     /**
      * Accession: pixel area (IMS:1000046).
      */
-    public static String pixelAreaID = "IMS:1000046";
+    public static final String pixelAreaID = "IMS:1000046";
 
     // Attributes
 
@@ -141,7 +144,7 @@ public class ScanSettings extends MzMLContentWithParams implements Referenceable
     private SourceFileRefList sourceFileRefList;
     
     /**
-     * TargetList [Required]
+     * TargetList [Required].
      */
     private TargetList targetList;
 
@@ -176,25 +179,6 @@ public class ScanSettings extends MzMLContentWithParams implements Referenceable
     }
 
     @Override
-    public List<OBOTermInclusion> getListOfRequiredCVParams() {
-        ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
-        required.add(new OBOTermInclusion(lineScanDirectionID, true, true, false));
-        required.add(new OBOTermInclusion(scanDirectionID, true, true, false));
-        required.add(new OBOTermInclusion(scanPatternID, true, true, false));
-        required.add(new OBOTermInclusion(scanTypeID, true, true, false));
-
-        return required;
-    }
-
-    @Override
-    public List<OBOTermInclusion> getListOfOptionalCVParams() {
-        ArrayList<OBOTermInclusion> optional = new ArrayList<OBOTermInclusion>();
-        optional.add(new OBOTermInclusion(imageID, false, true, false));
-
-        return optional;
-    }
-
-    @Override
     public String getID() {
         return id;
     }
@@ -202,7 +186,7 @@ public class ScanSettings extends MzMLContentWithParams implements Referenceable
     /**
      * Set SourceFileList.
      * 
-     * @param sourceFileRefList
+     * @param sourceFileRefList SourceFileList
      */
     public void setSourceFileRefList(SourceFileRefList sourceFileRefList) {
         sourceFileRefList.setParent(this);
@@ -213,7 +197,7 @@ public class ScanSettings extends MzMLContentWithParams implements Referenceable
     /**
      * Set TargetList.
      * 
-     * @param targetList
+     * @param targetList TargetList
      */
     public void setTargetList(TargetList targetList) {
         targetList.setParent(this);
@@ -224,7 +208,7 @@ public class ScanSettings extends MzMLContentWithParams implements Referenceable
     /**
      * Get CVParam or child CVParam of line scan direction, or null if one is not found.
      * 
-     * @return
+     * @return CVParam if found, null otherwise
      * @see ScanSettings#lineScanDirectionID
      * @see ScanSettings#lineScanDirectionLeftRightID
      * @see ScanSettings#lineScanDirectionRightLeftID
@@ -238,7 +222,7 @@ public class ScanSettings extends MzMLContentWithParams implements Referenceable
     /**
      * Get CVParam or child CVParam of scan direction, or null if one is not found.
      * 
-     * @return
+     * @return CVParam if found, null otherwise
      * @see ScanSettings#scanDirectionID
      * @see ScanSettings#scanDirectionLeftRightID
      * @see ScanSettings#scanDirectionRightLeftID
@@ -252,7 +236,7 @@ public class ScanSettings extends MzMLContentWithParams implements Referenceable
     /**
      * Get CVParam or child CVParam of scan pattern, or null if one is not found.
      * 
-     * @return
+     * @return CVParam if found, null otherwise
      * @see ScanSettings#scanPatternID
      * @see ScanSettings#scanPatternFlybackID
      * @see ScanSettings#scanPatternMeanderingID
@@ -265,7 +249,7 @@ public class ScanSettings extends MzMLContentWithParams implements Referenceable
     /**
      * Get CVParam or child CVParam of scan type, or null if one is not found.
      * 
-     * @return
+     * @return CVParam if found, null otherwise
      * @see ScanSettings#scanTypeID
      * @see ScanSettings#scanTypeVerticalID
      */

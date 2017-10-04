@@ -3,33 +3,83 @@ package com.alanmrace.jimzmlparser.mzml;
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
-import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * Class describing an mass spectrometer.
+ * 
+ * @author Alan Race
+ */
 public class InstrumentConfiguration extends MzMLContentWithParams implements ReferenceableTag {
 
     /**
-     *
+     * Serialisation version ID.
      */
     private static final long serialVersionUID = 1L;
 
-    public static String instrumentModelID = "MS:1000031"; // Required child (1)
-    public static String instrumentAttributeID = "MS:1000496"; // Optional child (1+)
-    public static String ionOpticsTypeID = "MS:1000597"; // Optional child (1)
-    public static String ionOpticsAttributeID = "MS:1000487"; // Optional child (1+)
+    /**
+     * Accession: Instrument model (MS:1000031). [Required child]
+     */
+    public static final String instrumentModelID = "MS:1000031"; // Required child (1)
 
-    protected static int idNumber = 0;
+    /**
+     * Accession: Instrument attribute (MS:1000496). [Optional child]
+     */
+    public static final String instrumentAttributeID = "MS:1000496"; // Optional child (1+)
+
+    /**
+     * Accession: Ion optics type (MS:1000597). [Optional child]
+     */
+    public static final String ionOpticsTypeID = "MS:1000597"; // Optional child (1)
+
+    /**
+     * Accession: Ion optics attribute (MS:1000487). [Optional child]
+     */
+    public static final String ionOpticsAttributeID = "MS:1000487"; // Optional child (1+)
 
     // Attributes
-    private String id;						// Required
+
+    /**
+     * Unique ID for the instrument configuration.
+     */
+    private String id;				// Required
+
+    /**
+     * Scan settings for the instrument.
+     */
     private ScanSettings scanSettingsRef;	// Optional
 
     // Sub-elements
+
+    /**
+     * Components that make up the instrument.
+     */
     private ComponentList componentList;
+
+    /**
+     * Software used to control the instrument.
+     */
     private SoftwareRef softwareRef;
 
+    /**
+     * Create instrument configuration with the specified unique identifier.
+     * 
+     * @param id Unique identifier
+     */
     public InstrumentConfiguration(String id) {
         this.id = id;
+    }
+
+    /**
+     * Create instrument configuration with specified unique identifier and scan 
+     * settings.
+     * 
+     * @param id Unique identifier
+     * @param scanSettingsRef Scan settings
+     */
+    public InstrumentConfiguration(String id, ScanSettings scanSettingsRef) {
+        this.id = id;
+        this.scanSettingsRef = scanSettingsRef;
     }
 
     public InstrumentConfiguration(InstrumentConfiguration ic, ReferenceableParamGroupList rpgList, ScanSettingsList ssList, SoftwareList softwareList) {
@@ -60,29 +110,6 @@ public class InstrumentConfiguration extends MzMLContentWithParams implements Re
             }
         }
 
-    }
-
-    public InstrumentConfiguration(String id, ScanSettings scanSettingsRef) {
-        this.id = id;
-        this.scanSettingsRef = scanSettingsRef;
-    }
-
-    @Override
-    public ArrayList<OBOTermInclusion> getListOfRequiredCVParams() {
-        ArrayList<OBOTermInclusion> required = new ArrayList<OBOTermInclusion>();
-        required.add(new OBOTermInclusion(instrumentModelID, true, true, true));
-
-        return required;
-    }
-
-    @Override
-    public ArrayList<OBOTermInclusion> getListOfOptionalCVParams() {
-        ArrayList<OBOTermInclusion> optional = new ArrayList<OBOTermInclusion>();
-        optional.add(new OBOTermInclusion(instrumentAttributeID, false, true, false));
-        optional.add(new OBOTermInclusion(ionOpticsTypeID, true, true, false));
-        optional.add(new OBOTermInclusion(ionOpticsAttributeID, false, true, false));
-
-        return optional;
     }
 
     public void setScanSettingsRef(ScanSettings scanSettingsRef) {
@@ -132,7 +159,7 @@ public class InstrumentConfiguration extends MzMLContentWithParams implements Re
     }
 
     @Override
-    protected String getXMLAttributeText() {
+    public String getXMLAttributeText() {
         String attributeText = super.getXMLAttributeText();
         
         if (scanSettingsRef != null) {
