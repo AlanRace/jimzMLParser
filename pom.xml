@@ -73,7 +73,7 @@
                                 <goal>wget</goal>
                             </goals>
                             <configuration>
-                                <url>https://raw.githubusercontent.com/AlanRace/imzML/master/imagingMS.obo</url>
+                                <url>https://raw.githubusercontent.com/imzML/imzML/master/imagingMS.obo</url>
                                 <overwrite>true</overwrite>
                                 <outputDirectory>src/main/resources/obo</outputDirectory>
                             </configuration>

@@ -67,7 +67,7 @@ public class OBO implements Serializable {
         String resourcePath = path;
         
         // Strip off the URL details if they exist
-        if (resourcePath.contains("http://")) {
+        if (resourcePath.contains("http://") || resourcePath.contains("https://")) {
             resourcePath = resourcePath.substring(resourcePath.lastIndexOf("/") + 1).toLowerCase();
         }
 
