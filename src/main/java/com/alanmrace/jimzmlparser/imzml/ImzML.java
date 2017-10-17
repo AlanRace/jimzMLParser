@@ -1,6 +1,8 @@
 package com.alanmrace.jimzmlparser.imzml;
 
+import com.alanmrace.jimzmlparser.exceptions.FatalParseException;
 import com.alanmrace.jimzmlparser.exceptions.ImzMLParseException;
+import com.alanmrace.jimzmlparser.exceptions.InvalidCVParamValue;
 import com.alanmrace.jimzmlparser.mzml.BinaryDataArray;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -537,6 +539,9 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
 //	}
 //	
     @Override
+    // TODO: Add in exception for failure to generate image - this should be caught to avoid 
+    // issues where ArrayIndexOutOfBounds is thrown then the specified image dimensions is not
+    // correct for the data
     public double[][] generateTICImage() {
         if(ticImage == null) {
             ticImage = new double[getHeight()][getWidth()];
@@ -545,7 +550,11 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
                 for (Spectrum spectrum : getRun().getSpectrumList()) {
                     int x = spectrum.getScanList().get(0).getCVParam(Scan.positionXID).getValueAsInteger() - 1;
                     int y = spectrum.getScanList().get(0).getCVParam(Scan.positionYID).getValueAsInteger() - 1;
-
+                    
+                    //if(y > ticImage[0].length) {
+                    //    throw new InvalidCVParamValue("Max y value is less than a y coordinate of a spectrum in the data");
+                    //} else if()
+                    
                     try {
                         double tic = spectrum.getCVParam(Spectrum.totalIonCurrentID).getValueAsDouble();
 

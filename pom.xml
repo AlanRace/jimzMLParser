@@ -69,14 +69,15 @@
                     <execution>
                         <id>update-imaging-obo</id>
                         <phase>generate-sources</phase>
-                            <goals>
-                                <goal>wget</goal>
-                            </goals>
-                            <configuration>
-                                <url>https://raw.githubusercontent.com/imzML/imzML/master/imagingMS.obo</url>
-                                <overwrite>true</overwrite>
-                                <outputDirectory>src/main/resources/obo</outputDirectory>
-                            </configuration>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://raw.githubusercontent.com/imzML/imzML/master/imagingMS.obo</url>
+                            <overwrite>true</overwrite>
+                            <skipCache>true</skipCache>
+                            <outputDirectory>src/main/resources/obo</outputDirectory>
+                        </configuration>
                     </execution>
                     <execution>
                         <id>update-ms-obo</id>
@@ -198,7 +199,7 @@
             <version>4.10</version>
             <scope>test</scope>
         </dependency>
-<!-- TODO: ADD BACK IN WHEN PUBLISHED - MzMLHeaderHandlerTest, CreateSpectrumTest
+        <!-- TODO: ADD BACK IN WHEN PUBLISHED - MzMLHeaderHandlerTest, CreateSpectrumTest
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>jimzMLValidator</artifactId>

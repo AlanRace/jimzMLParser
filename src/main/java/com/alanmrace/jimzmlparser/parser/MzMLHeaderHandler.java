@@ -461,7 +461,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                                 case Empty:
                                     cvParam = new EmptyCVParam(term, units);
                                     
-                                    if (value != null) {
+                                    if (value != null && !value.isEmpty()) {
                                         InvalidFormatIssue formatIssue = new InvalidFormatIssue(term, attributes.getValue("value"));
                                         formatIssue.setIssueLocation(currentContent);
                                         
