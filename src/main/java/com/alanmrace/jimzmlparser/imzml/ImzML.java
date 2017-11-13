@@ -1,8 +1,6 @@
 package com.alanmrace.jimzmlparser.imzml;
 
-import com.alanmrace.jimzmlparser.exceptions.FatalParseException;
 import com.alanmrace.jimzmlparser.exceptions.ImzMLParseException;
-import com.alanmrace.jimzmlparser.exceptions.InvalidCVParamValue;
 import com.alanmrace.jimzmlparser.mzml.BinaryDataArray;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -86,6 +84,11 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
     private Spectrum[][][] spectrumGrid;
 
     /**
+     * Array of the pixel locations that have an associated Spectrum.
+     */
+    private PixelLocation[] pixelLocations;
+    
+    /**
      * Minimum m/z value detected within this ImzML file.
      */
     private double minMZ = Double.MAX_VALUE;
@@ -130,6 +133,20 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
      */
     public ImzML(MzML mzML) {
         super(mzML);
+    }
+    
+    public PixelLocation[] getPixelList() {
+        // Useful for protein id script
+        if(pixelLocations == null) {
+            pixelLocations = new PixelLocation[getRun().getSpectrumList().size()];
+            int index = 0;
+            
+            for(Spectrum spectrum : getRun().getSpectrumList()) {
+                pixelLocations[index++] = spectrum.getPixelLocation();
+            }
+        }
+        
+        return pixelLocations;
     }
     
     @Override
