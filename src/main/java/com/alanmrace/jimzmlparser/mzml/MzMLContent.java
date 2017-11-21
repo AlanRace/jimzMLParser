@@ -186,6 +186,11 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
         
     @Override
     public String toString() {
+        String attributeText = getXMLAttributeText();
+        
+        if(attributeText != null && !attributeText.isEmpty())
+            return getTagName() + ": " + attributeText;
+        
         return getTagName();
     }
     

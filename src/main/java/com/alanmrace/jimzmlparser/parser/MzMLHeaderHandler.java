@@ -30,11 +30,11 @@ import com.alanmrace.jimzmlparser.exceptions.ObsoleteTermUsed;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.nio.channels.Channels;
+import java.text.ParsePosition;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import javax.xml.bind.DatatypeConverter;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
@@ -1006,11 +1006,18 @@ public class MzMLHeaderHandler extends DefaultHandler {
             if (startTimeStamp != null) {
                 try {
                     // This should handle the datetime, assuming it is formatted correctly
-                    Calendar dateTime = DatatypeConverter.parseDateTime(startTimeStamp);
+                    //Calendar dateTime = DatatypeConverter.parseDateTime(startTimeStamp);
+                    
+                    SimpleDateFormat xmlDateTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                    
+                    Date date = xmlDateTime.parse(startTimeStamp);
+                    Calendar dateTime = xmlDateTime.getCalendar();
+                    dateTime.setTime(date);
+                    
                     run.setStartTimeStamp(dateTime);
-                } catch (IllegalArgumentException ex) {
+                } catch (ParseException ex) {
                     // Inform validator that invalid timestamp used
-                    InvalidFormatIssue formatIssue = new InvalidFormatIssue("startTimeStamp", "xsd:dateTime", startTimeStamp);
+                    InvalidFormatIssue formatIssue = new InvalidFormatIssue("startTimeStamp", "yyyy-MM-dd'T'HH:mm:ss", startTimeStamp);
                     formatIssue.setIssueLocation(currentContent);
 
                     notifyParserListeners(formatIssue); 
@@ -1030,7 +1037,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
                         notifyParserListeners(secondFormatIssue); 
                     }
-                }
+                } 
             }
 
 //            try {

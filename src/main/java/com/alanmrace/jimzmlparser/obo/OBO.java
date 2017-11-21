@@ -28,7 +28,7 @@ public class OBO implements Serializable {
     public static final String UO_OBO_URI = "http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/phenotype/unit.obo";
     
     /** Location of the MSI ontology. */
-    public static final String IMS_OBO_URI = "http://ms-imaging.org.org/download/imzml/imagingMS.obo";
+    public static final String IMS_OBO_URI = "http://ms-imaging.org/download/imzml/imagingMS.obo";
     /** Full name of the MSI ontology. */
     public static final String IMS_OBO_FULLNAME = "Mass Spectrometry Imaging Ontology";
     /** Shorthand identifier for the MSI ontology. */

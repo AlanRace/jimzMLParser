@@ -1,9 +1,12 @@
 package com.alanmrace.jimzmlparser.data;
 
+import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
+import com.sun.org.apache.xml.internal.security.utils.Base64;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import javax.xml.bind.DatatypeConverter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Description of location of data stored in Base64 encoding. This class allows 
@@ -28,6 +31,13 @@ public class Base64DataStorage extends DataStorage {
     public byte[] getData(long offset, int length) throws IOException {
 	byte[] buffer = super.getData(offset, length);
 	
-	return DatatypeConverter.parseBase64Binary(new String(buffer));
+        try {
+            //	return DatatypeConverter.parseBase64Binary(new String(buffer));
+            return Base64.decode(buffer);
+        } catch (Base64DecodingException ex) {
+            Logger.getLogger(Base64DataStorage.class.getName()).log(Level.SEVERE, null, ex);
+            
+            throw new IOException();
+        }
     }
 }

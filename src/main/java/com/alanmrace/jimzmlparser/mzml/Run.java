@@ -3,10 +3,10 @@ package com.alanmrace.jimzmlparser.mzml;
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import java.util.Collection;
-import javax.xml.bind.DatatypeConverter;
 
 /**
  * Class describing a {@literal <run>} tag.
@@ -411,7 +411,10 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
             attributes += " sampleRef=\"" + XMLHelper.ensureSafeXML(sampleRef.getID()) + "\"";
         }
         if (startTimeStamp != null) {
-            attributes += " startTimeStamp=\"" + DatatypeConverter.printDateTime(startTimeStamp) + "\"";
+            SimpleDateFormat xmlDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            xmlDateTimeFormat.setTimeZone(startTimeStamp.getTimeZone());
+            
+            attributes += " startTimeStamp=\"" + xmlDateTimeFormat.format(startTimeStamp.getTime()) + "\"";
         }        
         
         return attributes;
@@ -442,14 +445,14 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
 //        output.writeMetadata("</run>\n");
 //    }
 
-    @Override
-    public String toString() {
-        return "run: defaultInstrumentConfigurationRef=\"" + defaultInstrumentConfigurationRef.getID() + "\""
-                + ((defaultSourceFileRef != null) ? (" defaultSourceFileRef=\"" + defaultSourceFileRef.getID() + "\"") : "")
-                + " id=\"" + id + "\""
-                + ((sampleRef != null) ? (" sampleRef=\"" + sampleRef.getID() + "\"") : "")
-                + ((startTimeStamp != null) ? (" startTimeStamp=\"" + startTimeStamp.toString() + "\"") : "");
-    }
+//    @Override
+//    public String toString() {
+//        return "run: defaultInstrumentConfigurationRef=\"" + defaultInstrumentConfigurationRef.getID() + "\""
+//                + ((defaultSourceFileRef != null) ? (" defaultSourceFileRef=\"" + defaultSourceFileRef.getID() + "\"") : "")
+//                + " id=\"" + id + "\""
+//                + ((sampleRef != null) ? (" sampleRef=\"" + sampleRef.getID() + "\"") : "")
+//                + ((startTimeStamp != null) ? (" startTimeStamp=\"" + startTimeStamp.toString() + "\"") : "");
+//    }
 
     @Override
     public String getTagName() {
