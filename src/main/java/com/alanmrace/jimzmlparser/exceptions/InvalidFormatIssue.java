@@ -136,6 +136,10 @@ public class InvalidFormatIssue extends NonFatalParseException {
                 message += " but got value \"" + value + "\"";
         }
         
+        if(term == null) {
+            message += "Expected format " + expectedFormat + " but got " + value;
+        }
+        
         if(attemptedFix) {
             message += "\nAttempted to fix by changing CVParam value type to String.";
         }

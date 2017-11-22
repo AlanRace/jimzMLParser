@@ -1,10 +1,6 @@
 package com.alanmrace.jimzmlparser.obo;
 
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,14 +23,12 @@ public class OBO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /** Location of the PSI MS ontology. */
-    //public static final String MS_OBO_URI = "http://psidev.cvs.sourceforge.net/*checkout*/psidev/psi/psi-ms/mzML/controlledVocabulary/psi-ms.obo";
-    public static final String MS_OBO_URI = "https://raw.githubusercontent.com/HUPO-PSI/psi-ms-CV/master/psi-ms.obo";
+    public static final String MS_OBO_URI = "http://psidev.cvs.sourceforge.net/*checkout*/psidev/psi/psi-ms/mzML/controlledVocabulary/psi-ms.obo";
     /** Location of the Units ontology. */
     public static final String UO_OBO_URI = "http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/phenotype/unit.obo";
     
     /** Location of the MSI ontology. */
-    //public static final String IMS_OBO_URI = "http://ms-imaging.org.org/download/imzml/imagingMS.obo";
-    public static final String IMS_OBO_URI = "https://raw.githubusercontent.com/imzML/imzML/master/imagingMS.obo";
+    public static final String IMS_OBO_URI = "http://ms-imaging.org/download/imzml/imagingMS.obo";
     /** Full name of the MSI ontology. */
     public static final String IMS_OBO_FULLNAME = "Mass Spectrometry Imaging Ontology";
     /** Shorthand identifier for the MSI ontology. */
@@ -54,7 +48,7 @@ public class OBO implements Serializable {
     /**
      * Singleton OBO instance.
      */
-    protected static final OBO obo = new OBO(IMS_OBO_URI);
+    protected static final OBO obo = new OBO("imagingMS.obo");
 
     /**
      * Generate ontology database from the specified .obo file. 
@@ -79,32 +73,8 @@ public class OBO implements Serializable {
 
         logger.log(Level.FINER, "Parsing OBO /obo/{0}", resourcePath);
 
-        InputStream is = null;
-        
-        // Check if the OBO file exists in the neigbouring directory - if so then use that
-        if(new File(resourcePath).isFile()) {
-            try {
-                is = new FileInputStream(new File(resourcePath));
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(OBO.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else {
-            try {
-                ReadableByteChannel rbc = Channels.newChannel(new URL(path).openStream());
-                FileOutputStream fos = new FileOutputStream(resourcePath);
-                fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-                
-                is = new FileInputStream(new File(resourcePath));
-            } catch (MalformedURLException ex) {
-            } catch (FileNotFoundException ex) {
-            } catch (IOException ex) {
-            }
-        }
-        
-        if(is == null) {
-            is = OBO.class.getResourceAsStream("/obo/" + resourcePath);
-        }
-        
+        InputStream is = OBO.class.getResourceAsStream("/obo/" + resourcePath);
+
         InputStreamReader isr = new InputStreamReader(is);
         BufferedReader in = new BufferedReader(isr);
 
