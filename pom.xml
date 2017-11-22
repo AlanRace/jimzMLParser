@@ -86,13 +86,13 @@
                             <goal>wget</goal>
                         </goals>
                         <configuration>
-                            <url>http://psidev.cvs.sourceforge.net/viewvc/psidev/psi/psi-ms/mzML/controlledVocabulary/psi-ms.obo</url>
+                            <url>https://raw.githubusercontent.com/HUPO-PSI/psi-ms-CV/master/psi-ms.obo</url>
                             <overwrite>true</overwrite>
                             <!--<skipCache>true</skipCache>-->
                             <outputDirectory>src/main/resources/obo</outputDirectory>
                         </configuration>
                     </execution>
-                    <execution>
+                    <!--<execution>
                         <id>update-quality-obo</id>
                         <phase>generate-sources</phase>
                         <goals>
@@ -101,10 +101,10 @@
                         <configuration>
                             <url>http://obo.cvs.sourceforge.net/viewvc/obo/obo/ontology/phenotype/quality.obo</url>
                             <overwrite>true</overwrite>
-                            <!--<skipCache>true</skipCache>-->
+                            <skipCache>true</skipCache>
                             <outputDirectory>src/main/resources/obo</outputDirectory>
                         </configuration>
-                    </execution>
+                    </execution>-->
                     <execution>
                         <id>update-unit-obo</id>
                         <phase>generate-sources</phase>
@@ -112,7 +112,7 @@
                             <goal>wget</goal>
                         </goals>
                         <configuration>
-                            <url>http://obo.cvs.sourceforge.net/viewvc/obo/obo/ontology/phenotype/unit.obo</url>
+                            <url>http://ontologies.berkeleybop.org/uo.obo</url>
                             <overwrite>true</overwrite>
                             <!--<skipCache>true</skipCache>-->
                             <outputDirectory>src/main/resources/obo</outputDirectory>
