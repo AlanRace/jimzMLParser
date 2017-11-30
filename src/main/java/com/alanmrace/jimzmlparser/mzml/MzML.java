@@ -363,6 +363,7 @@ public class MzML extends MzMLContentWithParams implements Serializable {
     public SampleList getSampleList() {
         if (sampleList == null) {
             sampleList = new SampleList(0);
+            sampleList.setParent(this);
         }
 
         return sampleList;
