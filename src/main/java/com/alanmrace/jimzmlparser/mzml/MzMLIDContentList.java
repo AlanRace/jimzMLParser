@@ -56,6 +56,16 @@ public abstract class MzMLIDContentList<T extends ReferenceableTag & MzMLTag> ex
         return null;
     }
     
+    public boolean containsID(String id) {
+        for (T item : list) {
+            if (item.getID().equals(id)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
 //    @Override
 //    protected void outputXMLContent(MzMLWritable output, int indent) throws IOException {
 //        ArrayList<MzMLTag> children = new ArrayList<MzMLTag>();

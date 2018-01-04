@@ -155,4 +155,14 @@ public abstract class MzMLContentList<T extends MzMLTag>
     public Iterator<T> iterator() {
         return list.iterator();
     }
+
+    @Override
+    public boolean contains(T item) {
+        return list.contains(item);
+    }
+    
+    @Override
+    public void clear() {
+        list.clear();
+    }
 }

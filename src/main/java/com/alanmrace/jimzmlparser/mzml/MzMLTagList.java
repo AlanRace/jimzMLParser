@@ -43,12 +43,25 @@ public interface MzMLTagList<T extends MzMLTag> extends Iterable<T> {
     public boolean remove(T item);
     
     /**
+     * Remove all entries from the list.
+     */
+    public void clear();
+    
+    /**
      * Returns the index of the specified item in the list.
      * 
      * @param item Item to find index of
      * @return Index of specified item
      */
     public int indexOf(T item);
+    
+    /**
+     * Checks whether the list contains the specified item in the list.
+     * 
+     * @param item Item to check
+     * @return true if item found in list, false otherwise
+     */
+    public boolean contains(T item);
     
     /**
      * Returns the number of items in the list.

@@ -160,4 +160,14 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
         
         return scanList;
     }
+
+    @Override
+    public boolean contains(Scan item) {
+        return scanList.contains(item);
+    }
+
+    @Override
+    public void clear() {
+        scanList.clear();
+    }
 }
