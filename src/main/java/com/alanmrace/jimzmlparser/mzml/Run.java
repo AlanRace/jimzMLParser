@@ -238,10 +238,13 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
      * @param chromatogramList ChromatogramList
      */
     public void setChromatogramList(ChromatogramList chromatogramList) {
-        chromatogramList.setParent(this);
-
         this.chromatogramList = chromatogramList;
-        this.chromatogramList.setDataProcessingList(dataProcessingList);
+        
+        if(chromatogramList != null) {
+            chromatogramList.setParent(this);
+       
+            this.chromatogramList.setDataProcessingList(dataProcessingList);
+        }
     }
 
     /**
