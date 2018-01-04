@@ -1,5 +1,8 @@
 package com.alanmrace.jimzmlparser.mzml;
 
+import com.alanmrace.jimzmlparser.obo.OBO;
+import java.util.List;
+
 /**
  * CVList tag ({@literal <cvList>}). A list of {@link CV} tags.
  * 
@@ -62,9 +65,12 @@ public class CVList extends MzMLIDContentList<CV> {
     public static CVList create() {
         CVList cvList = new CVList(3);
         
-        cvList.add(new CV(CV.IMS_URI, "Mass Spectrometry Imaging Ontology", "IMS"));
-        cvList.add(new CV(CV.MS_URI, "Proteomics Standards Initiative Mass Spectrometry Ontology", "MS"));
-        cvList.add(new CV(CV.UO_URI, "Unit Ontology", "UO"));
+        OBO obo = OBO.getOBO();
+        List<OBO> fullOBOList = obo.getFullImportHeirarchy();
+        
+        for(OBO currentOBO : fullOBOList) {
+            cvList.addCV(new CV(currentOBO));
+        }
         
         return cvList;
     }

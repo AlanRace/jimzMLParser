@@ -24,8 +24,13 @@ public class OBO implements Serializable {
 
     /** Location of the PSI MS ontology. */
     public static final String MS_OBO_URI = "https://raw.githubusercontent.com/HUPO-PSI/psi-ms-CV/master/psi-ms.obo";
+    public static final String MS_OBO_FULLNAME = "Proteomics Standards Initiative Mass Spectrometry Ontology";
+    
     /** Location of the Units ontology. */
     public static final String UO_OBO_URI = "http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/phenotype/unit.obo";
+    public static final String UO_OBO_FULLNAME = "Units of Measurement Ontology";
+    
+    public static final String PATO_OBO_FULLNAME = "Phenotype And Trait Ontology";
     
     /** Location of the MSI ontology. */
     public static final String IMS_OBO_URI = "https://raw.githubusercontent.com/imzML/imzML/master/imagingMS.obo";
@@ -41,6 +46,12 @@ public class OBO implements Serializable {
 
     /** List of imported ontologies. */
     private List<OBO> imports;
+    
+    private String defaultNamespace;
+    
+    private String ontology;
+    
+    private String dataVersion;
 
     /** Dictionary of ontology terms, using their ID as the key. */
     private Map<String, OBOTerm> terms;
@@ -48,7 +59,7 @@ public class OBO implements Serializable {
     /**
      * Singleton OBO instance.
      */
-    protected static final OBO obo = new OBO("imagingMS.obo");
+    protected static final OBO obo = new OBO(IMS_OBO_URI);
 
     /**
      * Generate ontology database from the specified .obo file. 
@@ -68,13 +79,13 @@ public class OBO implements Serializable {
         
         // Strip off the URL details if they exist
         if (resourcePath.contains("http://") || resourcePath.contains("https://")) {
-            resourcePath = resourcePath.substring(resourcePath.lastIndexOf("/") + 1).toLowerCase();
+            resourcePath = resourcePath.substring(resourcePath.lastIndexOf("/") + 1);
         }
 
         logger.log(Level.FINER, "Parsing OBO /obo/{0}", resourcePath);
 
         InputStream is = OBO.class.getResourceAsStream("/obo/" + resourcePath);
-
+        
         InputStreamReader isr = new InputStreamReader(is);
         BufferedReader in = new BufferedReader(isr);
 
@@ -99,7 +110,7 @@ public class OBO implements Serializable {
                     int indexOfColon = curLine.indexOf(":");
                     String id = curLine.substring(indexOfColon + 1).trim();
 
-                    curTerm = new OBOTerm(id);
+                    curTerm = new OBOTerm(this, id);
 
                     terms.put(id, curTerm);
                 } else if (curLine.trim().equals("[Typedef]")) {
@@ -112,17 +123,23 @@ public class OBO implements Serializable {
                     String tag = curLine.substring(0, locationOfColon).trim();
                     String value = curLine.substring(locationOfColon + 1).trim().toLowerCase();
 
-                    if (tag != null && value != null
-                            && "import".equals(tag)) {
-
-                        imports.add(new OBO(value));
+                    if (tag != null && value != null){
+                        if("import".equals(tag)) {
+                            imports.add(new OBO(value));
+                        } else if("default-namespace".equals(tag)) {
+                            defaultNamespace = value;                            
+                        } else if("ontology".equals(tag)) {
+                            ontology = value;
+                        } else if("data-version".equals(tag)) {
+                            dataVersion = value;
+                        }
                     }
                 }
             }
         } catch (IOException ex) {
             Logger.getLogger(OBO.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
         // Process relationships
         for (OBOTerm term : terms.values()) {
             Collection<String> is_a = term.getIsA();
@@ -177,6 +194,18 @@ public class OBO implements Serializable {
         return this.imports;
     }
     
+    public List<OBO> getFullImportHeirarchy() {
+        List<OBO> fullList = new ArrayList<OBO>();
+        
+        for(OBO obo : this.imports) {
+            fullList.addAll(obo.getFullImportHeirarchy());
+        }
+        
+        fullList.add(this);
+        
+        return fullList;
+    }
+    
     /**
      * Return a complete list of ontology terms present within this ontolgoy.
      * 
@@ -193,7 +222,7 @@ public class OBO implements Serializable {
      * @param id ID of the ontology term
      * @return Ontology term if found, null otherwise
      */
-    public OBOTerm getTerm(String id) {
+    public final OBOTerm getTerm(String id) {
         if (id == null) {
             return null;
         }
@@ -213,8 +242,50 @@ public class OBO implements Serializable {
         return term;
     }
 
+    public String getPath() {
+        return path;
+    }
+    
+    public String getDefaultNamespace() {
+        return defaultNamespace;
+    }
+    
+    public String getOntology() {
+        return ontology;
+    }
+    
+    public String getDataVersion() {
+        return dataVersion;
+    }
+    
+    public OBO getOBOWithID(String id) {
+        if(this.ontology.toUpperCase().equals(id))
+            return this;
+        
+        for(OBO obo : imports) {
+            if(obo.getOBOWithID(id) != null)
+                return obo;
+        }
+        
+        return null;
+    }
+    
     @Override
     public String toString() {
         return path;
+    }
+    
+    public static String getNameFromID(String id) {
+        if("IMS".equals(id)) {
+            return OBO.IMS_OBO_FULLNAME;
+        } else if("MS".equals(id)) {
+            return OBO.MS_OBO_FULLNAME;
+        } else if("UO".equals(id)) {
+            return OBO.UO_OBO_FULLNAME;
+        } else if("PATO".equals(id)) {
+            return OBO.PATO_OBO_FULLNAME;
+        }
+        
+        return id;
     }
 }

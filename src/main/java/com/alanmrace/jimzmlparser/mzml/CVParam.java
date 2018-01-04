@@ -147,7 +147,7 @@ public abstract class CVParam extends MzMLContent {
 
     @Override
     public String getXMLAttributeText() {
-        String attributes = "cvRef=\"" + XMLHelper.ensureSafeXML(term.getNamespace()) + "\"";
+        String attributes = "cvRef=\"" + XMLHelper.ensureSafeXML(term.getOntology().getOntology().toUpperCase()) + "\"";
         attributes += " accession=\"" + XMLHelper.ensureSafeXML(term.getID()) + "\"";
         attributes += " name=\"" + XMLHelper.ensureSafeXML(term.getName()) + "\"";
         
@@ -158,7 +158,7 @@ public abstract class CVParam extends MzMLContent {
         }
 
         if (units != null) {
-            attributes += " unitCvRef=\"" + XMLHelper.ensureSafeXML(units.getNamespace()) + "\"";
+            attributes += " unitCvRef=\"" + XMLHelper.ensureSafeXML(units.getOntology().getOntology().toUpperCase()) + "\"";
             attributes += " unitAccession=\"" + XMLHelper.ensureSafeXML(units.getID()) + "\"";
             attributes += " unitName=\"" + XMLHelper.ensureSafeXML(units.getName()) + "\"";
         }

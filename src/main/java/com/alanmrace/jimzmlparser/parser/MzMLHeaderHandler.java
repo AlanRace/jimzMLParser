@@ -581,24 +581,31 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 throw new InvalidMzML("<mzML> tag not defined prior to defining <cvList> tag.", ex);
             }
         } else if ("cv".equals(qName)) {
-            String cvURI = attributes.getValue("URI");
+            OBO obo = OBO.getOBO().getOBOWithID(attributes.getValue("id"));
             
-            // In old versions a lower case attribute was used incorrectly, so 
-            // read this in
-            if(cvURI == null)
-                cvURI = attributes.getValue("uri");
+            if(obo != null)
+                cvList.add(new CV(obo));
+            else
+                System.out.println("WEIRD ONTOLOGY FOUND! " + attributes.getValue("id"));
             
-            CV cv = new CV(cvURI, attributes.getValue("fullName"), attributes.getValue("id"));
-
-            if (attributes.getValue("version") != null) {
-                cv.setVersion(attributes.getValue("version"));
-            }
-
-            try {
-                cvList.add(cv);
-            } catch (NullPointerException ex) {
-                throw new InvalidMzML("<cvList> tag not defined prior to defining <cv> tag.", ex);
-            }
+//            String cvURI = attributes.getValue("URI");
+//            
+//            // In old versions a lower case attribute was used incorrectly, so 
+//            // read this in
+//            if(cvURI == null)
+//                cvURI = attributes.getValue("uri");
+//            
+//            CV cv = new CV(cvURI, attributes.getValue("fullName"), attributes.getValue("id"));
+//
+//            if (attributes.getValue("version") != null) {
+//                cv.setVersion(attributes.getValue("version"));
+//            }
+//
+//            try {
+//                cvList.add(cv);
+//            } catch (NullPointerException ex) {
+//                throw new InvalidMzML("<cvList> tag not defined prior to defining <cv> tag.", ex);
+//            }
         } else if ("fileDescription".equals(qName)) {
             fileDescription = new FileDescription();
 

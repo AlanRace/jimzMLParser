@@ -1,5 +1,6 @@
 package com.alanmrace.jimzmlparser.mzml;
 
+import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.Serializable;
 
@@ -15,61 +16,18 @@ public class CV extends MzMLIDContent implements Serializable {
      */
     private static final long serialVersionUID = 1L;
 
-    /**
-     * Default location for the mass spectrometry imaging ontology.
-     */
-    public static final String IMS_URI = "http://www.maldi-msi.org/download/imzml/imagingMS.obo";
-    
-    /**
-     * Default location for the mass spectrometry ontology.
-     */
-    public static final String MS_URI = "http://purl.obolibrary.org/obo/ms.obo";
-    
-    /**
-     * Default location for the units ontology.
-     */
-    public static final String UO_URI = "http://obo.cvs.sourceforge.net/viewvc/obo/obo/ontology/phenotype/unit.obo";
-
-    /**
-     * The URI for the ontology [Required].
-     */
-    private String uri;
-
-    /**
-     * The name for the ontology [Required].
-     */
-    private String fullName;
-
-
-    /**
-     * Version of the ontology [Optional].
-     */
-    private String version;
+    private OBO ontology;
+    private String id;
 
     /**
      * Create a CV tag from a URI, full name and an ID.
      * 
-     * @param uri       URI of the ontology
-     * @param fullName  Name of the ontology
-     * @param id        Unique ID for the ontology
+     * @param ontology
      */
-    public CV(String uri, String fullName, String id) {
-        this(uri, fullName, id, null);
-    }
-
-    /**
-     * Create a CV tag from a URI, full name an ID and a version.
-     * 
-     * @param uri       URI of the ontology
-     * @param fullName  Name of the ontology
-     * @param id        Unique ID for the ontology
-     * @param version   Version of the ontology
-     */
-    public CV(String uri, String fullName, String id, String version) {
-        this.uri = uri;
-        this.fullName = fullName;
-        this.id = id;
-        this.version = version;
+    public CV(OBO ontology) {
+        this.ontology = ontology;
+        
+        id = ontology.getOntology().toUpperCase();
     }
 
     /**
@@ -78,7 +36,7 @@ public class CV extends MzMLIDContent implements Serializable {
      * @return URI of the ontology
      */
     public String getURI() {
-        return uri;
+        return ontology.getPath();
     }
 
     /**
@@ -87,16 +45,7 @@ public class CV extends MzMLIDContent implements Serializable {
      * @return Ontology name
      */
     public String getFullName() {
-        return fullName;
-    }
-
-    /**
-     * Set the version of the ontology used.
-     * 
-     * @param version Version used
-     */
-    public void setVersion(String version) {
-        this.version = version;
+        return OBO.getNameFromID(id);
     }
 
     /**
@@ -105,17 +54,17 @@ public class CV extends MzMLIDContent implements Serializable {
      * @return Version used
      */
     public String getVersion() {
-        return version;
+        return ontology.getDataVersion();
     }
 
     @Override
     public String getXMLAttributeText() {
-        String attributeText = "URI=\"" + XMLHelper.ensureSafeXML(uri) + "\"";
-        attributeText += " fullName=\"" + XMLHelper.ensureSafeXML(fullName) + "\"";
+        String attributeText = "URI=\"" + XMLHelper.ensureSafeXML(getURI()) + "\"";
+        attributeText += " fullName=\"" + XMLHelper.ensureSafeXML(getFullName()) + "\"";
         attributeText += " id=\"" + XMLHelper.ensureSafeXML(id) + "\"";
         
-        if (version != null) {
-            attributeText += " version=\"" + XMLHelper.ensureSafeXML(version) + "\"";
+        if (getVersion() != null) {
+            attributeText += " version=\"" + XMLHelper.ensureSafeXML(getVersion()) + "\"";
         }
         
         return attributeText;
@@ -123,7 +72,7 @@ public class CV extends MzMLIDContent implements Serializable {
 
     @Override
     public String toString() {
-        return "cv : URI=\"" + uri + "\" fullName=\"" + fullName + "\" id=\"" + id + "\"" + ((version != null) ? " version=\"" + version + "\"" : "");
+        return "cv : URI=\"" + getURI() + "\" fullName=\"" + getFullName() + "\" id=\"" + id + "\"" + ((getVersion() != null) ? " version=\"" + getVersion() + "\"" : "");
     }
 
     @Override

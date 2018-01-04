@@ -21,6 +21,8 @@ public class OBOTerm implements Serializable {
      */
     private static final long serialVersionUID = 1L;
 
+    private OBO ontology;
+    
     /**
      * Unique identifier for the ontology term. 
      */
@@ -328,7 +330,9 @@ public class OBOTerm implements Serializable {
      * 
      * @param id Unique identifier for the ontology term
      */
-    public OBOTerm(String id) {
+    public OBOTerm(OBO ontology, String id) {
+        this.ontology = ontology;
+        
         // TODO: Assign these only when necessary
         is_a = new ArrayList<String>();
         part_of = new ArrayList<String>();
@@ -635,6 +639,10 @@ public class OBOTerm implements Serializable {
      */
     public String getNamespace() {
         return namespace;
+    }
+    
+    public OBO getOntology() {
+        return ontology;
     }
 
     /**
