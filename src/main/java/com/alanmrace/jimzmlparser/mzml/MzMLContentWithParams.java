@@ -34,12 +34,9 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
     private List<UserParam> userParams;
     
     /**
-     * Default constructor which sets all lists of references to be ArrayLists.
+     * Default constructor.
      */
     public MzMLContentWithParams() {
-        referenceableParamGroupRefs = new ArrayList<ReferenceableParamGroupRef>();
-        cvParams = new ArrayList<CVParam>();
-        userParams = new ArrayList<UserParam>();
     }
     
     /**
