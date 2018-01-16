@@ -37,7 +37,9 @@ public class OBOTerm implements Serializable {
      * The ontology namespace.
      */
     private String namespace;
-        
+
+    private String description;
+    
     /**
      * List of all OBOTerms which were listed as relationship: has_units.
      */
@@ -368,6 +370,8 @@ public class OBOTerm implements Serializable {
             this.name = value;
         } else if ("namespace".equals(tag)) {
             this.namespace = value;
+        } else if("def".equals(tag)) {
+            this.description = value;
         } else if ("relationship".equals(tag)) {
             int indexOfSpace = value.indexOf(" ");
             String relationshipTag = value.substring(0, indexOfSpace).trim();
@@ -623,6 +627,10 @@ public class OBOTerm implements Serializable {
         return name;
     }
 
+    public String getDescription() {
+        return description;
+    }
+    
     /**
      * Get the list of has_units relationships
      * 
