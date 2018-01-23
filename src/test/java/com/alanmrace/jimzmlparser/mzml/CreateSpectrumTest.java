@@ -94,7 +94,7 @@ public class CreateSpectrumTest {
             
             // Now try outputing compressed spectral data
             spectrum.getBinaryDataArrayList().getmzArray().removeChildOfCVParam(BinaryDataArray.noCompressionID);
-            spectrum.getBinaryDataArrayList().getmzArray().addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(BinaryDataArray.zlibCompressionID)));
+            spectrum.getBinaryDataArrayList().getmzArray().addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(BinaryDataArray.lz4CompressionID)));
             
             //output = new MzMLWriter(targetDir() + "/compressed_spectrum.xml");
             //spectrum.outputXML(output, 0);
