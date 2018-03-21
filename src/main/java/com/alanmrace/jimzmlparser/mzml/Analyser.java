@@ -16,13 +16,13 @@ public class Analyser extends Component {
      * Accession: Mass analyser type (MS:1000443). MUST be supplied (or any
      * children) only once.
      */
-    public static String analyserTypeID = "MS:1000443";
+    public static final String analyserTypeID = "MS:1000443";
 
     /**
      * Accession: Mass analyser attribute (MS:1000480). MAY supply a child one
      * or more times.
      */
-    public static String analyserAttributeID = "MS:1000480";
+    public static final String analyserAttributeID = "MS:1000480";
 
     /**
      * Instantiates a new analyser attribute.

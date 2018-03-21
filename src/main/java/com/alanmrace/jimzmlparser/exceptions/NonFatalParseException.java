@@ -64,6 +64,10 @@ public class NonFatalParseException extends Exception implements ParseIssue {
         this.location = location;
     }
     
+    public MzMLContent getIssueLocation() {
+        return location;
+    }
+    
     /**
      * Check whether a fix was attempted.
      * 
@@ -100,7 +104,12 @@ public class NonFatalParseException extends Exception implements ParseIssue {
 
     @Override
     public String getIssueMessage() {
-        return issueMessage;
+        String message = issueMessage;
+        
+        if(attemptedFix)
+            message += "\n" + fixMessage;
+        
+        return message;
     }
 
     @Override

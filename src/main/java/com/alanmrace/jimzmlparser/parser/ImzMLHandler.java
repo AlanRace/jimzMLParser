@@ -4,6 +4,7 @@ import com.alanmrace.jimzmlparser.data.DataLocation;
 import com.alanmrace.jimzmlparser.data.BinaryDataStorage;
 import com.alanmrace.jimzmlparser.exceptions.FatalParseException;
 import com.alanmrace.jimzmlparser.exceptions.ImzMLParseException;
+import com.alanmrace.jimzmlparser.exceptions.InvalidExternalOffset;
 import com.alanmrace.jimzmlparser.exceptions.InvalidImzML;
 import com.alanmrace.jimzmlparser.imzml.ImzML;
 
@@ -17,6 +18,7 @@ import javax.xml.parsers.SAXParserFactory;
 import com.alanmrace.jimzmlparser.mzml.BinaryDataArray;
 import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.exceptions.InvalidMzML;
+import com.alanmrace.jimzmlparser.mzml.MzMLDataContainer;
 import com.alanmrace.jimzmlparser.mzml.Scan;
 import java.io.FileNotFoundException;
 import java.util.logging.Level;
@@ -156,7 +158,8 @@ public class ImzMLHandler extends MzMLHeaderHandler {
      */
     public static ImzML parseimzML(String filename, boolean openDataStorage, ParserListener listener) throws FatalParseException {
         try {
-            OBO obo = new OBO("imagingMS.obo");
+            //OBO obo = new OBO("imagingMS.obo");
+            OBO obo = OBO.getOBO();
 
             File ibdFile = new File(filename.substring(0, filename.lastIndexOf('.')) + ".ibd");
 
@@ -186,7 +189,7 @@ public class ImzMLHandler extends MzMLHeaderHandler {
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ImzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
 
-            throw new ImzMLParseException("File not found: " + filename);
+            throw new ImzMLParseException(ex.getLocalizedMessage());
         } catch (IOException ex) {
             Logger.getLogger(ImzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
 
@@ -306,6 +309,15 @@ public class ImzMLHandler extends MzMLHeaderHandler {
     public void endElement(String uri, String localName, String qName) throws SAXException {
         
         if (ibdFile != null && qName.equals("binaryDataArray")) {
+            if(currentOffset < 0) {
+                InvalidExternalOffset issue = new InvalidExternalOffset((MzMLDataContainer)currentBinaryDataArray.getParent().getParent(), currentOffset);
+
+                notifyParserListeners(issue);
+                
+                currentOffset += DataLocation.EXTENDED_OFFSET;
+                currentBinaryDataArray.getCVParam(BinaryDataArray.externalOffsetID).setValueAsString("" + currentOffset);
+            }
+            
             DataLocation location = new DataLocation(this.dataStorage, currentOffset, (int) this.currentNumBytes);
             currentBinaryDataArray.setDataLocation(location);
             location.setDataTransformation(currentBinaryDataArray.generateDataTransformation());

@@ -4,7 +4,9 @@ import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
 import com.alanmrace.jimzmlparser.obo.OBO;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -33,7 +35,7 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
     /**
      * List of Scans.
      */
-    protected List<Scan> scanList;
+    protected List<Scan> scanList = null;
 
     /**
      * Create an empty list with specified capacity.
@@ -41,7 +43,7 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
      * @param count Capacity
      */
     public ScanList(int count) {
-        scanList = new ArrayList<Scan>(count);
+        
     }
 
     /**
@@ -67,7 +69,14 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
     public void add(Scan scan) {
         scan.setParent(this);
 
-        scanList.add(scan);
+        if (scanList instanceof ArrayList) {
+            scanList.add(scan);
+        } else if (scanList != null) {
+            scanList = new ArrayList<Scan>(scanList);
+            scanList.add(scan);
+        } else {
+            scanList = Collections.singletonList(scan);
+        }
     }
 
     /**
@@ -82,6 +91,9 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
 
     @Override
     public Scan get(int index) {
+        if(scanList == null)
+            return null;
+        
         return scanList.get(index);
     }
     
@@ -93,11 +105,17 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
      * @return Scan at index, or null if none exists
      */
     public Scan getScan(int index) {
+        if(scanList == null)
+            return null;
+        
         return scanList.get(index);
     }
     
     @Override
     public int size() {
+        if(scanList == null)
+            return 0;
+        
         return scanList.size();
     }
 
@@ -116,11 +134,14 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
 
     @Override
     public String getXMLAttributeText() {
-        return "count=\"" + scanList.size() + "\"";
+        return "count=\"" + size() + "\"";
     }
 
     @Override
     public Iterator<Scan> iterator() {
+        if(scanList == null)
+            return Collections.emptyIterator();
+        
         return scanList.iterator();
     }
 
@@ -139,16 +160,25 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
 
     @Override
     public int indexOf(Scan item) {
+        if(scanList == null)
+            return -1;
+        
         return scanList.indexOf(item);
     }
 
     @Override
     public Scan remove(int index) {
+        if(scanList == null)
+            return null;
+        
         return scanList.remove(index);
     }
     
     @Override
     public boolean remove(Scan item) {
+        if(scanList == null)
+            return false;
+        
         return scanList.remove(item);
     }
     
@@ -163,11 +193,15 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
 
     @Override
     public boolean contains(Scan item) {
+        if(scanList == null)
+            return false;
+        
         return scanList.contains(item);
     }
 
     @Override
     public void clear() {
-        scanList.clear();
+        if(scanList != null)
+            scanList.clear();
     }
 }

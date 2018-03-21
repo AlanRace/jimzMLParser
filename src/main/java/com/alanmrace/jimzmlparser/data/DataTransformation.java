@@ -2,6 +2,7 @@ package com.alanmrace.jimzmlparser.data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.zip.DataFormatException;
@@ -28,7 +29,7 @@ public class DataTransformation implements Serializable {
      * Create an empty DataTransformation.
      */
     public DataTransformation() {
-        transformation = new ArrayList<DataTransform>();
+//        transformation = new ArrayList<DataTransform>();
     }
     
     /**
@@ -38,7 +39,14 @@ public class DataTransformation implements Serializable {
      * @param transform DataTransform to add
      */
     public void addTransform(DataTransform transform) {
-        transformation.add(transform);
+        if (transformation instanceof ArrayList) {
+            transformation.add(transform);
+        } else if (transformation != null) {
+            transformation = new ArrayList<DataTransform>(transformation);
+            transformation.add(transform);
+        } else {
+            transformation = Collections.singletonList(transform);
+        }
     }
     
     /**
@@ -65,6 +73,9 @@ public class DataTransformation implements Serializable {
      * @throws DataFormatException Issue with the transformation
      */
     public byte[] performForwardTransform(byte[] data) throws DataFormatException {
+        if(transformation == null)
+            return data;
+        
         byte[] transformedData = data;
         
         for(DataTransform transform : transformation) {
@@ -86,22 +97,33 @@ public class DataTransformation implements Serializable {
     public double[] performReverseTransform(byte[] data) throws DataFormatException {
         byte[] transformedData = data;
         
-        ListIterator<DataTransform> listIterator = transformation.listIterator(transformation.size());
-        
-        while(listIterator.hasPrevious()) {
-            DataTransform transform = listIterator.previous();
-            transformedData = transform.reverseTransform(transformedData);
+        if(transformation != null) {
+            ListIterator<DataTransform> listIterator = transformation.listIterator(transformation.size());
+
+            while(listIterator.hasPrevious()) {
+                DataTransform transform = listIterator.previous();
+                transformedData = transform.reverseTransform(transformedData);
+            }
         }
         
         return DataTypeTransform.convertDataToDouble(transformedData, DataTypeTransform.DataType.Double);
+    }
+    
+    public boolean isEmpty() {
+        if(transformation == null)
+            return true;
+        
+        return transformation.isEmpty();
     }
     
     @Override
     public String toString() {
         String description = "DataTransform\n";
         
-        for(DataTransform tranform : transformation) {
-            description += "\t Transform - " + tranform;
+        if(transformation != null) {
+            for(DataTransform tranform : transformation) {
+                description += "\t Transform - " + tranform;
+            }
         }
         
         return description;

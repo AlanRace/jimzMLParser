@@ -3,7 +3,9 @@ package com.alanmrace.jimzmlparser.mzml;
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -31,13 +33,13 @@ public abstract class MzMLContentList<T extends MzMLTag>
     /**
      * The list of MzMLTags.
      */
-    protected final List<T> list;
+    protected List<T> list = null;
 
     /**
      * Create an empty list, used by subclasses.
      */
     protected MzMLContentList() {
-        list = new ArrayList<T>();
+//        list = new ArrayList<T>();
     }
 
     /**
@@ -46,7 +48,7 @@ public abstract class MzMLContentList<T extends MzMLTag>
      * @param count Initial capacity
      */
     public MzMLContentList(int count) {
-        list = new ArrayList<T>(count);
+//        list = new ArrayList<T>(count);
     }
 
     /**
@@ -58,40 +60,63 @@ public abstract class MzMLContentList<T extends MzMLTag>
         this(contentList.size());
 
         for (T item : contentList) {
-            this.list.add(item);
+            add(item);
         }
     }
 
     @Override
     public void add(T item) {
-        if(item instanceof MzMLContent)
+        if (item instanceof MzMLContent) {
             item.setParent(this);
-
-        list.add(item);
+        }
+        
+        if (list instanceof ArrayList) {
+            list.add(item);
+        } else if (list != null) {
+            list = new ArrayList<T>(list);
+            list.add(item);
+        } else {
+            list = Collections.singletonList(item);
+        }
     }
 
     @Override
     public T get(int index) {
+        if(list == null)
+            return null;
+        
         return list.get(index);
     }
 
     @Override
     public T remove(int index) {
+        if(list == null)
+            return null;
+        
         return list.remove(index);
     }
     
     @Override
     public boolean remove(T item) {
+        if(list == null)
+            return false;
+        
         return list.remove(item);
     }
 
     @Override
     public int indexOf(T item) {
+        if(list == null)
+            return -1;
+        
         return list.indexOf(item);
     }
 
     @Override
     public int size() {
+        if(list == null)
+            return 0;
+        
         return list.size();
     }
 
@@ -108,7 +133,7 @@ public abstract class MzMLContentList<T extends MzMLTag>
             throw new UnfollowableXPathException("No " + getTagName() + " exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
         }
         
-        if (list.size() > 0) {
+        if (size() > 0) {
             // Get the first element from the list so that we can use it to get 
             // the name of the tag.
             T firstElement = list.get(0);
@@ -128,7 +153,7 @@ public abstract class MzMLContentList<T extends MzMLTag>
         if(!attributeText.isEmpty())
             attributeText += " ";
         
-        return attributeText + "count=\"" + list.size() + "\"";
+        return attributeText + "count=\"" + size() + "\"";
     }
 
 //    @Override
@@ -153,16 +178,23 @@ public abstract class MzMLContentList<T extends MzMLTag>
 
     @Override
     public Iterator<T> iterator() {
+        if(list == null)
+            return Collections.emptyIterator();
+        
         return list.iterator();
     }
 
     @Override
     public boolean contains(T item) {
+        if(list == null)
+            return false;
+        
         return list.contains(item);
     }
     
     @Override
     public void clear() {
-        list.clear();
+        if(list != null)
+            list.clear();
     }
 }

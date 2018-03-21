@@ -24,17 +24,17 @@ public class ComponentList extends MzMLContentList<Component> {
     /**
      * Ionisation source list.
      */
-    final private List<Source> sources;
+    private final List<Source> sources;
 
     /**
      * Mass analyser list.
      */
-    final private List<Analyser> analysers;
+    private final List<Analyser> analysers;
 
     /**
      * Detector list.
      */
-    final private List<Detector> detectors;
+    private final List<Detector> detectors;
 
     /**
      * Create default component list with all component lists empty.

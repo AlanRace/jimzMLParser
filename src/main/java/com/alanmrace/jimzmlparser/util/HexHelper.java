@@ -6,6 +6,10 @@ package com.alanmrace.jimzmlparser.util;
  */
 public class HexHelper {
        
+	private HexHelper() {
+		// No constructor required for this class.
+	}
+	
     /**
      * Convert hex string to byte[].
      * 

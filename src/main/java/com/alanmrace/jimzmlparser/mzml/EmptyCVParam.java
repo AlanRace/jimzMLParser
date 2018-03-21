@@ -9,6 +9,8 @@ import com.alanmrace.jimzmlparser.obo.OBOTerm;
  */
 public class EmptyCVParam extends CVParam {
 
+	private static final String NO_VALUE_ERROR = "No value to get in EmptyCVParam";
+	
     /**
      * Initialise an EmptyCVParam from an ontology term.
      * 
@@ -55,17 +57,17 @@ public class EmptyCVParam extends CVParam {
 
     @Override
     public double getValueAsDouble() {
-        throw new UnsupportedOperationException("No value to get in EmptyCVParam");
+        throw new UnsupportedOperationException(NO_VALUE_ERROR);
     }
 
     @Override
     public int getValueAsInteger() {
-        throw new UnsupportedOperationException("No value to get in EmptyCVParam");
+        throw new UnsupportedOperationException(NO_VALUE_ERROR);
     }
 
     @Override
     public long getValueAsLong() {
-        throw new UnsupportedOperationException("No value to get in EmptyCVParam");
+        throw new UnsupportedOperationException(NO_VALUE_ERROR);
     }
 
     @Override
@@ -75,6 +77,7 @@ public class EmptyCVParam extends CVParam {
 
     @Override
     protected void resetValue() {
+    	// No value to reset.
     }
 
 }

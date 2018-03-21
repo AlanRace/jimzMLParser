@@ -30,7 +30,6 @@ import com.alanmrace.jimzmlparser.exceptions.ObsoleteTermUsed;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.nio.channels.Channels;
-import java.text.ParsePosition;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
@@ -359,7 +358,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
     
     public static MzML parsemzMLHeader(String filename, boolean openDataFile, ParserListener listener) throws FatalParseException {
         try {
-            OBO obo = new OBO("imagingMS.obo");
+            //OBO obo = new OBO("imagingMS.obo");
+            OBO obo = OBO.getOBO();
 
             // Parse mzML
             MzMLHeaderHandler handler = new MzMLHeaderHandler(obo, new File(filename), openDataFile);
@@ -658,7 +658,6 @@ public class MzMLHeaderHandler extends DefaultHandler {
             }
         } else if ("referenceableParamGroup".equals(qName)) {
             ReferenceableParamGroup rpg = new ReferenceableParamGroup(attributes.getValue("id"));
-
             currentContent = rpg;
 
             //try {
@@ -1571,6 +1570,92 @@ public class MzMLHeaderHandler extends DefaultHandler {
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if ("spectrum".equals(qName)) {
             processingSpectrum = false;
+            
+            // Try and tidy up spectrum
+            CVParam cvParam = currentSpectrum.getCVParamOrChild("MS:1000294");
+            if(currentSpectrum.containsCVParam(cvParam)) {
+//                System.out.println("Tidying up to be done.." + referenceableParamGroupList);
+                
+                ReferenceableParamGroup bestGroup = currentSpectrum.findBestFittingRPG(referenceableParamGroupList);
+                
+                if(bestGroup == null) {
+//                    System.out.println("No group matches so far..");
+                    // TODO: Give it a better name
+                    bestGroup = new ReferenceableParamGroup();
+                    
+                    if(referenceableParamGroupList == null) {
+                        referenceableParamGroupList = new ReferenceableParamGroupList(1);
+                        mzML.setReferenceableParamGroupList(referenceableParamGroupList);
+                    }
+                    
+                    referenceableParamGroupList.add(bestGroup);
+                    
+                    System.out.println("New group created: " + bestGroup);
+                    
+                    bestGroup.addCVParam(currentSpectrum.getCVParamOrChild("MS:1000294"));
+                    bestGroup.addCVParam(currentSpectrum.getCVParamOrChild("MS:1000511")); // ms level
+                    bestGroup.addCVParam(currentSpectrum.getCVParamOrChild(Spectrum.scanPolarityID));
+                    bestGroup.addCVParam(currentSpectrum.getCVParamOrChild("MS:1000525")); // spectrum representation
+                }
+                
+//                System.out.println("Replacing group..." + bestGroup);
+                currentSpectrum.replaceCVParamsWithRPG(bestGroup);
+            }
+        } else if ("scan".equals(qName)) {            
+            // Try and tidy up scan
+            CVParam cvParam = currentScan.getCVParamOrChild("MS:1000616");
+            if(currentScan.containsCVParam(cvParam)) {
+                ReferenceableParamGroup bestGroup = currentScan.findBestFittingRPG(referenceableParamGroupList);
+                
+                if(bestGroup == null) {
+//                    System.out.println("No group matches so far..");
+                    // TODO: Give it a better name
+                    bestGroup = new ReferenceableParamGroup();
+                    
+                    if(referenceableParamGroupList == null) {
+                        referenceableParamGroupList = new ReferenceableParamGroupList(1);
+                        mzML.setReferenceableParamGroupList(referenceableParamGroupList);
+                    }
+                    
+                    referenceableParamGroupList.add(bestGroup);
+                    
+                    System.out.println("New group created: " + bestGroup);
+                    
+                    bestGroup.addCVParam(currentScan.getCVParamOrChild("MS:1000512"));
+                    bestGroup.addCVParam(currentScan.getCVParamOrChild("MS:1000616"));
+                    bestGroup.addCVParam(currentScan.getCVParamOrChild("MS:1000927"));
+                }
+                
+                currentScan.replaceCVParamsWithRPG(bestGroup);
+            }
+        } else if("scanWindow".equals(qName)) {
+            if (currentContent instanceof MzMLContentWithParams) {
+                CVParam cvParam = ((MzMLContentWithParams) currentContent).getCVParamOrChild("MS:1000501");
+                
+                if(((MzMLContentWithParams) currentContent).containsCVParam(cvParam)) {
+                    ReferenceableParamGroup bestGroup = ((MzMLContentWithParams) currentContent).findBestFittingRPG(referenceableParamGroupList);
+                    
+                    if(bestGroup == null) {
+    //                    System.out.println("No group matches so far..");
+                        // TODO: Give it a better name
+                        bestGroup = new ReferenceableParamGroup();
+
+                        if(referenceableParamGroupList == null) {
+                            referenceableParamGroupList = new ReferenceableParamGroupList(1);
+                            mzML.setReferenceableParamGroupList(referenceableParamGroupList);
+                        }
+
+                        referenceableParamGroupList.add(bestGroup);
+
+                        System.out.println("New scanWindow group created: " + bestGroup);
+
+                        bestGroup.addCVParam(((MzMLContentWithParams) currentContent).getCVParamOrChild("MS:1000501"));
+                        bestGroup.addCVParam(((MzMLContentWithParams) currentContent).getCVParamOrChild("MS:1000500"));
+                    }
+
+                    ((MzMLContentWithParams) currentContent).replaceCVParamsWithRPG(bestGroup);
+                }
+            }
         } else if ("chromatogram".equals(qName)) {
             processingChromatogram = false;
         } else if ("precursor".equals(qName)) {

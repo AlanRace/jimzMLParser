@@ -53,7 +53,7 @@ public class DataLocation implements Serializable {
      * is applied it will convert the raw input binary as it appears in the 
      * {@link DataLocation#dataStorage} to a double[].
      */
-    protected DataTransformation dataTransformation;
+    protected DataTransformation dataTransformation = null;
     
     /**
      * Construct a DataLocation at a specific offset, with a specific length within

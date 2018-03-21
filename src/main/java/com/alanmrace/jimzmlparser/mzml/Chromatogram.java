@@ -19,12 +19,12 @@ public class Chromatogram extends MzMLDataContainer {
     /**
      * Accession: chromatogram attribute (MS:1000808).
      */
-    public static String chromatogramAttributeID = "MS:1000808";
+    public static final String chromatogramAttributeID = "MS:1000808";
 
     /**
      * Accession: chromatogram type (MS:1000626).
      */
-    public static String chromatogramTypeID = "MS:1000626";
+    public static final String chromatogramTypeID = "MS:1000626";
 
     /**
      * Child {@literal <precursor>} tag.

@@ -9,7 +9,10 @@ import java.util.UUID;
  */
 public class UUIDHelper {
     
-    
+	private UUIDHelper() {
+		// No constructor required for this class.
+	}
+	
     /**
      * Convert byte[] to UUID.
      * 

@@ -7,6 +7,10 @@ package com.alanmrace.jimzmlparser.util;
  */
 public class XMLHelper {
 
+	private XMLHelper() {
+		// No constructor required for this class.
+	}
+	
     /**
      * Escape all characters that would result in invalid XML when exporting the 
      * input as an attribute value in an XML tag.

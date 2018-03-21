@@ -63,7 +63,7 @@ public abstract class DataStorage implements Serializable {
         else
             randomAccessFile = new RandomAccessFile(dataFile, "r");
 
-	logger.log(Level.FINER, MessageFormat.format("[Opened] {0} ({1})", new Object[]{dataFile, randomAccessFile}));
+        logger.log(Level.FINER, MessageFormat.format("[Opened] {0} ({1})", dataFile, randomAccessFile));
 	
         fileStreamOpen = true;
     }

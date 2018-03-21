@@ -39,9 +39,7 @@ public class SpectrumList extends MzMLIDContentList<Spectrum> {
      * @param count Number of spectra within the list.
      */
     protected SpectrumList(int count) {
-        super(count);
-        
-        spectrumMap = new HashMap<String, Spectrum>(count);
+        super(count);        
     }
     
     /**
@@ -74,7 +72,7 @@ public class SpectrumList extends MzMLIDContentList<Spectrum> {
             Spectrum newSpectrum = new Spectrum(spectrum, rpgList, dpList, sourceFileList, icList);
 
             add(newSpectrum);
-            this.spectrumMap.put(newSpectrum.getID(), newSpectrum);
+//            this.spectrumMap.put(newSpectrum.getID(), newSpectrum);
         }
 
         if (spectrumList.defaultDataProcessingRef != null && dpList != null) {
@@ -128,7 +126,8 @@ public class SpectrumList extends MzMLIDContentList<Spectrum> {
             spectrum.setDataProcessingList(dataProcessingList);
         }
         
-        spectrumMap.put(spectrum.getID(), spectrum);
+        if(spectrumMap != null)
+            spectrumMap.put(spectrum.getID(), spectrum);
     }
     
     /**
@@ -152,6 +151,13 @@ public class SpectrumList extends MzMLIDContentList<Spectrum> {
 
     @Override
     public Spectrum get(String id) {
+        if(spectrumMap == null) {
+            spectrumMap = new HashMap<String, Spectrum>(list.size());
+            
+            for(Spectrum spectrum : list)
+                this.spectrumMap.put(spectrum.getID(), spectrum);
+        }
+        
         return spectrumMap.get(id);
     }
     
@@ -171,7 +177,10 @@ public class SpectrumList extends MzMLIDContentList<Spectrum> {
         
         success &= list.remove(spectrum);
         
-        Spectrum removedSpectrum = spectrumMap.remove(spectrum.getID());
+        Spectrum removedSpectrum = spectrum;
+        
+        if(spectrumMap != null)
+            removedSpectrum = spectrumMap.remove(spectrum.getID());
         
         // Below method only included in Java 1.8
 //        spectrumMap.remove(spectrum.getID(), spectrum);

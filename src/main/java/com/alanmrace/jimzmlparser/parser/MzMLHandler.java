@@ -11,7 +11,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.xml.bind.DatatypeConverter;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -57,7 +56,8 @@ public class MzMLHandler extends MzMLHeaderHandler {
 
     public static MzML parsemzML(String filename, ParserListener listener) throws FatalParseException {
         try {
-            OBO obo = new OBO("imagingMS.obo");
+            //OBO obo = new OBO("imagingMS.obo");
+            OBO obo = OBO.getOBO();
 
             // Necessary if the passed in filename is a resource
             //File resource = new File(filename);

@@ -47,6 +47,9 @@ public abstract class MzMLIDContentList<T extends ReferenceableTag & MzMLTag> ex
      * @return Element of the list with the unique ID, null if none found
      */
     public T get(String id) {
+        if(list == null)
+            return null;
+        
         for (T item : list) {
             if (item.getID().equals(id)) {
                 return item;

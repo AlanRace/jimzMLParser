@@ -17,7 +17,6 @@ public class CV extends MzMLIDContent implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private OBO ontology;
-    private String id;
 
     /**
      * Create a CV tag from a URI, full name and an ID.

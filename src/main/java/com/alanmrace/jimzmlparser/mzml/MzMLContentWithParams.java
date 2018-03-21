@@ -4,6 +4,7 @@ import com.alanmrace.jimzmlparser.event.CVParamAddedEvent;
 import com.alanmrace.jimzmlparser.event.CVParamRemovedEvent;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,17 +22,17 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
     /**
      * List of {@link ReferenceableParamGroup} references associated with this mzML tag.
      */
-    private List<ReferenceableParamGroupRef> referenceableParamGroupRefs;
+    private List<ReferenceableParamGroupRef> referenceableParamGroupRefs = null;
 
     /**
      * List of CVParams associated with this mzML tag.
      */
-    private List<CVParam> cvParams;
+    private List<CVParam> cvParams = null;
 
     /**
      * List of UserParams associated with this mzML tag.
      */
-    private List<UserParam> userParams;
+    private List<UserParam> userParams = null;
     
     /**
      * Default constructor.
@@ -135,28 +136,73 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
      * @return List of ReferenceableParamGroup references
      */
     protected List<ReferenceableParamGroupRef> getReferenceableParamGroupRefList() {
-        if (referenceableParamGroupRefs == null) {
-            referenceableParamGroupRefs = new ArrayList<ReferenceableParamGroupRef>();
-        }
+//        if (referenceableParamGroupRefs == null) {
+//            referenceableParamGroupRefs = new ArrayList<ReferenceableParamGroupRef>();
+//        }
 
         return referenceableParamGroupRefs;
     }
 
+    public ReferenceableParamGroup findBestFittingRPG(ReferenceableParamGroupList rpgList) {
+        if(rpgList != null) {
+            ReferenceableParamGroup bestFittingGroup = null;
+            
+            for(ReferenceableParamGroup rpg : rpgList) {
+                int numParamsFound = 0;
+                
+                for(CVParam cvParam : rpg.getCVParamList()) {
+                    CVParam curParam = this.getCVParam(cvParam.getTerm().getID());
+                    
+                    if(curParam != null && containsCVParam(curParam)) {
+                        String value1 = curParam.getValueAsString();
+                        String value2 = cvParam.getValueAsString();
+                        
+                        if((value1 == null && value2 == null) || (value1 != null && value2 != null && value1.equals(value2)))
+                            numParamsFound++;
+                    }
+                }
+                
+//                System.out.println("Found " + numParamsFound + " for " + rpg);
+                
+                if(numParamsFound == rpg.getCVParamCount()) {
+                    if(bestFittingGroup == null) {
+                        bestFittingGroup = rpg;
+                    } else if(numParamsFound > bestFittingGroup.getCVParamCount()) {
+                        bestFittingGroup = rpg;
+                    }
+                }
+            }
+            
+            return bestFittingGroup;
+        }
+        
+        return null;
+    }
+    
+    public void replaceCVParamsWithRPG(ReferenceableParamGroup rpg) {
+        for(CVParam replacementParam : rpg.getCVParamList()) {
+            CVParam paramToRemove = this.getCVParam(replacementParam.getTerm().getID());
+            
+            removeCVParam(paramToRemove);
+        }
+        
+        this.addReferenceableParamGroupRef(new ReferenceableParamGroupRef(rpg));
+    }
     
     @Override
     public List<CVParam> getCVParamList() {
-        if (cvParams == null) {
-            cvParams = new ArrayList<CVParam>();
-        }
+//        if (cvParams == null) {
+//            cvParams = new ArrayList<CVParam>();
+//        }
 
         return cvParams;
     }
 
     @Override
     public List<UserParam> getUserParamList() {
-        if (userParams == null) {
-            userParams = new ArrayList<UserParam>();
-        }
+//        if (userParams == null) {
+//            userParams = new ArrayList<UserParam>();
+//        }
 
         return userParams;
     }
@@ -177,15 +223,24 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
 
         boolean exists = false;
 
-        for (ReferenceableParamGroupRef ref : getReferenceableParamGroupRefList()) {
-            if (ref.getReference().getID().equals(rpg.getReference().getID())) {
-                exists = true;
-                break;
+        if(referenceableParamGroupRefs != null) {
+            for (ReferenceableParamGroupRef ref : getReferenceableParamGroupRefList()) {
+                if (ref.getReference().getID().equals(rpg.getReference().getID())) {
+                    exists = true;
+                    break;
+                }
             }
         }
-
+        
         if (!exists) {
-            getReferenceableParamGroupRefList().add(rpg);
+            if(referenceableParamGroupRefs instanceof ArrayList) {
+                referenceableParamGroupRefs.add(rpg);
+            } else if(referenceableParamGroupRefs != null) {
+                referenceableParamGroupRefs = new ArrayList<ReferenceableParamGroupRef>(referenceableParamGroupRefs);
+                referenceableParamGroupRefs.add(rpg);
+            } else {
+                referenceableParamGroupRefs = Collections.singletonList(rpg);
+            }
         }
     }
 
@@ -225,7 +280,14 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
     @Override
     public void addCVParam(CVParam cvParam) {
         if(cvParam != null) {
-            getCVParamList().add(cvParam);
+            if (cvParams instanceof ArrayList) {
+                cvParams.add(cvParam);
+            } else if (cvParams != null) {
+                cvParams = new ArrayList<CVParam>(cvParams);
+                cvParams.add(cvParam);
+            } else {
+                cvParams = Collections.singletonList(cvParam);
+            }
 
             cvParam.setParent(this);
 
@@ -235,6 +297,9 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
     }
 
     public boolean containsCVParam(CVParam param) {
+        if(cvParams == null)
+            return false;
+        
         return cvParams.contains(param);
     }
     
@@ -245,20 +310,21 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
         }
         
         CVParam paramRemoved = getCVParamList().remove(index);
-        paramRemoved.setParent(null);
         
         if(hasListeners())
             notifyListeners(new CVParamRemovedEvent(this, paramRemoved));
+        
+        paramRemoved.setParent(null);
     }
     
     @Override
     public void removeCVParam(CVParam param) {
         if(cvParams != null) {
             if(cvParams.remove(param)) {
-                param.setParent(null);
-                
                 if(hasListeners())
                     notifyListeners(new CVParamRemovedEvent(this, param));
+                
+                param.setParent(null);
             }
         }
     }
@@ -279,10 +345,11 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
 
         for (CVParam cvParam : cvParamList) {
             cvParams.remove(cvParam);
-            cvParam.setParent(null);
             
             if(hasListeners())
                 notifyListeners(new CVParamRemovedEvent(this, cvParam));
+            
+            cvParam.setParent(null);
         }
     }
 
@@ -296,17 +363,28 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
 
         for (CVParam cvParam : children) {
             cvParams.remove(cvParam);
-            cvParam.setParent(null);
             
             if(hasListeners())
                 notifyListeners(new CVParamRemovedEvent(this, cvParam));
+            
+            cvParam.setParent(null);
         }
     }
 
     @Override
-    public void addUserParam(UserParam userParam) {
-        getUserParamList().add(userParam);
-        userParam.setParent(this);
+    public void addUserParam(UserParam userParam) {        
+        if(userParam != null) {
+            if (userParams instanceof ArrayList) {
+                userParams.add(userParam);
+            } else if (userParams != null) {
+                userParams = new ArrayList<UserParam>(userParams);
+                userParams.add(userParam);
+            } else {
+                userParams = Collections.singletonList(userParam);
+            }
+
+            userParam.setParent(this);
+        }
     }
 
     @Override

@@ -4,8 +4,10 @@ import com.alanmrace.jimzmlparser.data.DataLocation;
 import com.alanmrace.jimzmlparser.data.DataTransformation;
 import com.alanmrace.jimzmlparser.data.DataTypeTransform;
 import com.alanmrace.jimzmlparser.data.DataTypeTransform.DataType;
+import com.alanmrace.jimzmlparser.data.LZ4DataTransform;
 import com.alanmrace.jimzmlparser.data.XZDataTransform;
 import com.alanmrace.jimzmlparser.data.ZlibDataTransform;
+import com.alanmrace.jimzmlparser.data.ZstdDataTransform;
 import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
@@ -47,7 +49,17 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
         /**
          * XZ compression.
          */
-        XZ;
+        XZ,
+        
+        /**
+         * LZ4 compression
+         */
+        LZ4,
+        
+        /**
+         * ZStandard compression
+         */
+        Zstd;
         
         /**
          * Convert CompressionType enum to OBOTerm, using ontology terms found in the 
@@ -64,6 +76,10 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
                     return OBO.getOBO().getTerm(zlibCompressionID);
                 case XZ:
                     return OBO.getOBO().getTerm(xyCompressionID);
+                case LZ4:
+                    return OBO.getOBO().getTerm(lz4CompressionID);
+                case Zstd:
+                    return OBO.getOBO().getTerm(zstdCompressionID);
                 default:
                     return null;
             }
@@ -187,6 +203,16 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
      * Accession: xz compression (IMS:1005001).
      */
     public static final String xyCompressionID = "IMS:1005001";
+    
+    /**
+     * Accession: lz4 compression (IMS:1005001).
+     */
+    public static final String lz4CompressionID = "IMS:1005002";
+    
+    /**
+     * Accession: zstd compression (IMS:1005001).
+     */
+    public static final String zstdCompressionID = "IMS:1005003";
     
     /**
      * Accession: External array length (IMS:1000103). MUST supply once
@@ -449,8 +475,6 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
      * Get the data array as double[], convert and decompress as necessary,
      * optionally keeping the data in memory.
      *
-     * <p>TODO: Doesn't keep data in memory
-     *
      * @param keepInMemory true if data should be kept in memory, false
      * otherwise
      * @return Uncompressed data as double[]
@@ -535,14 +559,18 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
         }
 
         CVParam compressionCVParam = this.getCVParamOrChild(BinaryDataArray.compressionTypeID);
-
+        
         // Add in any compression
         if (BinaryDataArray.zlibCompressionID.equals(compressionCVParam.getTerm().getID())) {
             transformation.addTransform(new ZlibDataTransform());
         } else if(BinaryDataArray.xyCompressionID.equals(compressionCVParam.getTerm().getID())) {
             transformation.addTransform(new XZDataTransform());
+        } else if(BinaryDataArray.lz4CompressionID.equals(compressionCVParam.getTerm().getID())) {
+            transformation.addTransform(new LZ4DataTransform((int)(this.getExternalArrayLength() * getDataTypeInBytes(getCVParamOrChild(dataTypeID)))));
+        } else if(BinaryDataArray.zstdCompressionID.equals(compressionCVParam.getTerm().getID())) {
+            transformation.addTransform(new ZstdDataTransform((int)(this.getExternalArrayLength() * getDataTypeInBytes(getCVParamOrChild(dataTypeID)))));
         }
-
+        
         return transformation;
     }
 
@@ -706,10 +734,6 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
         String newDataTypeID;
         
         switch(dataType) {
-            case Double:
-            default:
-                newDataTypeID = BinaryDataArray.doublePrecisionID;
-                break;
             case Float:
                 newDataTypeID = BinaryDataArray.singlePrecisionID;
                 break;
@@ -724,6 +748,10 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
                 break;
             case Integer8bit:
                 newDataTypeID = BinaryDataArray.signed8bitIntegerID;
+                break;
+            case Double:
+            default:
+                newDataTypeID = BinaryDataArray.doublePrecisionID;
                 break;
         }
         
@@ -762,10 +790,5 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
     @Override
     public String getTagName() {
         return "binaryDataArray";
-    }
-
-    @Override
-    public void addChildrenToCollection(Collection<MzMLTag> children) {
-        super.addChildrenToCollection(children);
     }
 }
