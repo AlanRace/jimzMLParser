@@ -20,4 +20,9 @@ public class ImzMLHeaderWriter extends MzMLWriter {
     protected void writeBinaryTag(BinaryDataArray bda) throws IOException {
         writeMetadata("<binary />\n");
     }
+    
+    @Override
+    public boolean shouldOutputIndex() {
+        return false;
+    }
 }

@@ -2,6 +2,8 @@ package com.alanmrace.jimzmlparser.obo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,33 +45,33 @@ public class OBOTerm implements Serializable {
     /**
      * List of all OBOTerms which were listed as relationship: has_units.
      */
-    private final List<OBOTerm> has_units;
+    private List<OBOTerm> has_units;
     
     /**
      * List of Strings containing all values which were listed as relationship: has_units.
      */
-    protected final List<String> unitList;
+    protected List<String> unitList;
 
     /**
      * List of Strings containing all values which were listed as relationship: is_a.
      */
-    private final List<String> is_a;
+    private List<String> is_a;
 
     /**
      * List of Strings containing all values which were listed as relationship: part_of.
      */
-    private final List<String> part_of;
+    private List<String> part_of;
 
     /**
      * List of all child terms of this ontology term. 
      * These are determined as the inverse of any relationship: is_a that is encountered.
      */
-    private final List<OBOTerm> children;
+    private List<OBOTerm> children;
 
     /**
      * List of all parent terms of this ontology term.
      */
-    private final List<OBOTerm> parents;
+    private List<OBOTerm> parents;
     
     /**
      * Flag denoting whether the ontology term has been marked as obsolete.
@@ -336,19 +338,54 @@ public class OBOTerm implements Serializable {
         this.ontology = ontology;
         
         // TODO: Assign these only when necessary
-        is_a = new ArrayList<String>();
-        part_of = new ArrayList<String>();
-        children = new ArrayList<OBOTerm>();
-        parents = new ArrayList<OBOTerm>();
-        has_units = new ArrayList<OBOTerm>();
-        unitList = new ArrayList<String>();
+//        is_a = new ArrayList<String>();
+//        part_of = new ArrayList<String>();
+//        children = new ArrayList<OBOTerm>();
+//        parents = new ArrayList<OBOTerm>();
+//        has_units = new ArrayList<OBOTerm>();
+//        unitList = new ArrayList<String>();
 
         this.id = id;
 
-        int indexOfColon = id.indexOf(":");
-        namespace = id.substring(0, indexOfColon).trim();
+//        int indexOfColon = id.indexOf(":");
+//        namespace = id.substring(0, indexOfColon).trim();
     }
 
+    // TODO: Make more memory efficient through calls to getIs_a(), ..
+    
+    protected void addis_a(String relationship) {
+        if (is_a instanceof ArrayList) {
+            is_a.add(relationship);
+        } else if (is_a != null) {
+            is_a = new ArrayList<String>(is_a);
+            is_a.add(relationship);
+        } else {
+            is_a = Collections.singletonList(relationship);
+        }
+    }
+    
+    protected void addUnits(String units) {
+        if (unitList instanceof ArrayList) {
+            unitList.add(units);
+        } else if (unitList != null) {
+            unitList = new ArrayList<String>(unitList);
+            unitList.add(units);
+        } else {
+            unitList = Collections.singletonList(units);
+        }
+    }
+    
+    protected void add_part_of(String relationship) {
+        if (part_of instanceof ArrayList) {
+            part_of.add(relationship);
+        } else if (part_of != null) {
+            part_of = new ArrayList<String>(part_of);
+            part_of.add(relationship);
+        } else {
+            part_of = Collections.singletonList(relationship);
+        }
+    }
+    
     /**
      * Parse a single, pre-white character stripped, line from an OBO file.
      * 
@@ -378,14 +415,14 @@ public class OBOTerm implements Serializable {
             String relationshipValue = value.substring(indexOfSpace + 1).trim();
 
             if ("is_a".equals(relationshipTag)) {
-                is_a.add(relationshipValue);
+                addis_a(relationshipValue);
             } else if ("has_units".equals(relationshipTag)) {
-                unitList.add(relationshipValue);
+                addUnits(relationshipValue);
             } else if ("part_of".equals(relationshipTag)) {
-                part_of.add(relationshipValue);
+                add_part_of(relationshipValue);
             }
         } else if ("is_a".equals(tag)) {
-            is_a.add(value);
+            addis_a(value);
         } else if ("is_obsolete".equals(tag)) {
             is_obsolete = Boolean.parseBoolean(value);
         } else if ("xref".equals(tag)) {
@@ -437,8 +474,14 @@ public class OBOTerm implements Serializable {
      * @param child Ontology term to add as a child.
      */
     public void addChild(OBOTerm child) {
-//		System.out.println("INFO: Adding child " + child.getID() + " to " + getID());
-        children.add(child);
+        if (children instanceof ArrayList) {
+            children.add(child);
+        } else if (children != null) {
+            children = new ArrayList<OBOTerm>(children);
+            children.add(child);
+        } else {
+            children = Collections.singletonList(child);
+        }
 
     }
 
@@ -466,7 +509,14 @@ public class OBOTerm implements Serializable {
      * @param parent Ontology term to add as parent
      */
     public void addParent(OBOTerm parent) {
-        parents.add(parent);
+        if (parents instanceof ArrayList) {
+            parents.add(parent);
+        } else if (parents != null) {
+            parents = new ArrayList<OBOTerm>(parents);
+            parents.add(parent);
+        } else {
+            parents = Collections.singletonList(parent);
+        }
     }
 
     /**
@@ -527,8 +577,10 @@ public class OBOTerm implements Serializable {
     public List<OBOTerm> getAllChildren() {
         ArrayList<OBOTerm> allChildren = new ArrayList<OBOTerm>();
 
-        for (OBOTerm child : children) {
-            child.getAllChildren(allChildren);
+        if(children != null) {
+            for (OBOTerm child : children) {
+                child.getAllChildren(allChildren);
+            }
         }
 
         return allChildren;
@@ -544,8 +596,10 @@ public class OBOTerm implements Serializable {
     private void getAllChildren(List<OBOTerm> allChildren) {
         allChildren.add(this);
 
-        for (OBOTerm child : children) {
-            child.getAllChildren(allChildren);
+        if(children != null) {
+            for (OBOTerm child : children) {
+                child.getAllChildren(allChildren);
+            }
         }
     }
 
@@ -558,8 +612,10 @@ public class OBOTerm implements Serializable {
     public List<OBOTerm> getAllParents() {
         ArrayList<OBOTerm> allParents = new ArrayList<OBOTerm>();
 
-        for (OBOTerm parent : parents) {
-            parent.getAllParents(allParents);
+        if(parents != null) {
+            for (OBOTerm parent : parents) {
+                parent.getAllParents(allParents);
+            }
         }
 
         return allParents;
@@ -586,18 +642,30 @@ public class OBOTerm implements Serializable {
     private void getAllParents(List<OBOTerm> allParents) {
         allParents.add(this);
 
-        for (OBOTerm parent : parents) {
-            parent.getAllParents(allParents);
+        if(parents != null) {
+            for (OBOTerm parent : parents) {
+                parent.getAllParents(allParents);
+            }
         }
     }
 
     /**
      * Get list of is_a relationships.
      * 
+     * TODO: The public version of this should return a converted set of relationships (i.e. List<OBOTerm>)
+     * TODO: Create relationship interface and store all in the same List<> and then use list filters to select is_a etc.
+     * 
      * @return List of is_a relationships
      */
-    public List<String> getIsA() {
+    protected List<String> getIsA() {
         return is_a;
+    }
+    
+    protected void clearIsA() {
+        if(is_a instanceof ArrayList)
+            is_a.clear();
+        
+        is_a = null;
     }
 
     /**
@@ -661,7 +729,14 @@ public class OBOTerm implements Serializable {
      */
     public void addUnit(OBOTerm unit) {
 //		System.out.println(unitName + " " + units.getID() + " " + units.getName());
-        this.has_units.add(unit);
+        if (has_units instanceof ArrayList) {
+            has_units.add(unit);
+        } else if (has_units != null) {
+            has_units = new ArrayList<OBOTerm>(has_units);
+            has_units.add(unit);
+        } else {
+            has_units = Collections.singletonList(unit);
+        }
     }
 
     @Override
@@ -681,7 +756,12 @@ public class OBOTerm implements Serializable {
 
         OBOTerm term = (OBOTerm) o;
 
-        return term.getID().equals(id) && term.getNamespace().equals(namespace);
+        boolean namespaceOK = namespace == null && term.getNamespace() == null;
+        
+        if(namespace != null && term.getNamespace() != null)
+            namespaceOK = term.getNamespace().equals(namespace);
+        
+        return term.getID().equals(id) && namespaceOK;
     }
 
     @Override

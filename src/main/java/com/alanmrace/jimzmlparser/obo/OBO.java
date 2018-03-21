@@ -31,6 +31,7 @@ public class OBO implements Serializable {
     public static final String UO_OBO_FULLNAME = "Units of Measurement Ontology";
     
     public static final String PATO_OBO_FULLNAME = "Phenotype And Trait Ontology";
+    public static final String PATO_OBO_URI = "https://raw.githubusercontent.com/pato-ontology/pato/master/pato.obo";
     
     /** Location of the MSI ontology. */
     public static final String IMS_OBO_URI = "https://raw.githubusercontent.com/imzML/imzML/master/imagingMS.obo";
@@ -79,7 +80,7 @@ public class OBO implements Serializable {
         
         // Strip off the URL details if they exist
         if (resourcePath.contains("http://") || resourcePath.contains("https://")) {
-            resourcePath = resourcePath.substring(resourcePath.lastIndexOf("/") + 1);
+            resourcePath = resourcePath.substring(resourcePath.lastIndexOf('/') + 1);
         }
 
         logger.log(Level.FINER, "Parsing OBO /obo/{0}", resourcePath);
@@ -107,19 +108,22 @@ public class OBO implements Serializable {
                     // Get the ID
                     curLine = in.readLine();
                     // TODO: Requires that the first tag in the term is the ID tag 
-                    int indexOfColon = curLine.indexOf(":");
-                    String id = curLine.substring(indexOfColon + 1).trim();
-
-                    curTerm = new OBOTerm(this, id);
-
-                    terms.put(id, curTerm);
+                    
+                    if(curLine != null) {
+	                    int indexOfColon = curLine.indexOf(':');
+	                    String id = curLine.substring(indexOfColon + 1).trim();
+	
+	                    curTerm = new OBOTerm(this, id);
+	
+	                    terms.put(id, curTerm);
+                    }
                 } else if (curLine.trim().equals("[Typedef]")) {
                     processingTerms = false;
                 } else if (curTerm != null && processingTerms) {
                     curTerm.parse(curLine);
                 } else {
                     // TODO: Add in header information
-                    int locationOfColon = curLine.indexOf(":");
+                    int locationOfColon = curLine.indexOf(':');
                     String tag = curLine.substring(0, locationOfColon).trim();
                     String value = curLine.substring(locationOfColon + 1).trim().toLowerCase();
 
@@ -144,15 +148,19 @@ public class OBO implements Serializable {
         for (OBOTerm term : terms.values()) {
             Collection<String> is_a = term.getIsA();
 
-            for (String id : is_a) {
-                OBOTerm parentTerm = getTerm(id);
+            if(is_a != null) {
+                for (String id : is_a) {
+                    OBOTerm parentTerm = getTerm(id);
 
-                if (parentTerm == null) {
-                    System.err.println("Haven't found " + id);
-                } else {
-                    parentTerm.addChild(term);
-                    term.addParent(parentTerm);
+                    if (parentTerm == null) {
+                        System.err.println("Haven't found " + id);
+                    } else {
+                        parentTerm.addChild(term);
+                        term.addParent(parentTerm);
+                    }
                 }
+                
+                term.clearIsA();
             }
 
 //            Collection<String> part_of = term.getPartOf();
@@ -169,9 +177,13 @@ public class OBO implements Serializable {
 //            }
 
             // Units
-            for(String unitName : term.unitList) {
-            //if (term.getUnitName() != null) {
-                term.addUnit(getTerm(unitName));
+            if(term.unitList != null) {
+                for(String unitName : term.unitList) {
+                //if (term.getUnitName() != null) {
+                    term.addUnit(getTerm(unitName));
+                }
+                
+                term.unitList = null;
             }
         }
     }
@@ -197,8 +209,8 @@ public class OBO implements Serializable {
     public List<OBO> getFullImportHeirarchy() {
         List<OBO> fullList = new ArrayList<OBO>();
         
-        for(OBO obo : this.imports) {
-            fullList.addAll(obo.getFullImportHeirarchy());
+        for(OBO importedOBO : this.imports) {
+            fullList.addAll(importedOBO.getFullImportHeirarchy());
         }
         
         fullList.add(this);
@@ -259,15 +271,19 @@ public class OBO implements Serializable {
     }
     
     public OBO getOBOWithID(String id) {
-        if(this.ontology.toUpperCase().equals(id))
+        if(this.ontology.equalsIgnoreCase(id))
             return this;
         
-        for(OBO obo : imports) {
-            if(obo.getOBOWithID(id) != null)
-                return obo;
+        OBO foundOBO = null;
+        
+        for(OBO importedOBO : imports) {            
+            foundOBO = importedOBO.getOBOWithID(id);
+            
+            if(foundOBO != null)
+                break;
         }
         
-        return null;
+        return foundOBO;
     }
     
     @Override

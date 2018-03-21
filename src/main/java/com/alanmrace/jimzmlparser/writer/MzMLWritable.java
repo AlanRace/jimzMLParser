@@ -27,6 +27,8 @@ public interface MzMLWritable {
      */
     public boolean shouldOutputIndex();
     
+    public void shouldOutputIndex(boolean shouldOutputIndex);
+    
     /**
      * Returns the full path location of the metadata file.
      * 

@@ -394,4 +394,9 @@ public class MzMLWriter implements MzMLWritable {
     public void addListener(WriterListener listener) {
         this.listeners.add(listener);
     }
+
+    @Override
+    public void shouldOutputIndex(boolean shouldOutputIndex) {
+        this.shouldOutputIndex = shouldOutputIndex;
+    }
 }
