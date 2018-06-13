@@ -56,29 +56,15 @@ public class Chromatogram extends MzMLDataContainer {
      */
     public Chromatogram(Chromatogram chromatogram, ReferenceableParamGroupList rpgList, DataProcessingList dpList,
             SourceFileList sourceFileList) {
-        super(chromatogram, rpgList);
+        super(chromatogram, rpgList, dpList);
 
-        this.defaultArrayLength = chromatogram.defaultArrayLength;
         this.id = chromatogram.id;
-
-        if (chromatogram.dataProcessingRef != null && dpList != null) {
-            for (DataProcessing dp : dpList) {
-                if (chromatogram.dataProcessingRef.getID().equals(dp.getID())) {
-                    this.dataProcessingRef = dp;
-
-                    break;
-                }
-            }
-        }
 
         if (chromatogram.precursor != null) {
             this.precursor = new Precursor(chromatogram.precursor, rpgList, sourceFileList);
         }
         if (chromatogram.product != null) {
             this.product = new Product(chromatogram.product, rpgList);
-        }
-        if (chromatogram.binaryDataArrayList != null) {
-            this.binaryDataArrayList = new BinaryDataArrayList(chromatogram.binaryDataArrayList, rpgList, dpList);
         }
     }
 

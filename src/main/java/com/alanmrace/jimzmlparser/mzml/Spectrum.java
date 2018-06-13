@@ -131,7 +131,11 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
     public Spectrum(String id, int defaultArrayLength) {
         super(id, defaultArrayLength);
     }
-
+    
+    public Spectrum(Spectrum spectrum, MzML mzML) {
+        this(spectrum, mzML.getReferenceableParamGroupList(), mzML.getDataProcessingList(), mzML.getFileDescription().getSourceFileList(), mzML.getInstrumentConfigurationList());
+    }
+    
     /**
      * Copy constructor, requiring new versions of lists to match old references
      * to.
@@ -144,19 +148,10 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
      */
     public Spectrum(Spectrum spectrum, ReferenceableParamGroupList rpgList, DataProcessingList dpList,
             SourceFileList sourceFileList, InstrumentConfigurationList icList) {
-        super(spectrum, rpgList);
+        super(spectrum, rpgList, dpList);
 
         this.id = spectrum.id;
-        this.defaultArrayLength = spectrum.defaultArrayLength;
         this.spotID = spectrum.spotID;
-
-        if (spectrum.dataProcessingRef != null && dpList != null) {
-            for (DataProcessing dp : dpList) {
-                if (spectrum.dataProcessingRef.getID().equals(dp.getID())) {
-                    dataProcessingRef = dp;
-                }
-            }
-        }
 
         if (spectrum.sourceFileRef != null && sourceFileList != null) {
             for (SourceFile sourceFile : sourceFileList) {
@@ -176,9 +171,6 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
         }
         if (spectrum.productList != null) {
             productList = new ProductList(spectrum.productList, rpgList);
-        }
-        if (spectrum.binaryDataArrayList != null) {
-            binaryDataArrayList = new BinaryDataArrayList(spectrum.binaryDataArrayList, rpgList, dpList);
         }
     }
 

@@ -294,6 +294,7 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
 
         this.arrayLength = bda.arrayLength;
         this.encodedLength = bda.encodedLength;
+        this.dataLocation = bda.dataLocation;
 
         if (bda.dataProcessingRef != null && dpList != null) {
             for (DataProcessing dp : dpList) {

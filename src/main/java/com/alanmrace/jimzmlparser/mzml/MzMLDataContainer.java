@@ -47,9 +47,25 @@ public abstract class MzMLDataContainer extends MzMLIndexedContentWithParams {
      * 
      * @param mzMLContent   Content to copy
      * @param rpgList       New ReferenceableParamGroupList
+     * @param dpList        New DataProcessingList
      */
-    public MzMLDataContainer(MzMLDataContainer mzMLContent, ReferenceableParamGroupList rpgList) {
+    public MzMLDataContainer(MzMLDataContainer mzMLContent, ReferenceableParamGroupList rpgList, DataProcessingList dpList) {
         super(mzMLContent, rpgList);
+        
+        this.dataLocation = mzMLContent.dataLocation;
+        this.defaultArrayLength = mzMLContent.defaultArrayLength;
+        
+        if (mzMLContent.dataProcessingRef != null && dpList != null) {
+            for (DataProcessing dp : dpList) {
+                if (mzMLContent.dataProcessingRef.getID().equals(dp.getID())) {
+                    dataProcessingRef = dp;
+                }
+            }
+        }
+        
+        if (mzMLContent.binaryDataArrayList != null) {
+            binaryDataArrayList = new BinaryDataArrayList(mzMLContent.binaryDataArrayList, rpgList, dpList);
+        }
     }
     
     /**

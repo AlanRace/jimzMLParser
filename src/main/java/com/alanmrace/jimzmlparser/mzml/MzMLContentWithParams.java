@@ -87,6 +87,8 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
                     cvParams.add(new DoubleCVParam((DoubleCVParam) cvParam));
                 } else if (cvParam instanceof IntegerCVParam) {
                     cvParams.add(new IntegerCVParam((IntegerCVParam) cvParam));
+                } else if (cvParam instanceof BooleanCVParam) {
+                    cvParams.add(new BooleanCVParam((BooleanCVParam) cvParam));
                 } else if (cvParam instanceof EmptyCVParam) {
                     cvParams.add(new EmptyCVParam((EmptyCVParam) cvParam));
                 } else {
