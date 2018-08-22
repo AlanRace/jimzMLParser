@@ -18,6 +18,7 @@ import com.alanmrace.jimzmlparser.mzml.ScanSettings;
 import com.alanmrace.jimzmlparser.mzml.ScanSettingsList;
 import com.alanmrace.jimzmlparser.mzml.Spectrum;
 import com.alanmrace.jimzmlparser.mzml.StringCVParam;
+import com.alanmrace.jimzmlparser.mzml.UserParam;
 import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.util.HexHelper;
 import com.alanmrace.jimzmlparser.util.UUIDHelper;
@@ -27,6 +28,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -114,7 +116,7 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
         try {
             String ibdLocation = outputLocation;
 
-            int pos = ibdLocation.lastIndexOf(".");
+            int pos = ibdLocation.toLowerCase().lastIndexOf(".imzml");
             if (pos > 0) {
                 ibdLocation = ibdLocation.substring(0, pos);
             }
@@ -296,23 +298,35 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
     }
 
     @Override
-    public byte[] prepareData(double[] data, BinaryDataArray binayDataArray) throws IOException {
+    public byte[] prepareData(double[] data, BinaryDataArray binaryDataArray) throws IOException {
         byte[] byteData = null;
 
         try {
-            DataTransformation transformation = binayDataArray.generateDataTransformation();
+            DataTransformation transformation = binaryDataArray.generateDataTransformation();
             byte[] transformedData = transformation.performForwardTransform(data);
+            
+            // If using LZ4, the size of the decompressed data is required before decompression, so add this in as a UserParam that can be used later
+            if(binaryDataArray.getCVParam(BinaryDataArray.msNumpressLinearLZ4ID) != null || 
+                    binaryDataArray.getCVParam(BinaryDataArray.msNumpressPositiveLZ4ID) != null || 
+                    binaryDataArray.getCVParam(BinaryDataArray.msNumpressSlofLZ4ID) != null) {
+                int[] dataSizeAtEachStage = transformation.getDataSizeAtEachStage();
+                
+                binaryDataArray.addUserParam(new UserParam("LZ4 decompression size", "" + dataSizeAtEachStage[dataSizeAtEachStage.length-2]));
+            }
+            
+            //System.out.println(binaryDataArray.getCVParamOrChild(BinaryDataArray.compressionTypeID));
+            //System.out.println(Arrays.toString(transformation.getDataSizeAtEachStage()));
 
-            binayDataArray.removeCVParam(BinaryDataArray.externalDataID);
+            binaryDataArray.removeCVParam(BinaryDataArray.externalDataID);
 
-            binayDataArray.removeCVParam(BinaryDataArray.externalOffsetID);
-            binayDataArray.addCVParam(new LongCVParam(OBO.getOBO().getTerm(BinaryDataArray.externalOffsetID), getDataPointer()));
+            binaryDataArray.removeCVParam(BinaryDataArray.externalOffsetID);
+            binaryDataArray.addCVParam(new LongCVParam(OBO.getOBO().getTerm(BinaryDataArray.externalOffsetID), getDataPointer()));
 
-            binayDataArray.removeCVParam(BinaryDataArray.externalArrayLengthID);
-            binayDataArray.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(BinaryDataArray.externalArrayLengthID), data.length));
+            binaryDataArray.removeCVParam(BinaryDataArray.externalArrayLengthID);
+            binaryDataArray.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(BinaryDataArray.externalArrayLengthID), data.length));
 
-            binayDataArray.removeCVParam(BinaryDataArray.externalEncodedLengthID);
-            binayDataArray.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(BinaryDataArray.externalEncodedLengthID), transformedData.length));
+            binaryDataArray.removeCVParam(BinaryDataArray.externalEncodedLengthID);
+            binaryDataArray.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(BinaryDataArray.externalEncodedLengthID), transformedData.length));
 
             byteData = transformedData;
         } catch (DataFormatException ex) {

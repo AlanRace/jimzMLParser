@@ -6,6 +6,7 @@ import com.alanmrace.jimzmlparser.mzml.Chromatogram;
 import com.alanmrace.jimzmlparser.mzml.HasChildren;
 import com.alanmrace.jimzmlparser.mzml.MzML;
 import com.alanmrace.jimzmlparser.mzml.MzMLDataContainer;
+import com.alanmrace.jimzmlparser.mzml.MzMLIDContentList;
 import com.alanmrace.jimzmlparser.mzml.MzMLIndexedContentWithParams;
 import com.alanmrace.jimzmlparser.mzml.MzMLOrderedContentWithParams;
 import com.alanmrace.jimzmlparser.mzml.MzMLTag;
@@ -16,6 +17,7 @@ import com.sun.org.apache.xml.internal.security.utils.Base64;
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
 import java.security.MessageDigest;
@@ -30,6 +32,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
+import java.util.zip.GZIPOutputStream;
+import net.jpountz.lz4.LZ4BlockOutputStream;
+import org.tukaani.xz.LZMA2Options;
+import org.tukaani.xz.XZOutputStream;
+
 
 /**
  * Writer for exporting to mzML. Binary data exported as Base64 in the same file
@@ -143,6 +150,43 @@ public class MzMLWriter implements MzMLWritable {
         }
     }
 
+//    public static void main(String[] args) throws IOException {
+//        ImzML imzML = ImzML.create();
+//        ImzMLWriter writer = new ImzMLWriter();
+//        writer.write(imzML, "test_comp.imzML.xz");
+//        
+//        ImzML newImzML = ImzMLHandler.parseimzML("test_comp.imzML.xz");
+//        System.out.println(newImzML);
+//        
+//        
+//        //
+//        imzML = ImzMLHandler.parseimzML("D:\\Axel\\M333_KW121_EHM_M20_OT10_CHCA aus ACNundH2O_20um_250x230_lock455.imzML");
+//        
+//        Spectrum spectrum = imzML.getSpectrum(1, 1);
+//        
+//        int length = spectrum.getmzArray().length * 2 * 8;
+//        
+//        ZstdDictTrainer dictTrainer = new ZstdDictTrainer(length, 256);
+//        
+//        dictTrainer.addSample(DataTypeTransform.convertDoublesToBytes(spectrum.getmzArray()));
+//        dictTrainer.addSample(DataTypeTransform.convertDoublesToBytes(spectrum.getIntensityArray()));
+//        
+//        byte[] dict = dictTrainer.trainSamples();
+//        
+//        spectrum = imzML.getSpectrum(2, 2);
+//        
+//        byte[] temp = new byte[spectrum.getmzArray().length * 8];
+//        
+//        System.out.println("Original size: " + temp.length);
+//        System.out.println("Compressed m/z array: " + Zstd.compress(DataTypeTransform.convertDoublesToBytes(spectrum.getmzArray()), 3).length);
+//        System.out.println("Compressed intensity array: " + Zstd.compress(DataTypeTransform.convertDoublesToBytes(spectrum.getIntensityArray()), 3).length);
+//        
+//        ZstdDictCompress dictCompress = new ZstdDictCompress(dict, 3);
+//        
+//        System.out.println("Dictionary m/z: " +  Zstd.compressUsingDict(DataTypeTransform.convertDoublesToBytes(spectrum.getmzArray()), dict, 3).length);
+//        System.out.println("Dictionary intensity: " +  Zstd.compressUsingDict(DataTypeTransform.convertDoublesToBytes(spectrum.getIntensityArray()), dict, 3).length);
+//    }
+    
     @Override
     public void write(MzML mzML, String outputLocation) throws IOException {
         notifyStart();
@@ -151,7 +195,18 @@ public class MzMLWriter implements MzMLWritable {
         dataContainerLocations = new HashMap<MzMLDataContainer, Long>();
 
         metadataRAF = new RandomAccessFile(metadataLocation, "rw");
-        OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(metadataRAF.getFD()), encoding);
+        
+        OutputStream outputStream = new FileOutputStream(metadataRAF.getFD());
+        
+        if(outputLocation.endsWith(".lz4")) {
+            outputStream = new LZ4BlockOutputStream(outputStream);
+        } else if(outputLocation.endsWith(".gz")) {
+            outputStream = new GZIPOutputStream(outputStream);
+        } else if(outputLocation.endsWith(".xz")) {
+            outputStream = new XZOutputStream(outputStream, new LZMA2Options());
+        }
+        
+        OutputStreamWriter out = new OutputStreamWriter(outputStream, encoding);
 
         output = new BufferedWriter(out);
 
@@ -252,6 +307,10 @@ public class MzMLWriter implements MzMLWritable {
     }
 
     protected void outputXML(MzMLTag tag, int indent) throws IOException {
+        // If the list has no children (e.g. ChromatogramList) then skip it
+        if(tag instanceof MzMLIDContentList && ((MzMLIDContentList)tag).size() == 0)
+            return;
+        
         String attributeText = tag.getXMLAttributeText();
 
         if(tag instanceof MzMLDataContainer)
