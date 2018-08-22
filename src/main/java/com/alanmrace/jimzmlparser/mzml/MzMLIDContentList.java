@@ -1,5 +1,8 @@
 package com.alanmrace.jimzmlparser.mzml;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Class describing a list of MzML tags which have an ID, for example Spectrum.
  * 
@@ -59,7 +62,32 @@ public abstract class MzMLIDContentList<T extends ReferenceableTag & MzMLTag> ex
         return null;
     }
     
+    final static Pattern lastIntPattern = Pattern.compile("[^0-9]+([0-9]+)$");
+    
+    @Override
+    public void add(T item) {
+        if(containsID(item.getID())) {
+            
+            Matcher matcher = lastIntPattern.matcher(item.getID());
+            if (matcher.find()) {
+                String someNumberStr = matcher.group(1);
+                int lastNumberInt = Integer.parseInt(someNumberStr);
+                
+                item.setID(item.getID().replace(matcher.group(1), "" + (lastNumberInt + 1)));
+            } else {
+                item.setID(item.getID() + "0");
+            }
+            
+            //TODO: change ID and then warn the validator
+        }
+        
+        super.add(item);
+    }
+    
     public boolean containsID(String id) {
+        if(list == null)
+            return false;
+        
         for (T item : list) {
             if (item.getID().equals(id)) {
                 return true;

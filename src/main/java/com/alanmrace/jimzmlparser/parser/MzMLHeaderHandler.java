@@ -555,7 +555,6 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 }
 
                 userParam.setUnits(obo.getTerm(attributes.getValue("unitAccession")));
-
                 ((MzMLContentWithParams) currentContent).addUserParam(userParam);
             }
         } else if ("mzML".equalsIgnoreCase(qName)) {
@@ -1590,7 +1589,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                     
                     referenceableParamGroupList.add(bestGroup);
                     
-                    System.out.println("New group created: " + bestGroup);
+//                    System.out.println("New group created: " + bestGroup);
                     
                     bestGroup.addCVParam(currentSpectrum.getCVParamOrChild("MS:1000294"));
                     bestGroup.addCVParam(currentSpectrum.getCVParamOrChild("MS:1000511")); // ms level
@@ -1619,7 +1618,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                     
                     referenceableParamGroupList.add(bestGroup);
                     
-                    System.out.println("New group created: " + bestGroup);
+//                    System.out.println("New group created: " + bestGroup);
                     
                     bestGroup.addCVParam(currentScan.getCVParamOrChild("MS:1000512"));
                     bestGroup.addCVParam(currentScan.getCVParamOrChild("MS:1000616"));
@@ -1647,7 +1646,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
                         referenceableParamGroupList.add(bestGroup);
 
-                        System.out.println("New scanWindow group created: " + bestGroup);
+//                        System.out.println("New scanWindow group created: " + bestGroup);
 
                         bestGroup.addCVParam(((MzMLContentWithParams) currentContent).getCVParamOrChild("MS:1000501"));
                         bestGroup.addCVParam(((MzMLContentWithParams) currentContent).getCVParamOrChild("MS:1000500"));
