@@ -313,4 +313,9 @@ public class DataTypeTransform implements DataTransform {
         return convertData(data, to, from);
     }
 
+    
+    @Override
+    public String toString() {
+        return "DataTypeTransform from " + from + " to " + to;
+    }
 }

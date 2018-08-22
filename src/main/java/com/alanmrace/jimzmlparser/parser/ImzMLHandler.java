@@ -20,9 +20,14 @@ import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.exceptions.InvalidMzML;
 import com.alanmrace.jimzmlparser.mzml.MzMLDataContainer;
 import com.alanmrace.jimzmlparser.mzml.Scan;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.GZIPInputStream;
+import net.jpountz.lz4.LZ4BlockInputStream;
+import org.tukaani.xz.XZInputStream;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -160,9 +165,9 @@ public class ImzMLHandler extends MzMLHeaderHandler {
         try {
             //OBO obo = new OBO("imagingMS.obo");
             OBO obo = OBO.getOBO();
-
-            File ibdFile = new File(filename.substring(0, filename.lastIndexOf('.')) + ".ibd");
-
+            
+            File ibdFile = new File(filename.substring(0, filename.toLowerCase().lastIndexOf(".imzml")) + ".ibd");
+            
             // Convert mzML header information -> imzML
             ImzMLHandler handler = new ImzMLHandler(obo, ibdFile, openDataStorage);
 
@@ -175,9 +180,18 @@ public class ImzMLHandler extends MzMLHeaderHandler {
             SAXParser sp = spf.newSAXParser();
 
             File file = new File(filename);
+            InputStream inputStream = new FileInputStream(file);
+            
+            if(filename.endsWith(".lz4")) {
+                inputStream = new LZ4BlockInputStream(inputStream);
+            } else if(filename.endsWith(".gz")) {
+                inputStream = new GZIPInputStream(inputStream);
+            } else if(filename.endsWith(".xz")) {
+                inputStream = new XZInputStream(inputStream);
+            }
 
             //parse the file and also register this class for call backs
-            sp.parse(file, handler);
+            sp.parse(inputStream, handler);
 
             handler.getimzML().setOBO(obo);
 

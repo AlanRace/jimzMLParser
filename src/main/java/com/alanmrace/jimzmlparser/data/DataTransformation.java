@@ -25,6 +25,8 @@ public class DataTransformation implements Serializable {
      */
     protected List<DataTransform> transformation;
     
+    protected int[] dataSizeAtEachStage;
+    
     /**
      * Create an empty DataTransformation.
      */
@@ -78,8 +80,13 @@ public class DataTransformation implements Serializable {
         
         byte[] transformedData = data;
         
+        dataSizeAtEachStage = new int[transformation.size() + 1];
+        int i = 0;
+        dataSizeAtEachStage[i++] = transformedData.length;
+        
         for(DataTransform transform : transformation) {
             transformedData = transform.forwardTransform(transformedData);
+            dataSizeAtEachStage[i++] = transformedData.length;
         }
         
         return transformedData;
@@ -107,6 +114,10 @@ public class DataTransformation implements Serializable {
         }
         
         return DataTypeTransform.convertDataToDouble(transformedData, DataTypeTransform.DataType.Double);
+    }
+    
+    public int[] getDataSizeAtEachStage() {
+        return dataSizeAtEachStage;
     }
     
     public boolean isEmpty() {
