@@ -50,11 +50,11 @@ public class MzMLHandler extends MzMLHeaderHandler {
         temporaryFileStream = new DataOutputStream(new FileOutputStream(temporaryBinaryFile));
     }
 
-    public static MzML parsemzML(String filename) throws FatalParseException {
+    public static MzML parsemzML(String filename) {
         return parsemzML(filename, null);
     }
 
-    public static MzML parsemzML(String filename, ParserListener listener) throws FatalParseException {
+    public static MzML parsemzML(String filename, ParserListener listener) {
         try {
             //OBO obo = new OBO("imagingMS.obo");
             OBO obo = OBO.getOBO();

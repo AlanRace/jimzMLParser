@@ -778,49 +778,35 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
      * @throws ImzMLParseException  Issue opening IBD file
      */
     public static String calculateChecksum(String filename, String algorithm) throws ImzMLParseException {
-        // Open the .ibd data stream
-        DataInputStream dataStream = null;
         byte[] hash;
 
         try {
-            dataStream = new DataInputStream(new FileInputStream(filename));
+            DataInputStream dataStream = new DataInputStream(new FileInputStream(filename));
+            
+            try {
+                byte[] buffer = new byte[1024 * 1024];
+                int bytesRead;
+
+                MessageDigest md = MessageDigest.getInstance(algorithm); //"SHA-1");
+
+                do {
+                    bytesRead = dataStream.read(buffer);
+
+                    if (bytesRead > 0) {
+                        md.update(buffer, 0, bytesRead);
+                    }
+                } while (bytesRead > 0);
+
+                hash = md.digest();
+            } finally {
+                dataStream.close();
+            }
+        } catch (NoSuchAlgorithmException e) {
+            throw new ImzMLParseException("Generation of " + algorithm + " hash failed. No " + algorithm + " algorithm. " + e.getLocalizedMessage(), e);
         } catch (FileNotFoundException e2) {
             throw new ImzMLParseException("Could not open file " + filename, e2);
-        }
-
-        try {
-            byte[] buffer = new byte[1024 * 1024];
-            int bytesRead;
-
-            MessageDigest md = MessageDigest.getInstance(algorithm); //"SHA-1");
-
-            do {
-                bytesRead = dataStream.read(buffer);
-
-                if (bytesRead > 0) {
-                    md.update(buffer, 0, bytesRead);
-                }
-            } while (bytesRead > 0);
-
-            dataStream.close();
-
-            hash = md.digest();
-        } catch (NoSuchAlgorithmException e) {
-            try {
-                dataStream.close();
-            } catch (IOException e1) {
-                throw new ImzMLParseException("Failed to close ibd file after trying to generate " + algorithm + " hash", e1);
-            }
-
-            throw new ImzMLParseException("Generation of " + algorithm + " hash failed. No " + algorithm + " algorithm. " + e.getLocalizedMessage(), e);
         } catch (IOException e) {
             throw new ImzMLParseException("Failed generating " + algorithm + " hash. Failed to read data from " + filename + e.getMessage(), e);
-        }
-
-        try {
-            dataStream.close();
-        } catch (IOException e) {
-            throw new ImzMLParseException("Failed to close ibd file after generating " + algorithm + " hash", e);
         }
 
         return HexHelper.byteArrayToHexString(hash);
@@ -833,7 +819,7 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
      * @return          SHA-1 hash of the file
      * @throws ImzMLParseException  Issue with opening the IBD file
      */
-    public static String calculateSHA1(String filename) throws ImzMLParseException {
+    public static String calculateSHA1(String filename) {
         return calculateChecksum(filename, "SHA-1");
     }
 
@@ -844,7 +830,7 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
      * @return          MD5 hash of the file
      * @throws ImzMLParseException  Issue with opening the IBD file
      */
-    public static String calculateMD5(String filename) throws ImzMLParseException {
+    public static String calculateMD5(String filename) {
         return calculateChecksum(filename, "MD5");
     }
     

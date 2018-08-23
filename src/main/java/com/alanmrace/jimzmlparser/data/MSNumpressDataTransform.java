@@ -19,7 +19,7 @@ public class MSNumpressDataTransform implements DataTransform {
         Linear,
         Pic,
         Slof
-    };
+    }
     
     private final NumpressAlgorithm algorithm;
     private String accession;

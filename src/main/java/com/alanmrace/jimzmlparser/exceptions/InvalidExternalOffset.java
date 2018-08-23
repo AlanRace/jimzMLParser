@@ -1,20 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.alanmrace.jimzmlparser.exceptions;
 
 import com.alanmrace.jimzmlparser.mzml.MzMLDataContainer;
 
 /**
  *
- * @author Alan
+ * @author Alan Race
  */
 public class InvalidExternalOffset extends NonFatalParseException {
     
-    MzMLDataContainer container;
-    long offset;
+    private final MzMLDataContainer container;
+    private final long offset;
     
     public InvalidExternalOffset(MzMLDataContainer container, long offset) {
         this.container = container;
@@ -31,12 +26,14 @@ public class InvalidExternalOffset extends NonFatalParseException {
     
     @Override
     public String getIssueMessage() {
-        String message = "Invalid offset supplied (" + offset + "). Offset must be a non-negative integer.\n";
+        StringBuilder message = new StringBuilder("Invalid offset supplied (");
+        message.append(offset);
+        message.append("). Offset must be a non-negative integer.\n");
                 
         if(attemptedFix) {
-            message += "Attempted to fix by adding 2^32 to offset.";
+            message.append("Attempted to fix by adding 2^32 to offset.");
         }
         
-        return message;
+        return message.toString();
     }
 }

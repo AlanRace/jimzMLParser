@@ -75,7 +75,7 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
             }
         }
 
-        if (mzMLContent.cvParams != null && mzMLContent.cvParams.size() > 0) {
+        if (mzMLContent.cvParams != null && !mzMLContent.cvParams.isEmpty()) {
             cvParams = new ArrayList<CVParam>();
 
             for (CVParam cvParam : mzMLContent.cvParams) {
@@ -321,13 +321,12 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
     
     @Override
     public void removeCVParam(CVParam param) {
-        if(cvParams != null) {
-            if(cvParams.remove(param)) {
-                if(hasListeners())
-                    notifyListeners(new CVParamRemovedEvent(this, param));
-                
-                param.setParent(null);
+        if (cvParams != null && cvParams.remove(param)) {
+            if (hasListeners()) {
+                notifyListeners(new CVParamRemovedEvent(this, param));
             }
+
+            param.setParent(null);
         }
     }
 
@@ -460,7 +459,7 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
 
                 List<CVParam> children = ref.getReference().getChildrenOf(id);
 
-                if (children.size() > 0) {
+                if (!children.isEmpty()) {
                     return children.get(0);
                 }
             }
@@ -476,7 +475,7 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
 
         List<CVParam> children = getChildrenOf(id);
 
-        if (children.size() > 0) {
+        if (!children.isEmpty()) {
             return children.get(0);
         }
 

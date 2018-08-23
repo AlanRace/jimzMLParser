@@ -99,7 +99,7 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
     public boolean hasListeners() {
         boolean hasListeners = listeners != null && !listeners.isEmpty();
         
-        if(parent != null && parent instanceof MzMLContent)
+        if(parent instanceof MzMLContent)
             hasListeners |= ((MzMLContent)parent).hasListeners();
         
         return hasListeners;

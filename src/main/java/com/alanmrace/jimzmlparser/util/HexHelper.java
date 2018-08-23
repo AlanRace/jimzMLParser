@@ -37,7 +37,7 @@ public class HexHelper {
     public static String byteArrayToHexString(byte[] byteArray) {
         StringBuilder sb = new StringBuilder(2 * byteArray.length);
 
-        byte[] Hexhars = {
+        byte[] hexhars = {
             '0', '1', '2', '3', '4', '5',
             '6', '7', '8', '9', 'a', 'b',
             'c', 'd', 'e', 'f'
@@ -47,8 +47,8 @@ public class HexHelper {
 
             int v = byteArray[i] & 0xff;
 
-            sb.append((char) Hexhars[v >> 4]);
-            sb.append((char) Hexhars[v & 0xf]);
+            sb.append((char) hexhars[v >> 4]);
+            sb.append((char) hexhars[v & 0xf]);
         }
 
         return sb.toString();

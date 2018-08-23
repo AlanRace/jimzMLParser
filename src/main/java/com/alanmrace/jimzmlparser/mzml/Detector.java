@@ -15,17 +15,17 @@ public class Detector extends Component {
     /**
      * Accession: Detector type (MS:1000026).
      */
-    public static String detectorTypeID = "MS:1000026";
+    public static final String detectorTypeID = "MS:1000026";
     
     /**
      * Accession: Detector attribute (MS:1000481).
      */
-    public static String detectorAttributeID = "MS:1000481";
+    public static final String detectorAttributeID = "MS:1000481";
     
     /**
      * Accession: Detector acquisition mode (MS:1000027).
      */
-    public static String detectorAcquisitionModeID = "MS:1000027";
+    public static final String detectorAcquisitionModeID = "MS:1000027";
 
     /**
      * Create empty Detector, does nothing.

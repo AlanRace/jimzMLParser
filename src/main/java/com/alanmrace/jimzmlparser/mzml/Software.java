@@ -23,7 +23,7 @@ public class Software extends MzMLContentWithParams implements ReferenceableTag 
     /**
      * Accession: software (MS:1000531).
      */
-    public static String softwareID = "MS:1000531"; // Required child (1)
+    public static final String softwareID = "MS:1000531"; // Required child (1)
     
     /**
      * Accession: custom unreleased software tool (MS:1000799).

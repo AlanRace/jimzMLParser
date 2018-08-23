@@ -10,18 +10,18 @@ public class InvalidXPathException extends Exception {
     /**
      * XPath that is invalid with respect to (i)mzML.
      */
-    protected String XPath;
+    protected String xPath;
     
     /**
      * Set up InvalidMzML with a message and an invalid XPath.
      * 
      * @param message   Description of the exception
-     * @param XPath     Invalid XPath within the context of (i)mzML
+     * @param xPath     Invalid XPath within the context of (i)mzML
      */
-    public InvalidXPathException(String message, String XPath) {
+    public InvalidXPathException(String message, String xPath) {
         super(message);
         
-        this.XPath = XPath;
+        this.xPath = xPath;
     }
     
     /**
@@ -30,6 +30,6 @@ public class InvalidXPathException extends Exception {
      * @return Invalid XPath
      */
     public String getXPath() {
-        return XPath;
+        return xPath;
     }
 }

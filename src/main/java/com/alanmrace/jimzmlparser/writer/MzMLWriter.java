@@ -439,9 +439,7 @@ public class MzMLWriter implements MzMLWritable {
 
     @Override
     public long getDataPointer() throws IOException {
-        output.flush();
-
-        return metadataRAF.getFilePointer();
+        return getMetadataPointer();
     }
 
     @Override

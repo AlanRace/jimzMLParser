@@ -63,7 +63,7 @@ public abstract class DataStorage implements Serializable {
         else
             randomAccessFile = new RandomAccessFile(dataFile, "r");
 
-        logger.log(Level.FINER, MessageFormat.format("[Opened] {0} ({1})", dataFile, randomAccessFile));
+        logger.log(Level.FINER, "[Opened] {0} ({1})", new Object[] {dataFile, randomAccessFile});
 	
         fileStreamOpen = true;
     }
@@ -91,7 +91,7 @@ public abstract class DataStorage implements Serializable {
      */
     public byte[] getData(long offset, int length) throws IOException {
 	if(!fileStreamOpen) {
-	    logger.log(Level.SEVERE, MessageFormat.format("Trying to access data from a closed stream ({0})", randomAccessFile));
+	    logger.log(Level.SEVERE, "Trying to access data from a closed stream ({0})", randomAccessFile);
 	    
 	    return new byte[0];
 	}
@@ -115,7 +115,7 @@ public abstract class DataStorage implements Serializable {
         if(fileStreamOpen) {
             randomAccessFile.close();
 	    
-	    logger.log(Level.FINER, MessageFormat.format("[Closed] {0} ({1})", new Object[]{dataFile, randomAccessFile}));
+	    logger.log(Level.FINER, "[Closed] {0} ({1})", new Object[] {dataFile, randomAccessFile});
             
             fileStreamOpen = false;
         }

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.alanmrace.jimzmlparser.data;
 
 import java.util.Arrays;
@@ -13,10 +8,10 @@ import net.jpountz.lz4.LZ4FastDecompressor;
 
 /**
  *
- * @author Alan
+ * @author Alan Race
  */
 public class LZ4DataTransform implements DataTransform {
-    public static int MAX_COMPRESSION_FACTOR = 10;
+    public static final int MAX_COMPRESSION_FACTOR = 10;
     
     protected final LZ4Factory factory = LZ4Factory.fastestInstance();
     protected int arrayLengthInBytes;

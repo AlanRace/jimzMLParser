@@ -592,13 +592,11 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
         // If there is no dataLocation stored for the BinaryDataArray then it is 
         // likely that the data storage is MzMLDataStorage and so needs to be converted 
         // to Base64Storage prior to being able to load any data
-        if (dataLocation == null) {
-            if(parent != null) {
-                MzMLTag grandParent = parent.getParent();
-                
-                if(grandParent instanceof MzMLDataContainer) {
-                    ((MzMLDataContainer) grandParent).convertMzMLDataStorageToBase64();
-                }
+        if (dataLocation == null && parent != null) {
+            MzMLTag grandParent = parent.getParent();
+
+            if (grandParent instanceof MzMLDataContainer) {
+                ((MzMLDataContainer) grandParent).convertMzMLDataStorageToBase64();
             }
         }
          

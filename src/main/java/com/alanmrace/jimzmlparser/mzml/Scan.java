@@ -317,8 +317,6 @@ public class Scan extends MzMLContentWithParams implements Serializable {
     }
     
     public static Scan create() {
-        Scan scan = new Scan();
-        
-        return scan;
+        return new Scan();
     }
 }

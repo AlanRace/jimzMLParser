@@ -17,21 +17,21 @@ public class UnfollowableXPathException extends InvalidXPathException {
      * Set up UnfollowableXPathException with a message and an unfollowable XPath.
      * 
      * @param message   Description of the exception
-     * @param XPath     Unfollowable XPath within the context of a specific (i)mzML file
+     * @param xPath     Unfollowable XPath within the context of a specific (i)mzML file
      */
-    protected UnfollowableXPathException(String message, String XPath) {
-        super(message, XPath);
+    protected UnfollowableXPathException(String message, String xPath) {
+        super(message, xPath);
     }
     
     /**
      * Set up UnfollowableXPathException with a message and an unfollowable XPath.
      * 
      * @param message   Description of the exception
-     * @param XPath     Unfollowable XPath within the context of a specific (i)mzML file
+     * @param xPath     Unfollowable XPath within the context of a specific (i)mzML file
      * @param subXPath  The subset of the XPath where the issue occurred
      */
-    public UnfollowableXPathException(String message, String XPath, String subXPath) {
-        this(message, XPath);
+    public UnfollowableXPathException(String message, String xPath, String subXPath) {
+        this(message, xPath);
         
         this.subXPath = subXPath;
     }

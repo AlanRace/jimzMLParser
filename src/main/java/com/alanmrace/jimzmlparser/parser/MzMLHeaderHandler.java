@@ -348,21 +348,24 @@ public class MzMLHeaderHandler extends DefaultHandler {
     }
 
 
-    public static MzML parsemzMLHeader(String filename) throws FatalParseException {
+    public static MzML parsemzMLHeader(String filename) {
         return parsemzMLHeader(filename, true);
     }
     
-    public static MzML parsemzMLHeader(String filename, boolean openDataFile) throws FatalParseException {
+    public static MzML parsemzMLHeader(String filename, boolean openDataFile) {
         return parsemzMLHeader(filename, openDataFile, null);
     }
     
-    public static MzML parsemzMLHeader(String filename, boolean openDataFile, ParserListener listener) throws FatalParseException {
+    public static MzML parsemzMLHeader(String filename, boolean openDataFile, ParserListener listener) {
+        OBO obo = OBO.getOBO();
+        
+        RandomAccessFile raf = null;
+        InputStream is = null;
+        MzMLHeaderHandler handler;
+        
         try {
-            //OBO obo = new OBO("imagingMS.obo");
-            OBO obo = OBO.getOBO();
-
             // Parse mzML
-            MzMLHeaderHandler handler = new MzMLHeaderHandler(obo, new File(filename), openDataFile);
+            handler = new MzMLHeaderHandler(obo, new File(filename), openDataFile);
             handler.setOpenDataStorage(openDataFile);
             
             if(listener != null)
@@ -371,8 +374,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
             SAXParserFactory spf = SAXParserFactory.newInstance();
 
             // TODO: INDEXED RAF when reading!!!
-            RandomAccessFile raf = new RandomAccessFile(filename, "r");
-            InputStream is = Channels.newInputStream(raf.getChannel());
+            raf = new RandomAccessFile(filename, "r");
+            is = Channels.newInputStream(raf.getChannel());
             
             //get a new instance of parser
             SAXParser sp = spf.newSAXParser();
@@ -382,24 +385,41 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
             handler.getmzML().setOBO(obo);
 
-            return handler.getmzML();
+            
         } catch (SAXException ex) {
             logger.log(Level.SEVERE, null, ex);
 
-            throw new MzMLParseException("SAXException: " + ex);
+            throw new MzMLParseException("SAXException: " + ex, ex);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(MzMLHeaderHandler.class.getName()).log(Level.SEVERE, null, ex);
 
-            throw new MzMLParseException("File not found: " + filename);
+            throw new MzMLParseException("File not found: " + filename, ex);
         } catch (IOException ex) {
             Logger.getLogger(MzMLHeaderHandler.class.getName()).log(Level.SEVERE, null, ex);
 
-            throw new MzMLParseException("IOException: " + ex);
+            throw new MzMLParseException("IOException: " + ex, ex);
         } catch (ParserConfigurationException ex) {
             Logger.getLogger(MzMLHeaderHandler.class.getName()).log(Level.SEVERE, null, ex);
 
-            throw new MzMLParseException("ParserConfigurationException: " + ex);
+            throw new MzMLParseException("ParserConfigurationException: " + ex, ex);
+        } finally {
+            if(is != null) {
+                try {
+                    is.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(MzMLHeaderHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if(raf != null) {
+                try {
+                    raf.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(MzMLHeaderHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
+        
+        return handler.getmzML();
     }
     
     protected int getCountAttribute(Attributes attributes) {
@@ -1028,7 +1048,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                     notifyParserListeners(formatIssue); 
                     
                     try {
-                        SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz YYYY");
+                        SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
                         Date parsed = format.parse(startTimeStamp);
 
                         Calendar calendar = Calendar.getInstance();
@@ -1037,7 +1057,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                         run.setStartTimeStamp(calendar);
                     } catch (ParseException pe) {
                         //throw new IllegalArgumentException();
-                        InvalidFormatIssue secondFormatIssue = new InvalidFormatIssue("startTimeStamp", "EEE MMM dd HH:mm:ss zzz YYYY", startTimeStamp);
+                        InvalidFormatIssue secondFormatIssue = new InvalidFormatIssue("startTimeStamp", "EEE MMM dd HH:mm:ss zzz yyyy", startTimeStamp);
                         secondFormatIssue.setIssueLocation(currentContent);
 
                         notifyParserListeners(secondFormatIssue); 

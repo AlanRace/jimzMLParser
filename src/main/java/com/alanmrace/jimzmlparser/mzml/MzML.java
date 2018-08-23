@@ -49,7 +49,7 @@ public class MzML extends MzMLContentWithParams implements Serializable {
     /**
      * Current mzML version.
      */
-    public static String currentVersion = "1.1.0";
+    public static final String currentVersion = "1.1.0";
 
     /**
      * Storage for accessing mzML data.

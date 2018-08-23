@@ -2,7 +2,6 @@ package com.alanmrace.jimzmlparser.obo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
@@ -332,23 +331,12 @@ public class OBOTerm implements Serializable {
     /**
      * Create an ontology term, with the ID id.
      * 
+     * @param ontology Ontology the term is a part of
      * @param id Unique identifier for the ontology term
      */
     public OBOTerm(OBO ontology, String id) {
         this.ontology = ontology;
-        
-        // TODO: Assign these only when necessary
-//        is_a = new ArrayList<String>();
-//        part_of = new ArrayList<String>();
-//        children = new ArrayList<OBOTerm>();
-//        parents = new ArrayList<OBOTerm>();
-//        has_units = new ArrayList<OBOTerm>();
-//        unitList = new ArrayList<String>();
-
         this.id = id;
-
-//        int indexOfColon = id.indexOf(":");
-//        namespace = id.substring(0, indexOfColon).trim();
     }
 
     // TODO: Make more memory efficient through calls to getIs_a(), ..
@@ -389,7 +377,7 @@ public class OBOTerm implements Serializable {
     /**
      * Parse a single, pre-white character stripped, line from an OBO file.
      * 
-     * @param strippedLine Single line from an OBO file with all preceeding and proceeding white characters removed.
+     * @param strippedLine Single line from an OBO file with all preceding and proceeding white characters removed.
      */
     public void parse(String strippedLine) {
         int indexOfColon = strippedLine.indexOf(":");
@@ -458,7 +446,7 @@ public class OBOTerm implements Serializable {
                 } else if("anyURI".equals(substrings[0])) {
                     valueType = XMLType.AnyURI;
                 } else {
-                    logger.log(Level.INFO, "INFO: Unknown value-type encountered ''{0}'' @ {1}", new Object[] {value, id});
+                    logger.log(Level.INFO, "Unknown value-type encountered ''{0}'' @ {1}", new Object[] {value, id});
                 }
 //            } else {
                 //logger.log(Level.INFO, "INFO: Unknown xref encountered ''{0}'' @ {1}", new Object[] {value, id});

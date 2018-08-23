@@ -62,7 +62,7 @@ public abstract class MzMLIDContentList<T extends ReferenceableTag & MzMLTag> ex
         return null;
     }
     
-    final static Pattern lastIntPattern = Pattern.compile("[^0-9]+([0-9]+)$");
+    private static final Pattern lastIntPattern = Pattern.compile("[^0-9]+([0-9]+)$");
     
     @Override
     public void add(T item) {

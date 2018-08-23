@@ -132,7 +132,7 @@ public class ImzMLHandler extends MzMLHeaderHandler {
      * @return          ImzML representation of the imzML file
      * @throws ImzMLParseException  If a fatal parse error occurs
      */
-    public static ImzML parseimzML(String filename) throws FatalParseException {
+    public static ImzML parseimzML(String filename) {
         return parseimzML(filename, true);
     }
 
@@ -146,7 +146,7 @@ public class ImzMLHandler extends MzMLHeaderHandler {
      * @return                  ImzML representation of the imzML file
      * @throws ImzMLParseException  If a fatal parse error occurs
      */
-    public static ImzML parseimzML(String filename, boolean openDataStorage) throws FatalParseException {
+    public static ImzML parseimzML(String filename, boolean openDataStorage) {
         return parseimzML(filename, openDataStorage, null);
     }
     
@@ -161,7 +161,10 @@ public class ImzMLHandler extends MzMLHeaderHandler {
      * @return                  ImzML representation of the imzML file
      * @throws ImzMLParseException  If a fatal parse error occurs
      */
-    public static ImzML parseimzML(String filename, boolean openDataStorage, ParserListener listener) throws FatalParseException {
+    public static ImzML parseimzML(String filename, boolean openDataStorage, ParserListener listener) {
+        ImzMLHandler handler;
+        InputStream inputStream = null;
+        
         try {
             //OBO obo = new OBO("imagingMS.obo");
             OBO obo = OBO.getOBO();
@@ -169,7 +172,7 @@ public class ImzMLHandler extends MzMLHeaderHandler {
             File ibdFile = new File(filename.substring(0, filename.toLowerCase().lastIndexOf(".imzml")) + ".ibd");
             
             // Convert mzML header information -> imzML
-            ImzMLHandler handler = new ImzMLHandler(obo, ibdFile, openDataStorage);
+            handler = new ImzMLHandler(obo, ibdFile, openDataStorage);
 
             if(listener != null)
                 handler.registerParserListener(listener);
@@ -180,7 +183,7 @@ public class ImzMLHandler extends MzMLHeaderHandler {
             SAXParser sp = spf.newSAXParser();
 
             File file = new File(filename);
-            InputStream inputStream = new FileInputStream(file);
+            inputStream = new FileInputStream(file);
             
             if(filename.endsWith(".lz4")) {
                 inputStream = new LZ4BlockInputStream(inputStream);
@@ -194,25 +197,33 @@ public class ImzMLHandler extends MzMLHeaderHandler {
             sp.parse(inputStream, handler);
 
             handler.getimzML().setOBO(obo);
-
-            return handler.getimzML();
         } catch (SAXException ex) {
             logger.log(Level.SEVERE, null, ex);
 
-            throw new ImzMLParseException("SAXException: " + ex);
+            throw new ImzMLParseException("SAXException: " + ex, ex);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ImzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
 
-            throw new ImzMLParseException(ex.getLocalizedMessage());
+            throw new ImzMLParseException(ex.getLocalizedMessage(), ex);
         } catch (IOException ex) {
             Logger.getLogger(ImzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
 
-            throw new ImzMLParseException("IOException: " + ex);
+            throw new ImzMLParseException("IOException: " + ex, ex);
         } catch (ParserConfigurationException ex) {
             Logger.getLogger(ImzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
 
-            throw new ImzMLParseException("ParserConfigurationException: " + ex);
+            throw new ImzMLParseException("ParserConfigurationException: " + ex, ex);
+        } finally {
+            if(inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(ImzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
+        
+        return handler.getimzML();
     }
 
     @Override

@@ -15,22 +15,22 @@ public class Source extends Component {
     /**
      * Accession: Ionisation type (MS:1000008).
      */
-    public static String ionisationTypeID = "MS:1000008";
+    public static final String ionisationTypeID = "MS:1000008";
 
     /**
      * Accession: Source attribute (MS:1000482).
      */
-    public static String sourceAttributeID = "MS:1000482";
+    public static final String sourceAttributeID = "MS:1000482";
 
     /**
      * Accession: Inlet type (MS:1000007).
      */
-    public static String inletTypeID = "MS:1000007";
+    public static final String inletTypeID = "MS:1000007";
 
     /**
      * Accession: Sample stage (MS:1000002).
      */
-    public static String sampleStageID = "IMS:1000002";
+    public static final String sampleStageID = "IMS:1000002";
 
     /**
      * Create empty Detector, does nothing.

@@ -4,7 +4,6 @@ import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
 import com.alanmrace.jimzmlparser.exceptions.UnfollowableXPathException;
 import com.alanmrace.jimzmlparser.obo.OBO;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -105,10 +104,7 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
      * @return Scan at index, or null if none exists
      */
     public Scan getScan(int index) {
-        if(scanList == null)
-            return null;
-        
-        return scanList.get(index);
+        return get(index);
     }
     
     @Override

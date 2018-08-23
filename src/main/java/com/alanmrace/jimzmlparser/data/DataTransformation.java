@@ -129,14 +129,15 @@ public class DataTransformation implements Serializable {
     
     @Override
     public String toString() {
-        String description = "DataTransform\n";
+        StringBuilder description = new StringBuilder("DataTransform\n");
         
         if(transformation != null) {
             for(DataTransform tranform : transformation) {
-                description += "\t Transform - " + tranform;
+                description.append("\t Transform - ");
+                description.append(tranform);
             }
         }
         
-        return description;
+        return description.toString();
     }
 }
