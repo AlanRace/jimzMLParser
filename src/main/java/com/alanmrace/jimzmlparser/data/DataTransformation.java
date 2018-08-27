@@ -23,16 +23,10 @@ public class DataTransformation implements Serializable {
     /**
      * The set of DataTransform instances that make up the DataTransformation.
      */
-    protected List<DataTransform> transformation;
+    private List<DataTransform> transformation;
     
-    protected int[] dataSizeAtEachStage;
-    
-    /**
-     * Create an empty DataTransformation.
-     */
-    public DataTransformation() {
-    }
-    
+    private int[] dataSizeAtEachStage;
+        
     /**
      * Add a DataTransform to the DataTransformation. This will be added to the 
      * end of the list.

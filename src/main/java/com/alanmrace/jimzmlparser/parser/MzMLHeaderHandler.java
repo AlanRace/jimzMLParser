@@ -3,8 +3,9 @@ package com.alanmrace.jimzmlparser.parser;
 import com.alanmrace.jimzmlparser.data.MzMLSpectrumDataStorage;
 import com.alanmrace.jimzmlparser.data.DataLocation;
 import com.alanmrace.jimzmlparser.data.DataStorage;
-import com.alanmrace.jimzmlparser.exceptions.CVParamAccessionNotFoundException;
-import com.alanmrace.jimzmlparser.exceptions.FatalParseException;
+import com.alanmrace.jimzmlparser.exceptions.CVParamAccessionNotFoundIssue;
+import com.alanmrace.jimzmlparser.exceptions.FatalParseIssue;
+import com.alanmrace.jimzmlparser.exceptions.FatalRuntimeParseException;
 import com.alanmrace.jimzmlparser.exceptions.InvalidFormatIssue;
 import com.alanmrace.jimzmlparser.exceptions.MissingReferenceIssue;
 import java.io.File;
@@ -22,10 +23,11 @@ import javax.xml.parsers.SAXParserFactory;
 import com.alanmrace.jimzmlparser.mzml.*;
 import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
-import com.alanmrace.jimzmlparser.exceptions.InvalidMzML;
+import com.alanmrace.jimzmlparser.exceptions.InvalidMzMLIssue;
 import com.alanmrace.jimzmlparser.exceptions.Issue;
 import com.alanmrace.jimzmlparser.exceptions.MzMLParseException;
 import com.alanmrace.jimzmlparser.exceptions.NonFatalParseException;
+import com.alanmrace.jimzmlparser.exceptions.NonFatalParseIssue;
 import com.alanmrace.jimzmlparser.exceptions.ObsoleteTermUsed;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
@@ -348,15 +350,15 @@ public class MzMLHeaderHandler extends DefaultHandler {
     }
 
 
-    public static MzML parsemzMLHeader(String filename) {
+    public static MzML parsemzMLHeader(String filename) throws MzMLParseException {
         return parsemzMLHeader(filename, true);
     }
     
-    public static MzML parsemzMLHeader(String filename, boolean openDataFile) {
+    public static MzML parsemzMLHeader(String filename, boolean openDataFile) throws MzMLParseException {
         return parsemzMLHeader(filename, openDataFile, null);
     }
     
-    public static MzML parsemzMLHeader(String filename, boolean openDataFile, ParserListener listener) {
+    public static MzML parsemzMLHeader(String filename, boolean openDataFile, ParserListener listener) throws MzMLParseException {
         OBO obo = OBO.getOBO();
         
         RandomAccessFile raf = null;
@@ -385,23 +387,24 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
             handler.getmzML().setOBO(obo);
 
-            
+        } catch (FatalRuntimeParseException runtimeException) {
+            throw new MzMLParseException(runtimeException.getIssue(), runtimeException);
         } catch (SAXException ex) {
             logger.log(Level.SEVERE, null, ex);
 
-            throw new MzMLParseException("SAXException: " + ex, ex);
+            throw new MzMLParseException(new InvalidMzMLIssue("SAXException: " + ex, ex.getLocalizedMessage()), ex);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(MzMLHeaderHandler.class.getName()).log(Level.SEVERE, null, ex);
 
-            throw new MzMLParseException("File not found: " + filename, ex);
+            throw new MzMLParseException(new FatalParseIssue("File not found: " + filename, ex.getLocalizedMessage()), ex);
         } catch (IOException ex) {
             Logger.getLogger(MzMLHeaderHandler.class.getName()).log(Level.SEVERE, null, ex);
 
-            throw new MzMLParseException("IOException: " + ex, ex);
+            throw new MzMLParseException(new FatalParseIssue("IOException: " + ex, ex.getLocalizedMessage()), ex);
         } catch (ParserConfigurationException ex) {
             Logger.getLogger(MzMLHeaderHandler.class.getName()).log(Level.SEVERE, null, ex);
 
-            throw new MzMLParseException("ParserConfigurationException: " + ex, ex);
+            throw new MzMLParseException(new FatalParseIssue("ParserConfigurationException: " + ex, ex.getLocalizedMessage()), ex);
         } finally {
             if(is != null) {
                 try {
@@ -451,8 +454,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
                     UserParam userParam = new UserParam(attributes.getValue("accession"), attributes.getValue("value"), obo.getTerm(attributes.getValue("unitAccession")));
                     ((MzMLContentWithParams) currentContent).addUserParam(userParam);
 
-                    CVParamAccessionNotFoundException notFound = new CVParamAccessionNotFoundException(attributes.getValue("accession"));
-                    notFound.fixAttempted(userParam);
+                    CVParamAccessionNotFoundIssue notFound = new CVParamAccessionNotFoundIssue(attributes.getValue("accession"), userParam);
+                    
                     notFound.setIssueLocation(currentContent);
 
                     notifyParserListeners(notFound);
@@ -527,15 +530,17 @@ public class MzMLHeaderHandler extends DefaultHandler {
                             throw new RuntimeException("Failure to add CVParam to " + currentContent);
                         }
                     } catch (NonFatalParseException ex) {
-                        ex.setIssueLocation(currentContent);
+                        NonFatalParseIssue issue = ex.getIssue();
+                        
+                        issue.setIssueLocation(currentContent);
 
-                        notifyParserListeners(ex);
+                        notifyParserListeners(issue);
 
                         Logger.getLogger(MzMLHeaderHandler.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             } else {
-                throw new InvalidMzML("<cvParam> tag without a parent.");
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<cvParam> tag without a parent.", ""));
             }
         } else if ("referenceableParamGroupRef".equals(qName)) {
             boolean foundReference = false;
@@ -597,7 +602,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 mzML.setCVList(cvList);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<mzML> tag not defined prior to defining <cvList> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<mzML> tag not defined prior to defining <cvList> tag.", ex.getLocalizedMessage()), ex);
             }
         } else if ("cv".equals(qName)) {
             OBO obo = OBO.getOBO().getOBOWithID(attributes.getValue("id"));
@@ -635,7 +640,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 fileDescription.setFileContent(fc);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<fileDescription> tag not defined prior to defining <fileContent> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<fileDescription> tag not defined prior to defining <fileContent> tag.", ex.getLocalizedMessage()), ex);
             }
 
             currentContent = fc;
@@ -645,7 +650,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 fileDescription.setSourceFileList(sourceFileList);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<fileDescription> tag not defined prior to defining <sourceFileList> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<fileDescription> tag not defined prior to defining <sourceFileList> tag.", ex.getLocalizedMessage()), ex);
             }
         } else if ("sourceFile".equals(qName)) {
             SourceFile sf = new SourceFile(attributes.getValue("id"), attributes.getValue("location"), attributes.getValue("name"));
@@ -653,7 +658,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 sourceFileList.addSourceFile(sf);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<sourceFileList> tag not defined prior to defining <sourceFile> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<sourceFileList> tag not defined prior to defining <sourceFile> tag.", ex.getLocalizedMessage()), ex);
             }
 
             currentContent = sf;
@@ -663,7 +668,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 fileDescription.addContact(contact);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<fileDescription> tag not defined prior to defining <contact> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<fileDescription> tag not defined prior to defining <contact> tag.", ex.getLocalizedMessage()), ex);
             }
 
             currentContent = contact;
@@ -673,7 +678,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 mzML.setReferenceableParamGroupList(referenceableParamGroupList);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<mzML> tag not defined prior to defining <referenceableParamGroupList> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<mzML> tag not defined prior to defining <referenceableParamGroupList> tag.", ex.getLocalizedMessage()), ex);
             }
         } else if ("referenceableParamGroup".equals(qName)) {
             ReferenceableParamGroup rpg = new ReferenceableParamGroup(attributes.getValue("id"));
@@ -690,7 +695,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 mzML.setSampleList(sampleList);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<mzML> tag not defined prior to defining <sampleList> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<mzML> tag not defined prior to defining <sampleList> tag.", ex.getLocalizedMessage()), ex);
             }
         } else if ("sample".equals(qName)) {
             Sample sample = new Sample(attributes.getValue("id"));
@@ -702,7 +707,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 sampleList.addSample(sample);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<sampleList> tag not defined prior to defining <sample> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<sampleList> tag not defined prior to defining <sample> tag.", ex.getLocalizedMessage()), ex);
             }
 
             currentContent = sample;
@@ -712,7 +717,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 mzML.setSoftwareList(softwareList);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<mzML> tag not defined prior to defining <softwareList> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<mzML> tag not defined prior to defining <softwareList> tag.", ex.getLocalizedMessage()), ex);
             }
         } else if ("software".equals(qName)) {
             Software sw = new Software(attributes.getValue("id"), attributes.getValue("version"));
@@ -720,7 +725,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 softwareList.addSoftware(sw);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<softwareList> tag not defined prior to defining <software> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<softwareList> tag not defined prior to defining <software> tag.", ex.getLocalizedMessage()), ex);
             }
             currentContent = sw;
         } else if ("scanSettingsList".equals(qName)) {
@@ -729,7 +734,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 mzML.setScanSettingsList(scanSettingsList);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<mzML> tag not defined prior to defining <scanSettingsList> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<mzML> tag not defined prior to defining <scanSettingsList> tag.", ex.getLocalizedMessage()), ex);
             }
         } else if ("scanSettings".equals(qName)) {
             currentScanSettings = new ScanSettings(attributes.getValue("id"));
@@ -737,7 +742,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 scanSettingsList.addScanSettings(currentScanSettings);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<scanSettingsList> tag not defined prior to defining <scanSettings> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<scanSettingsList> tag not defined prior to defining <scanSettings> tag.", ex.getLocalizedMessage()), ex);
             }
 
             currentContent = currentScanSettings;
@@ -747,7 +752,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 currentScanSettings.setSourceFileRefList(currentSourceFileRefList);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<scanSettings> tag not defined prior to defining <sourceFileRefList> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<scanSettings> tag not defined prior to defining <sourceFileRefList> tag.", ex.getLocalizedMessage()), ex);
             }
         } else if ("sourceFileRef".equals(qName)) {
             String ref = attributes.getValue("ref");
@@ -777,7 +782,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 currentScanSettings.setTargetList(currentTargetList);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<scanSettings> tag not defined prior to defining <targetList> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<scanSettings> tag not defined prior to defining <targetList> tag.", ex.getLocalizedMessage()), ex);
             }
         } else if ("target".equals(qName)) {
             Target target = new Target();
@@ -785,7 +790,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 currentTargetList.addTarget(target);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<targetList> tag not defined prior to defining <target> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<targetList> tag not defined prior to defining <target> tag.", ex.getLocalizedMessage()), ex);
             }
 
             currentContent = target;
@@ -795,7 +800,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 mzML.setInstrumentConfigurationList(instrumentConfigurationList);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<mzML> tag not defined prior to defining <instrumentConfigurationList> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<mzML> tag not defined prior to defining <instrumentConfigurationList> tag.", ex.getLocalizedMessage()), ex);
             }
         } else if ("instrumentConfiguration".equals(qName)) {
             currentInstrumentConfiguration = new InstrumentConfiguration(attributes.getValue("id"));
@@ -821,7 +826,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 instrumentConfigurationList.addInstrumentConfiguration(currentInstrumentConfiguration);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<instrumentConfigurationList> tag not defined prior to defining <instrumentConfiguration> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<instrumentConfigurationList> tag not defined prior to defining <instrumentConfiguration> tag.", ex.getLocalizedMessage()), ex);
             }
 
             currentContent = currentInstrumentConfiguration;
@@ -831,7 +836,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 currentInstrumentConfiguration.setComponentList(currentComponentList);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<instrumentConfiguration> tag not defined prior to defining <componentList> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<instrumentConfiguration> tag not defined prior to defining <componentList> tag.", ex.getLocalizedMessage()), ex);
             }
         } else if ("source".equals(qName)) {
             Source source = new Source();
@@ -839,7 +844,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 currentComponentList.addSource(source);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<componentList> tag not defined prior to defining <source> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<componentList> tag not defined prior to defining <source> tag.", ex.getLocalizedMessage()), ex);
             }
 
             currentContent = source;
@@ -849,7 +854,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 currentComponentList.addAnalyser(analyser);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<componentList> tag not defined prior to defining <analyser> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<componentList> tag not defined prior to defining <analyser> tag.", ex.getLocalizedMessage()), ex);
             }
 
             currentContent = analyser;
@@ -859,7 +864,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 currentComponentList.addDetector(detector);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<componentList> tag not defined prior to defining <detector> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<componentList> tag not defined prior to defining <detector> tag.", ex.getLocalizedMessage()), ex);
             }
 
             currentContent = detector;
@@ -895,7 +900,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 mzML.setDataProcessingList(dataProcessingList);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<mzML> tag not defined prior to defining <dataProcessingList> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<mzML> tag not defined prior to defining <dataProcessingList> tag.", ex.getLocalizedMessage()), ex);
             }
         } else if ("dataProcessing".equals(qName)) {
             DataProcessing dp = new DataProcessing(attributes.getValue("id"));
@@ -903,7 +908,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 dataProcessingList.addDataProcessing(dp);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<dataProcessingList> tag not defined prior to defining <dataProcessing> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<dataProcessingList> tag not defined prior to defining <dataProcessing> tag.", ex.getLocalizedMessage()), ex);
             }
 
             currentDataProcessing = dp;
@@ -951,7 +956,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 try {
                     instrumentConfiguration = instrumentConfigurationList.getInstrumentConfiguration(instrumentConfigurationRef);
                 } catch (NullPointerException ex) {
-                    throw new InvalidMzML("<instrumentConfigurationList> tag not defined prior to defining <run> tag.", ex);
+                    throw new FatalRuntimeParseException(new InvalidMzMLIssue("<instrumentConfigurationList> tag not defined prior to defining <run> tag.", ex.getLocalizedMessage()), ex);
                 }
             }
 
@@ -1102,7 +1107,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             spectrumList = new SpectrumList(numberOfSpectra, dataProcessing);
 
             if (run == null) {
-                throw new InvalidMzML("<run> tag not defined prior to defining <spectrumList> tag.");
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<run> tag not defined prior to defining <spectrumList> tag.", ""));
             }
 
             run.setSpectrumList(spectrumList);
@@ -1169,7 +1174,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 spectrumList.addSpectrum(currentSpectrum);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<spectrumList> tag not defined prior to defining <spectrum> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<spectrumList> tag not defined prior to defining <spectrum> tag.", ex.getLocalizedMessage()), ex);
             }
 
             currentContent = currentSpectrum;
@@ -1179,7 +1184,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 currentSpectrum.setScanList(currentScanList);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<spectrum> tag not defined prior to defining <scanList> tag.");
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<spectrum> tag not defined prior to defining <scanList> tag.", ""));
             }
 
             currentContent = currentScanList;
@@ -1198,7 +1203,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 try {
                     instrumentConfiguration = instrumentConfigurationList.getInstrumentConfiguration(instrumentConfigurationRef);
                 } catch (NullPointerException ex) {
-                    throw new InvalidMzML("<instrumentConfigurationList> tag not defined prior to defining <scan> tag.", ex);
+                    throw new FatalRuntimeParseException(new InvalidMzMLIssue("<instrumentConfigurationList> tag not defined prior to defining <scan> tag.", ex.getLocalizedMessage()), ex);
                 }
 
                 if (instrumentConfiguration != null) {
@@ -1258,7 +1263,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 currentScanList.addScan(currentScan);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<scanList> tag not defined prior to defining <scan> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<scanList> tag not defined prior to defining <scan> tag.", ex.getLocalizedMessage()), ex);
             }
 
             currentContent = currentScan;
@@ -1268,7 +1273,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 currentScan.setScanWindowList(currentScanWindowList);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<scan> tag not defined prior to defining <scanWindowList> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<scan> tag not defined prior to defining <scanWindowList> tag.", ex.getLocalizedMessage()), ex);
             }
         } else if ("scanWindow".equals(qName)) {
             ScanWindow scanWindow = new ScanWindow();
@@ -1276,7 +1281,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 currentScanWindowList.addScanWindow(scanWindow);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<scanWindowList> tag not defined prior to defining <scanWindow> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<scanWindowList> tag not defined prior to defining <scanWindow> tag.", ex.getLocalizedMessage()), ex);
             }
 
             currentContent = scanWindow;
@@ -1286,7 +1291,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 currentSpectrum.setPrecursorList(currentPrecursorList);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<spectrum> tag not defined prior to defining <precursorList> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<spectrum> tag not defined prior to defining <precursorList> tag.", ex.getLocalizedMessage()), ex);
             }
         } else if ("precursor".equals(qName)) {
             processingPrecursor = true;
@@ -1323,13 +1328,13 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 try {
                     currentPrecursorList.addPrecursor(currentPrecursor);
                 } catch (NullPointerException ex) {
-                    throw new InvalidMzML("<precursorList> tag not defined prior to defining <precursor> tag.", ex);
+                    throw new FatalRuntimeParseException(new InvalidMzMLIssue("<precursorList> tag not defined prior to defining <precursor> tag.", ex.getLocalizedMessage()), ex);
                 }
             } else if (processingChromatogram) {
                 try {
                     currentChromatogram.setPrecursor(currentPrecursor);
                 } catch (NullPointerException ex) {
-                    throw new InvalidMzML("<chromatogram> tag not defined prior to defining <precursor> tag.", ex);
+                    throw new FatalRuntimeParseException(new InvalidMzMLIssue("<chromatogram> tag not defined prior to defining <precursor> tag.", ex.getLocalizedMessage()), ex);
                 }
             }
         } else if ("isolationWindow".equals(qName)) {
@@ -1339,13 +1344,13 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 try {
                     currentPrecursor.setIsolationWindow(isolationWindow);
                 } catch (NullPointerException ex) {
-                    throw new InvalidMzML("<precursor> tag not defined prior to defining <isolationWindow> tag.", ex);
+                    throw new FatalRuntimeParseException(new InvalidMzMLIssue("<precursor> tag not defined prior to defining <isolationWindow> tag.", ex.getLocalizedMessage()), ex);
                 }
             } else if (processingProduct) {
                 try {
                     currentProduct.setIsolationWindow(isolationWindow);
                 } catch (NullPointerException ex) {
-                    throw new InvalidMzML("<product> tag not defined prior to defining <isolationWindow> tag.", ex);
+                    throw new FatalRuntimeParseException(new InvalidMzMLIssue("<product> tag not defined prior to defining <isolationWindow> tag.", ex.getLocalizedMessage()), ex);
                 }
             }
 
@@ -1356,7 +1361,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 currentPrecursor.setSelectedIonList(currentSelectedIonList);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<precursor> tag not defined prior to defining <selectedIonList> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<precursor> tag not defined prior to defining <selectedIonList> tag.", ex.getLocalizedMessage()), ex);
             }
         } else if ("selectedIon".equals(qName)) {
             SelectedIon selectedIon = new SelectedIon();
@@ -1364,7 +1369,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 currentSelectedIonList.addSelectedIon(selectedIon);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<selectedIonList> tag not defined prior to defining <selectedIon> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<selectedIonList> tag not defined prior to defining <selectedIon> tag.", ex.getLocalizedMessage()), ex);
             }
 
             currentContent = selectedIon;
@@ -1374,7 +1379,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 currentPrecursor.setActivation(activation);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<precursor> tag not defined prior to defining <activation> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<precursor> tag not defined prior to defining <activation> tag.", ex.getLocalizedMessage()), ex);
             }
 
             currentContent = activation;
@@ -1384,7 +1389,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 currentSpectrum.setProductList(currentProductList);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<spectrum> tag not defined prior to defining <productList> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<spectrum> tag not defined prior to defining <productList> tag.", ex.getLocalizedMessage()), ex);
             }
         } else if ("product".equals(qName)) {
             processingProduct = true;
@@ -1394,13 +1399,13 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 try {
                     currentProductList.addProduct(currentProduct);
                 } catch (NullPointerException ex) {
-                    throw new InvalidMzML("<productList> tag not defined prior to defining <product> tag.", ex);
+                    throw new FatalRuntimeParseException(new InvalidMzMLIssue("<productList> tag not defined prior to defining <product> tag.", ex.getLocalizedMessage()), ex);
                 }
             } else if (processingChromatogram) {
                 try {
                     currentChromatogram.setProduct(currentProduct);
                 } catch (NullPointerException ex) {
-                    throw new InvalidMzML("<chromatogram> tag not defined prior to defining <product> tag.", ex);
+                    throw new FatalRuntimeParseException(new InvalidMzMLIssue("<chromatogram> tag not defined prior to defining <product> tag.", ex.getLocalizedMessage()), ex);
                 }
             }
         } else if ("binaryDataArrayList".equals(qName)) {
@@ -1410,13 +1415,13 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 try {
                     currentSpectrum.setBinaryDataArrayList(currentBinaryDataArrayList);
                 } catch (NullPointerException ex) {
-                    throw new InvalidMzML("<spectrum> tag not defined prior to defining <binaryDataArrayList> tag.", ex);
+                    throw new FatalRuntimeParseException(new InvalidMzMLIssue("<spectrum> tag not defined prior to defining <binaryDataArrayList> tag.", ex.getLocalizedMessage()), ex);
                 }
             } else if (processingChromatogram) {
                 try {
                     currentChromatogram.setBinaryDataArrayList(currentBinaryDataArrayList);
                 } catch (NullPointerException ex) {
-                    throw new InvalidMzML("<chromatogram> tag not defined prior to defining <binaryDataArrayList> tag.", ex);
+                    throw new FatalRuntimeParseException(new InvalidMzMLIssue("<chromatogram> tag not defined prior to defining <binaryDataArrayList> tag.", ex.getLocalizedMessage()), ex);
                 }
             }
         } else if ("binaryDataArray".equals(qName)) {
@@ -1453,7 +1458,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 currentBinaryDataArrayList.addBinaryDataArray(currentBinaryDataArray);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<binaryDataArrayList> tag not defined prior to defining <binaryDataArray> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<binaryDataArrayList> tag not defined prior to defining <binaryDataArray> tag.", ex.getLocalizedMessage()), ex);
             }
 
             currentContent = currentBinaryDataArray;
@@ -1468,17 +1473,17 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 try {
                     dataProcessing = dataProcessingList.getDataProcessing(defaultDataProcessingRef);
                 } catch (NullPointerException ex) {
-                    throw new InvalidMzML("<dataProcessingList> tag not defined prior to defining <chromatogramList> tag.", ex);
+                    throw new FatalRuntimeParseException(new InvalidMzMLIssue("<dataProcessingList> tag not defined prior to defining <chromatogramList> tag.", ex.getLocalizedMessage()), ex);
                 }
 
                 if (dataProcessing != null) {
                     chromatogramList = new ChromatogramList(Integer.parseInt(attributes.getValue("count")), dataProcessing);
                 } else {
-                    throw new InvalidMzML("Can't find defaultDataProcessingRef '" + defaultDataProcessingRef + "' referenced by chromatogramList.");
+                    throw new FatalRuntimeParseException(new InvalidMzMLIssue("Can't find defaultDataProcessingRef '" + defaultDataProcessingRef + "' referenced by chromatogramList.", ""));
                 }
             } else {
                 // msconvert doesn't include default data processing so try and fix it				
-                throw new InvalidMzML("No defaultProcessingRef attribute in chromatogramList.");
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("No defaultProcessingRef attribute in chromatogramList.", ""));
 
                 //chromatogramList = new ChromatogramList(Integer.parseInt(attributes.getValue("count")), dataProcessingList.getDataProcessing(0));
             }
@@ -1486,7 +1491,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 run.setChromatogramList(chromatogramList);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<run> tag not defined prior to defining <chromatogramList> tag.", ex);
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<run> tag not defined prior to defining <chromatogramList> tag.", ex.getLocalizedMessage()), ex);
             }
         } else if ("chromatogram".equals(qName)) {
             processingChromatogram = true;
@@ -1500,13 +1505,13 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 try {
                     dataProcessing = dataProcessingList.getDataProcessing(dataProcessingRef);
                 } catch (NullPointerException ex) {
-                    throw new InvalidMzML("<dataProcessingList> tag not defined prior to defining <chromatogram> tag.", ex);
+                    throw new FatalRuntimeParseException(new InvalidMzMLIssue("<dataProcessingList> tag not defined prior to defining <chromatogram> tag.", ex.getLocalizedMessage()), ex);
                 }
 
                 if (dataProcessing != null) {
                     currentChromatogram.setDataProcessingRef(dataProcessing);
                 } else {
-                    throw new InvalidMzML("Can't find dataProcessingRef '" + dataProcessingRef + "' referenced by chromatogram '" + currentChromatogram.getID() + "'.");
+                    throw new FatalRuntimeParseException(new InvalidMzMLIssue("Can't find dataProcessingRef '" + dataProcessingRef + "' referenced by chromatogram '" + currentChromatogram.getID() + "'.", ""));
                 }
             } else {
                 currentChromatogram.setDataProcessingRef(chromatogramList.getDefaultDataProcessingRef());
@@ -1515,7 +1520,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 chromatogramList.addChromatogram(currentChromatogram);
             } catch (NullPointerException ex) {
-                throw new InvalidMzML("<chromatogramList> tag not defined prior to defining <chromatogram> tag.");
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<chromatogramList> tag not defined prior to defining <chromatogram> tag.", ""));
             }
 
             currentContent = currentChromatogram;

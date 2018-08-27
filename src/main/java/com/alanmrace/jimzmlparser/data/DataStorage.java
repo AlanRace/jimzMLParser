@@ -28,10 +28,10 @@ public abstract class DataStorage implements Serializable {
     private static final Logger LOGGER = Logger.getLogger(DataStorage.class.getName());
     
     /** File containing the data. */
-    protected File dataFile;
+    private File dataFile;
     
     /** Random access to the file. */
-    protected final RandomAccessFile randomAccessFile;
+    private final RandomAccessFile randomAccessFile;
     
     /** Boolean to determine whether the RandomAccessFile is open or not. */
     protected boolean fileStreamOpen = false;

@@ -1,5 +1,6 @@
 package com.alanmrace.jimzmlparser.mzml;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -50,6 +51,8 @@ public abstract class MzMLIDContentList<T extends ReferenceableTag & MzMLTag> ex
      * @return Element of the list with the unique ID, null if none found
      */
     public T get(String id) {
+        List<T> list = getList();
+        
         if(list == null)
             return null;
         
@@ -85,6 +88,8 @@ public abstract class MzMLIDContentList<T extends ReferenceableTag & MzMLTag> ex
     }
     
     public boolean containsID(String id) {
+        List<T> list = getList();
+        
         if(list == null)
             return false;
         

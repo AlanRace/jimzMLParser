@@ -2,9 +2,10 @@ package com.alanmrace.jimzmlparser.parser;
 
 import com.alanmrace.jimzmlparser.data.DataLocation;
 import com.alanmrace.jimzmlparser.data.BinaryDataStorage;
+import com.alanmrace.jimzmlparser.exceptions.FatalParseException;
+import com.alanmrace.jimzmlparser.exceptions.FatalParseIssue;
 import com.alanmrace.jimzmlparser.exceptions.ImzMLParseException;
 import com.alanmrace.jimzmlparser.exceptions.InvalidExternalOffset;
-import com.alanmrace.jimzmlparser.exceptions.InvalidImzML;
 import com.alanmrace.jimzmlparser.imzml.ImzML;
 
 import java.io.File;
@@ -16,7 +17,6 @@ import javax.xml.parsers.SAXParserFactory;
 
 import com.alanmrace.jimzmlparser.mzml.BinaryDataArray;
 import com.alanmrace.jimzmlparser.obo.OBO;
-import com.alanmrace.jimzmlparser.exceptions.InvalidMzML;
 import com.alanmrace.jimzmlparser.mzml.MzMLDataContainer;
 import com.alanmrace.jimzmlparser.mzml.Scan;
 import java.io.FileInputStream;
@@ -129,9 +129,9 @@ public class ImzMLHandler extends MzMLHeaderHandler {
      * 
      * @param filename  Location of the imzML file
      * @return          ImzML representation of the imzML file
-     * @throws ImzMLParseException  If a fatal parse error occurs
+     * @throws ImzMLParseIssue  If a fatal parse error occurs
      */
-    public static ImzML parseimzML(String filename) {
+    public static ImzML parseimzML(String filename) throws ImzMLParseException {
         return parseimzML(filename, true);
     }
 
@@ -143,9 +143,9 @@ public class ImzMLHandler extends MzMLHeaderHandler {
      * @param filename          Location of the imzML file
      * @param openDataStorage   true to open the IBD binary data storage, false to only parse metadata
      * @return                  ImzML representation of the imzML file
-     * @throws ImzMLParseException  If a fatal parse error occurs
+     * @throws ImzMLParseIssue  If a fatal parse error occurs
      */
-    public static ImzML parseimzML(String filename, boolean openDataStorage) {
+    public static ImzML parseimzML(String filename, boolean openDataStorage) throws ImzMLParseException {
         return parseimzML(filename, openDataStorage, null);
     }
     
@@ -160,7 +160,7 @@ public class ImzMLHandler extends MzMLHeaderHandler {
      * @return                  ImzML representation of the imzML file
      * @throws ImzMLParseException  If a fatal parse error occurs
      */
-    public static ImzML parseimzML(String filename, boolean openDataStorage, ParserListener listener) {
+    public static ImzML parseimzML(String filename, boolean openDataStorage, ParserListener listener) throws ImzMLParseException {
         ImzMLHandler handler;
         InputStream inputStream = null;
         
@@ -199,19 +199,19 @@ public class ImzMLHandler extends MzMLHeaderHandler {
         } catch (SAXException ex) {
             LOGGER.log(Level.SEVERE, null, ex);
 
-            throw new ImzMLParseException("SAXException: " + ex, ex);
+            throw new ImzMLParseException(new FatalParseIssue("SAXException: " + ex, ex.getLocalizedMessage()), ex);
         } catch (FileNotFoundException ex) {
             LOGGER.log(Level.SEVERE, null, ex);
 
-            throw new ImzMLParseException(ex.getLocalizedMessage(), ex);
+            throw new ImzMLParseException(new FatalParseIssue(ex.getLocalizedMessage(), ex.getLocalizedMessage()), ex);
         } catch (IOException ex) {
             LOGGER.log(Level.SEVERE, null, ex);
 
-            throw new ImzMLParseException("IOException: " + ex, ex);
+            throw new ImzMLParseException(new FatalParseIssue("IOException: " + ex, ex.getLocalizedMessage()), ex);
         } catch (ParserConfigurationException ex) {
             LOGGER.log(Level.SEVERE, null, ex);
 
-            throw new ImzMLParseException("ParserConfigurationException: " + ex, ex);
+            throw new ImzMLParseException(new FatalParseIssue("ParserConfigurationException: " + ex, ex.getLocalizedMessage()), ex);
         } finally {
             if(inputStream != null) {
                 try {
@@ -306,11 +306,7 @@ public class ImzMLHandler extends MzMLHeaderHandler {
                 mzML.setID(attributes.getValue("id"));
             }
         } else {
-            try {
-                super.startElement(uri, localName, qName, attributes);
-            } catch (InvalidMzML ex) {
-                throw new InvalidImzML(ex.getLocalizedMessage(), ex);
-            }
+            super.startElement(uri, localName, qName, attributes);
         }
 
 //        if (processingSCiLS3DData) {

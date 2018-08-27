@@ -2,6 +2,7 @@ package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -151,6 +152,8 @@ public class SpectrumList extends MzMLIDContentList<Spectrum> {
 
     @Override
     public Spectrum get(String id) {
+        List<Spectrum> list = getList();
+        
         if(spectrumMap == null) {
             spectrumMap = new HashMap<String, Spectrum>(list.size());
             
@@ -175,7 +178,7 @@ public class SpectrumList extends MzMLIDContentList<Spectrum> {
     public boolean remove(Spectrum spectrum) {
         boolean success = true;
         
-        success &= list.remove(spectrum);
+        success &= getList().remove(spectrum);
         
         Spectrum removedSpectrum = spectrum;
         

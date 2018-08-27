@@ -293,7 +293,7 @@ public class OBOTerm implements Serializable {
         /**
          * A true synonym.
          */
-        Exact,
+        EXACT,
 
         /**
          * A synonym for a class C is BROAD if it denotes a broader class than C.
@@ -304,7 +304,7 @@ public class OBOTerm implements Serializable {
          * 
          * @see <a href="http://owlcollab.github.io/oboformat/doc/obo-syntax.html">OBO File Format 1.4</a>
          */
-        Broad,
+        BROAD,
         
         /**
          * A synonym for a class C is NARROW if C denotes a broader class than the synonym.
@@ -315,7 +315,7 @@ public class OBOTerm implements Serializable {
          * @see OBOTerm.Synonym#Broad
          * @see <a href="http://owlcollab.github.io/oboformat/doc/obo-syntax.html">OBO File Format 1.4</a>
          */
-        Narrow,
+        NARROW,
 
         /**
          * If a synonym is neither EXACT, NARROW or BROAD, then it is RELATED.
@@ -325,7 +325,7 @@ public class OBOTerm implements Serializable {
          * @see OBOTerm.Synonym#Narrow
          * @see <a href="http://owlcollab.github.io/oboformat/doc/obo-syntax.html">OBO File Format 1.4</a>
          */
-        Related
+        RELATED
     }
 
     /**

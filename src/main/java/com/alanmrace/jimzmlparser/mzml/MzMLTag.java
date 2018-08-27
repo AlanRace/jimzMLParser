@@ -1,6 +1,7 @@
 package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.exceptions.InvalidXPathException;
+import java.io.Serializable;
 import java.util.Collection;
 
 /**
@@ -8,7 +9,7 @@ import java.util.Collection;
  *
  * @author Alan Race
  */
-public interface MzMLTag {
+public interface MzMLTag extends Serializable {
 
     /**
      * Get the name of the tag, as it appears in the MzML file.

@@ -7,7 +7,7 @@ import com.alanmrace.jimzmlparser.mzml.UserParam;
  * 
  * @author Alan Race
  */
-public class CVParamAccessionNotFoundException extends NonFatalParseException {
+public class CVParamAccessionNotFoundIssue extends NonFatalParseIssue {
 
     /**
      * Serialisation version ID.
@@ -22,24 +22,28 @@ public class CVParamAccessionNotFoundException extends NonFatalParseException {
     /**
      * If not null, then a fix was attempted by converting the CVParam to this UserParam.
      */
-    private UserParam userParam;
+    private final UserParam userParam;
 
     /**
      * Create CVParamAccessionNotFoundException with the specified accession (ID).
      * 
      * @param accession ID of the ontology term.
      */
-    public CVParamAccessionNotFoundException(String accession) {
+    public CVParamAccessionNotFoundIssue(String accession) {
         this.accession = accession;
+        this.userParam = null;
     }
-
+    
     /**
      * A fix was attempted by replacing the CVParam with UserParam.
      *
-     * @param userParam UserParam that replaced the CVParam
+     * @param accession ID of the ontology term.
+     * @param fixAttempted UserParam that replaced the CVParam
      */
-    public void fixAttempted(UserParam userParam) {
-        this.userParam = userParam;
+    public CVParamAccessionNotFoundIssue(String accession, UserParam fixAttempted) {
+        this.accession = accession;
+        this.userParam = fixAttempted;
+        
     }
     
     @Override

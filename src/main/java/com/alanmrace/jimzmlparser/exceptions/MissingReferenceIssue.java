@@ -7,7 +7,7 @@ import com.alanmrace.jimzmlparser.mzml.MzMLContent;
  * 
  * @author Alan Race
  */
-public class MissingReferenceIssue extends NonFatalParseException {
+public class MissingReferenceIssue extends NonFatalParseIssue {
 
     /**
      * The reference ID that could not be resolved.

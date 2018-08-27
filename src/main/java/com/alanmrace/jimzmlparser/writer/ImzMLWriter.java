@@ -66,12 +66,12 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
         /**
          * Continuous type means that each spectrum of an image has the same m/z values.
          */
-        Continuous,
+        CONTINUOUS,
         
         /**
          * Processed type means that each spectrum has its own m/z array.
          */
-        Processed
+        PROCESSED
     }
 
     /**
@@ -111,7 +111,7 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
     public ImzMLWriter() {
         super();
 
-        this.outputType = OutputType.Processed;
+        this.outputType = OutputType.PROCESSED;
         checksum = Checksum.SHA1;
     }
 
@@ -139,10 +139,10 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
             fileContent.removeChildrenOfCVParam(FileContent.BINARY_TYPE_ID, false);
 
             switch (outputType) {
-                case Continuous:
+                case CONTINUOUS:
                     fileContent.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(FileContent.BINARY_TYPE_CONTINUOUS_ID)));
                     break;
-                case Processed:
+                case PROCESSED:
                 default:
                     fileContent.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(FileContent.BINARY_TYPE_PROCESSED_ID)));
                     break;

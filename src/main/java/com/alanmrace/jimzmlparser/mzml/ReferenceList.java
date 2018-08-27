@@ -1,5 +1,7 @@
 package com.alanmrace.jimzmlparser.mzml;
 
+import java.io.Serializable;
+
 /**
  * Used when a reference is modified, for example the addition or change of the 
  * dataProcessingRef attribute on a Spectrum. The implementation must ensure that 
@@ -9,7 +11,7 @@ package com.alanmrace.jimzmlparser.mzml;
  * @author Alan Race
  * @param <T> Data type of the reference
  */
-public interface ReferenceList<T extends ReferenceableTag> {
+public interface ReferenceList<T extends ReferenceableTag> extends Serializable {
 
     /**
      * Check the list for a valid version of the supplied reference, or add it to 

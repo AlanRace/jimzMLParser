@@ -56,7 +56,7 @@ public class XZDataTransform implements DataTransform {
             return outputStream.toByteArray();
         }
         
-        return null;
+        return new byte[0];
     }
 
     @Override
@@ -98,7 +98,7 @@ public class XZDataTransform implements DataTransform {
             Logger.getLogger(XZDataTransform.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        return null;
+        return new byte[0];
     }
 
 }

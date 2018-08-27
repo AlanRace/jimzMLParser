@@ -5,6 +5,8 @@
  */
 package com.alanmrace.jimzmlparser.imzml;
 
+import com.alanmrace.jimzmlparser.exceptions.ImzMLParseException;
+import com.alanmrace.jimzmlparser.exceptions.MzMLParseException;
 import com.alanmrace.jimzmlparser.mzml.BinaryDataArray;
 import com.alanmrace.jimzmlparser.mzml.MzML;
 import com.alanmrace.jimzmlparser.mzml.Spectrum;
@@ -23,7 +25,7 @@ import org.junit.Test;
  */
 public class ImzMLWriterTest {
     @Test
-    public void testMzMLToImzMLWriter() throws IOException {
+    public void testMzMLToImzMLWriter() throws IOException, MzMLParseException {
         MzML mzML = MzMLHeaderHandler.parsemzMLHeader("D:\\Compression\\M451_mousebrain_01_measure1_29_716_400-1200.mzML");
         
         ImzML imzML = new ImzML(mzML);
@@ -54,7 +56,7 @@ public class ImzMLWriterTest {
     }
     
     @Test
-    public void testImzMLWriter() throws IOException {
+    public void testImzMLWriter() throws IOException, ImzMLParseException {
         ImzML oldimzML = ImzMLHandler.parseimzML("D:\\M288_Maus Lunge_KW121_ohneCMC_M16_EHM_0.5h_20x40um_270x170Pixel_mz100-400_400-900_Att30.RAW_0.imzML");
         
         ImzML imzML = new ImzML(oldimzML);

@@ -7,7 +7,7 @@ import com.alanmrace.jimzmlparser.obo.OBOTerm;
  *  
  * @author Alan Race
  */
-public class ObsoleteTermUsed extends NonFatalParseException {
+public class ObsoleteTermUsed extends NonFatalParseIssue {
     
     /**
      * The obsolete term which was used.

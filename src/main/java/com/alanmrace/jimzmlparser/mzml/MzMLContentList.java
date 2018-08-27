@@ -32,7 +32,7 @@ public abstract class MzMLContentList<T extends MzMLTag>
     /**
      * The list of MzMLTags.
      */
-    protected List<T> list = null;
+    private List<T> list = null;
 
     /**
      * Create an empty list, used by subclasses.
@@ -63,6 +63,10 @@ public abstract class MzMLContentList<T extends MzMLTag>
         }
     }
 
+    protected List<T> getList() {
+        return list;
+    }
+    
     @Override
     public void add(T item) {
         if (item instanceof MzMLContent) {

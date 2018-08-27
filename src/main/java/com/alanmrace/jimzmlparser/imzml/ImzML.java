@@ -1,5 +1,6 @@
 package com.alanmrace.jimzmlparser.imzml;
 
+import com.alanmrace.jimzmlparser.exceptions.FatalParseIssue;
 import com.alanmrace.jimzmlparser.exceptions.ImzMLParseException;
 import com.alanmrace.jimzmlparser.mzml.BinaryDataArray;
 import java.io.File;
@@ -802,11 +803,11 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
                 dataStream.close();
             }
         } catch (NoSuchAlgorithmException e) {
-            throw new ImzMLParseException("Generation of " + algorithm + " hash failed. No " + algorithm + " algorithm. " + e.getLocalizedMessage(), e);
+            throw new ImzMLParseException(new FatalParseIssue("Generation of " + algorithm + " hash failed. No " + algorithm + " algorithm. " + e.getLocalizedMessage(), e.getLocalizedMessage()), e);
         } catch (FileNotFoundException e2) {
-            throw new ImzMLParseException("Could not open file " + filename, e2);
+            throw new ImzMLParseException(new FatalParseIssue("Could not open file " + filename, e2.getLocalizedMessage()), e2);
         } catch (IOException e) {
-            throw new ImzMLParseException("Failed generating " + algorithm + " hash. Failed to read data from " + filename + e.getMessage(), e);
+            throw new ImzMLParseException(new FatalParseIssue("Failed generating " + algorithm + " hash. Failed to read data from " + filename + e.getMessage(), e.getLocalizedMessage()), e);
         }
 
         return HexHelper.byteArrayToHexString(hash);
@@ -819,7 +820,7 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
      * @return          SHA-1 hash of the file
      * @throws ImzMLParseException  Issue with opening the IBD file
      */
-    public static String calculateSHA1(String filename) {
+    public static String calculateSHA1(String filename) throws ImzMLParseException {
         return calculateChecksum(filename, "SHA-1");
     }
 
@@ -830,7 +831,7 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
      * @return          MD5 hash of the file
      * @throws ImzMLParseException  Issue with opening the IBD file
      */
-    public static String calculateMD5(String filename) {
+    public static String calculateMD5(String filename) throws ImzMLParseException {
         return calculateChecksum(filename, "MD5");
     }
     

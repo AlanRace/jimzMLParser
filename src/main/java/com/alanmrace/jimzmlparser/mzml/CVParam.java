@@ -261,7 +261,9 @@ public abstract class CVParam extends MzMLContent {
                 type = CVParamType.LONG;
                 break;
             default:
-                throw new InvalidFormatIssue(term, term.getValueType());
+                InvalidFormatIssue issue = new InvalidFormatIssue(term, term.getValueType());
+                
+                throw new NonFatalParseException(issue);
         }
         
         return type;

@@ -1,12 +1,10 @@
 package com.alanmrace.jimzmlparser.exceptions;
 
 /**
- * Fatal parse exception occurred. It is not possible to continue parsing.
- * 
+ *
  * @author Alan Race
  */
-public class FatalParseException extends Exception {
-
+public class FatalRuntimeParseException extends RuntimeException {
     private final FatalParseIssue issue;
 
     /**
@@ -15,7 +13,7 @@ public class FatalParseException extends Exception {
      * 
      * @param issue FatalParseIssue that caused the exception
      */
-    public FatalParseException(FatalParseIssue issue) {
+    public FatalRuntimeParseException(FatalParseIssue issue) {
         super(issue.getIssueMessage());
         
         this.issue = issue;
@@ -28,7 +26,7 @@ public class FatalParseException extends Exception {
      * @param issue FatalParseIssue that caused the exception
      * @param exception Exception that caused the issue
      */
-    public FatalParseException(FatalParseIssue issue, Exception exception) {
+    public FatalRuntimeParseException(FatalParseIssue issue, Exception exception) {
         super(issue.getIssueMessage(), exception);
         
         this.issue = issue;

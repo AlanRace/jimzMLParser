@@ -48,7 +48,7 @@ public class BinaryDataArrayList extends MzMLContentList<BinaryDataArray> {
     public BinaryDataArray getmzArray() {
         BinaryDataArray mzArray = null;
 
-        for (BinaryDataArray binaryDataArray : list) {
+        for (BinaryDataArray binaryDataArray : getList()) {
             if (binaryDataArray.ismzArray()) {
                 mzArray = binaryDataArray;
                 break;
@@ -68,7 +68,7 @@ public class BinaryDataArrayList extends MzMLContentList<BinaryDataArray> {
     public BinaryDataArray getIntensityArray() {
         BinaryDataArray intensityArray = null;
 
-        for (BinaryDataArray binaryDataArray : list) {
+        for (BinaryDataArray binaryDataArray : getList()) {
             if (binaryDataArray.isIntensityArray()) {
                 intensityArray = binaryDataArray;
                 break;

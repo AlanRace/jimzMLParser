@@ -1,5 +1,7 @@
 package com.alanmrace.jimzmlparser.exceptions;
 
+import com.alanmrace.jimzmlparser.mzml.MzMLContent;
+
 /**
  * ParseIssue interface.
  * 

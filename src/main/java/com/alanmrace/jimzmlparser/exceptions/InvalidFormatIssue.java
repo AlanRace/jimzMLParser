@@ -11,7 +11,7 @@ import com.alanmrace.jimzmlparser.obo.OBOTerm.XMLType;
  * 
  * @author Alan Race
  */
-public class InvalidFormatIssue extends NonFatalParseException {
+public class InvalidFormatIssue extends NonFatalParseIssue {
     
     /**
      * String representation of the value that was parsed.

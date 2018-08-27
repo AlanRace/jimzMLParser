@@ -2,6 +2,7 @@ package com.alanmrace.jimzmlparser.parser;
 
 import com.alanmrace.jimzmlparser.data.DataLocation;
 import com.alanmrace.jimzmlparser.data.BinaryDataStorage;
+import com.alanmrace.jimzmlparser.exceptions.FatalParseIssue;
 import com.alanmrace.jimzmlparser.exceptions.MzMLParseException;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -48,11 +49,11 @@ public class MzMLHandler extends MzMLHeaderHandler {
         temporaryFileStream = new DataOutputStream(new FileOutputStream(temporaryBinaryFile));
     }
 
-    public static MzML parsemzML(String filename) {
+    public static MzML parsemzML(String filename) throws MzMLParseException {
         return parsemzML(filename, null);
     }
 
-    public static MzML parsemzML(String filename, ParserListener listener) {
+    public static MzML parsemzML(String filename, ParserListener listener) throws MzMLParseException {
         try {
             //OBO obo = new OBO("imagingMS.obo");
             OBO obo = OBO.getOBO();
@@ -86,19 +87,20 @@ public class MzMLHandler extends MzMLHeaderHandler {
         } catch (SAXException ex) {
             logger.log(Level.SEVERE, null, ex);
 
-            throw new MzMLParseException("SAXException: " + ex, ex);
+            
+            throw new MzMLParseException(new FatalParseIssue("SAXException: " + ex, ex.getLocalizedMessage()), ex);
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(MzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, null, ex);
 
-            throw new MzMLParseException("File not found: " + ex, ex);
+            throw new MzMLParseException(new FatalParseIssue("File not found: " + ex, ex.getLocalizedMessage()), ex);
         } catch (IOException ex) {
-            Logger.getLogger(MzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, null, ex);
 
-            throw new MzMLParseException("IOException: " + ex, ex);
+            throw new MzMLParseException(new FatalParseIssue("IOException: " + ex, ex.getLocalizedMessage()), ex);
         } catch (ParserConfigurationException ex) {
-            Logger.getLogger(MzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, null, ex);
 
-            throw new MzMLParseException("ParserConfigurationException: " + ex, ex);
+            throw new MzMLParseException(new FatalParseIssue("ParserConfigurationException: " + ex, ex.getLocalizedMessage()), ex);
         }
     }
 

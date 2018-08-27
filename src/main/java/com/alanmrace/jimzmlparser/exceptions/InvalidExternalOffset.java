@@ -6,7 +6,7 @@ import com.alanmrace.jimzmlparser.mzml.MzMLDataContainer;
  *
  * @author Alan Race
  */
-public class InvalidExternalOffset extends NonFatalParseException {
+public class InvalidExternalOffset extends NonFatalParseIssue {
     
     private final MzMLDataContainer container;
     private final long offset;
