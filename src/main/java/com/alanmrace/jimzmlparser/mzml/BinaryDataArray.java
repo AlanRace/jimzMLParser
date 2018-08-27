@@ -27,7 +27,7 @@ import java.util.zip.DataFormatException;
  */
 public class BinaryDataArray extends MzMLContentWithParams implements Serializable {
     
-    private final static Logger LOGGER = Logger.getLogger(BinaryDataArray.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(BinaryDataArray.class.getName());
 
     /**
      * Serialisation version ID.
@@ -42,12 +42,12 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
         /**
          * No compression.
          */
-        None,
+        NONE,
 
         /**
          * ZLib compression.
          */
-        Zlib,
+        ZLIB,
         
         /**
          * XZ compression.
@@ -62,46 +62,46 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
         /**
          * ZStandard compression
          */
-        Zstd,
+        ZSTD,
         
         /**
          * MS Numpress linear prediction compression
          */
-        MSNumpressLinear,
+        MSNUMPRESS_LINEAR,
         
         /**
          * MS Numpress positive integer compression
          */
-        MSNumpressPositive,
+        MSNUMPRESS_POSITIVE,
         
         /**
          * MS Numpress short logged float compression
          */
-        MSNumpressSlof,
+        MSNUMPRESS_SLOF,
         
-        MSNumpressLinearZlib,
+        MSNUMPRESS_LINEAR_ZLIB,
                 
-        MSNumpressPositiveZlib,
+        MSNUMPRESS_POSITIVE_ZLIB,
         
-        MSNumpressSlofZlib,
+        MSNUMPRESS_SLOF_ZLIB,
         
-        MSNumpressLinearXZ,
+        MSNUMPRESS_LINEAR_XZ,
                 
-        MSNumpressPositiveXZ,
+        MSNUMPRESS_POSITIVE_XZ,
         
-        MSNumpressSlofXZ,
+        MSNUMPRESS_SLOF_XZ,
         
-        MSNumpressLinearLZ4,
+        MSNUMPRESS_LINEAR_LZ4,
                 
-        MSNumpressPositiveLZ4,
+        MSNUMPRESS_POSITIVE_LZ4,
         
-        MSNumpressSlofLZ4,
+        MSNUMPRESS_SLOF_LZ4,
         
-        MSNumpressLinearZstd,
+        MSNUMPRESS_LINEAR_ZSTD,
                 
-        MSNumpressPositiveZstd,
+        MSNUMPRESS_POSITIVE_ZSTD,
         
-        MSNumpressSlofZstd;
+        MSNUMPRESS_SLOF_ZSTD;
         
         /**
          * Convert CompressionType enum to OBOTerm, using ontology terms found in the 
@@ -112,46 +112,46 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
          */
         public static OBOTerm toOBOTerm(CompressionType compressionType) {
             switch(compressionType) {
-                case None:
-                    return OBO.getOBO().getTerm(noCompressionID);
-                case Zlib:
-                    return OBO.getOBO().getTerm(zlibCompressionID);
+                case NONE:
+                    return OBO.getOBO().getTerm(NO_COMPRESSION_ID);
+                case ZLIB:
+                    return OBO.getOBO().getTerm(ZLIB_COMPRESSION_ID);
                 case XZ:
-                    return OBO.getOBO().getTerm(xyCompressionID);
+                    return OBO.getOBO().getTerm(XZ_COMPRESSION_ID);
                 case LZ4:
-                    return OBO.getOBO().getTerm(lz4CompressionID);
-                case Zstd:
-                    return OBO.getOBO().getTerm(zstdCompressionID);
-                case MSNumpressLinear:
-                    return OBO.getOBO().getTerm(msNumpressLinearID);
-                case MSNumpressPositive:
-                    return OBO.getOBO().getTerm(msNumpressPositiveID);
-                case MSNumpressSlof:
-                    return OBO.getOBO().getTerm(msNumpressSlofID);
-                case MSNumpressLinearZlib:
-                    return OBO.getOBO().getTerm(msNumpressLinearZlibID);
-                case MSNumpressPositiveZlib:
-                    return OBO.getOBO().getTerm(msNumpressPositiveZlibID);
-                case MSNumpressSlofZlib:
-                    return OBO.getOBO().getTerm(msNumpressSlofZlibID);
-                case MSNumpressLinearXZ:
-                    return OBO.getOBO().getTerm(msNumpressLinearXZID);
-                case MSNumpressPositiveXZ:
-                    return OBO.getOBO().getTerm(msNumpressPositiveXZID);
-                case MSNumpressSlofXZ:
-                    return OBO.getOBO().getTerm(msNumpressSlofXZID);
-                case MSNumpressLinearLZ4:
-                    return OBO.getOBO().getTerm(msNumpressLinearLZ4ID);
-                case MSNumpressPositiveLZ4:
-                    return OBO.getOBO().getTerm(msNumpressPositiveLZ4ID);
-                case MSNumpressSlofLZ4:
-                    return OBO.getOBO().getTerm(msNumpressSlofLZ4ID);
-                case MSNumpressLinearZstd:
-                    return OBO.getOBO().getTerm(msNumpressLinearZstdID);
-                case MSNumpressPositiveZstd:
-                    return OBO.getOBO().getTerm(msNumpressPositiveZstdID);
-                case MSNumpressSlofZstd:
-                    return OBO.getOBO().getTerm(msNumpressSlofZstdID);
+                    return OBO.getOBO().getTerm(LZ4_COMPRESSION_ID);
+                case ZSTD:
+                    return OBO.getOBO().getTerm(ZSTD_COMPRESSION_ID);
+                case MSNUMPRESS_LINEAR:
+                    return OBO.getOBO().getTerm(MSNUMPRESS_LINEAR_ID);
+                case MSNUMPRESS_POSITIVE:
+                    return OBO.getOBO().getTerm(MSNUMPRESS_POSITIVE_ID);
+                case MSNUMPRESS_SLOF:
+                    return OBO.getOBO().getTerm(MSNUMPRESS_SLOF_ID);
+                case MSNUMPRESS_LINEAR_ZLIB:
+                    return OBO.getOBO().getTerm(MSNUMPRESS_LINEAR_ZLIB_ID);
+                case MSNUMPRESS_POSITIVE_ZLIB:
+                    return OBO.getOBO().getTerm(MSNUMPRESS_POSITIVE_ZLIB_ID);
+                case MSNUMPRESS_SLOF_ZLIB:
+                    return OBO.getOBO().getTerm(MSNUMPRESS_SLOF_ZLIB_ID);
+                case MSNUMPRESS_LINEAR_XZ:
+                    return OBO.getOBO().getTerm(MSNUMPRESS_LINEAR_XZ_ID);
+                case MSNUMPRESS_POSITIVE_XZ:
+                    return OBO.getOBO().getTerm(MSNUMPRESS_POSITIVE_XZ_ID);
+                case MSNUMPRESS_SLOF_XZ:
+                    return OBO.getOBO().getTerm(MSNUMPRESS_SLOF_XZ_ID);
+                case MSNUMPRESS_LINEAR_LZ4:
+                    return OBO.getOBO().getTerm(MSNUMPRESS_LINEAR_LZ4_ID);
+                case MSNUMPRESS_POSITIVE_LZ4:
+                    return OBO.getOBO().getTerm(MSNUMPRESS_POSITIVE_LZ4_ID);
+                case MSNUMPRESS_SLOF_LZ4:
+                    return OBO.getOBO().getTerm(MSNUMPRESS_SLOF_LZ4_ID);
+                case MSNUMPRESS_LINEAR_ZSTD:
+                    return OBO.getOBO().getTerm(MSNUMPRESS_LINEAR_ZSTD_ID);
+                case MSNUMPRESS_POSITIVE_ZSTD:
+                    return OBO.getOBO().getTerm(MSNUMPRESS_POSITIVE_ZSTD_ID);
+                case MSNUMPRESS_SLOF_ZSTD:
+                    return OBO.getOBO().getTerm(MSNUMPRESS_SLOF_ZSTD_ID);
                 default:
                     return null;
             }
@@ -164,177 +164,177 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
      * Accession: Binary data compression type (MS:1000572). MUST supply a child
      * only once
      */
-    public static final String compressionTypeID = "MS:1000572"; // Required child (1)
+    public static final String COMPRESSION_TYPE_ID = "MS:1000572"; // Required child (1)
 
     /**
      * Accession: Binary data array (MS:1000513). MUST supply a child only once
      */
-    public static final String binaryDataArrayID = "MS:1000513";	// Required child (1)
+    public static final String BINARY_DATA_ARRAY_ID = "MS:1000513";	// Required child (1)
 
     /**
      * Accession: Binary data type (MS:1000518). MUST supply a child only once
      */
-    public static final String dataTypeID = "MS:1000518";	// Required child (1)
+    public static final String BINARY_DATA_TYPE_ID = "MS:1000518";	// Required child (1)
 
     /**
      * Accession: IBD binary data type (IMS:1000014).
      */
-    public static final String ibdDataType = "IMS:1000014";
+    public static final String IBD_BINARY_DATA_TYPE_ID = "IMS:1000014";
 
     /**
      * Accession: m/z array (MS:1000514).
      */
-    public static final String mzArrayID = "MS:1000514";
+    public static final String MZ_ARRAY_ID = "MS:1000514";
 
     /**
      * Accession: m/z units (MS:1000040).
      */
-    public static final String mzArrayUnitsID = "MS:1000040";
+    public static final String MZ_ARRAY_UNITS_ID = "MS:1000040";
 
     /**
      * Accession: Intensity array (MS:1000515).
      */
-    public static final String intensityArrayID = "MS:1000515";
+    public static final String INTENSITY_ARRAY_ID = "MS:1000515";
 
     /**
      * Accession: Intensity array units: number of counts (MS:1000131).
      */
-    public static final String intensityArrayUnitsNumberOfCountsID = "MS:1000131";
+    public static final String INTENSITY_ARRAY_UNITS_NUMBER_OF_COUNTS_ID = "MS:1000131";
 
     /**
      * Accession: Intensity array units: percentage of basepeak (MS:1000132).
      */
-    public static final String intensityArrayUnitsPercentOfBasepeakID = "MS:1000132";
+    public static final String INTENSITY_ARRAY_UNITS_PERCENTAGE_OF_BASEPEAK_ID = "MS:1000132";
 
     /**
      * Accession: Intensity array units: counts per second (MS:1000814).
      */
-    public static final String intensityArrayUnitsCountsPerSecondID = "MS:1000814";
+    public static final String INTENSITY_ARRAY_UNITS_COUNTS_PER_SECOND_ID = "MS:1000814";
 
     /**
      * Accession: Intensity array units: percent of basepeak x 100 (MS:1000905).
      */
-    public static final String intensityArrayUnitsPercentOfBasepeakTimes100ID = "MS:1000905";
+    public static final String INTENSITY_ARRAY_UNITS_PERCENTAGE_OF_BASEPEAK_TIMES_100_ID = "MS:1000905";
 
     /**
      * Accession: Double precision (MS:1000523).
      */
-    public static final String doublePrecisionID = "MS:1000523";
+    public static final String DOUBLE_PRECISION_ID = "MS:1000523";
 
     /**
      * Accession: Single precision (MS:1000521).
      */
-    public static final String singlePrecisionID = "MS:1000521";
+    public static final String SINGLE_PRECISION_ID = "MS:1000521";
 
     // The IMS obo has copies of the data types found in the MS obo
     /**
      * Accession: Signed 32-bit integer (MS:1000519).
      */
-    public static final String signed32bitIntegerID = "MS:1000519";
+    public static final String SIGNED_32BIT_INTEGER_ID = "MS:1000519";
 
     /**
      * Accession: Signed 32-bit integer (IMS:1000141). Copy of MS:1000519.
      *
      * @see BinaryDataArray#signed32bitIntegerID
      */
-    public static final String imsSigned32bitIntegerID = "IMS:1000141";
+    public static final String IMS_SIGNED_32BIT_INTEGER_ID = "IMS:1000141";
 
     /**
      * Accession: Signed 64-bit integer (MS:1000522).
      */
-    public static final String signed64bitIntegerID = "MS:1000522";
+    public static final String SIGNED_64BIT_INTEGER_ID = "MS:1000522";
 
     /**
      * Accession: Signed 64-bit integer (IMS:1000142). Copy of MS:1000522.
      *
      * @see BinaryDataArray#signed64bitIntegerID
      */
-    public static final String imsSigned64bitIntegerID = "IMS:1000142";
+    public static final String IMS_SIGNED_64BIT_INTEGER_ID = "IMS:1000142";
 
     /**
      * Accession: Signed 8-bit integer (IMS:1100000).
      */
-    public static final String signed8bitIntegerID = "IMS:1100000";
+    public static final String SIGNED_8BIT_INTEGER_ID = "IMS:1100000";
 
     /**
      * Accession: Signed 16-bit integer (IMS:1100000).
      */
-    public static final String signed16bitIntegerID = "IMS:1100001";
+    public static final String SIGNED_16BIT_INTEGER_ID = "IMS:1100001";
 
     /**
      * Accession: No compression (MS:1000576).
      */
-    public static final String noCompressionID = "MS:1000576";
+    public static final String NO_COMPRESSION_ID = "MS:1000576";
 
     /**
      * Accession: zlib compression (MS:1000574).
      */
-    public static final String zlibCompressionID = "MS:1000574";
+    public static final String ZLIB_COMPRESSION_ID = "MS:1000574";
 
     /**
      * Accession: xz compression (IMS:1005001).
      */
-    public static final String xyCompressionID = "IMS:1005001";
+    public static final String XZ_COMPRESSION_ID = "IMS:1005001";
     
     /**
      * Accession: lz4 compression (IMS:1005001).
      */
-    public static final String lz4CompressionID = "IMS:1005002";
+    public static final String LZ4_COMPRESSION_ID = "IMS:1005002";
     
     /**
      * Accession: zstd compression (IMS:1005001).
      */
-    public static final String zstdCompressionID = "IMS:1005003";
+    public static final String ZSTD_COMPRESSION_ID = "IMS:1005003";
     
-    public static final String msNumpressPositiveID = "MS:1002313";
+    public static final String MSNUMPRESS_POSITIVE_ID = "MS:1002313";
     
-    public static final String msNumpressLinearID = "MS:1002312";
+    public static final String MSNUMPRESS_LINEAR_ID = "MS:1002312";
     
-    public static final String msNumpressSlofID = "MS:1002314";
+    public static final String MSNUMPRESS_SLOF_ID = "MS:1002314";
     
-    public static final String msNumpressLinearZlibID = "IMS:1005013";
+    public static final String MSNUMPRESS_LINEAR_ZLIB_ID = "IMS:1005013";
     
-    public static final String msNumpressPositiveZlibID = "IMS:1005014";
+    public static final String MSNUMPRESS_POSITIVE_ZLIB_ID = "IMS:1005014";
     
-    public static final String msNumpressSlofZlibID = "IMS:1005015";
+    public static final String MSNUMPRESS_SLOF_ZLIB_ID = "IMS:1005015";
     
-    public static final String msNumpressLinearXZID = "IMS:1005004";
+    public static final String MSNUMPRESS_LINEAR_XZ_ID = "IMS:1005004";
     
-    public static final String msNumpressPositiveXZID = "IMS:1005005";
+    public static final String MSNUMPRESS_POSITIVE_XZ_ID = "IMS:1005005";
     
-    public static final String msNumpressSlofXZID = "IMS:1005006";
+    public static final String MSNUMPRESS_SLOF_XZ_ID = "IMS:1005006";
     
-    public static final String msNumpressLinearLZ4ID = "IMS:1005007";
+    public static final String MSNUMPRESS_LINEAR_LZ4_ID = "IMS:1005007";
     
-    public static final String msNumpressPositiveLZ4ID = "IMS:1005008";
+    public static final String MSNUMPRESS_POSITIVE_LZ4_ID = "IMS:1005008";
     
-    public static final String msNumpressSlofLZ4ID = "IMS:1005009";
+    public static final String MSNUMPRESS_SLOF_LZ4_ID = "IMS:1005009";
     
-    public static final String msNumpressLinearZstdID = "IMS:1005010";
+    public static final String MSNUMPRESS_LINEAR_ZSTD_ID = "IMS:1005010";
     
-    public static final String msNumpressPositiveZstdID = "IMS:1005011";
+    public static final String MSNUMPRESS_POSITIVE_ZSTD_ID = "IMS:1005011";
     
-    public static final String msNumpressSlofZstdID = "IMS:1005012";
+    public static final String MSNUMPRESS_SLOF_ZSTD_ID = "IMS:1005012";
     
     /**
      * Accession: External array length (IMS:1000103). MUST supply once
      */
-    public static final String externalArrayLengthID = "IMS:1000103";
+    public static final String EXTERNAL_ARRAY_LENGTH_ID = "IMS:1000103";
 
     /**
      * Accession: External data (IMS:1000101). MUST supply once
      */
-    public static final String externalDataID = "IMS:1000101";
+    public static final String EXTERNAL_DATA_ID = "IMS:1000101";
 
     /**
      * Accession: External encoded length (IMS:1000104). MUST supply once
      */
-    public static final String externalEncodedLengthID = "IMS:1000104";
+    public static final String EXTERNAL_ENCODED_LENGTH_ID = "IMS:1000104";
 
     /**
      * Accession: External offset (IMS:1000102). MUST supply once
      */
-    public static final String externalOffsetID = "IMS:1000102";
+    public static final String EXTERNAL_OFFSET_ID = "IMS:1000102";
 
     // </editor-fold>
     
@@ -450,7 +450,7 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
     public boolean isDoublePrecision() {
         DataType dataType = getDataType();
 
-        return dataType == DataTypeTransform.DataType.Double;
+        return dataType == DataTypeTransform.DataType.DOUBLE;
     }
 
     /**
@@ -459,7 +459,7 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
      * @return true, if single precision cvParam is present, false otherwise
      */
     public boolean isSinglePrecision() {
-        CVParam dataTypeCVParam = getCVParam(singlePrecisionID);
+        CVParam dataTypeCVParam = getCVParam(SINGLE_PRECISION_ID);
 
         return dataTypeCVParam != null;
     }
@@ -470,7 +470,7 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
      * @return true, if 8-bit integer cvParam is present, false otherwise
      */
     public boolean isSigned8BitInteger() {
-        CVParam dataTypeCVParam = getCVParam(signed8bitIntegerID);
+        CVParam dataTypeCVParam = getCVParam(SIGNED_8BIT_INTEGER_ID);
 
         return dataTypeCVParam != null;
     }
@@ -481,7 +481,7 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
      * @return true, if 16-bit integer cvParam is present, false otherwise
      */
     public boolean isSigned16BitInteger() {
-        CVParam dataTypeCVParam = getCVParam(signed16bitIntegerID);
+        CVParam dataTypeCVParam = getCVParam(SIGNED_16BIT_INTEGER_ID);
 
         return dataTypeCVParam != null;
     }
@@ -492,8 +492,8 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
      * @return true, if 32-bit integer cvParam is present, false otherwise
      */
     public boolean isSigned32BitInteger() {
-        CVParam dataTypeCVParam = getCVParam(signed32bitIntegerID);
-        CVParam imsDataType = getCVParam(imsSigned32bitIntegerID);
+        CVParam dataTypeCVParam = getCVParam(SIGNED_32BIT_INTEGER_ID);
+        CVParam imsDataType = getCVParam(IMS_SIGNED_32BIT_INTEGER_ID);
 
         return !(dataTypeCVParam == null && imsDataType == null);
     }
@@ -504,8 +504,8 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
      * @return true, if 64-bit integer cvParam is present, false otherwise
      */
     public boolean isSigned64BitInteger() {
-        CVParam dataTypeCVParam = getCVParam(signed64bitIntegerID);
-        CVParam imsDataType = getCVParam(imsSigned64bitIntegerID);
+        CVParam dataTypeCVParam = getCVParam(SIGNED_64BIT_INTEGER_ID);
+        CVParam imsDataType = getCVParam(IMS_SIGNED_64BIT_INTEGER_ID);
 
         return !(dataTypeCVParam == null && imsDataType == null);
     }
@@ -517,7 +517,7 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
      * otherwise
      */
     public boolean isCompressed() {
-        CVParam compression = getCVParam(noCompressionID);
+        CVParam compression = getCVParam(NO_COMPRESSION_ID);
 
         return compression == null;
     }
@@ -532,17 +532,17 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
     public static int getDataTypeInBytes(CVParam dataType) {
         String dataTypeTermID = dataType.getTerm().getID();
 
-        if (dataTypeTermID.equals(doublePrecisionID)) {
+        if (dataTypeTermID.equals(DOUBLE_PRECISION_ID)) {
             return 8;
-        } else if (dataTypeTermID.equals(singlePrecisionID)) {
+        } else if (dataTypeTermID.equals(SINGLE_PRECISION_ID)) {
             return 4;
-        } else if (dataTypeTermID.equals(signed8bitIntegerID)) {
+        } else if (dataTypeTermID.equals(SIGNED_8BIT_INTEGER_ID)) {
             return 1;
-        } else if (dataTypeTermID.equals(signed16bitIntegerID)) {
+        } else if (dataTypeTermID.equals(SIGNED_16BIT_INTEGER_ID)) {
             return 2;
-        } else if (dataTypeTermID.equals(signed32bitIntegerID)) {
+        } else if (dataTypeTermID.equals(SIGNED_32BIT_INTEGER_ID)) {
             return 4;
-        } else if (dataTypeTermID.equals(signed64bitIntegerID)) {
+        } else if (dataTypeTermID.equals(SIGNED_64BIT_INTEGER_ID)) {
             return 8;
         }
 
@@ -659,31 +659,31 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
         DataTransformation transformation = new DataTransformation();
 
         // Always add in the conversion to data type first
-        if (!DataType.Double.equals(getDataType())) {
-            transformation.addTransform(new DataTypeTransform(DataType.Double, getDataType()));
+        if (!DataType.DOUBLE.equals(getDataType())) {
+            transformation.addTransform(new DataTypeTransform(DataType.DOUBLE, getDataType()));
         }
 
-        CVParam compressionCVParam = this.getCVParamOrChild(BinaryDataArray.compressionTypeID);
+        CVParam compressionCVParam = this.getCVParamOrChild(BinaryDataArray.COMPRESSION_TYPE_ID);
         
         // Add in any compression
-        if (BinaryDataArray.zlibCompressionID.equals(compressionCVParam.getTerm().getID())) {
+        if (BinaryDataArray.ZLIB_COMPRESSION_ID.equals(compressionCVParam.getTerm().getID())) {
             transformation.addTransform(new ZlibDataTransform());
-        } else if(BinaryDataArray.xyCompressionID.equals(compressionCVParam.getTerm().getID())) {
+        } else if(BinaryDataArray.XZ_COMPRESSION_ID.equals(compressionCVParam.getTerm().getID())) {
             transformation.addTransform(new XZDataTransform());
-        } else if(BinaryDataArray.lz4CompressionID.equals(compressionCVParam.getTerm().getID())) {
-            transformation.addTransform(new LZ4DataTransform((int)(this.getExternalArrayLength() * getDataTypeInBytes(getCVParamOrChild(dataTypeID)))));
-        } else if(BinaryDataArray.zstdCompressionID.equals(compressionCVParam.getTerm().getID())) {
-            transformation.addTransform(new ZstdDataTransform((int)(this.getExternalArrayLength() * getDataTypeInBytes(getCVParamOrChild(dataTypeID)))));
-        } else if(BinaryDataArray.msNumpressLinearID.equals(compressionCVParam.getTerm().getID())) {
-            transformation.addTransform(new MSNumpressDataTransform(NumpressAlgorithm.Linear));
-        } else if(BinaryDataArray.msNumpressPositiveID.equals(compressionCVParam.getTerm().getID())) {
-            transformation.addTransform(new MSNumpressDataTransform(NumpressAlgorithm.Pic));
-        } else if(BinaryDataArray.msNumpressSlofID.equals(compressionCVParam.getTerm().getID())) {
-            transformation.addTransform(new MSNumpressDataTransform(NumpressAlgorithm.Slof));
-        } else if(BinaryDataArray.msNumpressLinearLZ4ID.equals(compressionCVParam.getTerm().getID())) {
-            transformation.addTransform(new MSNumpressDataTransform(NumpressAlgorithm.Linear));
+        } else if(BinaryDataArray.LZ4_COMPRESSION_ID.equals(compressionCVParam.getTerm().getID())) {
+            transformation.addTransform(new LZ4DataTransform((int)(this.getExternalArrayLength() * getDataTypeInBytes(getCVParamOrChild(BINARY_DATA_TYPE_ID)))));
+        } else if(BinaryDataArray.ZSTD_COMPRESSION_ID.equals(compressionCVParam.getTerm().getID())) {
+            transformation.addTransform(new ZstdDataTransform((int)(this.getExternalArrayLength() * getDataTypeInBytes(getCVParamOrChild(BINARY_DATA_TYPE_ID)))));
+        } else if(BinaryDataArray.MSNUMPRESS_LINEAR_ID.equals(compressionCVParam.getTerm().getID())) {
+            transformation.addTransform(new MSNumpressDataTransform(NumpressAlgorithm.LINEAR));
+        } else if(BinaryDataArray.MSNUMPRESS_POSITIVE_ID.equals(compressionCVParam.getTerm().getID())) {
+            transformation.addTransform(new MSNumpressDataTransform(NumpressAlgorithm.PIC));
+        } else if(BinaryDataArray.MSNUMPRESS_SLOF_ID.equals(compressionCVParam.getTerm().getID())) {
+            transformation.addTransform(new MSNumpressDataTransform(NumpressAlgorithm.SLOF));
+        } else if(BinaryDataArray.MSNUMPRESS_LINEAR_LZ4_ID.equals(compressionCVParam.getTerm().getID())) {
+            transformation.addTransform(new MSNumpressDataTransform(NumpressAlgorithm.LINEAR));
             
-            int decompressedSize = (int)(this.getExternalArrayLength() * getDataTypeInBytes(getCVParamOrChild(dataTypeID)));
+            int decompressedSize = (int)(this.getExternalArrayLength() * getDataTypeInBytes(getCVParamOrChild(BINARY_DATA_TYPE_ID)));
             UserParam userParam = this.getUserParam("LZ4 decompression size");
             
             if(userParam != null) {
@@ -691,19 +691,19 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
             }
             
             transformation.addTransform(new LZ4DataTransform(decompressedSize));
-        } else if(BinaryDataArray.msNumpressLinearXZID.equals(compressionCVParam.getTerm().getID())) {
-            transformation.addTransform(new MSNumpressDataTransform(NumpressAlgorithm.Linear));
+        } else if(BinaryDataArray.MSNUMPRESS_LINEAR_XZ_ID.equals(compressionCVParam.getTerm().getID())) {
+            transformation.addTransform(new MSNumpressDataTransform(NumpressAlgorithm.LINEAR));
             transformation.addTransform(new XZDataTransform());
-        } else if(BinaryDataArray.msNumpressLinearZlibID.equals(compressionCVParam.getTerm().getID())) {
-            transformation.addTransform(new MSNumpressDataTransform(NumpressAlgorithm.Linear));
+        } else if(BinaryDataArray.MSNUMPRESS_LINEAR_ZLIB_ID.equals(compressionCVParam.getTerm().getID())) {
+            transformation.addTransform(new MSNumpressDataTransform(NumpressAlgorithm.LINEAR));
             transformation.addTransform(new ZlibDataTransform());
-        } else if(BinaryDataArray.msNumpressLinearZstdID.equals(compressionCVParam.getTerm().getID())) {
-            transformation.addTransform(new MSNumpressDataTransform(NumpressAlgorithm.Linear));
-            transformation.addTransform(new ZstdDataTransform((int)(this.getExternalArrayLength() * getDataTypeInBytes(getCVParamOrChild(dataTypeID)))));
-        } else if(BinaryDataArray.msNumpressPositiveLZ4ID.equals(compressionCVParam.getTerm().getID())) {
-            transformation.addTransform(new MSNumpressDataTransform(NumpressAlgorithm.Pic));
+        } else if(BinaryDataArray.MSNUMPRESS_LINEAR_ZSTD_ID.equals(compressionCVParam.getTerm().getID())) {
+            transformation.addTransform(new MSNumpressDataTransform(NumpressAlgorithm.LINEAR));
+            transformation.addTransform(new ZstdDataTransform((int)(this.getExternalArrayLength() * getDataTypeInBytes(getCVParamOrChild(BINARY_DATA_TYPE_ID)))));
+        } else if(BinaryDataArray.MSNUMPRESS_POSITIVE_LZ4_ID.equals(compressionCVParam.getTerm().getID())) {
+            transformation.addTransform(new MSNumpressDataTransform(NumpressAlgorithm.PIC));
             
-            int decompressedSize = (int)(this.getExternalArrayLength() * getDataTypeInBytes(getCVParamOrChild(dataTypeID)));
+            int decompressedSize = (int)(this.getExternalArrayLength() * getDataTypeInBytes(getCVParamOrChild(BINARY_DATA_TYPE_ID)));
             UserParam userParam = this.getUserParam("LZ4 decompression size");
             
             if(userParam != null) {
@@ -711,19 +711,19 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
             }
             
             transformation.addTransform(new LZ4DataTransform(decompressedSize));
-        } else if(BinaryDataArray.msNumpressPositiveXZID.equals(compressionCVParam.getTerm().getID())) {
-            transformation.addTransform(new MSNumpressDataTransform(NumpressAlgorithm.Pic));
+        } else if(BinaryDataArray.MSNUMPRESS_POSITIVE_XZ_ID.equals(compressionCVParam.getTerm().getID())) {
+            transformation.addTransform(new MSNumpressDataTransform(NumpressAlgorithm.PIC));
             transformation.addTransform(new XZDataTransform());
-        } else if(BinaryDataArray.msNumpressPositiveZlibID.equals(compressionCVParam.getTerm().getID())) {
-            transformation.addTransform(new MSNumpressDataTransform(NumpressAlgorithm.Pic));
+        } else if(BinaryDataArray.MSNUMPRESS_POSITIVE_ZLIB_ID.equals(compressionCVParam.getTerm().getID())) {
+            transformation.addTransform(new MSNumpressDataTransform(NumpressAlgorithm.PIC));
             transformation.addTransform(new ZlibDataTransform());
-        } else if(BinaryDataArray.msNumpressPositiveZstdID.equals(compressionCVParam.getTerm().getID())) {
-            transformation.addTransform(new MSNumpressDataTransform(NumpressAlgorithm.Pic));
-            transformation.addTransform(new ZstdDataTransform((int)(this.getExternalArrayLength() * getDataTypeInBytes(getCVParamOrChild(dataTypeID)))));
-        } else if(BinaryDataArray.msNumpressSlofLZ4ID.equals(compressionCVParam.getTerm().getID())) {
-            transformation.addTransform(new MSNumpressDataTransform(NumpressAlgorithm.Slof));
+        } else if(BinaryDataArray.MSNUMPRESS_POSITIVE_ZSTD_ID.equals(compressionCVParam.getTerm().getID())) {
+            transformation.addTransform(new MSNumpressDataTransform(NumpressAlgorithm.PIC));
+            transformation.addTransform(new ZstdDataTransform((int)(this.getExternalArrayLength() * getDataTypeInBytes(getCVParamOrChild(BINARY_DATA_TYPE_ID)))));
+        } else if(BinaryDataArray.MSNUMPRESS_SLOF_LZ4_ID.equals(compressionCVParam.getTerm().getID())) {
+            transformation.addTransform(new MSNumpressDataTransform(NumpressAlgorithm.SLOF));
             
-            int decompressedSize = (int)(this.getExternalArrayLength() * getDataTypeInBytes(getCVParamOrChild(dataTypeID)));
+            int decompressedSize = (int)(this.getExternalArrayLength() * getDataTypeInBytes(getCVParamOrChild(BINARY_DATA_TYPE_ID)));
             UserParam userParam = this.getUserParam("LZ4 decompression size");
             
             if(userParam != null) {
@@ -731,15 +731,15 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
             }
             
             transformation.addTransform(new LZ4DataTransform(decompressedSize));
-        } else if(BinaryDataArray.msNumpressSlofXZID.equals(compressionCVParam.getTerm().getID())) {
-            transformation.addTransform(new MSNumpressDataTransform(NumpressAlgorithm.Slof));
+        } else if(BinaryDataArray.MSNUMPRESS_SLOF_XZ_ID.equals(compressionCVParam.getTerm().getID())) {
+            transformation.addTransform(new MSNumpressDataTransform(NumpressAlgorithm.SLOF));
             transformation.addTransform(new XZDataTransform());
-        } else if(BinaryDataArray.msNumpressSlofZlibID.equals(compressionCVParam.getTerm().getID())) {
-            transformation.addTransform(new MSNumpressDataTransform(NumpressAlgorithm.Slof));
+        } else if(BinaryDataArray.MSNUMPRESS_SLOF_ZLIB_ID.equals(compressionCVParam.getTerm().getID())) {
+            transformation.addTransform(new MSNumpressDataTransform(NumpressAlgorithm.SLOF));
             transformation.addTransform(new ZlibDataTransform());
-        } else if(BinaryDataArray.msNumpressSlofZstdID.equals(compressionCVParam.getTerm().getID())) {
-            transformation.addTransform(new MSNumpressDataTransform(NumpressAlgorithm.Slof));
-            transformation.addTransform(new ZstdDataTransform((int)(this.getExternalArrayLength() * getDataTypeInBytes(getCVParamOrChild(dataTypeID)))));
+        } else if(BinaryDataArray.MSNUMPRESS_SLOF_ZSTD_ID.equals(compressionCVParam.getTerm().getID())) {
+            transformation.addTransform(new MSNumpressDataTransform(NumpressAlgorithm.SLOF));
+            transformation.addTransform(new ZstdDataTransform((int)(this.getExternalArrayLength() * getDataTypeInBytes(getCVParamOrChild(BINARY_DATA_TYPE_ID)))));
         }
         
         return transformation;
@@ -753,24 +753,24 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
     public DataType getDataType() {
         //return getCVParam(dataTypeID);
 
-        CVParam dataTypeParam = this.getCVParamOrChild(dataTypeID);
+        CVParam dataTypeParam = this.getCVParamOrChild(BINARY_DATA_TYPE_ID);
         DataType dataType = null;
         
         if(dataTypeParam != null) {
             String term = dataTypeParam.getTerm().getID();
 
-            if (term.equals(doublePrecisionID)) {
-                dataType = DataTypeTransform.DataType.Double;
-            } else if (term.equals(singlePrecisionID)) {
-                dataType = DataTypeTransform.DataType.Float;
-            } else if (term.equals(signed64bitIntegerID) || term.equals(imsSigned64bitIntegerID)) {
-                dataType = DataTypeTransform.DataType.Integer64bit;
-            } else if (term.equals(signed32bitIntegerID) || term.equals(imsSigned32bitIntegerID)) {
-                dataType = DataTypeTransform.DataType.Integer32bit;
-            } else if (term.equals(signed16bitIntegerID)) {
-                dataType = DataTypeTransform.DataType.Integer16bit;
-            } else if (term.equals(signed8bitIntegerID)) {
-                dataType = DataTypeTransform.DataType.Integer8bit;
+            if (term.equals(DOUBLE_PRECISION_ID)) {
+                dataType = DataTypeTransform.DataType.DOUBLE;
+            } else if (term.equals(SINGLE_PRECISION_ID)) {
+                dataType = DataTypeTransform.DataType.FLOAT;
+            } else if (term.equals(SIGNED_64BIT_INTEGER_ID) || term.equals(IMS_SIGNED_64BIT_INTEGER_ID)) {
+                dataType = DataTypeTransform.DataType.INTEGER_64BIT;
+            } else if (term.equals(SIGNED_32BIT_INTEGER_ID) || term.equals(IMS_SIGNED_32BIT_INTEGER_ID)) {
+                dataType = DataTypeTransform.DataType.INTEGER_32BIT;
+            } else if (term.equals(SIGNED_16BIT_INTEGER_ID)) {
+                dataType = DataTypeTransform.DataType.INTEGER_16BIT;
+            } else if (term.equals(SIGNED_8BIT_INTEGER_ID)) {
+                dataType = DataTypeTransform.DataType.INTEGER_8BIT;
             }
         } else {
             System.out.println("BinaryDataArray#getDataType(): " + Arrays.toString(this.getCVParamList().toArray()));
@@ -785,7 +785,7 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
      * @return the external array length
      */
     public long getExternalArrayLength() {
-        CVParam arrayLengthCVParam = getCVParam(externalArrayLengthID);
+        CVParam arrayLengthCVParam = getCVParam(EXTERNAL_ARRAY_LENGTH_ID);
 
         if (arrayLengthCVParam == null) {
             return -1;
@@ -800,7 +800,7 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
      * @return the external encoded length
      */
     public long getExternalEncodedLength() {
-        CVParam encodedLengthCVParam = getCVParam(externalEncodedLengthID);
+        CVParam encodedLengthCVParam = getCVParam(EXTERNAL_ENCODED_LENGTH_ID);
 
         if (encodedLengthCVParam == null) {
             return -1;
@@ -815,7 +815,7 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
      * @return the external offset
      */
     public long getExternalOffset() {
-        CVParam externalOffset = getCVParam(externalOffsetID);
+        CVParam externalOffset = getCVParam(EXTERNAL_OFFSET_ID);
 
         if (externalOffset == null) {
             return -1;
@@ -829,14 +829,14 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
         LOGGER.log(Level.FINEST, "Adding CVParam to BinaryDataArray {0}", cvParam);
         
         // Check if the cvParam is a binaryDataType
-        if (cvParam.getTerm().isChildOf(binaryDataArrayID)) {
+        if (cvParam.getTerm().isChildOf(BINARY_DATA_ARRAY_ID)) {
             String term = cvParam.getTerm().getID();
 
-            if (term.equals(mzArrayID)) {
+            if (term.equals(MZ_ARRAY_ID)) {
                 LOGGER.log(Level.FINEST, "Found m/z array");
                 
                 ismzArray = true;
-            } else if (term.equals(intensityArrayID)) {
+            } else if (term.equals(INTENSITY_ARRAY_ID)) {
                 isIntensityArray = true;
             }
         }
@@ -846,12 +846,12 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
 
     @Override
     public void addReferenceableParamGroupRef(ReferenceableParamGroupRef rpgr) {
-        CVParam child = rpgr.getReference().getCVParamOrChild(binaryDataArrayID);
+        CVParam child = rpgr.getReference().getCVParamOrChild(BINARY_DATA_ARRAY_ID);
 
         if (child != null) {
-            if (child.getTerm().getID().equals(mzArrayID)) {
+            if (child.getTerm().getID().equals(MZ_ARRAY_ID)) {
                 ismzArray = true;
-            } else if (child.getTerm().getID().equals(intensityArrayID)) {
+            } else if (child.getTerm().getID().equals(INTENSITY_ARRAY_ID)) {
                 isIntensityArray = true;
             }
         }
@@ -883,7 +883,7 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
      * @param compression Compression
      */
     public void setCompression(BinaryDataArray.CompressionType compression) {        
-        this.removeChildrenOfCVParam(BinaryDataArray.compressionTypeID, false);
+        this.removeChildrenOfCVParam(BinaryDataArray.COMPRESSION_TYPE_ID, false);
         this.addCVParam(new EmptyCVParam(BinaryDataArray.CompressionType.toOBOTerm(compression)));
     }
     
@@ -897,28 +897,28 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
         String newDataTypeID;
         
         switch(dataType) {
-            case Float:
-                newDataTypeID = BinaryDataArray.singlePrecisionID;
+            case FLOAT:
+                newDataTypeID = BinaryDataArray.SINGLE_PRECISION_ID;
                 break;
-            case Integer64bit:
-                newDataTypeID = BinaryDataArray.signed64bitIntegerID;
+            case INTEGER_64BIT:
+                newDataTypeID = BinaryDataArray.SIGNED_64BIT_INTEGER_ID;
                 break;
-            case Integer32bit:
-                newDataTypeID = BinaryDataArray.signed32bitIntegerID;
+            case INTEGER_32BIT:
+                newDataTypeID = BinaryDataArray.SIGNED_32BIT_INTEGER_ID;
                 break;
-            case Integer16bit:
-                newDataTypeID = BinaryDataArray.signed16bitIntegerID;
+            case INTEGER_16BIT:
+                newDataTypeID = BinaryDataArray.SIGNED_16BIT_INTEGER_ID;
                 break;
-            case Integer8bit:
-                newDataTypeID = BinaryDataArray.signed8bitIntegerID;
+            case INTEGER_8BIT:
+                newDataTypeID = BinaryDataArray.SIGNED_8BIT_INTEGER_ID;
                 break;
-            case Double:
+            case DOUBLE:
             default:
-                newDataTypeID = BinaryDataArray.doublePrecisionID;
+                newDataTypeID = BinaryDataArray.DOUBLE_PRECISION_ID;
                 break;
         }
         
-        this.removeChildrenOfCVParam(BinaryDataArray.dataTypeID, false);
+        this.removeChildrenOfCVParam(BinaryDataArray.BINARY_DATA_TYPE_ID, false);
         this.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(newDataTypeID)));
     }
     
@@ -928,7 +928,7 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
      * @return the binary data array type
      */
     public CVParam getDataArrayType() {
-        return getCVParamOrChild(binaryDataArrayID);
+        return getCVParamOrChild(BINARY_DATA_ARRAY_ID);
     }
 
     @Override

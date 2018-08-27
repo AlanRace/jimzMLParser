@@ -16,7 +16,7 @@ public class IsolationWindow extends MzMLContentWithParams {
     /**
      * Accession: Isolation window (MS:1000792). MUST supply a child
      */
-    public static final String isolationWindowAttributeID = "MS:1000792"; 
+    public static final String ISOLATION_WINDOW_ATTRIBUTE_ID = "MS:1000792"; 
 
     /**
      * Create empty IsolationWindow.

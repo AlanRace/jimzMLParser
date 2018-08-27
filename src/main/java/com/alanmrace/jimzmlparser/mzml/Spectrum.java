@@ -25,62 +25,62 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
     /**
      * Accession: scan polarity (MS:1000465).
      */
-    public static final String scanPolarityID = "MS:1000465";
+    public static final String SCAN_POLARITY_ID = "MS:1000465";
 
     /**
      * Accession: spectrum type (MS:1000559).
      */
-    public static final String spectrumTypeID = "MS:1000559";
+    public static final String SPECTRUM_TYPE_ID = "MS:1000559";
 
     /**
      * Accession: spectrum representation (MS:1000525).
      */
-    public static final String spectrumRepresentationID = "MS:1000525";
+    public static final String SPECTRUM_REPRESENTATION_ID = "MS:1000525";
 
     /**
      * Accession: spectrum attribute (MS:1000499).
      */
-    public static final String spectrumAttributeID = "MS:1000499";
+    public static final String SPECTRUM_ATTRIBUTE_ID = "MS:1000499";
 
     /**
      * Accession: total ion current (MS:1000285).
      */
-    public static final String totalIonCurrentID = "MS:1000285";
+    public static final String TOTAL_ION_CURRENT_ID = "MS:1000285";
 
     /**
      * Accession: base peak m/z (MS:1000504).
      */
-    public static final String basePeakMZID = "MS:1000504";
+    public static final String BASE_PEAK_MZ_ID = "MS:1000504";
 
     /**
      * Accession: base peak intensity (MS:1000505).
      */
-    public static final String basePeakIntensityID = "MS:1000505";
+    public static final String BASE_PEAK_INTENSITY_ID = "MS:1000505";
 
     /**
      * Accession: lowest observed m/z (MS:1000528).
      */
-    public static final String lowestObservedmzID = "MS:1000528";
+    public static final String LOWEST_OBSERVED_MZ_ID = "MS:1000528";
 
     /**
      * Accession: highest observed m/z (MS:1000527).
      */
-    public static final String highestObservedmzID = "MS:1000527";
+    public static final String HIGHEST_OBSERVED_MZ_ID = "MS:1000527";
 
     /**
      * Accession: MS1 spectrum (MS:1000579).
      */
-    public static final String MS1Spectrum = "MS:1000579"; // EmptyCVParam
+    public static final String MS1_SPECTRUM_ID = "MS:1000579"; // EmptyCVParam
 
     /**
      * Accession: positive scan (MS:1000130).
      */
-    public static final String positiveScanID = "MS:1000130";	// EmptyCVParam
+    public static final String POSITIVE_SCAN_ID = "MS:1000130";	// EmptyCVParam
 
     /**
      * Accession: profile spectrum (MS:1000128).
      */
-    public static final String profileSpectrumID = "MS:1000128"; // EmptyCVParam
+    public static final String PROFILE_SPECTRUM_ID = "MS:1000128"; // EmptyCVParam
 
     /**
      * Static number used to generate a unique ID for any Spectrum generated
@@ -262,9 +262,9 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
     public PixelLocation getPixelLocation() {
         if (pixelLocation == null) {
             for (Scan scan : scanList) {
-                CVParam xValue = scan.getCVParam(Scan.positionXID);
-                CVParam yValue = scan.getCVParam(Scan.positionYID);
-                CVParam zValue = scan.getCVParam(Scan.positionZID);
+                CVParam xValue = scan.getCVParam(Scan.POSITION_X_ID);
+                CVParam yValue = scan.getCVParam(Scan.POSITION_Y_ID);
+                CVParam zValue = scan.getCVParam(Scan.POSITION_Z_ID);
 
                 if (xValue != null && yValue != null) {
                     int x = xValue.getValueAsInteger();
@@ -296,15 +296,15 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
 
         Scan scan = scanList.get(0);
 
-        scan.removeCVParam(Scan.positionXID);
-        scan.removeCVParam(Scan.positionYID);
-        scan.removeCVParam(Scan.positionZID);
+        scan.removeCVParam(Scan.POSITION_X_ID);
+        scan.removeCVParam(Scan.POSITION_Y_ID);
+        scan.removeCVParam(Scan.POSITION_Z_ID);
 
-        scan.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(Scan.positionXID), location.getX()));
-        scan.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(Scan.positionYID), location.getY()));
+        scan.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(Scan.POSITION_X_ID), location.getX()));
+        scan.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(Scan.POSITION_Y_ID), location.getY()));
 
         if (location.getZ() >= 1) {
-            scan.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(Scan.positionZID), location.getZ()));
+            scan.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(Scan.POSITION_Z_ID), location.getZ()));
         }
         
         pixelLocation = location;
@@ -599,19 +599,19 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
         Spectrum spectrum = new Spectrum(id, intensities.length);
         spectrum.setDataProcessingRef(processing);
 
-        spectrum.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(Spectrum.MS1Spectrum)));
-        spectrum.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(Spectrum.profileSpectrumID)));
+        spectrum.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(Spectrum.MS1_SPECTRUM_ID)));
+        spectrum.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(Spectrum.PROFILE_SPECTRUM_ID)));
 
         BinaryDataArray mzsDataArray = new BinaryDataArray(mzs.length);
-        mzsDataArray.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(BinaryDataArray.mzArrayID),
-                OBO.getOBO().getTerm(BinaryDataArray.mzArrayUnitsID)));
-        mzsDataArray.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(BinaryDataArray.noCompressionID)));
-        mzsDataArray.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(BinaryDataArray.doublePrecisionID)));
+        mzsDataArray.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(BinaryDataArray.MZ_ARRAY_ID),
+                OBO.getOBO().getTerm(BinaryDataArray.MZ_ARRAY_UNITS_ID)));
+        mzsDataArray.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(BinaryDataArray.NO_COMPRESSION_ID)));
+        mzsDataArray.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(BinaryDataArray.DOUBLE_PRECISION_ID)));
 
         BinaryDataArray intensitiesDataArray = new BinaryDataArray(intensities.length);
-        intensitiesDataArray.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(BinaryDataArray.intensityArrayID)));
-        intensitiesDataArray.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(BinaryDataArray.noCompressionID)));
-        intensitiesDataArray.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(BinaryDataArray.doublePrecisionID)));
+        intensitiesDataArray.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(BinaryDataArray.INTENSITY_ARRAY_ID)));
+        intensitiesDataArray.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(BinaryDataArray.NO_COMPRESSION_ID)));
+        intensitiesDataArray.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(BinaryDataArray.DOUBLE_PRECISION_ID)));
 
         spectrum.getBinaryDataArrayList().addBinaryDataArray(mzsDataArray);
         spectrum.getBinaryDataArrayList().addBinaryDataArray(intensitiesDataArray);

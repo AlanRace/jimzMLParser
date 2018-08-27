@@ -1,12 +1,11 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
-import com.sun.org.apache.xml.internal.security.utils.Base64;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.codec.binary.Base64;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
@@ -23,41 +22,35 @@ public class BinaryTest {
      */
     @Test
     public void testBinaryConversion() {
-        try {
-            double[] data = {1.0, 2.54};
-            
-            byte[] bytes = new byte[8 * data.length];
-            
-            for (int i = 0; i < data.length; i++) {
-                ByteBuffer buffer = ByteBuffer.wrap(bytes);
-                buffer.order(ByteOrder.LITTLE_ENDIAN);
-                buffer.putDouble(i * 8, data[i]);
-            }
-            
-            String encoded = Base64.encode(bytes);
-            
-            System.out.println(encoded);
-            
-            byte[] revBytes = Base64.decode(encoded);
-            
-            double[] convertedData = new double[revBytes.length / 8];
-            ByteBuffer buffer = ByteBuffer.wrap(revBytes);
-            buffer.order(ByteOrder.LITTLE_ENDIAN);
+        double[] data = {1.0, 2.54};
 
-            // Convert to double
-            for (int j = 0; j < convertedData.length; j++) {
-                convertedData[j] = buffer.getDouble();
-            }
-            
-            System.out.println(convertedData[0]);
-            System.out.println(convertedData[1]);
-        } catch (Base64DecodingException ex) {
-            Logger.getLogger(BinaryTest.class.getName()).log(Level.SEVERE, null, ex);
-            
-            fail(ex.getLocalizedMessage());
+        byte[] bytes = new byte[8 * data.length];
+
+        for (int i = 0; i < data.length; i++) {
+            ByteBuffer buffer = ByteBuffer.wrap(bytes);
+            buffer.order(ByteOrder.LITTLE_ENDIAN);
+            buffer.putDouble(i * 8, data[i]);
         }
+
+        String encoded = new String(Base64.encodeBase64(bytes));
+
+        System.out.println(encoded);
+
+        byte[] revBytes = Base64.decodeBase64(encoded);
+
+        double[] convertedData = new double[revBytes.length / 8];
+        ByteBuffer buffer = ByteBuffer.wrap(revBytes);
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
+
+        // Convert to double
+        for (int j = 0; j < convertedData.length; j++) {
+            convertedData[j] = buffer.getDouble();
+        }
+
+        System.out.println(convertedData[0]);
+        System.out.println(convertedData[1]);
     }
-    
+
     /**
      * Test of getTagName method, of class Binary.
      */

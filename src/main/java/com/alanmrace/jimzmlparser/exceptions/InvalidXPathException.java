@@ -10,7 +10,7 @@ public class InvalidXPathException extends Exception {
     /**
      * XPath that is invalid with respect to (i)mzML.
      */
-    protected String xPath;
+    protected final String xPath;
     
     /**
      * Set up InvalidMzML with a message and an invalid XPath.

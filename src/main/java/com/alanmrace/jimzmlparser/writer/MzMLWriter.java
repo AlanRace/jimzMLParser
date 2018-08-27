@@ -13,7 +13,6 @@ import com.alanmrace.jimzmlparser.mzml.MzMLTag;
 import com.alanmrace.jimzmlparser.mzml.MzMLTagList;
 import com.alanmrace.jimzmlparser.mzml.Spectrum;
 import com.alanmrace.jimzmlparser.util.HexHelper;
-import com.sun.org.apache.xml.internal.security.utils.Base64;
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -34,6 +33,7 @@ import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 import java.util.zip.GZIPOutputStream;
 import net.jpountz.lz4.LZ4BlockOutputStream;
+import org.apache.commons.codec.binary.Base64;
 import org.tukaani.xz.LZMA2Options;
 import org.tukaani.xz.XZOutputStream;
 
@@ -388,7 +388,7 @@ public class MzMLWriter implements MzMLWritable {
 
     @Override
     public void writeData(byte[] data) throws IOException {
-        writeMetadata(Base64.encode(data));
+        writeMetadata(new String(Base64.encodeBase64(data)));
     }
 
     @Override

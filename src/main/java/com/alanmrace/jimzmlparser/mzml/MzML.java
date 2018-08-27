@@ -49,7 +49,7 @@ public class MzML extends MzMLContentWithParams implements Serializable {
     /**
      * Current mzML version.
      */
-    public static final String currentVersion = "1.1.0";
+    public static final String CURRENT_VERSION = "1.1.0";
 
     /**
      * Storage for accessing mzML data.
@@ -662,7 +662,7 @@ public class MzML extends MzMLContentWithParams implements Serializable {
      * @return Default MzML instance
      */
     public static MzML create() {
-        MzML mzML = new MzML(currentVersion);
+        MzML mzML = new MzML(CURRENT_VERSION);
         
         createDefaults(mzML);
         

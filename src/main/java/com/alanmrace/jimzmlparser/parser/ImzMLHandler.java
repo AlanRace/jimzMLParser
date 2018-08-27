@@ -2,7 +2,6 @@ package com.alanmrace.jimzmlparser.parser;
 
 import com.alanmrace.jimzmlparser.data.DataLocation;
 import com.alanmrace.jimzmlparser.data.BinaryDataStorage;
-import com.alanmrace.jimzmlparser.exceptions.FatalParseException;
 import com.alanmrace.jimzmlparser.exceptions.ImzMLParseException;
 import com.alanmrace.jimzmlparser.exceptions.InvalidExternalOffset;
 import com.alanmrace.jimzmlparser.exceptions.InvalidImzML;
@@ -42,7 +41,7 @@ public class ImzMLHandler extends MzMLHeaderHandler {
     /**
      * Logger for ImzMLHandler.
      */
-    private static final Logger logger = Logger.getLogger(ImzMLHandler.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ImzMLHandler.class.getName());
 
     /**
      * IBD file containing the binary data for the imzML file.
@@ -198,19 +197,19 @@ public class ImzMLHandler extends MzMLHeaderHandler {
 
             handler.getimzML().setOBO(obo);
         } catch (SAXException ex) {
-            logger.log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, null, ex);
 
             throw new ImzMLParseException("SAXException: " + ex, ex);
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(ImzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, null, ex);
 
             throw new ImzMLParseException(ex.getLocalizedMessage(), ex);
         } catch (IOException ex) {
-            Logger.getLogger(ImzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, null, ex);
 
             throw new ImzMLParseException("IOException: " + ex, ex);
         } catch (ParserConfigurationException ex) {
-            Logger.getLogger(ImzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, null, ex);
 
             throw new ImzMLParseException("ParserConfigurationException: " + ex, ex);
         } finally {
@@ -218,7 +217,7 @@ public class ImzMLHandler extends MzMLHeaderHandler {
                 try {
                     inputStream.close();
                 } catch (IOException ex) {
-                    Logger.getLogger(ImzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
+                    LOGGER.log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -231,7 +230,7 @@ public class ImzMLHandler extends MzMLHeaderHandler {
         if (ibdFile != null && qName.equals("cvParam")) {
             String accession = attributes.getValue("accession");
 
-            if (accession.equals(BinaryDataArray.externalEncodedLengthID)) {
+            if (accession.equals(BinaryDataArray.EXTERNAL_ENCODED_LENGTH_ID)) {
                 try {
                     currentNumBytes = Long.parseLong(attributes.getValue("value"));
                 } catch (NumberFormatException ex) {
@@ -239,7 +238,7 @@ public class ImzMLHandler extends MzMLHeaderHandler {
                     
                     currentNumBytes = (long) Double.parseDouble(attributes.getValue("value"));
                 }
-            } else if (accession.equals(BinaryDataArray.externalOffsetID)) {
+            } else if (accession.equals(BinaryDataArray.EXTERNAL_OFFSET_ID)) {
                 try {
                     currentOffset = Long.parseLong(attributes.getValue("value"));
                 } catch (NumberFormatException ex) {
@@ -265,9 +264,9 @@ public class ImzMLHandler extends MzMLHeaderHandler {
 
                         maxImagesX = (int) Math.ceil(Math.sqrt(numImagesGuess));
 
-                        Logger.getLogger(ImzMLHandler.class.getName()).log(Level.FINER, "Found image size {0} ({1}, {2})", new Object[]{imageSize, imageMaxX, imageMaxY});
-                        Logger.getLogger(ImzMLHandler.class.getName()).log(Level.FINER, "Guessing we have {0} images based on {1} spectra", new Object[]{numImagesGuess, spectrumList.size()});
-                        Logger.getLogger(ImzMLHandler.class.getName()).log(Level.FINER, "Putting {0} images in x", maxImagesX);
+                        LOGGER.log(Level.FINER, "Found image size {0} ({1}, {2})", new Object[]{imageSize, imageMaxX, imageMaxY});
+                        LOGGER.log(Level.FINER, "Guessing we have {0} images based on {1} spectra", new Object[]{numImagesGuess, spectrumList.size()});
+                        LOGGER.log(Level.FINER, "Putting {0} images in x", maxImagesX);
 
                         haveDoneCheck = true;
                     }
@@ -275,10 +274,10 @@ public class ImzMLHandler extends MzMLHeaderHandler {
                     numImagesX++;
                     previousMaxX = currentMaxX;
 
-                    Logger.getLogger(ImzMLHandler.class.getName()).log(Level.FINEST, "Changing previousMaxX to {0}", currentMaxX);
+                    LOGGER.log(Level.FINEST, "Changing previousMaxX to {0}", currentMaxX);
 
                     if (numImagesX > maxImagesX) {
-                        Logger.getLogger(ImzMLHandler.class.getName()).log(Level.FINEST, "Moving to next line");
+                        LOGGER.log(Level.FINEST, "Moving to next line");
 
                         numImagesX = 0;
                         numImagesY++;
@@ -340,7 +339,7 @@ public class ImzMLHandler extends MzMLHeaderHandler {
                 notifyParserListeners(issue);
                 
                 currentOffset += DataLocation.EXTENDED_OFFSET;
-                currentBinaryDataArray.getCVParam(BinaryDataArray.externalOffsetID).setValueAsString("" + currentOffset);
+                currentBinaryDataArray.getCVParam(BinaryDataArray.EXTERNAL_OFFSET_ID).setValueAsString("" + currentOffset);
             }
             
             DataLocation location = new DataLocation(this.dataStorage, currentOffset, (int) this.currentNumBytes);
@@ -349,7 +348,7 @@ public class ImzMLHandler extends MzMLHeaderHandler {
         }
 
         if ("scan".equals(qName) && processingSCiLS3DData) {
-            int x = currentScan.getCVParam(Scan.positionXID).getValueAsInteger();
+            int x = currentScan.getCVParam(Scan.POSITION_X_ID).getValueAsInteger();
 
             if (x > imageMaxX) {
                 imageMaxX = x;
@@ -364,14 +363,14 @@ public class ImzMLHandler extends MzMLHeaderHandler {
                 datasetMaxX = newX;
             }
 
-            if (currentScan.getCVParam(Scan.positionXID).getValueAsInteger() != x) {
-                logger.log(Level.SEVERE, "Mismatch between the X value in the currentScan ({0}) and the local variable x ({1})", 
-                        new Object[]{currentScan.getCVParam(Scan.positionXID).getValueAsInteger(), x});
+            if (currentScan.getCVParam(Scan.POSITION_X_ID).getValueAsInteger() != x) {
+                LOGGER.log(Level.SEVERE, "Mismatch between the X value in the currentScan ({0}) and the local variable x ({1})", 
+                        new Object[]{currentScan.getCVParam(Scan.POSITION_X_ID).getValueAsInteger(), x});
             }
 
-            currentScan.getCVParam(Scan.positionXID).setValueAsString("" + newX);
+            currentScan.getCVParam(Scan.POSITION_X_ID).setValueAsString("" + newX);
 
-            int y = currentScan.getCVParam(Scan.positionYID).getValueAsInteger();
+            int y = currentScan.getCVParam(Scan.POSITION_Y_ID).getValueAsInteger();
 
             if (y > imageMaxY) {
                 imageMaxY = y;
@@ -386,12 +385,12 @@ public class ImzMLHandler extends MzMLHeaderHandler {
                 datasetMaxY = newY;
             }
 
-            if (currentScan.getCVParam(Scan.positionYID).getValueAsInteger() != y) {
-                logger.log(Level.SEVERE, "Mismatch between the Y value in the currentScan ({0}) and the local variable y ({1})", 
-                        new Object[]{currentScan.getCVParam(Scan.positionYID).getValueAsInteger(), y});
+            if (currentScan.getCVParam(Scan.POSITION_Y_ID).getValueAsInteger() != y) {
+                LOGGER.log(Level.SEVERE, "Mismatch between the Y value in the currentScan ({0}) and the local variable y ({1})", 
+                        new Object[]{currentScan.getCVParam(Scan.POSITION_Y_ID).getValueAsInteger(), y});
             }
 
-            currentScan.getCVParam(Scan.positionYID).setValueAsString("" + newY);
+            currentScan.getCVParam(Scan.POSITION_Y_ID).setValueAsString("" + newY);
         }
 
         if ("run".equals(qName) && processingSCiLS3DData) {

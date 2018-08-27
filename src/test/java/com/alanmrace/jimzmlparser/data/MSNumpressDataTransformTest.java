@@ -56,7 +56,7 @@ public class MSNumpressDataTransformTest {
         }
         
         DataTransformation transform = new DataTransformation();
-        transform.addTransform(new MSNumpressDataTransform(MSNumpressDataTransform.NumpressAlgorithm.Linear));
+        transform.addTransform(new MSNumpressDataTransform(MSNumpressDataTransform.NumpressAlgorithm.LINEAR));
         
         byte[] compressedData = transform.performForwardTransform(data);
         
@@ -77,7 +77,7 @@ public class MSNumpressDataTransformTest {
         }
         
         DataTransformation transform = new DataTransformation();
-        transform.addTransform(new MSNumpressDataTransform(MSNumpressDataTransform.NumpressAlgorithm.Pic));
+        transform.addTransform(new MSNumpressDataTransform(MSNumpressDataTransform.NumpressAlgorithm.PIC));
         
         byte[] compressedData = transform.performForwardTransform(data);
         
@@ -98,7 +98,7 @@ public class MSNumpressDataTransformTest {
         }
         
         DataTransformation transform = new DataTransformation();
-        transform.addTransform(new MSNumpressDataTransform(MSNumpressDataTransform.NumpressAlgorithm.Slof));
+        transform.addTransform(new MSNumpressDataTransform(MSNumpressDataTransform.NumpressAlgorithm.SLOF));
         
         byte[] compressedData = transform.performForwardTransform(data);
         

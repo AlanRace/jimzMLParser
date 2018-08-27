@@ -234,10 +234,18 @@
             </pluginManagement>
     </build>
     <dependencies>
+        <!--
         <dependency>
             <groupId>com.sun.xml.security</groupId>
             <artifactId>xml-security-impl</artifactId>
             <version>1.0</version>
+        </dependency>
+        -->
+        <!-- Commons codec for the Base64 implementation -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.11</version>
         </dependency>
         <dependency>
             <groupId>org.tukaani</groupId>

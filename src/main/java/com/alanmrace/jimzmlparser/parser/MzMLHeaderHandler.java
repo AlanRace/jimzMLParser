@@ -475,10 +475,10 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
                         try {
                             switch (paramType) {
-                                case String:
+                                case STRING:
                                     cvParam = new StringCVParam(term, value, units);
                                     break;
-                                case Empty:
+                                case EMPTY:
                                     cvParam = new EmptyCVParam(term, units);
                                     
                                     if (value != null && !value.isEmpty()) {
@@ -488,16 +488,16 @@ public class MzMLHeaderHandler extends DefaultHandler {
                                         notifyParserListeners(formatIssue);
                                     }
                                     break;
-                                case Long:
+                                case LONG:
                                     cvParam = new LongCVParam(term, Long.parseLong(value), units);
                                     break;
-                                case Double:
+                                case DOUBLE:
                                     cvParam = new DoubleCVParam(term, Double.parseDouble(value), units);
                                     break;
-                                case Boolean:
+                                case BOOLEAN:
                                     cvParam = new BooleanCVParam(term, Boolean.parseBoolean(value), units);
                                     break;
-                                case Integer:
+                                case INTEGER:
                                     cvParam = new IntegerCVParam(term, Integer.parseInt(value), units);
                                     break;
                                 default:
@@ -1613,7 +1613,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                     
                     bestGroup.addCVParam(currentSpectrum.getCVParamOrChild("MS:1000294"));
                     bestGroup.addCVParam(currentSpectrum.getCVParamOrChild("MS:1000511")); // ms level
-                    bestGroup.addCVParam(currentSpectrum.getCVParamOrChild(Spectrum.scanPolarityID));
+                    bestGroup.addCVParam(currentSpectrum.getCVParamOrChild(Spectrum.SCAN_POLARITY_ID));
                     bestGroup.addCVParam(currentSpectrum.getCVParamOrChild("MS:1000525")); // spectrum representation
                 }
                 

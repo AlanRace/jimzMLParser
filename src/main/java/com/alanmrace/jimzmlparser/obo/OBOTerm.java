@@ -84,19 +84,19 @@ public class OBOTerm implements Serializable {
     public enum XMLType {
         
         /** String. */
-        String,
+        STRING,
         
         /** Boolean. */
-        Boolean,
+        BOOLEAN,
         
         /** Any decimal number. */
-        Decimal,
+        DECIMAL,
         
         /** Floating point precision number. */
-        Float,
+        FLOAT,
         
         /** Double precision floating point number. */
-        Double,
+        DOUBLE,
         
         /** 
          * Duration in time. 
@@ -115,7 +115,7 @@ public class OBOTerm implements Serializable {
          * 
          * @see <a href="https://www.w3schools.com/xml/schema_dtypes_date.asp">https://www.w3schools.com/xml/schema_dtypes_date.asp</a>
          */
-        Duration,
+        DURATION,
         
         /** Date and time.
          *  
@@ -124,51 +124,51 @@ public class OBOTerm implements Serializable {
          * @see <a href="http://books.xmlschemata.org/relaxng/ch19-77049.html">http://books.xmlschemata.org/relaxng/ch19-77049.html</a>
          * @see <a href="https://www.w3schools.com/xml/schema_dtypes_date.asp">https://www.w3schools.com/xml/schema_dtypes_date.asp</a>
          */
-        DateTime,
+        DATETIME,
 
         /**
          * Timestamp in the format hh:mm:ss.
          */
-        Time,
+        TIME,
 
         /**
          * Date in the format YYYY-MM-DD.
          */
-        Date,
+        DATE,
 
         /**
          * A period of one calendar month for a specific year, in the format YYYY-MM.
          */
-        GYearMonth,
+        GYEARMONTH,
 
         /**
          * The period of one calendar year, in the format YYYY.
          */
-        GYear,
+        GYEAR,
 
         /**
          * The period of one calendar day recurring each calendar year, in the format --MM-DD (with an
          * optional timezone).
          */
-        GMonthDay,
+        GMONTHDAY,
 
         /**
          * The period of one calendar day, recurring each calendar month, in the format ---DD (with
          * an optional timezone).
          */
-        GDay,
+        GDAY,
 
         /**
          * The period of one calendar month recurring each year, in the format --MM (with an 
          * optional timezone).
          */
-        GMonth,
+        GMONTH,
 
         /**
          * Representation of binary data as a sequence of binary octets using hexadecimal encoding.
          * Each binary octet is a two-character hexadecimal number.
          */
-        HexBinary,
+        HEXBINARY,
 
         /**
          * Representation of binary data as a sequence of binary octets using base64 encoding 
@@ -176,7 +176,7 @@ public class OBOTerm implements Serializable {
          * 
          * @see <a href="https://www.ietf.org/rfc/rfc2045.txt">RFC 2045</a>
          */
-        Base64Binary,
+        BASE64BINARY,
 
         /**
          * Any uniform resource locator (URI) that conforms to RFC 2396 or 2732.
@@ -184,14 +184,14 @@ public class OBOTerm implements Serializable {
          * @see <a href="https://tools.ietf.org/html/rfc2396">RFC 2396</a>
          * @see <a href="https://www.ietf.org/rfc/rfc2732.txt">RFC 2732</a>
          */
-        AnyURI,
+        ANY_URI,
 
         /**
          * Any qualified name according to Namespaces in XML.
          * 
          * @see <a href="http://books.xmlschemata.org/relaxng/ch19-77287.html">http://books.xmlschemata.org/relaxng/ch19-77287.html</a>
          */
-        QName,
+        QNAME,
 
         /**
          * Description of the format of non-XML data.
@@ -203,79 +203,79 @@ public class OBOTerm implements Serializable {
         /**
          * Integer, derived from Decimal.
          */
-        Integer,
+        INTEGER,
 
         /**
          * Non-positive integer, derived from Integer with the constraint <= 0.
          */
-        NonPositiveInteger,
+        NON_POSITIVE_INTEGER,
 
         /**
          * Negative integer, derived from Integer with the constraint < 0.
          */
-        NegativeInteger,
+        NEGATIVE_INTEGER,
 
         /**
          * Long, derived from Integer.
          */
-        Long,
+        LONG,
 
         /**
          * Int, derived from Long.
          */
-        Int,
+        INT,
 
         /**
          * Short (16-bit), derived from Int.
          */
-        Short,
+        SHORT,
 
         /**
          * Byte.
          */
-        Byte,
+        BYTE,
 
         /**
          * Non-negative integer, derived from Integer with the constraint >= 0.
          */
-        NonNegativeInteger,
+        NON_NEGATIVE_INTEGER,
 
         /**
          * Derived from Long with the constraint >= 0.
          */
-        UnsignedLong,
+        UNSIGNED_LONG,
 
         /**
          * Derived from Int with the constraint >= 0.
          */
-        UnsignedInt,
+        UNSIGNED_INT,
 
         /**
          * Derived from Short with the constraint >= 0.
          */
-        UnsignedShort,
+        UNSIGNED_SHORT,
 
         /**
          * Derived from Byte with the constraint >= 0.
          */
-        UnsignedByte,
+        UNSIGNED_BYTE,
 
         /**
          * Derived from Integer with the constraint > 0.
          */
-        PositiveInteger,
+        POSITIVE_INTEGER,
         
         // Custom Derived Types
 
         /**
          * Derived from Float, with the constraint >= 0.0.
          */
-        NonNegativeFloat,
+        NON_NEGATIVE_FLOAT,
 
         /**
          * Derived from Double, with the constraint >= 0.0.
          */
-        NonNegativeDouble,
+        NON_NEGATIVE_DOUBLE,
     }
     
     /**
@@ -418,33 +418,33 @@ public class OBOTerm implements Serializable {
                 String[] substrings = value.replace("value-type:xsd\\:", "").split("\\s");
                 
                 if("string".equals(substrings[0])) {
-                    valueType = XMLType.String;
+                    valueType = XMLType.STRING;
                 } else if("integer".equals(substrings[0])) {
-                    valueType = XMLType.Integer;
+                    valueType = XMLType.INTEGER;
                 } else if("int".equals(substrings[0])) {
-                    valueType = XMLType.Int;
+                    valueType = XMLType.INT;
                 } else if("decimal".equals(substrings[0])) {
-                    valueType = XMLType.Decimal;
+                    valueType = XMLType.DECIMAL;
                 } else if("negativeInteger".equals(substrings[0])) {
-                    valueType = XMLType.NegativeInteger;
+                    valueType = XMLType.NEGATIVE_INTEGER;
                 } else if("positiveInteger".equals(substrings[0])) {
-                    valueType = XMLType.PositiveInteger;
+                    valueType = XMLType.POSITIVE_INTEGER;
                 } else if("nonNegativeInteger".equals(substrings[0])) {
-                    valueType = XMLType.NonNegativeInteger;
+                    valueType = XMLType.NON_NEGATIVE_INTEGER;
                 } else if("boolean".equals(substrings[0])) {
-                    valueType = XMLType.Boolean;
+                    valueType = XMLType.BOOLEAN;
                 } else if("date".equals(substrings[0])) {
-                    valueType = XMLType.Date;
+                    valueType = XMLType.DATE;
                 } else if("float".equals(substrings[0])) {
-                    valueType = XMLType.Float; 
+                    valueType = XMLType.FLOAT; 
                 } else if("nonNegativeFloat".equals(substrings[0])) {
-                    valueType = XMLType.NonNegativeFloat;
+                    valueType = XMLType.NON_NEGATIVE_FLOAT;
                 } else if("nonNegativeDouble".equals(substrings[0])) {
-                    valueType = XMLType.NonNegativeDouble;
+                    valueType = XMLType.NON_NEGATIVE_DOUBLE;
                 } else if("double".equals(substrings[0])) {
-                    valueType = XMLType.Double;  
+                    valueType = XMLType.DOUBLE;  
                 } else if("anyURI".equals(substrings[0])) {
-                    valueType = XMLType.AnyURI;
+                    valueType = XMLType.ANY_URI;
                 } else {
                     LOGGER.log(Level.INFO, "Unknown value-type encountered ''{0}'' @ {1}", new Object[] {value, id});
                 }
@@ -514,10 +514,6 @@ public class OBOTerm implements Serializable {
      * @return true if a parent term is found to have the specified id, false otherwise
      */
     public boolean isParentOf(String id) {
-//        if (this.id.equals(id)) {
-//            return true;
-//        }
-
         for (OBOTerm child : getAllChildren(false)) {
             if (child.getID().equals(id)) {
                 return true;
@@ -534,10 +530,6 @@ public class OBOTerm implements Serializable {
      * @return true if a child term is found to have the specified id, false otherwise
      */
     public boolean isChildOf(String id) {
-//        if (this.id.equals(id)) {
-//            return true;
-//        }
-
         for (OBOTerm parent : getAllParents(false)) {
             LOGGER.log(Level.FINEST, "In isChildOf() checking parent {0}", parent);
             
@@ -720,7 +712,6 @@ public class OBOTerm implements Serializable {
      * @param unit Ontology term that describes the value units
      */
     public void addUnit(OBOTerm unit) {
-//		System.out.println(unitName + " " + units.getID() + " " + units.getName());
         if (has_units instanceof ArrayList) {
             has_units.add(unit);
         } else if (has_units != null) {

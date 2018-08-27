@@ -93,8 +93,8 @@ public class CreateSpectrumTest {
             imzMLOutput.write(imzML, targetDir() + "/spectrum.imzML");
             
             // Now try outputing compressed spectral data
-            spectrum.getBinaryDataArrayList().getmzArray().removeCVParam(BinaryDataArray.noCompressionID);
-            spectrum.getBinaryDataArrayList().getmzArray().addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(BinaryDataArray.zstdCompressionID)));
+            spectrum.getBinaryDataArrayList().getmzArray().removeCVParam(BinaryDataArray.NO_COMPRESSION_ID);
+            spectrum.getBinaryDataArrayList().getmzArray().addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(BinaryDataArray.ZSTD_COMPRESSION_ID)));
             
             //output = new MzMLWriter(targetDir() + "/compressed_spectrum.xml");
             //spectrum.outputXML(output, 0);
@@ -153,7 +153,7 @@ public class CreateSpectrumTest {
         DataProcessing processing = new DataProcessing("modification");
         ProcessingMethod method = new ProcessingMethod(Software.create());
         processing.add(method);
-        method.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ProcessingMethod.conversionTomzMLID)));
+        method.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ProcessingMethod.CONVERSION_TO_MZML_ID)));
         
         spectrum.updatemzArray(intensities, processing);
         
@@ -161,7 +161,7 @@ public class CreateSpectrumTest {
         processing = new DataProcessing("extra-addition");
         method = new ProcessingMethod(Software.create());
         processing.add(method);
-        method.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ProcessingMethod.conversionTomzMLID)));
+        method.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ProcessingMethod.CONVERSION_TO_MZML_ID)));
         
         spectrum = Spectrum.createSpectrum(mzs, intensities, processing, 1, 3);
         imzML.getRun().getSpectrumList().add(spectrum);
@@ -222,17 +222,17 @@ public class CreateSpectrumTest {
         double[] array = {1.25, 65.39};
         byte[] in = DataTypeTransform.convertDoublesToBytes(array);
         
-        DataTypeTransform trans = new DataTypeTransform(DataType.Double, DataType.Integer64bit);
+        DataTypeTransform trans = new DataTypeTransform(DataType.DOUBLE, DataType.INTEGER_64BIT);
         
         try {
             byte[] out = trans.forwardTransform(in);
-            double[] convertedArray = DataTypeTransform.convertDataToDouble(out, DataType.Integer64bit);
+            double[] convertedArray = DataTypeTransform.convertDataToDouble(out, DataType.INTEGER_64BIT);
             
             assertEquals("Converted from double to int to double", 1.25, convertedArray[0], 1);
             assertEquals("Converted from double to int to double", 65.39, convertedArray[1], 1);
             
             byte[] inBack = trans.reverseTransform(out);
-            double[] convertedBackArray = DataTypeTransform.convertDataToDouble(inBack, DataType.Double);
+            double[] convertedBackArray = DataTypeTransform.convertDataToDouble(inBack, DataType.DOUBLE);
             
             assertEquals("Converted from double to int to double (back)", 1.25, convertedBackArray[0], 1);
             assertEquals("Converted from double to int to double (back)", 65.39, convertedBackArray[1], 1);

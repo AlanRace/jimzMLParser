@@ -27,47 +27,47 @@ public class Scan extends MzMLContentWithParams implements Serializable {
     /**
      * Accession: scan attribute (MS:1000503).
      */
-    public static final String scanAttributeID = "MS:1000503";
+    public static final String SCAN_ATTRIBUTE_ID = "MS:1000503";
 
     /**
      * Accession: scan direction (MS:1000018).
      */
-    public static final String scanDirectionID = "MS:1000018";
+    public static final String SCAN_DIRECTION_ID = "MS:1000018";
 
     /**
      * Accession: scan law (MS:1000019).
      */
-    public static final String scanLawID = "MS:1000019";
+    public static final String SCAN_LAW_ID = "MS:1000019";
 
     /**
      * Accession: spectrum position x (IMS:1000050).
      */
-    public static final String positionXID = "IMS:1000050";
+    public static final String POSITION_X_ID = "IMS:1000050";
 
     /**
      * Accession: spectrum position y (IMS:1000051).
      */
-    public static final String positionYID = "IMS:1000051";
+    public static final String POSITION_Y_ID = "IMS:1000051";
 
     /**
      * Accession: spectrum position z (IMS:1000052).
      */
-    public static final String positionZID = "IMS:1000052";
+    public static final String POSITION_Z_ID = "IMS:1000052";
 
     /**
      * Accession: elution time (MS:1000826).
      */
-    public static final String elutionTimeID = "MS:1000826";
+    public static final String ELUTION_TIME_ID = "MS:1000826";
 
     /**
      * Accession: scan start time (MS:1000016).
      */
-    public static final String scanStartTimeID = "MS:1000016";
+    public static final String SCAN_START_TIME_ID = "MS:1000016";
 
     /**
      * Accession: ion mobility time (MS:1002476).
      */
-    public static final String ionMobilityDriftTimeID = "MS:1002476";
+    public static final String ION_MOBILITY_DRIFT_TIME_ID = "MS:1002476";
 
     /**
      * External spectrum ID (attribute from spectrum tag).

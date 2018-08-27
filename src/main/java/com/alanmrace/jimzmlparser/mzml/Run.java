@@ -23,7 +23,7 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
     /**
      * Accession: run attribute (MS:1000857).
      */
-    public static final String runAttributeID = "MS:1000857";
+    public static final String RUN_ATTRIBUTE_ID = "MS:1000857";
 
     /**
      * Default InstrumentConfiguration to describe how data were acquired [Required].

@@ -31,7 +31,6 @@ public class DataTransformation implements Serializable {
      * Create an empty DataTransformation.
      */
     public DataTransformation() {
-//        transformation = new ArrayList<DataTransform>();
     }
     
     /**
@@ -113,7 +112,7 @@ public class DataTransformation implements Serializable {
             }
         }
         
-        return DataTypeTransform.convertDataToDouble(transformedData, DataTypeTransform.DataType.Double);
+        return DataTypeTransform.convertDataToDouble(transformedData, DataTypeTransform.DataType.DOUBLE);
     }
     
     public int[] getDataSizeAtEachStage() {

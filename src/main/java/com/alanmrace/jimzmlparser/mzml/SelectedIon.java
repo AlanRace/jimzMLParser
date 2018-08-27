@@ -17,7 +17,7 @@ public class SelectedIon extends MzMLContentWithParams implements Serializable {
     /**
      * Accession: Ion selection attribute (MS:1000455). MUST supply a child
      */
-    public static final String ionSelectionAttributeID = "MS:1000455"; // Required child (1+)
+    public static final String ION_SELECTION_ATTRIBUTE_ID = "MS:1000455"; // Required child (1+)
 
     /**
      * Create empty SelectedIon.

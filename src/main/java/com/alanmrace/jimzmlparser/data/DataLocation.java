@@ -21,7 +21,7 @@ public class DataLocation implements Serializable {
     /**
      * Logger for the class.
      */
-    private static final Logger logger = Logger.getLogger(DataLocation.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(DataLocation.class.getName());
 
     /**
      * The value that should be added if an 32-bit signed integer overflow 
@@ -105,27 +105,18 @@ public class DataLocation implements Serializable {
      */
     public byte[] getBytes() throws IOException {
         if(length <= 0) {
-            logger.log(Level.FINER, "Data is of size {0} for {1}", new Object[] {length, dataStorage});
+            LOGGER.log(Level.FINER, "Data is of size {0} for {1}", new Object[] {length, dataStorage});
 
             return new byte[0];
         }
         if(offset < 0) {
-            logger.log(Level.SEVERE, "Offset is {0} for {1}. Attempting to fix integer overflow.", new Object[] {offset, dataStorage});
+            LOGGER.log(Level.SEVERE, "Offset is {0} for {1}. Attempting to fix integer overflow.", new Object[] {offset, dataStorage});
 
-            offset += EXTENDED_OFFSET; //2^32;
+            offset += EXTENDED_OFFSET; // By default is 2^32
         }
         
         return dataStorage.getData(offset, length);
     }
-    
-//    public byte[] getConvertedBytes() throws DataFormatException, IOException {
-//        byte[] data = getBytes();
-//        
-//        if(dataTransformation == null)
-//            return data;
-//        
-//        return dataTransformation.performReverseTransform(data);
-//    }
 
     /**
      * Gets the raw data from the DataStorage using {@link DataLocation#getBytes()} and
@@ -146,7 +137,7 @@ public class DataLocation implements Serializable {
         byte[] data = getBytes();
         
         if(dataTransformation == null)
-            return DataTypeTransform.convertDataToDouble(data, DataTypeTransform.DataType.Double);
+            return DataTypeTransform.convertDataToDouble(data, DataTypeTransform.DataType.DOUBLE);
         
         return dataTransformation.performReverseTransform(data);
     }

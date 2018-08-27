@@ -23,12 +23,12 @@ public class Software extends MzMLContentWithParams implements ReferenceableTag 
     /**
      * Accession: software (MS:1000531).
      */
-    public static final String softwareID = "MS:1000531"; // Required child (1)
+    public static final String SOFTWARE_ID = "MS:1000531"; // Required child (1)
     
     /**
      * Accession: custom unreleased software tool (MS:1000799).
      */
-    public static final String customUnreleasedToolID = "MS:1000799";
+    public static final String CUSTOM_UNRELEASED_TOOL_ID = "MS:1000799";
 
     /**
      * Unique identifier for the software.
@@ -136,7 +136,7 @@ public class Software extends MzMLContentWithParams implements ReferenceableTag 
         }
 
         Software software = new Software("jimzMLParser", version);
-        software.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(Software.customUnreleasedToolID)));
+        software.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(Software.CUSTOM_UNRELEASED_TOOL_ID)));
         
         return software;
     }

@@ -5,8 +5,6 @@
  */
 package com.alanmrace.jimzmlparser.mzml;
 
-import static com.alanmrace.jimzmlparser.mzml.BinaryDataArray.binaryDataArrayID;
-import static com.alanmrace.jimzmlparser.mzml.BinaryDataArray.mzArrayID;
 import com.alanmrace.jimzmlparser.obo.OBO;
 import java.util.List;
 import static org.junit.Assert.assertNotNull;
@@ -19,7 +17,7 @@ import org.junit.Test;
 public class MzMLContentTest {
     @Test
     public void isChildOfTest() {
-        assert(OBO.getOBO().getTerm(mzArrayID).isChildOf(binaryDataArrayID));
+        assert(OBO.getOBO().getTerm(BinaryDataArray.MZ_ARRAY_ID).isChildOf(BinaryDataArray.BINARY_DATA_ARRAY_ID));
     }
     
     @Test
@@ -27,11 +25,11 @@ public class MzMLContentTest {
         DataProcessing dataProcessing = DataProcessing.create();
         ProcessingMethod method = dataProcessing.getProcessingMethod(0);
         
-        CVParam conversion = method.getCVParamOrChild(ProcessingMethod.conversionTomzMLID);
+        CVParam conversion = method.getCVParamOrChild(ProcessingMethod.CONVERSION_TO_MZML_ID);
         
         assertNotNull(conversion);
         
-        List<CVParam> processingList = method.getChildrenOf(ProcessingMethod.dataTransformationID, false);
+        List<CVParam> processingList = method.getChildrenOf(ProcessingMethod.DATA_TRANSFORMATION_ID, false);
         
         assert(!processingList.isEmpty());
         
@@ -40,7 +38,7 @@ public class MzMLContentTest {
         
         Spectrum spectrum = Spectrum.createSpectrum(mzs, intensities, 1, 1);
         
-        List<CVParam> spectrumType = spectrum.getChildrenOf(Spectrum.spectrumTypeID, false);
+        List<CVParam> spectrumType = spectrum.getChildrenOf(Spectrum.SPECTRUM_TYPE_ID, false);
         
         assert(!spectrumType.isEmpty());
     }

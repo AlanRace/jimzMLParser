@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
-import java.text.MessageFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,13 +25,14 @@ public abstract class DataStorage implements Serializable {
     private static final long serialVersionUID = 1L;
     
     /** Class logger. */
-    private static final Logger logger = Logger.getLogger(DataStorage.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(DataStorage.class.getName());
     
     /** File containing the data. */
     protected File dataFile;
     
     /** Random access to the file. */
     protected final RandomAccessFile randomAccessFile;
+    
     /** Boolean to determine whether the RandomAccessFile is open or not. */
     protected boolean fileStreamOpen = false;
     
@@ -63,7 +63,7 @@ public abstract class DataStorage implements Serializable {
         else
             randomAccessFile = new RandomAccessFile(dataFile, "r");
 
-        logger.log(Level.FINER, "[Opened] {0} ({1})", new Object[] {dataFile, randomAccessFile});
+        LOGGER.log(Level.FINER, "[Opened] {0} ({1})", new Object[] {dataFile, randomAccessFile});
 	
         fileStreamOpen = true;
     }
@@ -91,7 +91,7 @@ public abstract class DataStorage implements Serializable {
      */
     public byte[] getData(long offset, int length) throws IOException {
 	if(!fileStreamOpen) {
-	    logger.log(Level.SEVERE, "Trying to access data from a closed stream ({0})", randomAccessFile);
+	    LOGGER.log(Level.SEVERE, "Trying to access data from a closed stream ({0})", randomAccessFile);
 	    
 	    return new byte[0];
 	}
@@ -115,7 +115,7 @@ public abstract class DataStorage implements Serializable {
         if(fileStreamOpen) {
             randomAccessFile.close();
 	    
-	    logger.log(Level.FINER, "[Closed] {0} ({1})", new Object[] {dataFile, randomAccessFile});
+	    LOGGER.log(Level.FINER, "[Closed] {0} ({1})", new Object[] {dataFile, randomAccessFile});
             
             fileStreamOpen = false;
         }

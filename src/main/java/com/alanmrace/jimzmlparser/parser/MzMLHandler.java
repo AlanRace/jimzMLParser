@@ -2,7 +2,6 @@ package com.alanmrace.jimzmlparser.parser;
 
 import com.alanmrace.jimzmlparser.data.DataLocation;
 import com.alanmrace.jimzmlparser.data.BinaryDataStorage;
-import com.alanmrace.jimzmlparser.exceptions.FatalParseException;
 import com.alanmrace.jimzmlparser.exceptions.MzMLParseException;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -17,10 +16,9 @@ import javax.xml.parsers.SAXParserFactory;
 
 import com.alanmrace.jimzmlparser.mzml.MzML;
 import com.alanmrace.jimzmlparser.obo.OBO;
-import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
-import com.sun.org.apache.xml.internal.security.utils.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.codec.binary.Base64;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -139,11 +137,10 @@ public class MzMLHandler extends MzMLHeaderHandler {
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if ("binary".equals(qName)) {
 
-            try {
-                // Convert the data from base 64
-                byte[] processedData = Base64.decode(binaryData.toString().getBytes());
+            // Convert the data from base 64
+            byte[] processedData = Base64.decodeBase64(binaryData.toString().getBytes());
 
-                int lengthToWrite = processedData.length;
+            int lengthToWrite = processedData.length;
 
 //            if (currentBinaryDataArray.isCompressed()) {
 //                Inflater decompressor = new Inflater();
@@ -187,20 +184,17 @@ public class MzMLHandler extends MzMLHeaderHandler {
 //                
 //                decompressor.end();
 //            }
-                try {
-                    temporaryFileStream.write(processedData, 0, lengthToWrite);
-                } catch (IOException ex) {
-                    logger.log(Level.SEVERE, null, ex);
-                }
-
-                DataLocation location = new DataLocation(dataStorage, offset, lengthToWrite);
-                currentBinaryDataArray.setDataLocation(location);
-                location.setDataTransformation(currentBinaryDataArray.generateDataTransformation());
-
-                offset += lengthToWrite;
-            } catch (Base64DecodingException ex) {
-                Logger.getLogger(MzMLHandler.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+                temporaryFileStream.write(processedData, 0, lengthToWrite);
+            } catch (IOException ex) {
+                logger.log(Level.SEVERE, null, ex);
             }
+
+            DataLocation location = new DataLocation(dataStorage, offset, lengthToWrite);
+            currentBinaryDataArray.setDataLocation(location);
+            location.setDataTransformation(currentBinaryDataArray.generateDataTransformation());
+
+            offset += lengthToWrite;
 
             processingBinary = false;
         } else {

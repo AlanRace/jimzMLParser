@@ -16,13 +16,13 @@ public class Activation extends MzMLContentWithParams {
      * Accession: Precursor activation attribute (MS:1000510). MAY be supplied
      * (or any children) one or more times
      */
-    public static final String precursorActivationAttributeID = "MS:1000510"; // Optional child (1+)
+    public static final String PRECURSOR_ACTIVATION_ATTRIBUTE_ID = "MS:1000510"; // Optional child (1+)
 
     /**
      * Accession: Dissociation method (MS:1000044). MUST be supplied (or any
      * children) one or more times
      */
-    public static final String dissociationMethodID = "MS:1000044";	// Required child (1+)
+    public static final String DISSOCIATION_METHOD_ID = "MS:1000044";	// Required child (1+)
 
     /**
      * Create an Activation tag.

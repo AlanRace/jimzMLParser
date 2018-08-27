@@ -60,7 +60,7 @@ public class OBO implements Serializable {
     /**
      * Singleton OBO instance.
      */
-    protected static final OBO obo = new OBO(IMS_OBO_URI);
+    protected static final OBO ONTOLOGY = new OBO(IMS_OBO_URI);
 
     /**
      * Generate ontology database from the specified .obo file. 
@@ -194,7 +194,7 @@ public class OBO implements Serializable {
      * @return Loaded ontology
      */
     public static OBO getOBO() {
-        return obo;
+        return ONTOLOGY;
     }
     
     /**

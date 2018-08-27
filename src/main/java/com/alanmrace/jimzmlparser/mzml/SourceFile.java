@@ -17,26 +17,26 @@ public class SourceFile extends MzMLContentWithParams implements ReferenceableTa
     /**
      * Accession: Native spectrum identifier format (MS:1000767).
      */
-    public static final String nativeSpectrumIdentifierFormatID = "MS:1000767";	// Required child (1)
+    public static final String NATIVE_SPECTRUM_IDENTIFIER_FORMAT_ID = "MS:1000767";	// Required child (1)
     
     /**
      * Accession: Data file checksum type (MS:1000561).
      */
-    public static final String dataFileChecksumTypeID = "MS:1000561";	// Required child (1+)
+    public static final String DATA_FILE_CHECKSUM_TYPE_ID = "MS:1000561";	// Required child (1+)
     /**
      * Accession: Mass spectrometer file format (MS:1000560).
      */
-    public static final String massSpectrometerFileFormatID = "MS:1000560"; // Required child (1)
+    public static final String MASS_SPECTROMETER_FILE_FORMAT_ID = "MS:1000560"; // Required child (1)
 
     /**
      * Accession: mzML format (MS:1000584).
      */
-    public static final String mzMLFileFormatID = "MS:1000584";
+    public static final String MZML_FILE_FORMAT_ID = "MS:1000584";
 
     /**
      * Accession: SHA-1 file checksum (MS:1000569).
      */
-    public static final String sha1FileChecksumID = "MS:1000569";
+    public static final String SHA1_FILE_CHECKSUM_ID = "MS:1000569";
 
     /**
      * Unique identifier for the source file.

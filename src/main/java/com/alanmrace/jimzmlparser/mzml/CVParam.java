@@ -23,6 +23,42 @@ import com.alanmrace.jimzmlparser.util.XMLHelper;
 public abstract class CVParam extends MzMLContent { 
 
     /**
+     * List of possible cvParam sub types, corresponding to a value type.
+     */
+    public enum CVParamType {
+
+        /**
+         * Double precision: {@link DoubleCVParam}.
+         */
+        DOUBLE,
+
+        /**
+         * Long: {@link LongCVParam}.
+         */
+        LONG,
+
+        /**
+         * String: {@link StringCVParam}.
+         */
+        STRING,
+
+        /**
+         * Integer: {@link IntegerCVParam}.
+         */
+        INTEGER,
+
+        /**
+         * Boolean: {@link BooleanCVParam}.
+         */
+        BOOLEAN,
+
+        /**
+         * No value: {@link EmptyCVParam}.
+         */
+        EMPTY
+    }
+    
+    /**
      * Serialisation version ID.
      */
     private static final long serialVersionUID = 1L;
@@ -191,41 +227,7 @@ public abstract class CVParam extends MzMLContent {
 //        output.writeMetadata("/>\n");
 //    }
 
-    /**
-     * List of possible cvParam sub types, corresponding to a value type.
-     */
-    public enum CVParamType {
-
-        /**
-         * Double precision: {@link DoubleCVParam}.
-         */
-        Double,
-
-        /**
-         * Long: {@link LongCVParam}.
-         */
-        Long,
-
-        /**
-         * String: {@link StringCVParam}.
-         */
-        String,
-
-        /**
-         * Integer: {@link IntegerCVParam}.
-         */
-        Integer,
-
-        /**
-         * Boolean: {@link BooleanCVParam}.
-         */
-        Boolean,
-
-        /**
-         * No value: {@link EmptyCVParam}.
-         */
-        Empty
-    }
+    
 
     /**
      * Convert the value type stored within an ontology term, to a CVParamType.
@@ -236,27 +238,27 @@ public abstract class CVParam extends MzMLContent {
      */
     public static CVParamType getCVParamType(OBOTerm term) throws NonFatalParseException {
         if(term == null || term.getValueType() == null)
-            return CVParamType.Empty;
+            return CVParamType.EMPTY;
         
         CVParamType type;
         
         switch(term.getValueType()) {
-            case String:
-                type = CVParamType.String;
+            case STRING:
+                type = CVParamType.STRING;
                 break;
-            case Float:
-            case Double:
-            case NonNegativeFloat:
-                type = CVParamType.Double;
+            case FLOAT:
+            case DOUBLE:
+            case NON_NEGATIVE_FLOAT:
+                type = CVParamType.DOUBLE;
                 break;
-            case Int:
-                type = CVParamType.Integer;
+            case INT:
+                type = CVParamType.INTEGER;
                 break;
-            case Boolean:
-                type = CVParamType.Boolean;
+            case BOOLEAN:
+                type = CVParamType.BOOLEAN;
                 break;
-            case NonNegativeInteger:
-                type = CVParamType.Long;
+            case NON_NEGATIVE_INTEGER:
+                type = CVParamType.LONG;
                 break;
             default:
                 throw new InvalidFormatIssue(term, term.getValueType());
@@ -277,19 +279,19 @@ public abstract class CVParam extends MzMLContent {
         CVParam param;
         
         switch(getCVParamType(term)) {
-            case String:
+            case STRING:
                 param = new StringCVParam(term, "", units);
                 break;
-            case Double:
+            case DOUBLE:
                 param = new DoubleCVParam(term, 0.0, units);
                 break;
-            case Long:
+            case LONG:
                 param = new LongCVParam(term, 0, units);
                 break;
-            case Integer:
+            case INTEGER:
                 param = new IntegerCVParam(term, 0, units);
                 break;
-            case Boolean:
+            case BOOLEAN:
                 param = new BooleanCVParam(term, false, units);
                 break;
             default:

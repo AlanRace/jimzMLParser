@@ -33,8 +33,8 @@ public class ImzMLWriterTest {
         Spectrum spectrum = mzML.getSpectrumList().getSpectrum(0);
         spectrum.setPixelLocation(1, 1);
         //spectrum.setCompression(BinaryDataArray.CompressionType.MSNumpressLinearLZ4);
-        spectrum.getBinaryDataArrayList().getmzArray().setCompression(BinaryDataArray.CompressionType.MSNumpressPositiveLZ4);
-        spectrum.getBinaryDataArrayList().getIntensityArray().setCompression(BinaryDataArray.CompressionType.MSNumpressLinearLZ4);
+        spectrum.getBinaryDataArrayList().getmzArray().setCompression(BinaryDataArray.CompressionType.MSNUMPRESS_POSITIVE_LZ4);
+        spectrum.getBinaryDataArrayList().getIntensityArray().setCompression(BinaryDataArray.CompressionType.MSNUMPRESS_LINEAR_LZ4);
         
         imzML.addSpectrum(spectrum);
         

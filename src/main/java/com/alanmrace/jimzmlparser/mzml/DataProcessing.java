@@ -117,7 +117,7 @@ public class DataProcessing extends MzMLContentList<ProcessingMethod> implements
         ProcessingMethod pm = new ProcessingMethod(software);
         dp.add(pm);
         
-        pm.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ProcessingMethod.conversionTomzMLID)));
+        pm.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ProcessingMethod.CONVERSION_TO_MZML_ID)));
         
         return dp;
     }

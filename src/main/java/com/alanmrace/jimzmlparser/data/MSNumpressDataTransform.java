@@ -16,9 +16,9 @@ import ms.numpress.MSNumpress;
 public class MSNumpressDataTransform implements DataTransform {
 
     public enum NumpressAlgorithm {
-        Linear,
-        Pic,
-        Slof
+        LINEAR,
+        PIC,
+        SLOF
     }
     
     private final NumpressAlgorithm algorithm;
@@ -27,13 +27,13 @@ public class MSNumpressDataTransform implements DataTransform {
     
     public MSNumpressDataTransform(NumpressAlgorithm algorithm) {
         switch(algorithm) {
-            case Linear:
+            case LINEAR:
                 accession = MSNumpress.ACC_NUMPRESS_LINEAR;
                 break;
-            case Pic:
+            case PIC:
                 accession = MSNumpress.ACC_NUMPRESS_PIC;
                 break;
-            case Slof:
+            case SLOF:
                 accession = MSNumpress.ACC_NUMPRESS_SLOF;
                 break;
         }
@@ -44,19 +44,19 @@ public class MSNumpressDataTransform implements DataTransform {
     @Override
     public byte[] forwardTransform(byte[] data) throws DataFormatException {
         byte[] encoded = new byte[data.length];
-        double[] dataAsDouble = DataTypeTransform.convertDataToDouble(data, DataTypeTransform.DataType.Double);
+        double[] dataAsDouble = DataTypeTransform.convertDataToDouble(data, DataTypeTransform.DataType.DOUBLE);
         int numBytes = -1;
         
         switch(algorithm) {
-            case Linear:
+            case LINEAR:
                 numBytes = MSNumpress.encodeLinear(dataAsDouble, dataAsDouble.length, encoded, mzError);
                 
                 break;
-            case Pic:
+            case PIC:
                 numBytes = MSNumpress.encodePic(dataAsDouble, dataAsDouble.length, encoded);
                 
                 break;
-            case Slof:
+            case SLOF:
                 double fixedPoint = MSNumpress.optimalSlofFixedPoint(dataAsDouble, dataAsDouble.length);
                 numBytes = MSNumpress.encodeSlof(dataAsDouble, dataAsDouble.length, encoded, fixedPoint);
                 

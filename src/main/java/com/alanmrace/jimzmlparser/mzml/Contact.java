@@ -17,17 +17,17 @@ public class Contact extends MzMLContentWithParams implements Serializable {
     /**
      * Accession: Contact organisation (MS:1000590) [Required].
      */
-    public static final String contactOrganisationID = "MS:1000590"; // Required (1)
+    public static final String CONTACT_ORGANISATION_ID = "MS:1000590"; // Required (1)
 
     /**
      * Accession: Contact name (MS:1000586) [Required].
      */
-    public static final String contactNameID = "MS:1000586"; // Required (1)
+    public static final String CONTACT_NAME_ID = "MS:1000586"; // Required (1)
 
     /**
      * Accession: Contact person attribute (MS:1000585) [Optional].
      */
-    public static final String contactPersonAttributeID = "MS:1000585"; // Optional child (1+)
+    public static final String CONTACT_PERSON_ATTRIBUTE_ID = "MS:1000585"; // Optional child (1+)
 
     /**
      * Default constructor.
@@ -48,8 +48,8 @@ public class Contact extends MzMLContentWithParams implements Serializable {
 
     @Override
     public String toString() {
-        String name = getCVParam(contactNameID).getValueAsString();
-        String organisation = getCVParam(contactOrganisationID).getValueAsString();
+        String name = getCVParam(CONTACT_NAME_ID).getValueAsString();
+        String organisation = getCVParam(CONTACT_ORGANISATION_ID).getValueAsString();
 
         return "contact: " + name + " (" + organisation + ")";
     }

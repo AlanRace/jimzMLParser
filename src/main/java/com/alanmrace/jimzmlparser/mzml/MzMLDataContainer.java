@@ -186,7 +186,7 @@ public abstract class MzMLDataContainer extends MzMLIndexedContentWithParams {
             if (binaryDataArrayList != null) {
                 for (BinaryDataArray bda : binaryDataArrayList) {
 
-                    CVParam cvParam = bda.getCVParamOrChild(BinaryDataArray.binaryDataArrayID);
+                    CVParam cvParam = bda.getCVParamOrChild(BinaryDataArray.BINARY_DATA_ARRAY_ID);
                     String cvParamID = cvParam.getTerm().getID();
 
     //                System.out.println("Looking for " + cvParam + " in " + this.id);

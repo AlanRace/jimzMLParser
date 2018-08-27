@@ -41,6 +41,11 @@ import java.util.zip.DataFormatException;
  * @author Alan Race
  */
 public class ImzMLWriter extends ImzMLHeaderWriter {
+    
+    /**
+     * Logger for the class.
+     */
+    private static final Logger LOGGER = Logger.getLogger(ImzMLWriter.class.getName());
 
     /**
      * RandomAccessFile for the file containing the binary data.
@@ -131,28 +136,28 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
             
             // Update the imzML header information about storage type
             FileContent fileContent = mzML.getFileDescription().getFileContent();
-            fileContent.removeChildrenOfCVParam(FileContent.binaryTypeID, false);
+            fileContent.removeChildrenOfCVParam(FileContent.BINARY_TYPE_ID, false);
 
             switch (outputType) {
                 case Continuous:
-                    fileContent.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(FileContent.binaryTypeContinuousID)));
+                    fileContent.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(FileContent.BINARY_TYPE_CONTINUOUS_ID)));
                     break;
                 case Processed:
                 default:
-                    fileContent.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(FileContent.binaryTypeProcessedID)));
+                    fileContent.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(FileContent.BINARY_TYPE_PROCESSED_ID)));
                     break;
             }
             
             // Make sure that any referanceableParamGroup for the data arrays state that the data is external
             ReferenceableParamGroup rpgmzArray = mzML.getReferenceableParamGroupList().getReferenceableParamGroup("mzArray");
             if(rpgmzArray != null) {
-                rpgmzArray.removeCVParam(BinaryDataArray.externalDataID);
-                rpgmzArray.addCVParam(new BooleanCVParam(OBO.getOBO().getTerm(BinaryDataArray.externalDataID), true));
+                rpgmzArray.removeCVParam(BinaryDataArray.EXTERNAL_DATA_ID);
+                rpgmzArray.addCVParam(new BooleanCVParam(OBO.getOBO().getTerm(BinaryDataArray.EXTERNAL_DATA_ID), true));
             }
             ReferenceableParamGroup rpgintensityArray = mzML.getReferenceableParamGroupList().getReferenceableParamGroup("intensityArray");
             if(rpgintensityArray != null) {
-                rpgintensityArray.removeCVParam(BinaryDataArray.externalDataID);
-                rpgintensityArray.addCVParam(new BooleanCVParam(OBO.getOBO().getTerm(BinaryDataArray.externalDataID), true));
+                rpgintensityArray.removeCVParam(BinaryDataArray.EXTERNAL_DATA_ID);
+                rpgintensityArray.addCVParam(new BooleanCVParam(OBO.getOBO().getTerm(BinaryDataArray.EXTERNAL_DATA_ID), true));
             }
 
             // Set up the checksum
@@ -196,7 +201,7 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
 
                             writeData(bdata);
                         } else {
-                            Logger.getLogger(ImzMLWriter.class.getName()).log(Level.SEVERE, "Null data in BinaryDataArray {0}", bda);
+                            LOGGER.log(Level.SEVERE, "Null data in BinaryDataArray {0}", bda);
                         }
                         
                         // Update the TIC 
@@ -206,10 +211,10 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
                             for(int i = 0; i < ddata.length; i++)
                                 total += ddata[i];
                             
-                            CVParam ticParam = spectrum.getCVParam(Spectrum.totalIonCurrentID);
+                            CVParam ticParam = spectrum.getCVParam(Spectrum.TOTAL_ION_CURRENT_ID);
                             
                             if(ticParam == null) {
-                                ticParam = new DoubleCVParam(OBO.getOBO().getTerm(Spectrum.totalIonCurrentID), total);
+                                ticParam = new DoubleCVParam(OBO.getOBO().getTerm(Spectrum.TOTAL_ION_CURRENT_ID), total);
                                 spectrum.addCVParam(ticParam);
                             } else
                                 ((DoubleCVParam) ticParam).setValue(total);
@@ -234,12 +239,12 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
             dataOutput.close();
 
             // Update UUID in the metadata
-            fileContent.removeCVParam(FileContent.uuidIdntificationID);
-            fileContent.addCVParam(new StringCVParam(OBO.getOBO().getTerm(FileContent.uuidIdntificationID), uuid.toString()));
+            fileContent.removeCVParam(FileContent.UUID_IDENTIFICATION_ID);
+            fileContent.addCVParam(new StringCVParam(OBO.getOBO().getTerm(FileContent.UUID_IDENTIFICATION_ID), uuid.toString()));
 
             // Update SHA-1
-            fileContent.removeChildrenOfCVParam(FileContent.ibdChecksumID, false);
-            fileContent.addCVParam(new StringCVParam(OBO.getOBO().getTerm(FileContent.sha1ChecksumID), HexHelper.byteArrayToHexString(messageDigest.digest())));
+            fileContent.removeChildrenOfCVParam(FileContent.IBD_CHECKSUM_ID, false);
+            fileContent.addCVParam(new StringCVParam(OBO.getOBO().getTerm(FileContent.SHA1_CHECKSUM_ID), HexHelper.byteArrayToHexString(messageDigest.digest())));
 
             // Update max x and max y coordinates
             int maxX = 0;
@@ -272,17 +277,17 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
                 scanSettingsList.add(scanSettings);
             } else {
                 scanSettings = mzML.getScanSettingsList().getScanSettings(0);
-                scanSettings.removeCVParam(ScanSettings.maxCountPixelXID);
-                scanSettings.removeCVParam(ScanSettings.maxCountPixelYID);
+                scanSettings.removeCVParam(ScanSettings.MAX_COUNT_PIXEL_X_ID);
+                scanSettings.removeCVParam(ScanSettings.MAX_COUNT_PIXEL_Y_ID);
             }
 
-            scanSettings.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(ScanSettings.maxCountPixelXID), maxX));
-            scanSettings.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(ScanSettings.maxCountPixelYID), maxY));
+            scanSettings.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(ScanSettings.MAX_COUNT_PIXEL_X_ID), maxX));
+            scanSettings.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(ScanSettings.MAX_COUNT_PIXEL_Y_ID), maxY));
 
             // Write out metadata
             super.write(mzML, outputLocation);
         } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(ImzMLWriter.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, null, ex);
         }
 
     }
@@ -305,9 +310,9 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
             byte[] transformedData = transformation.performForwardTransform(data);
             
             // If using LZ4, the size of the decompressed data is required before decompression, so add this in as a UserParam that can be used later
-            if(binaryDataArray.getCVParam(BinaryDataArray.msNumpressLinearLZ4ID) != null || 
-                    binaryDataArray.getCVParam(BinaryDataArray.msNumpressPositiveLZ4ID) != null || 
-                    binaryDataArray.getCVParam(BinaryDataArray.msNumpressSlofLZ4ID) != null) {
+            if(binaryDataArray.getCVParam(BinaryDataArray.MSNUMPRESS_LINEAR_LZ4_ID) != null || 
+                    binaryDataArray.getCVParam(BinaryDataArray.MSNUMPRESS_POSITIVE_LZ4_ID) != null || 
+                    binaryDataArray.getCVParam(BinaryDataArray.MSNUMPRESS_SLOF_LZ4_ID) != null) {
                 int[] dataSizeAtEachStage = transformation.getDataSizeAtEachStage();
                 
                 binaryDataArray.addUserParam(new UserParam("LZ4 decompression size", "" + dataSizeAtEachStage[dataSizeAtEachStage.length-2]));
@@ -316,20 +321,20 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
             //System.out.println(binaryDataArray.getCVParamOrChild(BinaryDataArray.compressionTypeID));
             //System.out.println(Arrays.toString(transformation.getDataSizeAtEachStage()));
 
-            binaryDataArray.removeCVParam(BinaryDataArray.externalDataID);
+            binaryDataArray.removeCVParam(BinaryDataArray.EXTERNAL_DATA_ID);
 
-            binaryDataArray.removeCVParam(BinaryDataArray.externalOffsetID);
-            binaryDataArray.addCVParam(new LongCVParam(OBO.getOBO().getTerm(BinaryDataArray.externalOffsetID), getDataPointer()));
+            binaryDataArray.removeCVParam(BinaryDataArray.EXTERNAL_OFFSET_ID);
+            binaryDataArray.addCVParam(new LongCVParam(OBO.getOBO().getTerm(BinaryDataArray.EXTERNAL_OFFSET_ID), getDataPointer()));
 
-            binaryDataArray.removeCVParam(BinaryDataArray.externalArrayLengthID);
-            binaryDataArray.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(BinaryDataArray.externalArrayLengthID), data.length));
+            binaryDataArray.removeCVParam(BinaryDataArray.EXTERNAL_ARRAY_LENGTH_ID);
+            binaryDataArray.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(BinaryDataArray.EXTERNAL_ARRAY_LENGTH_ID), data.length));
 
-            binaryDataArray.removeCVParam(BinaryDataArray.externalEncodedLengthID);
-            binaryDataArray.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(BinaryDataArray.externalEncodedLengthID), transformedData.length));
+            binaryDataArray.removeCVParam(BinaryDataArray.EXTERNAL_ENCODED_LENGTH_ID);
+            binaryDataArray.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(BinaryDataArray.EXTERNAL_ENCODED_LENGTH_ID), transformedData.length));
 
             byteData = transformedData;
         } catch (DataFormatException ex) {
-            Logger.getLogger(MzMLWriter.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, null, ex);
         }
 
         return byteData;

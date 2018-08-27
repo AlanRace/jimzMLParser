@@ -1,14 +1,6 @@
 package com.alanmrace.jimzmlparser.data;
 
 import com.alanmrace.jimzmlparser.mzml.BinaryDataArray;
-import static com.alanmrace.jimzmlparser.mzml.BinaryDataArray.doublePrecisionID;
-import static com.alanmrace.jimzmlparser.mzml.BinaryDataArray.imsSigned32bitIntegerID;
-import static com.alanmrace.jimzmlparser.mzml.BinaryDataArray.imsSigned64bitIntegerID;
-import static com.alanmrace.jimzmlparser.mzml.BinaryDataArray.signed16bitIntegerID;
-import static com.alanmrace.jimzmlparser.mzml.BinaryDataArray.signed32bitIntegerID;
-import static com.alanmrace.jimzmlparser.mzml.BinaryDataArray.signed64bitIntegerID;
-import static com.alanmrace.jimzmlparser.mzml.BinaryDataArray.signed8bitIntegerID;
-import static com.alanmrace.jimzmlparser.mzml.BinaryDataArray.singlePrecisionID;
 import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 import java.io.ByteArrayOutputStream;
@@ -29,6 +21,11 @@ import java.util.zip.DataFormatException;
  * @author Alan Race
  */
 public class DataTypeTransform implements DataTransform {
+    
+    /**
+     * Logger for the class.
+     */
+    private static final Logger LOGGER = Logger.getLogger(DataTypeTransform.class.getName());
 
     /**
      * Possible binary data types used to store data.
@@ -38,27 +35,27 @@ public class DataTypeTransform implements DataTransform {
         /**
          * Double precision floating point.
          */
-        Double,
+        DOUBLE,
         /**
          * Floating point.
          */
-        Float,
+        FLOAT,
         /**
          * Signed 8-bit integer.
          */
-        Integer8bit,
+        INTEGER_8BIT,
         /**
          * Signed 16-bit integer.
          */
-        Integer16bit,
+        INTEGER_16BIT,
         /**
          * Signed 32-bit integer.
          */
-        Integer32bit,
+        INTEGER_32BIT,
         /**
          * Signed 64-bit integer.
          */
-        Integer64bit;
+        INTEGER_64BIT;
         
         /**
          * Convert DataType enum to OBOTerm, using ontology terms found in the 
@@ -69,18 +66,18 @@ public class DataTypeTransform implements DataTransform {
          */
         public static OBOTerm toOBOTerm(DataType dataType) {
             switch(dataType) {
-                case Double:
-                    return OBO.getOBO().getTerm(doublePrecisionID);
-                case Float:
-                    return OBO.getOBO().getTerm(singlePrecisionID);
-                case Integer64bit:
-                    return OBO.getOBO().getTerm(signed64bitIntegerID);
-                case Integer32bit:
-                    return OBO.getOBO().getTerm(signed32bitIntegerID);
-                case Integer16bit:
-                    return OBO.getOBO().getTerm(signed16bitIntegerID);
-                case Integer8bit:
-                    return OBO.getOBO().getTerm(signed8bitIntegerID);
+                case DOUBLE:
+                    return OBO.getOBO().getTerm(BinaryDataArray.DOUBLE_PRECISION_ID);
+                case FLOAT:
+                    return OBO.getOBO().getTerm(BinaryDataArray.SINGLE_PRECISION_ID);
+                case INTEGER_64BIT:
+                    return OBO.getOBO().getTerm(BinaryDataArray.SIGNED_64BIT_INTEGER_ID);
+                case INTEGER_32BIT:
+                    return OBO.getOBO().getTerm(BinaryDataArray.SIGNED_32BIT_INTEGER_ID);
+                case INTEGER_16BIT:
+                    return OBO.getOBO().getTerm(BinaryDataArray.SIGNED_16BIT_INTEGER_ID);
+                case INTEGER_8BIT:
+                    return OBO.getOBO().getTerm(BinaryDataArray.SIGNED_8BIT_INTEGER_ID);
                 default:
                     return null;
             }
@@ -96,18 +93,18 @@ public class DataTypeTransform implements DataTransform {
         public static DataType fromOBOTerm(OBOTerm term) {
             String accession = term.getID();
             
-            if (accession.equals(doublePrecisionID)) {
-                return DataTypeTransform.DataType.Double;
-            } else if (accession.equals(singlePrecisionID)) {
-                return DataTypeTransform.DataType.Float;
-            } else if (accession.equals(signed64bitIntegerID) || accession.equals(imsSigned64bitIntegerID)) {
-                return DataTypeTransform.DataType.Integer64bit;
-            } else if (accession.equals(signed32bitIntegerID) || accession.equals(imsSigned32bitIntegerID)) {
-                return DataTypeTransform.DataType.Integer32bit;
-            } else if (accession.equals(signed16bitIntegerID)) {
-                return DataTypeTransform.DataType.Integer16bit;
-            } else if (accession.equals(signed8bitIntegerID)) {
-                return DataTypeTransform.DataType.Integer8bit;
+            if (accession.equals(BinaryDataArray.DOUBLE_PRECISION_ID)) {
+                return DataTypeTransform.DataType.DOUBLE;
+            } else if (accession.equals(BinaryDataArray.SINGLE_PRECISION_ID)) {
+                return DataTypeTransform.DataType.FLOAT;
+            } else if (accession.equals(BinaryDataArray.SIGNED_64BIT_INTEGER_ID) || accession.equals(BinaryDataArray.IMS_SIGNED_64BIT_INTEGER_ID)) {
+                return DataTypeTransform.DataType.INTEGER_64BIT;
+            } else if (accession.equals(BinaryDataArray.SIGNED_32BIT_INTEGER_ID) || accession.equals(BinaryDataArray.IMS_SIGNED_32BIT_INTEGER_ID)) {
+                return DataTypeTransform.DataType.INTEGER_32BIT;
+            } else if (accession.equals(BinaryDataArray.SIGNED_16BIT_INTEGER_ID)) {
+                return DataTypeTransform.DataType.INTEGER_16BIT;
+            } else if (accession.equals(BinaryDataArray.SIGNED_8BIT_INTEGER_ID)) {
+                return DataTypeTransform.DataType.INTEGER_8BIT;
             }
             
             return null;
@@ -181,7 +178,7 @@ public class DataTypeTransform implements DataTransform {
         buffer.order(ByteOrder.LITTLE_ENDIAN);
 
         switch (dataType) {
-            case Double:
+            case DOUBLE:
                 convertedData = new double[data.length / 8];
 
                 for (int j = 0; j < convertedData.length; j++) {
@@ -189,7 +186,7 @@ public class DataTypeTransform implements DataTransform {
                 }
 
                 break;
-            case Float:
+            case FLOAT:
                 convertedData = new double[data.length / 4];
 
                 for (int j = 0; j < convertedData.length; j++) {
@@ -197,7 +194,7 @@ public class DataTypeTransform implements DataTransform {
                 }
 
                 break;
-            case Integer64bit:
+            case INTEGER_64BIT:
                 convertedData = new double[data.length / 8];
 
                 for (int j = 0; j < convertedData.length; j++) {
@@ -205,7 +202,7 @@ public class DataTypeTransform implements DataTransform {
                 }
 
                 break;
-            case Integer32bit:
+            case INTEGER_32BIT:
                 convertedData = new double[data.length / 4];
 
                 for (int j = 0; j < convertedData.length; j++) {
@@ -213,7 +210,7 @@ public class DataTypeTransform implements DataTransform {
                 }
 
                 break;
-            case Integer16bit:
+            case INTEGER_16BIT:
                 convertedData = new double[data.length / 2];
 
                 for (int j = 0; j < convertedData.length; j++) {
@@ -221,7 +218,7 @@ public class DataTypeTransform implements DataTransform {
                 }
 
                 break;
-            case Integer8bit:
+            case INTEGER_8BIT:
                 convertedData = new double[data.length];
 
                 for (int j = 0; j < convertedData.length; j++) {
@@ -257,37 +254,37 @@ public class DataTypeTransform implements DataTransform {
 
         try {
             switch (to) {
-                case Double:
+                case DOUBLE:
                     for (double dataPoint : doubleData) {
                         byteStream.writeLong(Long.reverseBytes(Double.doubleToLongBits(dataPoint)));
                     }
 
                     break;
-                case Float:
+                case FLOAT:
                     for (double dataPoint : doubleData) {
                         byteStream.writeInt(Integer.reverseBytes(Float.floatToIntBits((float) dataPoint)));
                     }
 
                     break;
-                case Integer64bit:
+                case INTEGER_64BIT:
                     for (double dataPoint : doubleData) {
                         byteStream.writeLong(Long.reverseBytes((long) dataPoint));
                     }
 
                     break;
-                case Integer32bit:
+                case INTEGER_32BIT:
                     for (double dataPoint : doubleData) {
                         byteStream.writeInt(Integer.reverseBytes((int) dataPoint));
                     }
 
                     break;
-                case Integer16bit:
+                case INTEGER_16BIT:
                     for (double dataPoint : doubleData) {
                         byteStream.writeShort(Short.reverseBytes((short) dataPoint));
                     }
 
                     break;
-                case Integer8bit:
+                case INTEGER_8BIT:
                     for (double dataPoint : doubleData) {
                         byteStream.writeByte((byte) dataPoint);
                     }
@@ -297,7 +294,7 @@ public class DataTypeTransform implements DataTransform {
                     throw new UnsupportedOperationException("Data type not supported: " + to);
             }
         } catch (IOException ex) {
-            Logger.getLogger(BinaryDataArray.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, null, ex);
         }
 
         return byteArrayStream.toByteArray();

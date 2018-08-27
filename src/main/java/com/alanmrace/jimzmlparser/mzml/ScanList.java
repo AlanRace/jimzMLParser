@@ -24,12 +24,12 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
     /**
      * Accession: Spectra combination (MS:1000570).
      */
-    public static final String spectraCombinationID = "MS:1000570";
+    public static final String SPECTRA_COMBINATION_ID = "MS:1000570";
     
     /**
      * Accession: No spectral combination (MS:1000795).
      */
-    public static final String noCombinationID = "MS:1000795";
+    public static final String NO_COMBINATION_ID = "MS:1000795";
 
     /**
      * List of Scans.
@@ -182,7 +182,7 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
         ScanList scanList = new ScanList(1);
         scanList.add(Scan.create());
         
-        scanList.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ScanList.noCombinationID)));
+        scanList.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ScanList.NO_COMBINATION_ID)));
         
         return scanList;
     }

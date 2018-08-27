@@ -35,7 +35,7 @@ public class ChangeListenerTest {
             }
         });
         
-        CVParam cvParam = new IntegerCVParam(OBO.getOBO().getTerm(Scan.positionXID), 0);
+        CVParam cvParam = new IntegerCVParam(OBO.getOBO().getTerm(Scan.POSITION_X_ID), 0);
         content.addCVParam(cvParam);
         
         cvParam.setValueAsString("100");

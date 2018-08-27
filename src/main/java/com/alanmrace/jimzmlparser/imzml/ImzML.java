@@ -45,7 +45,7 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
     /**
      * Class logger.
      */
-    private static final Logger logger = Logger.getLogger(ImzML.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ImzML.class.getName());
 
     /**
      * Width of mass spectrometry image in pixels.
@@ -151,24 +151,24 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
     
     @Override
     public synchronized double[] getFullmzList() {
-        logger.entering(ImzML.class.getName(), "getFullmzList");
+        LOGGER.entering(ImzML.class.getName(), "getFullmzList");
 
         if (fullmzList == null) {
             Software imzMLConverter = this.getSoftwareList().getSoftware("imzMLConverter");
 
-            logger.log(Level.FINE, "Software found: {0}", imzMLConverter);
+            LOGGER.log(Level.FINE, "Software found: {0}", imzMLConverter);
 
             if (imzMLConverter != null) {
-                CVParam offsetParam = imzMLConverter.getCVParam(BinaryDataArray.externalOffsetID);
-                CVParam encodedLengthParam = imzMLConverter.getCVParam(BinaryDataArray.externalEncodedLengthID);
+                CVParam offsetParam = imzMLConverter.getCVParam(BinaryDataArray.EXTERNAL_OFFSET_ID);
+                CVParam encodedLengthParam = imzMLConverter.getCVParam(BinaryDataArray.EXTERNAL_ENCODED_LENGTH_ID);
 
-                logger.log(Level.FINE, "Found CVParams: {0}, {1}", new Object[]{offsetParam, encodedLengthParam});
+                LOGGER.log(Level.FINE, "Found CVParams: {0}, {1}", new Object[]{offsetParam, encodedLengthParam});
 
                 if (offsetParam != null) {
                     try {
                         byte[] fullmzListBytes = dataStorage.getData(offsetParam.getValueAsLong(), encodedLengthParam.getValueAsInteger());
 
-                        logger.log(Level.FINE, "Read in {0} bytes", fullmzListBytes.length);
+                        LOGGER.log(Level.FINE, "Read in {0} bytes", fullmzListBytes.length);
 
                         int numBytesPerDouble = Double.SIZE / Byte.SIZE;
                         // The below is only available in Java 1.8
@@ -180,16 +180,16 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
                         DoubleBuffer doubleBuffer = buffer.asDoubleBuffer();
 
                         if(fullmzList.length > 0) {
-                            logger.log(Level.FINE, "First double is {0}", doubleBuffer.get(0));
+                            LOGGER.log(Level.FINE, "First double is {0}", doubleBuffer.get(0));
 
                             for (int i = 0; i < fullmzList.length; i++) {
                                 fullmzList[i] = doubleBuffer.get(i);
                             }
 
-                            logger.log(Level.FINE, "First double in array is {0}", fullmzList[0]);
+                            LOGGER.log(Level.FINE, "First double in array is {0}", fullmzList[0]);
                         }
                     } catch (IOException ex) {
-                        Logger.getLogger(ImzML.class.getName()).log(Level.SEVERE, null, ex);
+                        LOGGER.log(Level.SEVERE, null, ex);
                     }
                 }
             }
@@ -257,11 +257,11 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
 
             for (Spectrum spectrum : getRun().getSpectrumList()) {
                 for (Scan curScan : spectrum.getScanList()) {
-                    int curX = curScan.getCVParam(Scan.positionXID).getValueAsInteger();
-                    int curY = curScan.getCVParam(Scan.positionYID).getValueAsInteger();
+                    int curX = curScan.getCVParam(Scan.POSITION_X_ID).getValueAsInteger();
+                    int curY = curScan.getCVParam(Scan.POSITION_Y_ID).getValueAsInteger();
                     int curZ = 1;
 
-                    CVParam zPosCVParam = curScan.getCVParam(Scan.positionZID);
+                    CVParam zPosCVParam = curScan.getCVParam(Scan.POSITION_Z_ID);
 
                     if (zPosCVParam != null) {
                         curZ = zPosCVParam.getValueAsInteger();
@@ -296,7 +296,7 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
 
         if (getScanSettingsList() != null) {
             for (ScanSettings scanSettings : scanSettingsList) {
-                CVParam maxCountPixelX = scanSettings.getCVParam(ScanSettings.maxCountPixelXID);
+                CVParam maxCountPixelX = scanSettings.getCVParam(ScanSettings.MAX_COUNT_PIXEL_X_ID);
 
                 if (maxCountPixelX != null) {
                     width = maxCountPixelX.getValueAsInteger();
@@ -319,7 +319,7 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
 
         if (getScanSettingsList() != null) {
             for (ScanSettings scanSettings : scanSettingsList) {
-                CVParam maxCountPixelY = scanSettings.getCVParam(ScanSettings.maxCountPixelYID);
+                CVParam maxCountPixelY = scanSettings.getCVParam(ScanSettings.MAX_COUNT_PIXEL_Y_ID);
 
                 if (maxCountPixelY != null) {
                     height = maxCountPixelY.getValueAsInteger();
@@ -344,7 +344,7 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
         if (spectrumList != null) {
             for (Spectrum spectrum : spectrumList) {
                 //for(ScanSettings scanSettings : spectrum.getScanList().getScan(0)) {
-                CVParam maxCountPixelZ = spectrum.getScanList().get(0).getCVParam(Scan.positionZID);
+                CVParam maxCountPixelZ = spectrum.getScanList().get(0).getCVParam(Scan.POSITION_Z_ID);
 
                 if (maxCountPixelZ != null) {
                     int curDepth = maxCountPixelZ.getValueAsInteger();
@@ -368,7 +368,7 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
         }
 
         for (Spectrum spectrum : getRun().getSpectrumList()) {
-            CVParam minDetectedMZ = spectrum.getCVParam(Spectrum.lowestObservedmzID);
+            CVParam minDetectedMZ = spectrum.getCVParam(Spectrum.LOWEST_OBSERVED_MZ_ID);
 
             if (minDetectedMZ == null) {
                 break;
@@ -395,7 +395,7 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
         }
 
         for (Spectrum spectrum : getRun().getSpectrumList()) {
-            CVParam maxDetectedMZ = spectrum.getCVParam(Spectrum.highestObservedmzID);
+            CVParam maxDetectedMZ = spectrum.getCVParam(Spectrum.HIGHEST_OBSERVED_MZ_ID);
 
             if (maxDetectedMZ == null) {
                 break;
@@ -486,12 +486,12 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
 //	}
     @Override
     public boolean isProcessed() {
-        return getFileDescription().getFileContent().getCVParam(FileContent.binaryTypeProcessedID) != null;
+        return getFileDescription().getFileContent().getCVParam(FileContent.BINARY_TYPE_PROCESSED_ID) != null;
     }
 
     @Override
     public boolean isContinuous() {
-        return getFileDescription().getFileContent().getCVParam(FileContent.binaryTypeContinuousID) != null;
+        return getFileDescription().getFileContent().getCVParam(FileContent.BINARY_TYPE_CONTINUOUS_ID) != null;
     }
 
     /**
@@ -565,15 +565,15 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
 
             if(getRun().getSpectrumList() != null) {
                 for (Spectrum spectrum : getRun().getSpectrumList()) {
-                    int x = spectrum.getScanList().get(0).getCVParam(Scan.positionXID).getValueAsInteger() - 1;
-                    int y = spectrum.getScanList().get(0).getCVParam(Scan.positionYID).getValueAsInteger() - 1;
+                    int x = spectrum.getScanList().get(0).getCVParam(Scan.POSITION_X_ID).getValueAsInteger() - 1;
+                    int y = spectrum.getScanList().get(0).getCVParam(Scan.POSITION_Y_ID).getValueAsInteger() - 1;
                     
                     //if(y > ticImage[0].length) {
                     //    throw new InvalidCVParamValue("Max y value is less than a y coordinate of a spectrum in the data");
                     //} else if()
                     
                     try {
-                        double tic = spectrum.getCVParam(Spectrum.totalIonCurrentID).getValueAsDouble();
+                        double tic = spectrum.getCVParam(Spectrum.TOTAL_ION_CURRENT_ID).getValueAsDouble();
 
                         ticImage[y][x] = tic;
                     } catch (NullPointerException ex) {
@@ -585,7 +585,7 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
                                     ticImage[y][x] += intensityArray[i];
                                 }
                                 
-                                spectrum.addCVParam(new DoubleCVParam(OBO.getOBO().getTerm(Spectrum.totalIonCurrentID), ticImage[y][x]));
+                                spectrum.addCVParam(new DoubleCVParam(OBO.getOBO().getTerm(Spectrum.TOTAL_ION_CURRENT_ID), ticImage[y][x]));
                             }
                         } catch (FileNotFoundException e) {
                             Logger.getLogger(ImzML.class.getName()).log(Level.SEVERE, null, e);
@@ -840,7 +840,7 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
      * @return Default ImzML instance
      */
     public static ImzML create() {
-        ImzML imzML = new ImzML(currentVersion);
+        ImzML imzML = new ImzML(CURRENT_VERSION);
         
         createDefaults(imzML);
         
@@ -861,13 +861,13 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
         ScanSettings scanSettings = new ScanSettings("globalScanSettings");
         scanSettingsList.add(scanSettings);
         
-        scanSettings.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ScanSettings.scanPatternFlybackID)));
-        scanSettings.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ScanSettings.scanDirectionTopDownID)));
-        scanSettings.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ScanSettings.scanTypeHorizontalID)));
-        scanSettings.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ScanSettings.lineScanDirectionLeftRightID)));
+        scanSettings.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ScanSettings.SCAN_PATTERN_FLYBACK_ID)));
+        scanSettings.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ScanSettings.SCAN_DIRECTION_TOP_DOWN_ID)));
+        scanSettings.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ScanSettings.SCAN_TYPE_HORIZONTAL_ID)));
+        scanSettings.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(ScanSettings.LINE_SCAN_DIRECTION_LEFT_RIGHT_ID)));
         
-        scanSettings.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(ScanSettings.maxCountPixelXID), 0));
-        scanSettings.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(ScanSettings.maxCountPixelYID), 0));
+        scanSettings.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(ScanSettings.MAX_COUNT_PIXEL_X_ID), 0));
+        scanSettings.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(ScanSettings.MAX_COUNT_PIXEL_Y_ID), 0));
         
         mzML.setScanSettingsList(scanSettingsList);
     }

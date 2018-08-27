@@ -89,7 +89,7 @@ public class InstrumentConfigurationList extends MzMLIDContentList<InstrumentCon
         InstrumentConfiguration ic = new InstrumentConfiguration("instrumentConfiguration");
         icList.add(ic);
         
-        ic.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(InstrumentConfiguration.instrumentModelID)));
+        ic.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(InstrumentConfiguration.INSTRUMENT_MODEL_ID)));
         
         return icList;
     }
