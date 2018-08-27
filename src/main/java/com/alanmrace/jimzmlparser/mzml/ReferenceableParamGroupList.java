@@ -34,25 +34,6 @@ public class ReferenceableParamGroupList extends MzMLIDContentList<Referenceable
             add(new ReferenceableParamGroup(rpg));
         }
     }
-   
-//    @Override
-//    public void add(ReferenceableParamGroup rpg) {
-//        boolean exists = false;
-//
-//        for (ReferenceableParamGroup currentRPG : list) {
-//            if (currentRPG.getID().equals(rpg.getID())) {
-//                exists = true;
-//                break;
-//            }
-//        }
-//
-//        
-//        if (!exists) {
-//            rpg.setParent(this);
-//            list.add(rpg);
-//        }
-//    }
-    
     /**
      * Add ReferenceableParamGroup. Helper method to retain API, calls 
      * {@link ReferenceableParamGroupList#add(com.alanmrace.jimzmlparser.mzml.MzMLTag)}.

@@ -604,10 +604,10 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
          
         // If there is still no dataLocation after the conversion, then no data to load
         if (dataLocation == null) {
-            return null;
+            return new double[0];
         }
 
-        double[] loadedData = null;
+        double[] loadedData = new double[0];
 
         try {
             loadedData = dataLocation.getData();
@@ -642,7 +642,7 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
      */
     protected byte[] getDataAsByte() throws IOException {
         if (dataLocation == null) {
-            return null;
+            return new byte[0];
         }
         
         return dataLocation.getBytes();
@@ -751,8 +751,6 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
      * @return the binary data type
      */
     public DataType getDataType() {
-        //return getCVParam(dataTypeID);
-
         CVParam dataTypeParam = this.getCVParamOrChild(BINARY_DATA_TYPE_ID);
         DataType dataType = null;
         
@@ -773,7 +771,7 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
                 dataType = DataTypeTransform.DataType.INTEGER_8BIT;
             }
         } else {
-            System.out.println("BinaryDataArray#getDataType(): " + Arrays.toString(this.getCVParamList().toArray()));
+            LOGGER.log(Level.INFO, "BinaryDataArray#getDataType(): {0}", Arrays.toString(this.getCVParamList().toArray()));
         }
 
         return dataType;

@@ -51,31 +51,4 @@ public abstract class MzMLIndexedContentWithParams extends MzMLOrderedContentWit
     public void setID(String id) {
         this.id = id;
     }
-        
-    /**
-     * Output attribute in the form of XML.
-     *
-     * @param output where to write the XML
-     * @param indent how large an indent is needed for this tag
-     * @param index index of the content
-     * @throws IOException Signals that an I/O exception has occurred.
-     */
-//    @Override
-//    public void outputXML(MzMLWritable output, int indent, int index) throws IOException {
-//        String attributeText = getXMLAttributeText();
-//        
-//        MzMLContent.indent(output, indent);
-//        output.writeMetadata("<" + getTagName() + " index=\"" + index + "\"");
-//        
-//        if(attributeText != null && !attributeText.isEmpty())
-//            output.writeMetadata(" " + attributeText);
-//        
-//        output.writeMetadata(">\n");
-//
-//        outputXMLContent(output, indent + 1);
-//
-//        MzMLContent.indent(output, indent);
-//        output.writeMetadata("</" + getTagName() + ">\n");
-//    }
-    
 }

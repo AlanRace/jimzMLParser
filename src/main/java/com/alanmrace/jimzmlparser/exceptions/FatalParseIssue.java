@@ -5,28 +5,21 @@
  */
 package com.alanmrace.jimzmlparser.exceptions;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Alan
  */
-public class FatalParseIssue implements ParseIssue {
+public class FatalParseIssue implements ParseIssue, Serializable {
 
     String title;
     String message;
-    
-//    Exception exception;
     
     public FatalParseIssue(String title, String message) {
         this.title = title;
         this.message = message;
     }
-    
-//    public FatalParseIssue(String title, Exception exception) {
-//        this.title = message;
-//        this.exception = exception;
-//        
-//        this.message = exception.getLocalizedMessage();
-//    }
 
     @Override
     public String getIssueTitle() {

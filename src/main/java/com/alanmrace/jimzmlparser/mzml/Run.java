@@ -38,17 +38,17 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
     /**
      * Unique ID for the run [Required].
      */
-    private String id;													// Required
+    private String id;						// Required
 
     /**
      * Reference for the Sample analysed [Optional].
      */
-    private Sample sampleRef;											// Optional
+    private Sample sampleRef;					// Optional
 
     /**
      * Start time of the run.
      */
-    private Calendar startTimeStamp;										// Optional
+    private Calendar startTimeStamp;				// Optional
 
     /**
      * DataProcessingList to be passed to SpectrumList and ChromatogramList to ensure
@@ -272,133 +272,6 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
             chromatogramList.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
         }
     }
-
-//	public void setDefaultInstrumentConfiguration(InstrumentConfiguration defaultInstrumentConfigurationRef) {
-//		this.defaultInstrumentConfigurationRef = defaultInstrumentConfigurationRef;
-//	}
-//	
-//	public InstrumentConfiguration getDefaultInstrumentConfiguration() {
-//		return defaultInstrumentConfigurationRef;
-//	}
-//	public void addSpectrum(Spectrum spectrum) {
-//		spectrumList.add(spectrum);
-//	}
-//	
-//	public int getSpectrumCount() {
-//		return spectrumList.size();
-//	}
-//	
-//	public Spectrum getSpectrum(int index) {
-//		return spectrumList.get(index);
-//	}
-//	// This method looks at the scan start times and if the differences between them are over 1.5 times larger 
-//	// than the smallest difference then it is assumed that missing pixels feature 
-//	public void replaceMissingSpectra(OBO obo, int numberOfSpectraToExpect, int experimentsPerPixel) {
-//		double minStartTimeDifference = Double.MAX_VALUE;
-//		
-////		// Determine the minimum difference
-////		for(int i = experimentsPerPixel; i < spectrumList.size(); i+=experimentsPerPixel) {
-////			double curStartTime = spectrumList.get(i).getScanList().getScanStartTime();
-////			double prevStartTime = spectrumList.get(i-experimentsPerPixel).getScanList().getScanStartTime();
-////			
-////			if(curStartTime == -1 || prevStartTime == -1) {
-////				minStartTimeDifference = -1;
-////				break;
-////			}
-////			
-////			double difference = curStartTime - prevStartTime;
-////			
-////			if(difference <= 0) {
-////				System.out.println("Problematic difference " + difference + " at spectrum number " + i + " with curStartTime = " + curStartTime + ", prevStartTime = " + prevStartTime);
-////			}
-////			
-////			if(difference < minStartTimeDifference)
-////				minStartTimeDifference = difference;
-////		}
-////		System.out.println("Determined minimum start time difference = " + minStartTimeDifference);
-////		// Replace spectra as necessary
-////		if(minStartTimeDifference > 0) {
-////			for(int i = experimentsPerPixel; i < spectrumList.size() ; i+=experimentsPerPixel) {
-////				double curStartTime = spectrumList.get(i).getScanList().getScanStartTime();
-////				double prevStartTime = spectrumList.get(i-experimentsPerPixel).getScanList().getScanStartTime();		
-////				double difference = curStartTime - prevStartTime;
-////				long missingSpectra = Math.round(difference/minStartTimeDifference) - 1;
-////				
-//////				System.out.println(difference + " / " + minStartTimeDifference + " = " + missingSpectra);
-////				
-////				// Check if there are spectra to replace
-////				if(missingSpectra > 0) {
-////					System.out.println("Adding " + missingSpectra + " empty spectra at location " + i);
-////					
-////					for(int j = 0; j < missingSpectra; j++) {
-////						for(int k = 0; k < experimentsPerPixel; k++) {
-////							Spectrum spectrum = new Spectrum();
-////							
-////							Scan scan = new Scan();
-////							scan.addCvParam(new OBOTermValue(obo.getTerm(Scan.scanStartTimeID), "" + (prevStartTime + ((k + 1) * (difference / experimentsPerPixel)))));
-////							
-////							spectrum.getScanList().addScan(scan);
-////							
-////							BinaryDataArray mzCount = new BinaryDataArray();
-////							mzCount.addCvParam(new OBOTermValue(obo.getTerm(BinaryDataArray.mzArrayID), ""));
-////							mzCount.addCvParam(new OBOTermValue(obo.getTerm(BinaryDataArray.externalArrayLengthID), "0"));
-////							mzCount.addCvParam(new OBOTermValue(obo.getTerm(BinaryDataArray.externalEncodedLengthID), "0"));
-////							mzCount.addCvParam(new OBOTermValue(obo.getTerm(BinaryDataArray.externalOffsetID), "0"));
-////							spectrum.addBinaryDataArray(mzCount);
-////							
-////							BinaryDataArray intensityCount = new BinaryDataArray();
-////							intensityCount.addCvParam(new OBOTermValue(obo.getTerm(BinaryDataArray.intensityArrayID), ""));
-////							intensityCount.addCvParam(new OBOTermValue(obo.getTerm(BinaryDataArray.externalArrayLengthID), "0"));
-////							intensityCount.addCvParam(new OBOTermValue(obo.getTerm(BinaryDataArray.externalEncodedLengthID), "0"));
-////							intensityCount.addCvParam(new OBOTermValue(obo.getTerm(BinaryDataArray.externalOffsetID), "0"));
-////							spectrum.addBinaryDataArray(intensityCount);
-////							
-////							// Add the spectrum to the spectrumList
-////							spectrumList.add(i++, spectrum);
-////						}
-////					}
-////				}
-////			}
-////		}
-//		
-//		// Replace missing spectra at the end
-//		for(int i = spectrumList.size(); i < numberOfSpectraToExpect; i++) {
-//			System.out.println("Adding empty spectra at (end) location " + i);
-//
-//			Spectrum spectrum = new Spectrum();
-//				
-//			BinaryDataArray mzCount = new BinaryDataArray();
-//			mzCount.addCvParam(new OBOTermValue(obo.getTerm(BinaryDataArray.mzArrayID), ""));
-//			mzCount.addCvParam(new OBOTermValue(obo.getTerm(BinaryDataArray.externalArrayLengthID), "0"));
-//			mzCount.addCvParam(new OBOTermValue(obo.getTerm(BinaryDataArray.externalEncodedLengthID), "0"));
-//			mzCount.addCvParam(new OBOTermValue(obo.getTerm(BinaryDataArray.externalOffsetID), "0"));
-//			spectrum.addBinaryDataArray(mzCount);
-//				
-//			BinaryDataArray intensityCount = new BinaryDataArray();
-//			intensityCount.addCvParam(new OBOTermValue(obo.getTerm(BinaryDataArray.intensityArrayID), ""));
-//			intensityCount.addCvParam(new OBOTermValue(obo.getTerm(BinaryDataArray.externalArrayLengthID), "0"));
-//			intensityCount.addCvParam(new OBOTermValue(obo.getTerm(BinaryDataArray.externalEncodedLengthID), "0"));
-//			intensityCount.addCvParam(new OBOTermValue(obo.getTerm(BinaryDataArray.externalOffsetID), "0"));
-//			spectrum.addBinaryDataArray(intensityCount);
-//				
-//			// Add the spectrum to the spectrumList
-//			spectrumList.add(i, spectrum);
-//		}
-//	}
-//	public void setDefaultDataProcessing(DataProcessing defaultDataProcessingRef) {
-//		this.defaultDataProcessingRef = defaultDataProcessingRef;
-//	}
-//	public void addChromatogram(Chromatogram chromatogram) {
-//		chromatogramList.add(chromatogram);
-//	}
-//	
-//	public int getChromatogramCount() {
-//		return chromatogramList.size();
-//	}
-//	
-//	public Chromatogram getChromatogram(int index) {
-//		return chromatogramList.get(index);
-//	}
     
     @Override
     public String getXMLAttributeText() {
@@ -423,40 +296,6 @@ public class Run extends MzMLContentWithParams implements ReferenceableTag {
         return attributes;
     }
     
-//    @Override
-//    public void outputXML(MzMLWritable output, int indent) throws IOException {
-//        MzMLContent.indent(output, indent);
-//        output.writeMetadata("<run");
-//        output.writeMetadata(" defaultInstrumentConfigurationRef=\"" + XMLHelper.ensureSafeXML(defaultInstrumentConfigurationRef.getID()) + "\"");
-//        if (defaultSourceFileRef != null) {
-//            output.writeMetadata(" defaultSourceFileRef=\"" + XMLHelper.ensureSafeXML(defaultSourceFileRef.getID()) + "\"");
-//        }
-//        output.writeMetadata(" id=\"" + XMLHelper.ensureSafeXML(id) + "\"");
-//        if (sampleRef != null) {
-//            output.writeMetadata(" sampleRef=\"" + XMLHelper.ensureSafeXML(sampleRef.getID()) + "\"");
-//        }
-//        if (startTimeStamp != null) {
-//            SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-DD'T'hh:mm:ss");
-//            
-//            output.writeMetadata(" startTimeStamp=\"" + XMLHelper.ensureSafeXML(format.format(startTimeStamp)) + "\"");
-//        }
-//        output.writeMetadata(">\n");
-//
-//        super.outputXMLContent(output, indent + 1);
-//
-//        MzMLContent.indent(output, indent);
-//        output.writeMetadata("</run>\n");
-//    }
-
-//    @Override
-//    public String toString() {
-//        return "run: defaultInstrumentConfigurationRef=\"" + defaultInstrumentConfigurationRef.getID() + "\""
-//                + ((defaultSourceFileRef != null) ? (" defaultSourceFileRef=\"" + defaultSourceFileRef.getID() + "\"") : "")
-//                + " id=\"" + id + "\""
-//                + ((sampleRef != null) ? (" sampleRef=\"" + sampleRef.getID() + "\"") : "")
-//                + ((startTimeStamp != null) ? (" startTimeStamp=\"" + startTimeStamp.toString() + "\"") : "");
-//    }
-
     @Override
     public String getTagName() {
         return "run";

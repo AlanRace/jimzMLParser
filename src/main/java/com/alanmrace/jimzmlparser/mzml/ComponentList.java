@@ -205,22 +205,6 @@ public class ComponentList extends MzMLContentList<Component> {
         }
     }
 
-//    @Override
-//    protected void outputXMLContent(MzMLWritable output, int indent) throws IOException {
-//        int order = 1;
-//        for (Source source : sources) {
-//            source.outputXML(output, indent + 1, order++);
-//        }
-//
-//        for (Analyser analyser : analysers) {
-//            analyser.outputXML(output, indent + 1, order++);
-//        }
-//
-//        for (Detector detector : detectors) {
-//            detector.outputXML(output, indent + 1, order++);
-//        }
-//    }
-
     @Override
     public String getTagName() {
         return "componentList";

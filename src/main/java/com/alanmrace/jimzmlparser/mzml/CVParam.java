@@ -202,33 +202,6 @@ public abstract class CVParam extends MzMLContent {
         return attributes;
     }
     
-//    @Override
-//    public void outputXML(MzMLWritable output, int indent) throws IOException {
-//        MzMLContent.indent(output, indent);
-//        
-//        output.writeMetadata("<cvParam");
-//
-//        output.writeMetadata(" cvRef=\"" + XMLHelper.ensureSafeXML(term.getNamespace()) + "\"");
-//        output.writeMetadata(" accession=\"" + XMLHelper.ensureSafeXML(term.getID()) + "\"");
-//        output.writeMetadata(" name=\"" + XMLHelper.ensureSafeXML(term.getName()) + "\"");
-//
-//        String value = getValueAsString();
-//
-//        if (value != null && !value.equals("null")) {
-//            output.writeMetadata(" value=\"" + XMLHelper.ensureSafeXML(value) + "\"");
-//        }
-//
-//        if (units != null) {
-//            output.writeMetadata(" unitCvRef=\"" + XMLHelper.ensureSafeXML(units.getNamespace()) + "\"");
-//            output.writeMetadata(" unitAccession=\"" + XMLHelper.ensureSafeXML(units.getID()) + "\"");
-//            output.writeMetadata(" unitName=\"" + XMLHelper.ensureSafeXML(units.getName()) + "\"");
-//        }
-//
-//        output.writeMetadata("/>\n");
-//    }
-
-    
-
     /**
      * Convert the value type stored within an ontology term, to a CVParamType.
      * 
@@ -304,33 +277,4 @@ public abstract class CVParam extends MzMLContent {
         return param;
     }
     
-//    @Override
-//    public boolean equals(Object o) {
-//        if (o == this) {
-//            return true;
-//        }
-//
-//        if (!(o instanceof CVParam)) {
-//            return false;
-//        }
-//
-//        CVParam cvParam = (CVParam) o;
-//
-//        if(cvParam instanceof EmptyCVParam)
-//            return cvParam.getTerm().equals(term);
-//        
-//        return cvParam.getTerm().equals(term)
-//                && (cvParam.getValueAsString().equals(getValueAsString()))
-//                && //				((value == null || cvParam.getValue() == null) ? true : cvParam.getValue().equals(value)) && 
-//                ((units == null || cvParam.getUnits() == null) ? true : cvParam.getUnits().equals(units));
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        int hash = 5;
-//        hash = 53 * hash + (this.term != null ? this.term.hashCode() : 0);
-//        hash = 53 * hash + (this.units != null ? this.units.hashCode() : 0);
-//        hash = 53 * hash + (getValueAsString() != null ? getValueAsString().hashCode() : 0);
-//        return hash;
-//    }
 }

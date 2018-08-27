@@ -6,12 +6,13 @@
 package com.alanmrace.jimzmlparser.exceptions;
 
 import com.alanmrace.jimzmlparser.mzml.MzMLContent;
+import java.io.Serializable;
 
 /**
  *
  * @author Alan
  */
-public abstract class NonFatalParseIssue implements ParseIssue {
+public abstract class NonFatalParseIssue implements ParseIssue, Serializable {
 
     /**
      * The parent MzMLContent that was being parsed when the issue occurred.

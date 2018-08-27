@@ -71,21 +71,25 @@ public class MissingReferenceIssue extends NonFatalParseIssue {
     
     @Override
     public String getIssueMessage() {
-        String message = "Expected the attribute " + attributeName + " to have a valid reference (" + reference + ") at <" + tagName + ">\n";
+        StringBuilder message = new StringBuilder("Expected the attribute ");
         
- //       message += "\t" + this.location;
-        
-        if(attemptedFix) {
-//            message += "\n";
-            
+        message.append(attributeName);
+        message.append(" to have a valid reference (");
+        message.append(reference);
+        message.append(") at <");
+        message.append(tagName);
+        message.append(">\n");
+                
+        if(attemptedFix) {    
             if(newReference == null) {
-                message += "Attempted to fix by removing the reference";
+                message.append("Attempted to fix by removing the reference");
             } else {
-                message += "Attempted to fix by changing the reference to " + newReference;
+                message.append("Attempted to fix by changing the reference to ");
+                message.append(newReference);
             }
         }
         
-        return message;
+        return message.toString();
     }
     
     @Override

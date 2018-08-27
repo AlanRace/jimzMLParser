@@ -38,29 +38,4 @@ public abstract class MzMLOrderedContentWithParams extends MzMLContentWithParams
     public MzMLOrderedContentWithParams(MzMLOrderedContentWithParams mzMLContent, ReferenceableParamGroupList rpgList) {
         super(mzMLContent, rpgList);
     }
-    
-    /**
-     * Output attribute in the form of XML.
-     *
-     * @param output where to write the XML
-     * @param indent how large an indent is needed for this tag
-     * @param order order of the component within the list
-     * @throws IOException Signals that an I/O exception has occurred.
-     */
-//    public void outputXML(MzMLWritable output, int indent, int order) throws IOException {
-//        String attributeText = getXMLAttributeText();
-//        
-//        MzMLContent.indent(output, indent);
-//        output.writeMetadata("<" + getTagName() + " order=\"" + order + "\"");
-//        
-//        if(attributeText != null && !attributeText.isEmpty())
-//            output.writeMetadata(" " + attributeText);
-//        
-//        output.writeMetadata(">\n");
-//
-//        outputXMLContent(output, indent + 1);
-//
-//        MzMLContent.indent(output, indent);
-//        output.writeMetadata("</" + getTagName() + ">\n");
-//    }
 }

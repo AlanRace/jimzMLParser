@@ -104,11 +104,6 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
      */
     private int dimensionality = -1;
 
-    // REMOVED - zero filling code because it caused more issues. Alternative 
-    // (and faster) work around is to go to mzML and then to imzML.
-    // Default to no zero indexing, however if we find a 0, then turn it on
-//	private boolean zeroIndexing = false;
-
     /**
      * Create basic ImzML with specified version.
      * 
@@ -344,7 +339,6 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
 
         if (spectrumList != null) {
             for (Spectrum spectrum : spectrumList) {
-                //for(ScanSettings scanSettings : spectrum.getScanList().getScan(0)) {
                 CVParam maxCountPixelZ = spectrum.getScanList().get(0).getCVParam(Scan.POSITION_Z_ID);
 
                 if (maxCountPixelZ != null) {
@@ -354,11 +348,9 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
                         depth = curDepth;
                     }
                 }
-                //}
             }
         }
 
-        // TODO: Nothing in scan settings, so should look at all spectra
         return depth;
     }
 
@@ -426,65 +418,6 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
         return ibdFile;
     }
 
-//	public void generateSpectralData() throws CVParamAccessionNotFoundException {
-//		try {
-//			RandomAccessFile raf = new RandomAccessFile(ibdFile, "r");
-//			
-//			double[] mzArray = null;
-//			
-//			for(Spectrum spectrum : getRun().getSpectrumList()) {
-//				// If the data is processed then we need to get the new m/z list
-//				if(isProcessed() || mzArray == null)
-//					mzArray = spectrum.getmzArray(raf);
-//				
-//				if(mzArray == null)
-//					continue;
-//				
-//				double[] intensityArray = spectrum.getIntensityArray(raf);
-//				
-//				// Calculate the total ion current 
-//				double totalIonCurrent = 0;
-//				double basePeakMZ = 0;
-//				double basePeakIntensity = 0;
-//				
-//				for(int i = 0; i < intensityArray.length; i++) {
-//					totalIonCurrent += intensityArray[i];
-//					
-//					if(intensityArray[i] > basePeakIntensity) {
-//						basePeakIntensity = intensityArray[i];
-//						basePeakMZ = mzArray[i];
-//					}
-//				}
-//				
-//				spectrum.removeCVParam(Spectrum.totalIonCurrentID);
-//				spectrum.addCVParam(new DoubleCVParam(getOBO().getTerm(Spectrum.totalIonCurrentID), totalIonCurrent));
-//				
-//				spectrum.removeCVParam(Spectrum.basePeakMZID);
-//				spectrum.addCVParam(new DoubleCVParam(getOBO().getTerm(Spectrum.basePeakMZID), basePeakMZ));
-//				
-//				spectrum.removeCVParam(Spectrum.basePeakIntensityID);
-//				spectrum.addCVParam(new DoubleCVParam(getOBO().getTerm(Spectrum.basePeakIntensityID), basePeakIntensity));
-//				
-//				double minMZ = Double.MAX_VALUE;
-//				double maxMZ = Double.MIN_VALUE;
-//				
-//				for(int i = 0; i < mzArray.length; i++) {
-//					if(mzArray[i] > maxMZ)
-//						maxMZ = mzArray[i];
-//					if(mzArray[i] < minMZ)
-//						minMZ = mzArray[i];
-//				}
-//				
-//				spectrum.removeCVParam(Spectrum.lowestObservedmzID);
-//				spectrum.addCVParam(new DoubleCVParam(getOBO().getTerm(Spectrum.lowestObservedmzID), minMZ));
-//				
-//				spectrum.removeCVParam(Spectrum.highestObservedmzID);
-//				spectrum.addCVParam(new DoubleCVParam(getOBO().getTerm(Spectrum.highestObservedmzID), maxMZ));
-//			}
-//				
-//			raf.close();
-//		}
-//	}
     @Override
     public boolean isProcessed() {
         return getFileDescription().getFileContent().getCVParam(FileContent.BINARY_TYPE_PROCESSED_ID) != null;
@@ -520,42 +453,6 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
         return mzs;
     }
 
-//	public double[][][] generateDatacube(double minMZ, double maxMZ, double binSize) {
-//		double[] mzs = getBinnedmzList(minMZ, maxMZ, binSize);
-//		double[][][] datacube = new double[getHeight()][getWidth()][mzs.length];
-//		
-//		try {
-//			RandomAccessFile raf = new RandomAccessFile(ibdFile, "r");
-//			
-//			double[] mzArray = null;
-//			
-//			for(Spectrum spectrum : getRun().getSpectrumList()) {
-//				// If the data is processed then we need to get the new m/z list
-//				if(isProcessed() || mzArray == null)
-//					mzArray = spectrum.getmzArray(raf);
-//				
-//				if(mzArray == null)
-//					continue;
-//				
-//				double[] intensityArray = spectrum.getIntensityArray(raf);
-//				
-//				int x = spectrum.getScanList().getScan(0).getCVParam(Scan.positionXID).getValueAsInteger() - 1;
-//				int y = spectrum.getScanList().getScan(0).getCVParam(Scan.positionYID).getValueAsInteger() - 1;				
-//				
-//				for(int i = 0; i < mzArray.length; i++) {
-//					int index = (int)Math.floor((mzArray[i] - mzs[0]) / binSize);
-//					
-//					if(index >= 0 && index < mzs.length)
-//						datacube[y][x][index] += intensityArray[i];
-//				}
-//			}
-//			
-//			raf.close();
-//		}
-//		
-//		return datacube;
-//	}
-//	
     @Override
     // TODO: Add in exception for failure to generate image - this should be caught to avoid 
     // issues where ArrayIndexOutOfBounds is thrown then the specified image dimensions is not
@@ -569,9 +466,6 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
                     int x = spectrum.getScanList().get(0).getCVParam(Scan.POSITION_X_ID).getValueAsInteger() - 1;
                     int y = spectrum.getScanList().get(0).getCVParam(Scan.POSITION_Y_ID).getValueAsInteger() - 1;
                     
-                    //if(y > ticImage[0].length) {
-                    //    throw new InvalidCVParamValue("Max y value is less than a y coordinate of a spectrum in the data");
-                    //} else if()
                     
                     try {
                         double tic = spectrum.getCVParam(Spectrum.TOTAL_ION_CURRENT_ID).getValueAsDouble();
@@ -600,144 +494,6 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
         
         return ticImage;
     }
-    
-//	
-//	public double[][] generateBasePeakMZImage() {
-//		double[][] image = new double[getHeight()][getWidth()];
-//
-//		RandomAccessFile raf = null;
-//		
-//		for(Spectrum spectrum : getRun().getSpectrumList()) {
-//			int x = spectrum.getScanList().getScan(0).getCVParam(Scan.positionXID).getValueAsInteger() - 1;
-//			int y = spectrum.getScanList().getScan(0).getCVParam(Scan.positionYID).getValueAsInteger() - 1;				
-//			
-//			try {
-//				double tic = spectrum.getCVParam(Spectrum.basePeakMZID).getValueAsDouble();
-//				
-//				image[y][x] = tic;
-//			} catch(NullPointerException ex) {
-//				try {
-//					if(raf == null)
-//						raf = new RandomAccessFile(ibdFile, "r");
-//					
-//					double[] mzArray = spectrum.getmzArray(raf);
-//					double[] intensityArray = spectrum.getIntensityArray(raf);
-//					
-//					double maxIntensity = 0;					
-//					
-//					try {
-//						for(int i = 0; i < intensityArray.length; i++) {
-//							if(intensityArray[i] > maxIntensity) {
-//								image[y][x] = mzArray[i];
-//								
-//								maxIntensity = intensityArray[i];
-//							}
-//						}
-//					} catch(NullPointerException exception) {
-//						// Do nothing - no data
-//					}
-//				}
-//			}
-//		}
-//		
-//		if(raf != null) {
-//			try {
-//				raf.close();
-//			} 
-//		}
-//		
-//		return image;
-//	}
-//	
-//	public double[][] generateBasePeakIntensityImage() {
-//		double[][] image = new double[getHeight()][getWidth()];
-//
-//		RandomAccessFile raf = null;
-//		
-//		for(Spectrum spectrum : getRun().getSpectrumList()) {
-//			int x = spectrum.getScanList().getScan(0).getCVParam(Scan.positionXID).getValueAsInteger() - 1;
-//			int y = spectrum.getScanList().getScan(0).getCVParam(Scan.positionYID).getValueAsInteger() - 1;				
-//			
-//			try {
-//				double tic = spectrum.getCVParam(Spectrum.basePeakIntensityID).getValueAsDouble();
-//				
-//				image[y][x] = tic;
-//			} catch(NullPointerException ex) {
-//				try {
-//					if(raf == null)
-//						raf = new RandomAccessFile(ibdFile, "r");
-//					
-//					double[] intensityArray = spectrum.getIntensityArray(raf);				
-//					
-//					double maxIntensity = 0;
-//					
-//					try {
-//						for(int i = 0; i < intensityArray.length; i++) {
-//							if(intensityArray[i] > maxIntensity) {
-//								image[y][x] = intensityArray[i];
-//								
-//								maxIntensity = intensityArray[i];
-//							}
-//						}
-//					} catch(NullPointerException exception) {
-//						// Do nothing - no data
-//					}
-//				}
-//			}
-//		}
-//		
-//		if(raf != null) {
-//			try {
-//				raf.close();
-//			} 
-//		}
-//		
-//		return image;
-//	}
-//	
-//	public double[][] generatemzImage(double mz, double width) {
-//		double[][] image = new double[getHeight()][getWidth()];
-//		
-//		try {
-//			RandomAccessFile raf = new RandomAccessFile(ibdFile, "r");
-//			
-//			double lower = mz - width;
-//			double upper = mz + width;
-//			
-//			double[] mzArray = null;
-//			
-//			for(Spectrum spectrum : getRun().getSpectrumList()) {
-//				// If the data is processed then we need to get the new m/z list
-//				if(isProcessed() || mzArray == null)
-//					mzArray = spectrum.getmzArray(raf);
-//				
-//				if(mzArray == null)
-//					continue;
-//				
-//				ArrayList<Integer> indicies = new ArrayList<Integer>(); 
-//				
-//				int x = spectrum.getScanList().getScan(0).getCVParam(Scan.positionXID).getValueAsInteger() - 1;
-//				int y = spectrum.getScanList().getScan(0).getCVParam(Scan.positionYID).getValueAsInteger() - 1;				
-//				
-//				for(int i = 0; i < mzArray.length; i++) {
-//				//	System.out.println(mzArray[i] + " >= " + lower + " && " + mzArray[i] + " <= " + upper);
-//					if(mzArray[i] >= lower && mzArray[i] <= upper)
-//						indicies.add(i);
-//				}
-//				//System.out.println("x = " + x + ", y = " + y + ", " + mzArray.length + ", " + indicies.size());
-//				if(indicies.size() > 0) {
-//					double[] intensityArray = spectrum.getIntensityArray(raf);
-//					
-//					for(int i = 0; i < indicies.size(); i++)
-//						image[y][x] += intensityArray[indicies.get(i)];
-//				}					
-//			}
-//			
-//			raf.close();
-//		} 
-//		
-//		return image;
-//	}
 
     /**
      * Set the IBD file containing the data of the ImzML.
@@ -748,26 +504,6 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
     public void setibdFile(File ibdFile) {
         this.ibdFile = ibdFile;
     }
-
-//    @Override
-//    public void write(String filename) throws ImzMLWriteException {
-//        String encoding = "ISO-8859-1";
-//
-//        try {
-//            OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(filename), encoding);
-//            BufferedWriter output = new BufferedWriter(out);
-//
-//            output.write("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>\n");
-//            outputXML(output, 0);
-//
-//            output.flush();
-//
-//            output.close();
-//            out.close();
-//        } catch (IOException e1) {
-//            throw new ImzMLWriteException("Error writing imzML file " + filename + ". " + e1.getLocalizedMessage());
-//        }
-//    }
     
     /**
      * Calculate the checksum of a given file using a given algorithm. Examples 
@@ -788,7 +524,7 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
                 byte[] buffer = new byte[1024 * 1024];
                 int bytesRead;
 
-                MessageDigest md = MessageDigest.getInstance(algorithm); //"SHA-1");
+                MessageDigest md = MessageDigest.getInstance(algorithm);
 
                 do {
                     bytesRead = dataStream.read(buffer);

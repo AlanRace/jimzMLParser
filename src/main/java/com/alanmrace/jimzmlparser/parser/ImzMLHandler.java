@@ -2,7 +2,6 @@ package com.alanmrace.jimzmlparser.parser;
 
 import com.alanmrace.jimzmlparser.data.DataLocation;
 import com.alanmrace.jimzmlparser.data.BinaryDataStorage;
-import com.alanmrace.jimzmlparser.exceptions.FatalParseException;
 import com.alanmrace.jimzmlparser.exceptions.FatalParseIssue;
 import com.alanmrace.jimzmlparser.exceptions.ImzMLParseException;
 import com.alanmrace.jimzmlparser.exceptions.InvalidExternalOffset;
@@ -129,7 +128,7 @@ public class ImzMLHandler extends MzMLHeaderHandler {
      * 
      * @param filename  Location of the imzML file
      * @return          ImzML representation of the imzML file
-     * @throws ImzMLParseIssue  If a fatal parse error occurs
+     * @throws ImzMLParseException  If a fatal parse error occurs
      */
     public static ImzML parseimzML(String filename) throws ImzMLParseException {
         return parseimzML(filename, true);
@@ -143,7 +142,7 @@ public class ImzMLHandler extends MzMLHeaderHandler {
      * @param filename          Location of the imzML file
      * @param openDataStorage   true to open the IBD binary data storage, false to only parse metadata
      * @return                  ImzML representation of the imzML file
-     * @throws ImzMLParseIssue  If a fatal parse error occurs
+     * @throws ImzMLParseException  If a fatal parse error occurs
      */
     public static ImzML parseimzML(String filename, boolean openDataStorage) throws ImzMLParseException {
         return parseimzML(filename, openDataStorage, null);

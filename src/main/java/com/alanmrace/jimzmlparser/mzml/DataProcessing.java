@@ -78,7 +78,7 @@ public class DataProcessing extends MzMLContentList<ProcessingMethod> implements
 
     @Override
     public String toString() {
-        return "dataProcessing: " + id; // + " - " + processingMethods.get(0).toString();
+        return "dataProcessing: " + id; 
     }
 
     @Override

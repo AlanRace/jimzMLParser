@@ -189,12 +189,8 @@ public abstract class MzMLDataContainer extends MzMLIndexedContentWithParams {
                     CVParam cvParam = bda.getCVParamOrChild(BinaryDataArray.BINARY_DATA_ARRAY_ID);
                     String cvParamID = cvParam.getTerm().getID();
 
-    //                System.out.println("Looking for " + cvParam + " in " + this.id);
-
                     int cvParamLocation = spectrumData.indexOf(cvParamID);
-                    //		    System.out.println(cvParamLocation);
-                    //		    System.out.println(cvParamID);
-
+                    
                     if(cvParamLocation != -1) {
                         String subSpectrumData = spectrumData.substring(cvParamLocation);
 
@@ -205,11 +201,6 @@ public abstract class MzMLDataContainer extends MzMLIndexedContentWithParams {
                         bda.setDataLocation(location);
                         location.setDataTransformation(bda.generateDataTransformation());
 
-                        //		    System.out.println(cvParam);
-                        //		    System.out.println(spectrumData.substring(binaryStart, binaryEnd));
-                    } else {
-                        // TODO: WARNING??
-//                        System.out.println("Data: " + spectrumData);
                     }
                 }
             }
@@ -238,7 +229,7 @@ public abstract class MzMLDataContainer extends MzMLIndexedContentWithParams {
      */
     public double[] getIntensityArray(boolean keepInMemory) throws IOException {
         if (binaryDataArrayList == null) {
-            return null;
+            return new double[0];
         }
 
         ensureLoadableData();

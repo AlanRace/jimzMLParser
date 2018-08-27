@@ -8,12 +8,12 @@ import com.alanmrace.jimzmlparser.util.XMLHelper;
  * @author Alan Race
  * @param <T> MzMLTag the reference is to
  */
-public abstract class MzMLReference<T extends ReferenceableTag & MzMLTag> extends MzMLContent {
+public abstract class MzMLReference<T extends Enum<T> & ReferenceableTag & MzMLTag> extends MzMLContent {
 
     /**
      * Referenced MzMLTag.
      */
-    protected T reference;
+    private final T reference;
     
     /**
      * Create a reference to a specific MzMLTag.
@@ -23,18 +23,7 @@ public abstract class MzMLReference<T extends ReferenceableTag & MzMLTag> extend
     public MzMLReference(T reference) {
         this.reference = reference;
     }
-    
-    /**
-     * Returns the tag which is being referenced.
-     * 
-     * @return MzMLTag the reference points to
-     * @deprecated Use getReference() instead
-     */
-    @Deprecated
-    public T getRef() {
-        return reference;
-    }
-    
+        
     /**
      * Returns the tag which is being referenced.
      * 
@@ -43,16 +32,7 @@ public abstract class MzMLReference<T extends ReferenceableTag & MzMLTag> extend
     public T getReference() {
         return reference;
     }
-    
-//    @Override
-//    public void outputXML(MzMLWritable output, int indent) throws IOException {
-//        MzMLContent.indent(output, indent);
-//        
-//        output.writeMetadata("<" + getTagName());
-//        output.writeMetadata(" ref=\"" + reference.getID() + "\"");
-//        output.writeMetadata("/>\n");
-//    }
-    
+        
     @Override
     public String getXMLAttributeText() {
         return "ref=\"" + XMLHelper.ensureSafeXML(reference.getID()) + "\"";

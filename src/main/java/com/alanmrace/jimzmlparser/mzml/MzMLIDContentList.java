@@ -65,13 +65,13 @@ public abstract class MzMLIDContentList<T extends ReferenceableTag & MzMLTag> ex
         return null;
     }
     
-    private static final Pattern lastIntPattern = Pattern.compile("[^0-9]+([0-9]+)$");
+    private static final Pattern LAST_INTEGER_PATTERN = Pattern.compile("[^0-9]+([0-9]+)$");
     
     @Override
     public void add(T item) {
         if(containsID(item.getID())) {
             
-            Matcher matcher = lastIntPattern.matcher(item.getID());
+            Matcher matcher = LAST_INTEGER_PATTERN.matcher(item.getID());
             if (matcher.find()) {
                 String someNumberStr = matcher.group(1);
                 int lastNumberInt = Integer.parseInt(someNumberStr);
@@ -102,35 +102,16 @@ public abstract class MzMLIDContentList<T extends ReferenceableTag & MzMLTag> ex
         return false;
     }
     
-//    @Override
-//    protected void outputXMLContent(MzMLWritable output, int indent) throws IOException {
-//        ArrayList<MzMLTag> children = new ArrayList<MzMLTag>();
-//        
-//        addChildrenToCollection(children);
-//        
-//        for(MzMLTag child : children) {
-//            if(child instanceof MzMLDataContainer) {
-//                output.flush();
-//                
-//                ((MzMLDataContainer) child).setmzMLLocation(output.getDataPointer());
-//            }
-//        }
-//        
-//        super.outputXMLContent(output, indent);
-//    }
-    
     @Override
-    public T getValidReference(T processing) {
-        boolean found = false;
-        
+    public T getValidReference(T processing) {        
         for(T curProcessing : this) {
             if(processing.equals(curProcessing) || processing.getID().equals(curProcessing.getID())) {
                 return curProcessing;
             }
         }
         
-        if(!found)
-            this.add(processing);
+        // Didn't find the reference, so add it to the list
+        this.add(processing);
         
         return processing;
     }

@@ -102,10 +102,6 @@ public class FileDescription extends MzMLContentWithParams implements Serializab
         this.sourceFileList = sourceFileList;
     }
 
-//	public void addSourceFile(SourceFile sf) {
-//		sourceFileList.addSourceFile(sf);
-//	}
-
     /**
      * Add a contact to the FileDescription.
      * 

@@ -50,7 +50,7 @@ public class OBO implements Serializable {
     
     private String defaultNamespace;
     
-    private String ontology;
+    private String ontologyIdentifier;
     
     private String dataVersion;
 
@@ -133,7 +133,7 @@ public class OBO implements Serializable {
                         } else if("default-namespace".equals(tag)) {
                             defaultNamespace = value;                            
                         } else if("ontology".equals(tag)) {
-                            ontology = value;
+                            ontologyIdentifier = value;
                         } else if("data-version".equals(tag)) {
                             dataVersion = value;
                         }
@@ -263,7 +263,7 @@ public class OBO implements Serializable {
     }
     
     public String getOntology() {
-        return ontology;
+        return ontologyIdentifier;
     }
     
     public String getDataVersion() {
@@ -271,7 +271,7 @@ public class OBO implements Serializable {
     }
     
     public OBO getOBOWithID(String id) {
-        if(this.ontology.equalsIgnoreCase(id))
+        if(this.ontologyIdentifier.equalsIgnoreCase(id))
             return this;
         
         OBO foundOBO = null;

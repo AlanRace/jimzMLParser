@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,12 +16,7 @@ import java.util.logging.Logger;
  * @see BinaryDataStorage
  * @see MzMLSpectrumDataStorage
  */
-public abstract class DataStorage implements Serializable {
-    
-    /**
-     * Serialisation version ID.
-     */
-    private static final long serialVersionUID = 1L;
+public abstract class DataStorage {
     
     /** Class logger. */
     private static final Logger LOGGER = Logger.getLogger(DataStorage.class.getName());
@@ -34,7 +28,7 @@ public abstract class DataStorage implements Serializable {
     private final RandomAccessFile randomAccessFile;
     
     /** Boolean to determine whether the RandomAccessFile is open or not. */
-    protected boolean fileStreamOpen = false;
+    private boolean fileStreamOpen = false;
     
     /**
      * Define a data storage by specifying the File containing the data.

@@ -11,7 +11,7 @@ public class UnfollowableXPathException extends InvalidXPathException {
     /**
      * The subset of the XPath where the issue occurred.
      */
-    protected String subXPath;
+    private final String subXPath;
     
     /**
      * Set up UnfollowableXPathException with a message and an unfollowable XPath.
@@ -21,6 +21,8 @@ public class UnfollowableXPathException extends InvalidXPathException {
      */
     protected UnfollowableXPathException(String message, String xPath) {
         super(message, xPath);
+        
+        this.subXPath = "";
     }
     
     /**
@@ -31,7 +33,7 @@ public class UnfollowableXPathException extends InvalidXPathException {
      * @param subXPath  The subset of the XPath where the issue occurred
      */
     public UnfollowableXPathException(String message, String xPath, String subXPath) {
-        this(message, xPath);
+        super(message, xPath);
         
         this.subXPath = subXPath;
     }

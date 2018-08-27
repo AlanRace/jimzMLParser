@@ -32,13 +32,12 @@ public abstract class MzMLContentList<T extends MzMLTag>
     /**
      * The list of MzMLTags.
      */
-    private List<T> list = null;
+    private List<T> list = Collections.emptyList();
 
     /**
      * Create an empty list, used by subclasses.
      */
     protected MzMLContentList() {
-//        list = new ArrayList<T>();
     }
 
     /**
@@ -47,7 +46,7 @@ public abstract class MzMLContentList<T extends MzMLTag>
      * @param count Initial capacity
      */
     public MzMLContentList(int count) {
-//        list = new ArrayList<T>(count);
+        // TODO: Rethink how to do this for the initial capacity
     }
 
     /**
@@ -73,9 +72,9 @@ public abstract class MzMLContentList<T extends MzMLTag>
             item.setParent(this);
         }
         
-        if (list instanceof ArrayList) {
+        if (list.size() > 1) {
             list.add(item);
-        } else if (list != null) {
+        } else if (list.size() == 1) {
             list = new ArrayList<T>(list);
             list.add(item);
         } else {
@@ -85,54 +84,37 @@ public abstract class MzMLContentList<T extends MzMLTag>
 
     @Override
     public T get(int index) {
-        if(list == null)
-            return null;
-        
         return list.get(index);
     }
 
     @Override
     public T remove(int index) {
-        if(list == null)
-            return null;
-        
         return list.remove(index);
     }
     
     @Override
     public boolean remove(T item) {
-        if(list == null)
-            return false;
-        
         return list.remove(item);
     }
 
     @Override
     public int indexOf(T item) {
-        if(list == null)
-            return -1;
-        
         return list.indexOf(item);
     }
 
     @Override
     public int size() {
-        if(list == null)
-            return 0;
-        
         return list.size();
     }
 
     @Override
     public void addChildrenToCollection(Collection<MzMLTag> children) {
-        if (list != null) {
-            children.addAll(list);
-        }
+        children.addAll(list);
     }
 
     @Override
     protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLTag> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
-        if (!fullXPath.equals(currentXPath) && list == null) {
+        if (!fullXPath.equals(currentXPath) && list.isEmpty()) {
             throw new UnfollowableXPathException("No " + getTagName() + " exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
         }
         
@@ -159,20 +141,6 @@ public abstract class MzMLContentList<T extends MzMLTag>
         return attributeText + "count=\"" + size() + "\"";
     }
 
-//    @Override
-//    protected void outputXMLContent(MzMLWritable output, int indent) throws IOException {
-//        int counter = 0;
-//        
-//        for (T item : this) {
-//            // 0 index for indexed content, but 1 for ordered content
-//            if(item instanceof MzMLIndexedContentWithParams)
-//                ((MzMLIndexedContentWithParams) item).outputXML(output, indent, counter++);
-//            else if(item instanceof MzMLOrderedContentWithParams)
-//                ((MzMLOrderedContentWithParams) item).outputXML(output, indent, ++counter);
-//            else
-//                item.outputXML(output, indent);
-//        }
-//    }
 
     @Override
     public String toString() {
@@ -181,23 +149,16 @@ public abstract class MzMLContentList<T extends MzMLTag>
 
     @Override
     public Iterator<T> iterator() {
-        if(list == null)
-            return Collections.emptyIterator();
-        
         return list.iterator();
     }
 
     @Override
-    public boolean contains(T item) {
-        if(list == null)
-            return false;
-        
+    public boolean contains(T item) {        
         return list.contains(item);
     }
     
     @Override
     public void clear() {
-        if(list != null)
-            list.clear();
+        list.clear();
     }
 }

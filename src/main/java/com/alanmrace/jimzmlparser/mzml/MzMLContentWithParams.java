@@ -22,17 +22,17 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
     /**
      * List of {@link ReferenceableParamGroup} references associated with this mzML tag.
      */
-    private List<ReferenceableParamGroupRef> referenceableParamGroupRefs = null;
+    private List<ReferenceableParamGroupRef> referenceableParamGroupRefs = Collections.emptyList();
 
     /**
      * List of CVParams associated with this mzML tag.
      */
-    private List<CVParam> cvParams = null;
+    private List<CVParam> cvParams = Collections.emptyList();
 
     /**
      * List of UserParams associated with this mzML tag.
      */
-    private List<UserParam> userParams = null;
+    private List<UserParam> userParams = Collections.emptyList();
     
     /**
      * Default constructor.
@@ -60,7 +60,7 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
      * @see UserParam
      */
     public MzMLContentWithParams(MzMLContentWithParams mzMLContent, ReferenceableParamGroupList rpgList) {
-        if (mzMLContent.referenceableParamGroupRefs != null) {
+        if (!mzMLContent.referenceableParamGroupRefs.isEmpty()) {
             referenceableParamGroupRefs = new ArrayList<ReferenceableParamGroupRef>(mzMLContent.referenceableParamGroupRefs.size());
 
             if (rpgList != null) {
@@ -75,7 +75,7 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
             }
         }
 
-        if (mzMLContent.cvParams != null && !mzMLContent.cvParams.isEmpty()) {
+        if (!mzMLContent.cvParams.isEmpty()) {
             cvParams = new ArrayList<CVParam>();
 
             for (CVParam cvParam : mzMLContent.cvParams) {
@@ -97,20 +97,7 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
             }
         }
 
-//		if(mzMLContent.longCVParams != null) {
-//			longCVParams = new ArrayList<CVParam<Long>>();
-//			
-//			for(CVParam<Long> cvParam : mzMLContent.longCVParams)
-//				longCVParams.add(new CVParam<Long>(cvParam));
-//		}
-//		
-//		if(mzMLContent.doubleCVParams != null) {
-//			doubleCVParams = new ArrayList<CVParam<Double>>();
-//			
-//			for(CVParam<Double> cvParam : mzMLContent.doubleCVParams)
-//				doubleCVParams.add(new CVParam<Double>(cvParam));
-//		}
-        if (mzMLContent.userParams != null) {
+        if (!mzMLContent.userParams.isEmpty()) {
             userParams = new ArrayList<UserParam>();
 
             for (UserParam userParam : mzMLContent.userParams) {
@@ -121,15 +108,9 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
     
     @Override
     public void addChildrenToCollection(Collection<MzMLTag> children) {
-        if (referenceableParamGroupRefs != null) {
-            children.addAll(referenceableParamGroupRefs);
-        }
-        if (cvParams != null) {
-            children.addAll(cvParams);
-        }
-        if (userParams != null) {
-            children.addAll(userParams);
-        }
+        children.addAll(referenceableParamGroupRefs);
+        children.addAll(cvParams);
+        children.addAll(userParams);
     }
 
     /**
@@ -138,47 +119,39 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
      * @return List of ReferenceableParamGroup references
      */
     protected List<ReferenceableParamGroupRef> getReferenceableParamGroupRefList() {
-//        if (referenceableParamGroupRefs == null) {
-//            referenceableParamGroupRefs = new ArrayList<ReferenceableParamGroupRef>();
-//        }
-
         return referenceableParamGroupRefs;
     }
 
     public ReferenceableParamGroup findBestFittingRPG(ReferenceableParamGroupList rpgList) {
-        if(rpgList != null) {
-            ReferenceableParamGroup bestFittingGroup = null;
-            
-            for(ReferenceableParamGroup rpg : rpgList) {
-                int numParamsFound = 0;
-                
-                for(CVParam cvParam : rpg.getCVParamList()) {
-                    CVParam curParam = this.getCVParam(cvParam.getTerm().getID());
-                    
-                    if(curParam != null && containsCVParam(curParam)) {
-                        String value1 = curParam.getValueAsString();
-                        String value2 = cvParam.getValueAsString();
-                        
-                        if((value1 == null && value2 == null) || (value1 != null && value2 != null && value1.equals(value2)))
-                            numParamsFound++;
-                    }
-                }
-                
-//                System.out.println("Found " + numParamsFound + " for " + rpg);
-                
-                if(numParamsFound == rpg.getCVParamCount()) {
-                    if(bestFittingGroup == null) {
-                        bestFittingGroup = rpg;
-                    } else if(numParamsFound > bestFittingGroup.getCVParamCount()) {
-                        bestFittingGroup = rpg;
+        if(rpgList == null) 
+            return null;
+        
+        ReferenceableParamGroup bestFittingGroup = null;
+
+        for (ReferenceableParamGroup rpg : rpgList) {
+            int numParamsFound = 0;
+
+            for (CVParam cvParam : rpg.getCVParamList()) {
+                CVParam curParam = this.getCVParam(cvParam.getTerm().getID());
+
+                if (curParam != null && containsCVParam(curParam)) {
+                    String value1 = curParam.getValueAsString();
+                    String value2 = cvParam.getValueAsString();
+
+                    if ((value1 == null && value2 == null) || (value1 != null && value2 != null && value1.equals(value2))) {
+                        numParamsFound++;
                     }
                 }
             }
-            
-            return bestFittingGroup;
+
+            if (numParamsFound == rpg.getCVParamCount()) {
+                if (bestFittingGroup == null || numParamsFound > bestFittingGroup.getCVParamCount()) {
+                    bestFittingGroup = rpg;
+                }
+            }
         }
-        
-        return null;
+
+        return bestFittingGroup;
     }
     
     public void replaceCVParamsWithRPG(ReferenceableParamGroup rpg) {
@@ -193,51 +166,29 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
     
     @Override
     public List<CVParam> getCVParamList() {
-//        if (cvParams == null) {
-//            cvParams = new ArrayList<CVParam>();
-//        }
-
         return cvParams;
     }
 
     @Override
     public List<UserParam> getUserParamList() {
-//        if (userParams == null) {
-//            userParams = new ArrayList<UserParam>();
-//        }
-
         return userParams;
     }
 
-//    @Override
-//    public List<OBOTermInclusion> getListOfRequiredCVParams() {
-//        return null;
-//    }
-
-//    @Override
-//    public List<OBOTermInclusion> getListOfOptionalCVParams() {
-//        return null;
-//    }
-
     @Override
     public void addReferenceableParamGroupRef(ReferenceableParamGroupRef rpg) {
-//		rpg.setParent(this);
-
         boolean exists = false;
 
-        if(referenceableParamGroupRefs != null) {
-            for (ReferenceableParamGroupRef ref : getReferenceableParamGroupRefList()) {
-                if (ref.getReference().getID().equals(rpg.getReference().getID())) {
-                    exists = true;
-                    break;
-                }
+        for (ReferenceableParamGroupRef ref : getReferenceableParamGroupRefList()) {
+            if (ref.getReference().getID().equals(rpg.getReference().getID())) {
+                exists = true;
+                break;
             }
         }
-        
+
         if (!exists) {
-            if(referenceableParamGroupRefs instanceof ArrayList) {
+            if(referenceableParamGroupRefs.size() > 1) {
                 referenceableParamGroupRefs.add(rpg);
-            } else if(referenceableParamGroupRefs != null) {
+            } else if(referenceableParamGroupRefs.size() == 1) {
                 referenceableParamGroupRefs = new ArrayList<ReferenceableParamGroupRef>(referenceableParamGroupRefs);
                 referenceableParamGroupRefs.add(rpg);
             } else {
@@ -248,28 +199,16 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
 
     @Override
     public int getReferenceableParamGroupRefCount() {
-        if (referenceableParamGroupRefs == null) {
-            return 0;
-        }
-
         return getReferenceableParamGroupRefList().size();
     }
 
     @Override
     public ReferenceableParamGroupRef getReferenceableParamGroupRef(int index) {
-        if (referenceableParamGroupRefs == null) {
-            return null;
-        }
-
         return getReferenceableParamGroupRefList().get(index);
     }
 
     @Override
     public ReferenceableParamGroupRef getReferenceableParamGroupRef(String id) {
-        if (referenceableParamGroupRefs == null) {
-            return null;
-        }
-
         for (ReferenceableParamGroupRef ref : referenceableParamGroupRefs) {
             if (ref.getReference().getID().equals(id)) {
                 return ref;
@@ -282,9 +221,9 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
     @Override
     public void addCVParam(CVParam cvParam) {
         if(cvParam != null) {
-            if (cvParams instanceof ArrayList) {
+            if (cvParams.size() > 1) {
                 cvParams.add(cvParam);
-            } else if (cvParams != null) {
+            } else if (cvParams.size() == 1) {
                 cvParams = new ArrayList<CVParam>(cvParams);
                 cvParams.add(cvParam);
             } else {
@@ -299,18 +238,11 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
     }
 
     public boolean containsCVParam(CVParam param) {
-        if(cvParams == null)
-            return false;
-        
         return cvParams.contains(param);
     }
     
     @Override
     public void removeCVParam(int index) {
-        if (cvParams == null) {
-            return;
-        }
-        
         CVParam paramRemoved = getCVParamList().remove(index);
         
         if(hasListeners())
@@ -321,7 +253,7 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
     
     @Override
     public void removeCVParam(CVParam param) {
-        if (cvParams != null && cvParams.remove(param)) {
+        if (cvParams.remove(param)) {
             if (hasListeners()) {
                 notifyListeners(new CVParamRemovedEvent(this, param));
             }
@@ -332,10 +264,6 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
 
     @Override
     public void removeCVParam(String id) {
-        if (cvParams == null) {
-            return;
-        }
-
         ArrayList<CVParam> cvParamList = new ArrayList<CVParam>();
 
         for (CVParam cvParam : cvParams) {
@@ -356,10 +284,6 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
 
     @Override
     public void removeChildrenOfCVParam(String id, boolean includeCurrent) {
-        if (cvParams == null) {
-            return;
-        }
-
         List<CVParam> children = getChildrenOf(id, includeCurrent);
 
         for (CVParam cvParam : children) {
@@ -375,9 +299,9 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
     @Override
     public void addUserParam(UserParam userParam) {        
         if(userParam != null) {
-            if (userParams instanceof ArrayList) {
+            if (userParams.size() > 1) {
                 userParams.add(userParam);
-            } else if (userParams != null) {
+            } else if (userParams.size() == 1) {
                 userParams = new ArrayList<UserParam>(userParams);
                 userParams.add(userParam);
             } else {
@@ -390,35 +314,27 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
 
     @Override
     public void removeUserParam(int index) {
-        if (userParams == null) {
-            return;
-        }
-
         UserParam removedParam = userParams.remove(index);
         removedParam.setParent(null);
     }
 
     @Override
     public CVParam getCVParam(String id) {
-        if (referenceableParamGroupRefs != null) {
-            for (ReferenceableParamGroupRef ref : referenceableParamGroupRefs) {
-                if (ref == null) {
-                    continue;
-                }
+        for (ReferenceableParamGroupRef ref : referenceableParamGroupRefs) {
+            if (ref == null) {
+                continue;
+            }
 
-                CVParam cvParam = ref.getReference().getCVParam(id);
+            CVParam cvParam = ref.getReference().getCVParam(id);
 
-                if (cvParam != null) {
-                    return cvParam;
-                }
+            if (cvParam != null) {
+                return cvParam;
             }
         }
 
-        if (cvParams != null) {
-            for (CVParam cvParam : cvParams) {
-                if (cvParam.getTerm().getID().equals(id)) {
-                    return cvParam;
-                }
+        for (CVParam cvParam : cvParams) {
+            if (cvParam.getTerm().getID().equals(id)) {
+                return cvParam;
             }
         }
 
@@ -427,49 +343,37 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
 
     @Override
     public CVParam getCVParam(int index) {
-        if (cvParams == null) {
-            return null;
-        }
-
         return cvParams.get(index);
     }
 
     @Override
     public int getCVParamCount() {
-        if (cvParams == null) {
-            return 0;
-        }
-
         return cvParams.size();
     }
 
     @Override
     public CVParam getCVParamOrChild(String id) {
-        if (referenceableParamGroupRefs != null) {
-            for (ReferenceableParamGroupRef ref : referenceableParamGroupRefs) {
-                if (ref == null) {
-                    continue;
-                }
+        for (ReferenceableParamGroupRef ref : referenceableParamGroupRefs) {
+            if (ref == null) {
+                continue;
+            }
 
-                CVParam cvParam = ref.getReference().getCVParam(id);
+            CVParam cvParam = ref.getReference().getCVParam(id);
 
-                if (cvParam != null) {
-                    return cvParam;
-                }
+            if (cvParam != null) {
+                return cvParam;
+            }
 
-                List<CVParam> children = ref.getReference().getChildrenOf(id, false);
+            List<CVParam> children = ref.getReference().getChildrenOf(id, false);
 
-                if (!children.isEmpty()) {
-                    return children.get(0);
-                }
+            if (!children.isEmpty()) {
+                return children.get(0);
             }
         }
-
-        if (cvParams != null) {
-            for (CVParam cvParam : cvParams) {
-                if (cvParam.getTerm().getID().equals(id)) {
-                    return cvParam;
-                }
+        
+        for (CVParam cvParam : cvParams) {
+            if (cvParam.getTerm().getID().equals(id)) {
+                return cvParam;
             }
         }
 
@@ -484,25 +388,21 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
 
     @Override
     public UserParam getUserParam(String name) {
-        if (referenceableParamGroupRefs != null) {
-            for (ReferenceableParamGroupRef ref : referenceableParamGroupRefs) {
-                if (ref == null) {
-                    continue;
-                }
+        for (ReferenceableParamGroupRef ref : referenceableParamGroupRefs) {
+            if (ref == null) {
+                continue;
+            }
 
-                UserParam userParam = ref.getReference().getUserParam(name);
+            UserParam userParam = ref.getReference().getUserParam(name);
 
-                if (userParam != null) {
-                    return userParam;
-                }
+            if (userParam != null) {
+                return userParam;
             }
         }
 
-        if (userParams != null) {
-            for (UserParam userParam : userParams) {
-                if (userParam.getName().equals(name)) {
-                    return userParam;
-                }
+        for (UserParam userParam : userParams) {
+            if (userParam.getName().equals(name)) {
+                return userParam;
             }
         }
 
@@ -511,10 +411,6 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
 
     @Override
     public UserParam getUserParam(int index) {
-        if (userParams == null) {
-            return null;
-        }
-
         return userParams.get(index);
     }
 
@@ -522,24 +418,21 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
     public List<CVParam> getChildrenOf(String id, boolean includeCurrent) {
         List<CVParam> children = new LinkedList<CVParam>();
 
-        if (referenceableParamGroupRefs != null) {
-            for (ReferenceableParamGroupRef ref : referenceableParamGroupRefs) {
-                if (ref == null) {
-                    continue;
-                }
-
-                children.addAll(ref.getReference().getChildrenOf(id, includeCurrent));
+        for (ReferenceableParamGroupRef ref : referenceableParamGroupRefs) {
+            if (ref == null) {
+                continue;
             }
+
+            children.addAll(ref.getReference().getChildrenOf(id, includeCurrent));
         }
 
-        if (cvParams != null) {
-            for (CVParam cvParam : cvParams) {
-                if (cvParam.getTerm().isChildOf(id)) {
-                    children.add(cvParam);
-                }
-                
-                if(includeCurrent && cvParam.getTerm().getID().equals(id))
-                    children.add(cvParam);
+        for (CVParam cvParam : cvParams) {
+            if (cvParam.getTerm().isChildOf(id)) {
+                children.add(cvParam);
+            }
+
+            if (includeCurrent && cvParam.getTerm().getID().equals(id)) {
+                children.add(cvParam);
             }
         }
 
