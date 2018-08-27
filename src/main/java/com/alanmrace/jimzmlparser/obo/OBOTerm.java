@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 public class OBOTerm implements Serializable {
 
     /** Class logger. */
-    private static final Logger logger = Logger.getLogger(OBOTerm.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(OBOTerm.class.getName());
     
     /**
      * Serialisation version.
@@ -446,7 +446,7 @@ public class OBOTerm implements Serializable {
                 } else if("anyURI".equals(substrings[0])) {
                     valueType = XMLType.AnyURI;
                 } else {
-                    logger.log(Level.INFO, "Unknown value-type encountered ''{0}'' @ {1}", new Object[] {value, id});
+                    LOGGER.log(Level.INFO, "Unknown value-type encountered ''{0}'' @ {1}", new Object[] {value, id});
                 }
 //            } else {
                 //logger.log(Level.INFO, "INFO: Unknown xref encountered ''{0}'' @ {1}", new Object[] {value, id});
@@ -514,11 +514,11 @@ public class OBOTerm implements Serializable {
      * @return true if a parent term is found to have the specified id, false otherwise
      */
     public boolean isParentOf(String id) {
-        if (this.id.equals(id)) {
-            return true;
-        }
+//        if (this.id.equals(id)) {
+//            return true;
+//        }
 
-        for (OBOTerm child : getAllChildren()) {
+        for (OBOTerm child : getAllChildren(false)) {
             if (child.getID().equals(id)) {
                 return true;
             }
@@ -534,11 +534,13 @@ public class OBOTerm implements Serializable {
      * @return true if a child term is found to have the specified id, false otherwise
      */
     public boolean isChildOf(String id) {
-        if (this.id.equals(id)) {
-            return true;
-        }
+//        if (this.id.equals(id)) {
+//            return true;
+//        }
 
-        for (OBOTerm parent : getAllParents()) {
+        for (OBOTerm parent : getAllParents(false)) {
+            LOGGER.log(Level.FINEST, "In isChildOf() checking parent {0}", parent);
+            
             if (parent.getID().equals(id)) {
                 return true;
             }
@@ -560,14 +562,15 @@ public class OBOTerm implements Serializable {
      * Get all terms which have been previously added as child terms, as well as 
      * all of their child terms (repeated recursively).
      * 
+     * @param includeThis Whether to include the current OBOTerm in the list of returned children
      * @return List of all child terms
      */
-    public List<OBOTerm> getAllChildren() {
+    public List<OBOTerm> getAllChildren(boolean includeThis) {
         ArrayList<OBOTerm> allChildren = new ArrayList<OBOTerm>();
 
         if(children != null) {
             for (OBOTerm child : children) {
-                child.getAllChildren(allChildren);
+                child.getAllChildren(allChildren, includeThis);
             }
         }
 
@@ -581,12 +584,13 @@ public class OBOTerm implements Serializable {
      * 
      * @param allChildren list to add all children to
      */
-    private void getAllChildren(List<OBOTerm> allChildren) {
-        allChildren.add(this);
+    private void getAllChildren(List<OBOTerm> allChildren, boolean includeThis) {
+        if(includeThis)
+            allChildren.add(this);
 
         if(children != null) {
             for (OBOTerm child : children) {
-                child.getAllChildren(allChildren);
+                child.getAllChildren(allChildren, true);
             }
         }
     }
@@ -595,18 +599,35 @@ public class OBOTerm implements Serializable {
      * Get all terms which have been previously added as parent terms, as well as 
      * all of their parent terms (repeated recursively).
      * 
+     * @param includeThis Whether to include the current OBOTerm in the list of returned parents
      * @return List of all parent terms
      */
-    public List<OBOTerm> getAllParents() {
+    public List<OBOTerm> getAllParents(boolean includeThis) {
         ArrayList<OBOTerm> allParents = new ArrayList<OBOTerm>();
+
+        LOGGER.log(Level.FINEST, "Getting all parents of {0}, which has {1} parent(s)", new Object[] {this.id, parents.size()});
+        
+        getAllParents(allParents, includeThis);
+
+        return allParents;
+    }
+    
+    /**
+     * Get all terms which have been previously added as parent terms, as well as 
+     * all of their parent terms (repeated recursively) and add to the specified 
+     * allParents list.
+     * 
+     * @param allParents list to add all parents to
+     */
+    private void getAllParents(List<OBOTerm> allParents, boolean includeThis) {
+        if(includeThis)
+            allParents.add(this);
 
         if(parents != null) {
             for (OBOTerm parent : parents) {
-                parent.getAllParents(allParents);
+                parent.getAllParents(allParents, true);
             }
         }
-
-        return allParents;
     }
     
     /**
@@ -617,24 +638,7 @@ public class OBOTerm implements Serializable {
      * @return true if the parent term was found, false otherwise
      */
     public boolean hasParent(OBOTerm term) {
-        return getAllParents().contains(term);
-    }
-
-    /**
-     * Get all terms which have been previously added as parent terms, as well as 
-     * all of their parent terms (repeated recursively) and add to the specified 
-     * allParents list.
-     * 
-     * @param allParents list to add all parents to
-     */
-    private void getAllParents(List<OBOTerm> allParents) {
-        allParents.add(this);
-
-        if(parents != null) {
-            for (OBOTerm parent : parents) {
-                parent.getAllParents(allParents);
-            }
-        }
+        return getAllParents(false).contains(term);
     }
 
     /**

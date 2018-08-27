@@ -26,6 +26,8 @@ import java.util.zip.DataFormatException;
  * @author Alan Race
  */
 public class BinaryDataArray extends MzMLContentWithParams implements Serializable {
+    
+    private final static Logger LOGGER = Logger.getLogger(BinaryDataArray.class.getName());
 
     /**
      * Serialisation version ID.
@@ -824,11 +826,15 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
 
     @Override
     public void addCVParam(CVParam cvParam) {
+        LOGGER.log(Level.FINEST, "Adding CVParam to BinaryDataArray {0}", cvParam);
+        
         // Check if the cvParam is a binaryDataType
         if (cvParam.getTerm().isChildOf(binaryDataArrayID)) {
             String term = cvParam.getTerm().getID();
 
             if (term.equals(mzArrayID)) {
+                LOGGER.log(Level.FINEST, "Found m/z array");
+                
                 ismzArray = true;
             } else if (term.equals(intensityArrayID)) {
                 isIntensityArray = true;
@@ -877,7 +883,7 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
      * @param compression Compression
      */
     public void setCompression(BinaryDataArray.CompressionType compression) {        
-        this.removeChildOfCVParam(BinaryDataArray.compressionTypeID);
+        this.removeChildrenOfCVParam(BinaryDataArray.compressionTypeID, false);
         this.addCVParam(new EmptyCVParam(BinaryDataArray.CompressionType.toOBOTerm(compression)));
     }
     
@@ -912,7 +918,7 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
                 break;
         }
         
-        this.removeChildOfCVParam(BinaryDataArray.dataTypeID);
+        this.removeChildrenOfCVParam(BinaryDataArray.dataTypeID, false);
         this.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(newDataTypeID)));
     }
     

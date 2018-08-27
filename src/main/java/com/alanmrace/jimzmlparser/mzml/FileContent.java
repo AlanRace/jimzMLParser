@@ -99,7 +99,7 @@ public class FileContent extends MzMLContentWithParams {
      * @return List of CVParam
      */
     public List<CVParam> getDataFileContents() {
-        return getChildrenOf(dataFileContentID);
+        return getChildrenOf(dataFileContentID, false);
     }
 
     @Override

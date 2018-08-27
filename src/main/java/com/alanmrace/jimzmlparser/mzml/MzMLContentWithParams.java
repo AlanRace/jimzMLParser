@@ -355,12 +355,12 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
     }
 
     @Override
-    public void removeChildOfCVParam(String id) {
+    public void removeChildrenOfCVParam(String id, boolean includeCurrent) {
         if (cvParams == null) {
             return;
         }
 
-        List<CVParam> children = getChildrenOf(id);
+        List<CVParam> children = getChildrenOf(id, includeCurrent);
 
         for (CVParam cvParam : children) {
             cvParams.remove(cvParam);
@@ -457,7 +457,7 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
                     return cvParam;
                 }
 
-                List<CVParam> children = ref.getReference().getChildrenOf(id);
+                List<CVParam> children = ref.getReference().getChildrenOf(id, false);
 
                 if (!children.isEmpty()) {
                     return children.get(0);
@@ -473,7 +473,7 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
             }
         }
 
-        List<CVParam> children = getChildrenOf(id);
+        List<CVParam> children = getChildrenOf(id, false);
 
         if (!children.isEmpty()) {
             return children.get(0);
@@ -519,7 +519,7 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
     }
 
     @Override
-    public List<CVParam> getChildrenOf(String id) {
+    public List<CVParam> getChildrenOf(String id, boolean includeCurrent) {
         List<CVParam> children = new LinkedList<CVParam>();
 
         if (referenceableParamGroupRefs != null) {
@@ -528,7 +528,7 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
                     continue;
                 }
 
-                children.addAll(ref.getReference().getChildrenOf(id));
+                children.addAll(ref.getReference().getChildrenOf(id, includeCurrent));
             }
         }
 
@@ -537,6 +537,9 @@ public abstract class MzMLContentWithParams extends MzMLContentWithChildren impl
                 if (cvParam.getTerm().isChildOf(id)) {
                     children.add(cvParam);
                 }
+                
+                if(includeCurrent && cvParam.getTerm().getID().equals(id))
+                    children.add(cvParam);
             }
         }
 

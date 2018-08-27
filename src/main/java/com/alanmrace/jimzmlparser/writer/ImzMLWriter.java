@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -132,7 +131,7 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
             
             // Update the imzML header information about storage type
             FileContent fileContent = mzML.getFileDescription().getFileContent();
-            fileContent.removeChildOfCVParam(FileContent.binaryTypeID);
+            fileContent.removeChildrenOfCVParam(FileContent.binaryTypeID, false);
 
             switch (outputType) {
                 case Continuous:
@@ -147,12 +146,12 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
             // Make sure that any referanceableParamGroup for the data arrays state that the data is external
             ReferenceableParamGroup rpgmzArray = mzML.getReferenceableParamGroupList().getReferenceableParamGroup("mzArray");
             if(rpgmzArray != null) {
-                rpgmzArray.removeChildOfCVParam(BinaryDataArray.externalDataID);
+                rpgmzArray.removeCVParam(BinaryDataArray.externalDataID);
                 rpgmzArray.addCVParam(new BooleanCVParam(OBO.getOBO().getTerm(BinaryDataArray.externalDataID), true));
             }
             ReferenceableParamGroup rpgintensityArray = mzML.getReferenceableParamGroupList().getReferenceableParamGroup("intensityArray");
             if(rpgintensityArray != null) {
-                rpgintensityArray.removeChildOfCVParam(BinaryDataArray.externalDataID);
+                rpgintensityArray.removeCVParam(BinaryDataArray.externalDataID);
                 rpgintensityArray.addCVParam(new BooleanCVParam(OBO.getOBO().getTerm(BinaryDataArray.externalDataID), true));
             }
 
@@ -239,7 +238,7 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
             fileContent.addCVParam(new StringCVParam(OBO.getOBO().getTerm(FileContent.uuidIdntificationID), uuid.toString()));
 
             // Update SHA-1
-            fileContent.removeChildOfCVParam(FileContent.ibdChecksumID);
+            fileContent.removeChildrenOfCVParam(FileContent.ibdChecksumID, false);
             fileContent.addCVParam(new StringCVParam(OBO.getOBO().getTerm(FileContent.sha1ChecksumID), HexHelper.byteArrayToHexString(messageDigest.digest())));
 
             // Update max x and max y coordinates

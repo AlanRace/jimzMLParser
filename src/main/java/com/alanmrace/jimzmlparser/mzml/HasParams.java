@@ -51,9 +51,10 @@ public interface HasParams {
      * associated with this MzMLContent.
      * 
      * @param id Ontology ID
+     * @param includeCurrent Whether to include the ID specified (if it exists) in the list of children
      * @return List of CVParams which have IDs listed as children of the input ontology ID
      */
-    public List<CVParam> getChildrenOf(String id);
+    public List<CVParam> getChildrenOf(String id, boolean includeCurrent);
     
     /**
      * Get the list of CVParams associated with this MzMLContent.
@@ -94,9 +95,10 @@ public interface HasParams {
      * Remove all cvParams which are defined as children of the specified ontology term 
      * with the ID id. 
      * 
-     * @param id Ontology ID
+     * @param id Ontology ID 
+     * @param includeCurrent Whether to remove the ID specified (if it exists) rather than solely children
      */
-    public void removeChildOfCVParam(String id);
+    public void removeChildrenOfCVParam(String id, boolean includeCurrent);
         
     /**
      * Add userParam to MzMLContent.
