@@ -27,7 +27,7 @@ import java.util.List;
  * @see TargetList
  */
 public abstract class MzMLContentList<T extends MzMLTag>
-        extends MzMLContentWithChildren implements MzMLTagList<T> {
+        extends MzMLContent implements MzMLTagList<T>, HasChildren {
 
     /**
      * The list of MzMLTags.

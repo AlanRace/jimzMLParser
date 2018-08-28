@@ -6,7 +6,7 @@ package com.alanmrace.jimzmlparser.mzml;
  * 
  * @author Alan Race
  */
-public class SoftwareRef extends MzMLReference<Software> { //, MutableTreeNode {
+public class SoftwareRef extends MzMLReference<Software> { 
 
     /**
      * Serialisation version ID.

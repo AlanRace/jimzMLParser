@@ -53,6 +53,12 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Alan Race
  */
 public class MzMLHeaderHandler extends DefaultHandler {
+    
+    public static final String ACCESSION_ATTRIBUTE_NAME = "accession";
+    public static final String VALUE_ATTRIBUTE_NAME = "value";
+    public static final String UNIT_ACCESSION_ATTRIBUTE_NAME = "unitAccession";
+    public static final String ID_ATTRIBUTE_NAME = "id";
+    public static final String COUNT_ATTRIBUTE_NAME = "count";
 
     /**
      * Class logger.
@@ -248,7 +254,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
     /**
      * Current tag.
      */
-    protected MzMLContentWithChildren currentContent;
+    protected MzMLContent currentContent;
 
     // Flags for tags that share the same sub-tags
     /**
@@ -427,7 +433,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
     }
 
     protected int getCountAttribute(Attributes attributes) {
-        String countString = attributes.getValue("count");
+        String countString = attributes.getValue(COUNT_ATTRIBUTE_NAME);
         int count;
 
         if (countString == null) {
@@ -439,19 +445,19 @@ public class MzMLHeaderHandler extends DefaultHandler {
         return count;
     }
 
-    private void startCVParam(Attributes attributes) {
+    protected void startCVParam(Attributes attributes) {
         if (currentContent != null) {
-            String accession = attributes.getValue("accession");
+            String accession = attributes.getValue(ACCESSION_ATTRIBUTE_NAME);
 
             OBOTerm term = obo.getTerm(accession);
 
             // If the term does not exist within any OBO, convert to UserParam for the sake of continuing parsing
             // Notify listeners of the fact that an issue occured and we attempted to resolve it
             if (term == null) {
-                UserParam userParam = new UserParam(attributes.getValue("accession"), attributes.getValue("value"), obo.getTerm(attributes.getValue("unitAccession")));
+                UserParam userParam = new UserParam(attributes.getValue(ACCESSION_ATTRIBUTE_NAME), attributes.getValue(VALUE_ATTRIBUTE_NAME), obo.getTerm(attributes.getValue(UNIT_ACCESSION_ATTRIBUTE_NAME)));
                 ((MzMLContentWithParams) currentContent).addUserParam(userParam);
 
-                CVParamAccessionNotFoundIssue notFound = new CVParamAccessionNotFoundIssue(attributes.getValue("accession"), userParam);
+                CVParamAccessionNotFoundIssue notFound = new CVParamAccessionNotFoundIssue(attributes.getValue(ACCESSION_ATTRIBUTE_NAME), userParam);
 
                 notFound.setIssueLocation(currentContent);
 
@@ -468,8 +474,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
                     CVParam.CVParamType paramType = CVParam.getCVParamType(term);
                     CVParam cvParam;
 
-                    String value = attributes.getValue("value");
-                    OBOTerm units = obo.getTerm(attributes.getValue("unitAccession"));
+                    String value = attributes.getValue(VALUE_ATTRIBUTE_NAME);
+                    OBOTerm units = obo.getTerm(attributes.getValue(UNIT_ACCESSION_ATTRIBUTE_NAME));
 
                     try {
                         switch (paramType) {
@@ -480,7 +486,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                                 cvParam = new EmptyCVParam(term, units);
 
                                 if (value != null && !value.isEmpty()) {
-                                    InvalidFormatIssue formatIssue = new InvalidFormatIssue(term, attributes.getValue("value"));
+                                    InvalidFormatIssue formatIssue = new InvalidFormatIssue(term, attributes.getValue(VALUE_ATTRIBUTE_NAME));
                                     formatIssue.setIssueLocation(currentContent);
 
                                     notifyParserListeners(formatIssue);
@@ -499,7 +505,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                                 cvParam = new IntegerCVParam(term, Integer.parseInt(value), units);
                                 break;
                             default:
-                                cvParam = new StringCVParam(term, attributes.getValue("value"), obo.getTerm(attributes.getValue("unitAccession")));
+                                cvParam = new StringCVParam(term, attributes.getValue(VALUE_ATTRIBUTE_NAME), obo.getTerm(attributes.getValue(UNIT_ACCESSION_ATTRIBUTE_NAME)));
 
                                 InvalidFormatIssue formatIssue = new InvalidFormatIssue(term, paramType);
                                 formatIssue.fixAttemptedByChangingType((StringCVParam) cvParam);
@@ -509,9 +515,9 @@ public class MzMLHeaderHandler extends DefaultHandler {
                                 break;
                         }
                     } catch (NumberFormatException nfe) {
-                        cvParam = new StringCVParam(term, attributes.getValue("value"), obo.getTerm(attributes.getValue("unitAccession")));
+                        cvParam = new StringCVParam(term, attributes.getValue(VALUE_ATTRIBUTE_NAME), obo.getTerm(attributes.getValue(UNIT_ACCESSION_ATTRIBUTE_NAME)));
 
-                        InvalidFormatIssue formatIssue = new InvalidFormatIssue(term, attributes.getValue("value"));
+                        InvalidFormatIssue formatIssue = new InvalidFormatIssue(term, attributes.getValue(VALUE_ATTRIBUTE_NAME));
                         formatIssue.fixAttemptedByChangingType((StringCVParam) cvParam);
                         formatIssue.setIssueLocation(currentContent);
 
@@ -538,7 +544,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
         }
     }
 
-    private void startReferenceableParamGroupRef(Attributes attributes) {
+    protected void startReferenceableParamGroupRef(Attributes attributes) {
         boolean foundReference = false;
 
         if (referenceableParamGroupList != null) {
@@ -564,7 +570,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
         }
     }
 
-    private void startRun(Attributes attributes) {
+    protected void startRun(Attributes attributes) {
         String instrumentConfigurationRef = attributes.getValue("defaultInstrumentConfigurationRef");
 
         InstrumentConfiguration instrumentConfiguration = null;
@@ -578,7 +584,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
         }
 
         if (instrumentConfiguration != null) {
-            run = new Run(attributes.getValue("id"), instrumentConfiguration);
+            run = new Run(attributes.getValue(ID_ATTRIBUTE_NAME), instrumentConfiguration);
         } else {
             MissingReferenceIssue missingRefIssue = new MissingReferenceIssue(instrumentConfigurationRef, "run", "defaultInstrumentConfigurationRef");
             missingRefIssue.setIssueLocation(currentContent);
@@ -589,11 +595,11 @@ public class MzMLHeaderHandler extends DefaultHandler {
             if (currentInstrumentConfiguration != null) {
                 missingRefIssue.fixAttemptedByChangingReference(currentInstrumentConfiguration);
 
-                run = new Run(attributes.getValue("id"), currentInstrumentConfiguration);
+                run = new Run(attributes.getValue(ID_ATTRIBUTE_NAME), currentInstrumentConfiguration);
             } else {
                 missingRefIssue.fixAttemptedByRemovingReference();
 
-                run = new Run(attributes.getValue("id"), null);
+                run = new Run(attributes.getValue(ID_ATTRIBUTE_NAME), null);
             }
 
             notifyParserListeners(missingRefIssue);
@@ -686,8 +692,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
         currentContent = run;
     }
 
-    private void startInstrumentConfiguration(Attributes attributes) {
-        currentInstrumentConfiguration = new InstrumentConfiguration(attributes.getValue("id"));
+    protected void startInstrumentConfiguration(Attributes attributes) {
+        currentInstrumentConfiguration = new InstrumentConfiguration(attributes.getValue(ID_ATTRIBUTE_NAME));
 
         String scanSettingsRef = attributes.getValue("scanSettingsRef");
 
@@ -714,7 +720,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
         currentContent = currentInstrumentConfiguration;
     }
 
-    private void startScan(Attributes attributes) {
+    protected void startScan(Attributes attributes) {
         currentScan = new Scan();
 
         if (attributes.getValue("externalSpectrumID") != null) {
@@ -794,7 +800,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
         currentContent = currentScan;
     }
 
-    private void startPrecursor(Attributes attributes) {
+    protected void startPrecursor(Attributes attributes) {
         processingPrecursor = true;
         currentPrecursor = new Precursor();
 
@@ -840,7 +846,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
         }
     }
 
-    private void startProcessingMethod(Attributes attributes) {
+    protected void startProcessingMethod(Attributes attributes) {
         String softwareRef = attributes.getValue("softwareRef");
 
         boolean referenceFound = false;
@@ -876,7 +882,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
         }
     }
 
-    private void startBinaryDataArray(Attributes attributes) {
+    protected void startBinaryDataArray(Attributes attributes) {
         currentBinaryDataArray = new BinaryDataArray(Integer.parseInt(attributes.getValue("encodedLength")));
 
         if (attributes.getValue("arrayLength") != null) {
@@ -916,7 +922,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
         currentContent = currentBinaryDataArray;
     }
 
-    private void startSpectrumList(Attributes attributes) {
+    protected void startSpectrumList(Attributes attributes) {
         String defaultDataProcessingRef = attributes.getValue("defaultDataProcessingRef");
         DataProcessing dataProcessing = null;
 
@@ -926,7 +932,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             dataProcessing = dataProcessingList.getDataProcessing(defaultDataProcessingRef);
 
             if (dataProcessing != null) {
-                numberOfSpectra = Integer.parseInt(attributes.getValue("count"));
+                numberOfSpectra = Integer.parseInt(attributes.getValue(COUNT_ATTRIBUTE_NAME));
                 foundRef = true;
             }
         }
@@ -952,8 +958,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
         run.setSpectrumList(spectrumList);
     }
 
-    private void startSpectrum(Attributes attributes) {
-        currentSpectrum = new Spectrum(attributes.getValue("id"), Integer.parseInt(attributes.getValue("defaultArrayLength")));
+    protected void startSpectrum(Attributes attributes) {
+        currentSpectrum = new Spectrum(attributes.getValue(ID_ATTRIBUTE_NAME), Integer.parseInt(attributes.getValue("defaultArrayLength")));
 
         String dataProcessingRef = attributes.getValue("dataProcessingRef");
 
@@ -1021,7 +1027,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
         currentContent = currentSpectrum;
     }
 
-    private void startChromatogramList(Attributes attributes) {
+    protected void startChromatogramList(Attributes attributes) {
         String defaultDataProcessingRef = attributes.getValue("defaultDataProcessingRef");
 
         if (defaultDataProcessingRef != null) {
@@ -1034,7 +1040,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             }
 
             if (dataProcessing != null) {
-                chromatogramList = new ChromatogramList(Integer.parseInt(attributes.getValue("count")), dataProcessing);
+                chromatogramList = new ChromatogramList(Integer.parseInt(attributes.getValue(COUNT_ATTRIBUTE_NAME)), dataProcessing);
             } else {
                 throw new FatalRuntimeParseException(new InvalidMzMLIssue("Can't find defaultDataProcessingRef '" + defaultDataProcessingRef + "' referenced by chromatogramList.", ""));
             }
@@ -1050,9 +1056,9 @@ public class MzMLHeaderHandler extends DefaultHandler {
         }
     }
 
-    private void startChromatogram(Attributes attributes) {
+    protected void startChromatogram(Attributes attributes) {
         processingChromatogram = true;
-        currentChromatogram = new Chromatogram(attributes.getValue("id"), Integer.parseInt(attributes.getValue("defaultArrayLength")));
+        currentChromatogram = new Chromatogram(attributes.getValue(ID_ATTRIBUTE_NAME), Integer.parseInt(attributes.getValue("defaultArrayLength")));
 
         String dataProcessingRef = attributes.getValue("dataProcessingRef");
 
@@ -1083,7 +1089,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
         currentContent = currentChromatogram;
     }
 
-    private void startUserParam(Attributes attributes) {
+    protected void startUserParam(Attributes attributes) {
         if (currentContent != null) {
             UserParam userParam = new UserParam(attributes.getValue("name"));
 
@@ -1091,34 +1097,34 @@ public class MzMLHeaderHandler extends DefaultHandler {
             if (type != null) {
                 userParam.setType(type);
             }
-            String value = attributes.getValue("value");
+            String value = attributes.getValue(VALUE_ATTRIBUTE_NAME);
             if (value != null) {
                 userParam.setValue(value);
             }
 
-            userParam.setUnits(obo.getTerm(attributes.getValue("unitAccession")));
+            userParam.setUnits(obo.getTerm(attributes.getValue(UNIT_ACCESSION_ATTRIBUTE_NAME)));
             ((MzMLContentWithParams) currentContent).addUserParam(userParam);
         }
     }
 
-    private void startMzML(Attributes attributes) {
+    protected void startMzML(Attributes attributes) {
         mzML = new MzML(attributes.getValue("version"));
 
         mzML.setDataStorage(dataStorage);
         mzML.setOBO(obo);
 
         // Add optional attributes
-        if (attributes.getValue("accession") != null) {
-            mzML.setAccession(attributes.getValue("accession"));
+        if (attributes.getValue(ACCESSION_ATTRIBUTE_NAME) != null) {
+            mzML.setAccession(attributes.getValue(ACCESSION_ATTRIBUTE_NAME));
         }
 
-        if (attributes.getValue("id") != null) {
-            mzML.setID(attributes.getValue("id"));
+        if (attributes.getValue(ID_ATTRIBUTE_NAME) != null) {
+            mzML.setID(attributes.getValue(ID_ATTRIBUTE_NAME));
         }
     }
 
-    private void startCVList(Attributes attributes) {
-        cvList = new CVList(Integer.parseInt(attributes.getValue("count")));
+    protected void startCVList(Attributes attributes) {
+        cvList = new CVList(Integer.parseInt(attributes.getValue(COUNT_ATTRIBUTE_NAME)));
 
         try {
             mzML.setCVList(cvList);
@@ -1127,17 +1133,17 @@ public class MzMLHeaderHandler extends DefaultHandler {
         }
     }
 
-    private void startCV(Attributes attributes) {
-        OBO childOBO = OBO.getOBO().getOBOWithID(attributes.getValue("id"));
+    protected void startCV(Attributes attributes) {
+        OBO childOBO = OBO.getOBO().getOBOWithID(attributes.getValue(ID_ATTRIBUTE_NAME));
 
         if (childOBO != null) {
             cvList.add(new CV(childOBO));
         } else {
-            System.out.println("WEIRD ONTOLOGY FOUND! " + attributes.getValue("id"));
+            LOGGER.log(Level.SEVERE, "WEIRD ONTOLOGY FOUND! {0}", attributes.getValue(ID_ATTRIBUTE_NAME));
         }
     }
 
-    private void startFileContent(Attributes attributes) {
+    protected void startFileContent() {
         FileContent fc = new FileContent();
 
         try {
@@ -1149,8 +1155,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
         currentContent = fc;
     }
 
-    private void startSourceFileList(Attributes attributes) {
-        sourceFileList = new SourceFileList(Integer.parseInt(attributes.getValue("count")));
+    protected void startSourceFileList(Attributes attributes) {
+        sourceFileList = new SourceFileList(Integer.parseInt(attributes.getValue(COUNT_ATTRIBUTE_NAME)));
 
         try {
             fileDescription.setSourceFileList(sourceFileList);
@@ -1159,8 +1165,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
         }
     }
 
-    private void startSourceFile(Attributes attributes) {
-        SourceFile sf = new SourceFile(attributes.getValue("id"), attributes.getValue("location"), attributes.getValue("name"));
+    protected void startSourceFile(Attributes attributes) {
+        SourceFile sf = new SourceFile(attributes.getValue(ID_ATTRIBUTE_NAME), attributes.getValue("location"), attributes.getValue("name"));
 
         try {
             sourceFileList.addSourceFile(sf);
@@ -1171,7 +1177,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
         currentContent = sf;
     }
 
-    private void startContact(Attributes attributes) {
+    protected void startContact() {
         Contact contact = new Contact();
 
         try {
@@ -1183,7 +1189,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
         currentContent = contact;
     }
 
-    private void startReferenceableParamGroupList(Attributes attributes) {
+    protected void startReferenceableParamGroupList(Attributes attributes) {
         referenceableParamGroupList = new ReferenceableParamGroupList(getCountAttribute(attributes));
 
         try {
@@ -1193,14 +1199,14 @@ public class MzMLHeaderHandler extends DefaultHandler {
         }
     }
 
-    private void startReferenceableParamGroup(Attributes attributes) {
-        ReferenceableParamGroup rpg = new ReferenceableParamGroup(attributes.getValue("id"));
+    protected void startReferenceableParamGroup(Attributes attributes) {
+        ReferenceableParamGroup rpg = new ReferenceableParamGroup(attributes.getValue(ID_ATTRIBUTE_NAME));
         currentContent = rpg;
 
         referenceableParamGroupList.addReferenceableParamGroup(rpg);
     }
 
-    private void startSampleList(Attributes attributes) {
+    protected void startSampleList(Attributes attributes) {
         sampleList = new SampleList(getCountAttribute(attributes));
 
         try {
@@ -1210,8 +1216,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
         }
     }
 
-    private void startSample(Attributes attributes) {
-        Sample sample = new Sample(attributes.getValue("id"));
+    protected void startSample(Attributes attributes) {
+        Sample sample = new Sample(attributes.getValue(ID_ATTRIBUTE_NAME));
 
         if (attributes.getValue("name") != null) {
             sample.setName(attributes.getValue("name"));
@@ -1226,7 +1232,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
         currentContent = sample;
     }
 
-    private void startSoftwareList(Attributes attributes) {
+    protected void startSoftwareList(Attributes attributes) {
         softwareList = new SoftwareList(getCountAttribute(attributes));
 
         try {
@@ -1236,8 +1242,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
         }
     }
 
-    private void startSoftware(Attributes attributes) {
-        Software sw = new Software(attributes.getValue("id"), attributes.getValue("version"));
+    protected void startSoftware(Attributes attributes) {
+        Software sw = new Software(attributes.getValue(ID_ATTRIBUTE_NAME), attributes.getValue("version"));
 
         try {
             softwareList.addSoftware(sw);
@@ -1245,6 +1251,116 @@ public class MzMLHeaderHandler extends DefaultHandler {
             throw new FatalRuntimeParseException(new InvalidMzMLIssue("<softwareList> tag not defined prior to defining <software> tag.", ex.getLocalizedMessage()), ex);
         }
         currentContent = sw;
+    }
+
+    protected void startScanSettingsList(Attributes attributes) {
+        scanSettingsList = new ScanSettingsList(Integer.parseInt(attributes.getValue(COUNT_ATTRIBUTE_NAME)));
+
+        try {
+            mzML.setScanSettingsList(scanSettingsList);
+        } catch (NullPointerException ex) {
+            throw new FatalRuntimeParseException(new InvalidMzMLIssue("<mzML> tag not defined prior to defining <scanSettingsList> tag.", ex.getLocalizedMessage()), ex);
+        }
+    }
+
+    protected void startScanSettings(Attributes attributes) {
+        currentScanSettings = new ScanSettings(attributes.getValue(ID_ATTRIBUTE_NAME));
+
+        try {
+            scanSettingsList.addScanSettings(currentScanSettings);
+        } catch (NullPointerException ex) {
+            throw new FatalRuntimeParseException(new InvalidMzMLIssue("<scanSettingsList> tag not defined prior to defining <scanSettings> tag.", ex.getLocalizedMessage()), ex);
+        }
+
+        currentContent = currentScanSettings;
+    }
+
+    protected void startSourceFileRefList(Attributes attributes) {
+        currentSourceFileRefList = new SourceFileRefList(Integer.parseInt(attributes.getValue(COUNT_ATTRIBUTE_NAME)));
+
+        try {
+            currentScanSettings.setSourceFileRefList(currentSourceFileRefList);
+        } catch (NullPointerException ex) {
+            throw new FatalRuntimeParseException(new InvalidMzMLIssue("<scanSettings> tag not defined prior to defining <sourceFileRefList> tag.", ex.getLocalizedMessage()), ex);
+        }
+    }
+
+    protected void startSourceFileRef(Attributes attributes) {
+        String ref = attributes.getValue("ref");
+
+        boolean foundReference = false;
+
+        if (sourceFileList != null) {
+            SourceFile sourceFile = sourceFileList.getSourceFile(ref);
+
+            if (sourceFile != null) {
+                currentSourceFileRefList.addSourceFileRef(new SourceFileRef(sourceFile));
+
+                foundReference = true;
+            }
+        }
+
+        if (!foundReference) {
+            MissingReferenceIssue missingRefIssue = new MissingReferenceIssue(attributes.getValue("ref"), "sourceFileRef", "ref");
+            missingRefIssue.setIssueLocation(currentContent);
+            missingRefIssue.fixAttemptedByRemovingReference();
+
+            notifyParserListeners(missingRefIssue);
+        }
+    }
+
+    protected void startTargetList(Attributes attributes) {
+        currentTargetList = new TargetList(Integer.parseInt(attributes.getValue(COUNT_ATTRIBUTE_NAME)));
+
+        try {
+            currentScanSettings.setTargetList(currentTargetList);
+        } catch (NullPointerException ex) {
+            throw new FatalRuntimeParseException(new InvalidMzMLIssue("<scanSettings> tag not defined prior to defining <targetList> tag.", ex.getLocalizedMessage()), ex);
+        }
+    }
+
+    protected void startTarget() {
+        Target target = new Target();
+
+        try {
+            currentTargetList.addTarget(target);
+        } catch (NullPointerException ex) {
+            throw new FatalRuntimeParseException(new InvalidMzMLIssue("<targetList> tag not defined prior to defining <target> tag.", ex.getLocalizedMessage()), ex);
+        }
+
+        currentContent = target;
+    }
+
+    protected void startInstrumentConfigurationList(Attributes attributes) {
+        instrumentConfigurationList = new InstrumentConfigurationList(getCountAttribute(attributes));
+
+        try {
+            mzML.setInstrumentConfigurationList(instrumentConfigurationList);
+        } catch (NullPointerException ex) {
+            throw new FatalRuntimeParseException(new InvalidMzMLIssue("<mzML> tag not defined prior to defining <instrumentConfigurationList> tag.", ex.getLocalizedMessage()), ex);
+        }
+    }
+
+    protected void startComponentList() {
+        currentComponentList = new ComponentList();
+
+        try {
+            currentInstrumentConfiguration.setComponentList(currentComponentList);
+        } catch (NullPointerException ex) {
+            throw new FatalRuntimeParseException(new InvalidMzMLIssue("<instrumentConfiguration> tag not defined prior to defining <componentList> tag.", ex.getLocalizedMessage()), ex);
+        }
+    }
+
+    protected void startSource() {
+        Source source = new Source();
+
+        try {
+            currentComponentList.addSource(source);
+        } catch (NullPointerException ex) {
+            throw new FatalRuntimeParseException(new InvalidMzMLIssue("<componentList> tag not defined prior to defining <source> tag.", ex.getLocalizedMessage()), ex);
+        }
+
+        currentContent = source;
     }
 
     @Override
@@ -1268,17 +1384,17 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
             mzML.setFileDescription(fileDescription);
         } else if ("fileContent".equals(qName)) {
-            startFileContent(attributes);
+            startFileContent();
         } else if ("sourceFileList".equals(qName)) {
             startSourceFileList(attributes);
         } else if ("sourceFile".equals(qName)) {
             startSourceFile(attributes);
         } else if ("contact".equals(qName)) {
-            startContact(attributes);
+            startContact();
         } else if ("referenceableParamGroupList".equals(qName)) {
             startReferenceableParamGroupList(attributes);
         } else if ("referenceableParamGroup".equals(qName)) {
-            startReferenceableParamGroupList(attributes);
+            startReferenceableParamGroup(attributes);
         } else if ("sampleList".equals(qName)) {
             startSampleList(attributes);
         } else if ("sample".equals(qName)) {
@@ -1288,99 +1404,25 @@ public class MzMLHeaderHandler extends DefaultHandler {
         } else if ("software".equals(qName)) {
             startSoftware(attributes);
         } else if ("scanSettingsList".equals(qName)) {
-            scanSettingsList = new ScanSettingsList(Integer.parseInt(attributes.getValue("count")));
-
-            try {
-                mzML.setScanSettingsList(scanSettingsList);
-            } catch (NullPointerException ex) {
-                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<mzML> tag not defined prior to defining <scanSettingsList> tag.", ex.getLocalizedMessage()), ex);
-            }
+            startScanSettingsList(attributes);
         } else if ("scanSettings".equals(qName)) {
-            currentScanSettings = new ScanSettings(attributes.getValue("id"));
-
-            try {
-                scanSettingsList.addScanSettings(currentScanSettings);
-            } catch (NullPointerException ex) {
-                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<scanSettingsList> tag not defined prior to defining <scanSettings> tag.", ex.getLocalizedMessage()), ex);
-            }
-
-            currentContent = currentScanSettings;
+            startScanSettings(attributes);
         } else if ("sourceFileRefList".equals(qName)) {
-            currentSourceFileRefList = new SourceFileRefList(Integer.parseInt(attributes.getValue("count")));
-
-            try {
-                currentScanSettings.setSourceFileRefList(currentSourceFileRefList);
-            } catch (NullPointerException ex) {
-                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<scanSettings> tag not defined prior to defining <sourceFileRefList> tag.", ex.getLocalizedMessage()), ex);
-            }
+            startSourceFileRefList(attributes);
         } else if ("sourceFileRef".equals(qName)) {
-            String ref = attributes.getValue("ref");
-
-            boolean foundReference = false;
-
-            if (sourceFileList != null) {
-                SourceFile sourceFile = sourceFileList.getSourceFile(ref);
-
-                if (sourceFile != null) {
-                    currentSourceFileRefList.addSourceFileRef(new SourceFileRef(sourceFile));
-
-                    foundReference = true;
-                }
-            }
-
-            if (!foundReference) {
-                MissingReferenceIssue missingRefIssue = new MissingReferenceIssue(attributes.getValue("ref"), "sourceFileRef", "ref");
-                missingRefIssue.setIssueLocation(currentContent);
-                missingRefIssue.fixAttemptedByRemovingReference();
-
-                notifyParserListeners(missingRefIssue);
-            }
+            startSourceFileRef(attributes);
         } else if ("targetList".equals(qName)) {
-            currentTargetList = new TargetList(Integer.parseInt(attributes.getValue("count")));
-
-            try {
-                currentScanSettings.setTargetList(currentTargetList);
-            } catch (NullPointerException ex) {
-                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<scanSettings> tag not defined prior to defining <targetList> tag.", ex.getLocalizedMessage()), ex);
-            }
+            startTargetList(attributes);
         } else if ("target".equals(qName)) {
-            Target target = new Target();
-
-            try {
-                currentTargetList.addTarget(target);
-            } catch (NullPointerException ex) {
-                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<targetList> tag not defined prior to defining <target> tag.", ex.getLocalizedMessage()), ex);
-            }
-
-            currentContent = target;
+            startTarget();
         } else if ("instrumentConfigurationList".equals(qName)) {
-            instrumentConfigurationList = new InstrumentConfigurationList(getCountAttribute(attributes));
-
-            try {
-                mzML.setInstrumentConfigurationList(instrumentConfigurationList);
-            } catch (NullPointerException ex) {
-                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<mzML> tag not defined prior to defining <instrumentConfigurationList> tag.", ex.getLocalizedMessage()), ex);
-            }
+            startInstrumentConfigurationList(attributes);
         } else if ("instrumentConfiguration".equals(qName)) {
             startInstrumentConfiguration(attributes);
         } else if ("componentList".equals(qName)) {
-            currentComponentList = new ComponentList();
-
-            try {
-                currentInstrumentConfiguration.setComponentList(currentComponentList);
-            } catch (NullPointerException ex) {
-                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<instrumentConfiguration> tag not defined prior to defining <componentList> tag.", ex.getLocalizedMessage()), ex);
-            }
+            startComponentList();
         } else if ("source".equals(qName)) {
-            Source source = new Source();
-
-            try {
-                currentComponentList.addSource(source);
-            } catch (NullPointerException ex) {
-                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<componentList> tag not defined prior to defining <source> tag.", ex.getLocalizedMessage()), ex);
-            }
-
-            currentContent = source;
+            startSource();
         } else if ("analyzer".equals(qName)) {
             Analyser analyser = new Analyser();
 
@@ -1432,7 +1474,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 throw new FatalRuntimeParseException(new InvalidMzMLIssue("<mzML> tag not defined prior to defining <dataProcessingList> tag.", ex.getLocalizedMessage()), ex);
             }
         } else if ("dataProcessing".equals(qName)) {
-            DataProcessing dp = new DataProcessing(attributes.getValue("id"));
+            DataProcessing dp = new DataProcessing(attributes.getValue(ID_ATTRIBUTE_NAME));
 
             try {
                 dataProcessingList.addDataProcessing(dp);
@@ -1451,7 +1493,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
         } else if ("spectrum".equals(qName)) {
             startSpectrum(attributes);
         } else if ("scanList".equals(qName)) {
-            currentScanList = new ScanList(Integer.parseInt(attributes.getValue("count")));
+            currentScanList = new ScanList(Integer.parseInt(attributes.getValue(COUNT_ATTRIBUTE_NAME)));
 
             try {
                 currentSpectrum.setScanList(currentScanList);
@@ -1463,7 +1505,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
         } else if ("scan".equals(qName)) {
             startScan(attributes);
         } else if ("scanWindowList".equals(qName)) {
-            currentScanWindowList = new ScanWindowList(Integer.parseInt(attributes.getValue("count")));
+            currentScanWindowList = new ScanWindowList(Integer.parseInt(attributes.getValue(COUNT_ATTRIBUTE_NAME)));
 
             try {
                 currentScan.setScanWindowList(currentScanWindowList);
@@ -1481,7 +1523,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
             currentContent = scanWindow;
         } else if ("precursorList".equals(qName)) {
-            currentPrecursorList = new PrecursorList(Integer.parseInt(attributes.getValue("count")));
+            currentPrecursorList = new PrecursorList(Integer.parseInt(attributes.getValue(COUNT_ATTRIBUTE_NAME)));
 
             try {
                 currentSpectrum.setPrecursorList(currentPrecursorList);
@@ -1509,7 +1551,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
             currentContent = isolationWindow;
         } else if ("selectedIonList".equals(qName)) {
-            currentSelectedIonList = new SelectedIonList(Integer.parseInt(attributes.getValue("count")));
+            currentSelectedIonList = new SelectedIonList(Integer.parseInt(attributes.getValue(COUNT_ATTRIBUTE_NAME)));
 
             try {
                 currentPrecursor.setSelectedIonList(currentSelectedIonList);
@@ -1537,7 +1579,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
             currentContent = activation;
         } else if ("productList".equals(qName)) {
-            currentProductList = new ProductList(Integer.parseInt(attributes.getValue("count")));
+            currentProductList = new ProductList(Integer.parseInt(attributes.getValue(COUNT_ATTRIBUTE_NAME)));
 
             try {
                 currentSpectrum.setProductList(currentProductList);
@@ -1562,7 +1604,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 }
             }
         } else if ("binaryDataArrayList".equals(qName)) {
-            currentBinaryDataArrayList = new BinaryDataArrayList(Integer.parseInt(attributes.getValue("count")));
+            currentBinaryDataArrayList = new BinaryDataArrayList(Integer.parseInt(attributes.getValue(COUNT_ATTRIBUTE_NAME)));
 
             if (processingSpectrum) {
                 try {

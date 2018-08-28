@@ -9,7 +9,7 @@ import java.util.List;
  * 
  * @author Alan Race
  */
-public interface HasParams {
+public interface HasParams extends HasChildren {
     
     /**
      * Add cvParam to MzMLContent.

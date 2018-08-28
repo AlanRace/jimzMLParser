@@ -1,6 +1,7 @@
 package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.util.XMLHelper;
+import java.io.Serializable;
 
 /**
  * Class to describe a group of CV parameters. These groups can be referenced 
@@ -9,7 +10,7 @@ import com.alanmrace.jimzmlparser.util.XMLHelper;
  * 
  * @author Alan Race
  */
-public class ReferenceableParamGroup extends MzMLContentWithParams implements ReferenceableTag {
+public class ReferenceableParamGroup extends MzMLContentWithParams implements ReferenceableTag, Serializable {
 
     /**
      * Serialisation version ID.

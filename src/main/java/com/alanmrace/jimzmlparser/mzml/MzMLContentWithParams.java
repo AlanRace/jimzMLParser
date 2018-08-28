@@ -18,7 +18,7 @@ import java.util.List;
  * @see CVParam
  * @see UserParam
  */
-public abstract class MzMLContentWithParams extends MzMLContentWithChildren implements HasParams {
+public abstract class MzMLContentWithParams extends MzMLContent implements HasParams {
     /**
      * List of {@link ReferenceableParamGroup} references associated with this mzML tag.
      */

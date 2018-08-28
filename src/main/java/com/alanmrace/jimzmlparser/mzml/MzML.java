@@ -54,7 +54,7 @@ public class MzML extends MzMLContentWithParams implements Serializable {
     /**
      * Storage for accessing mzML data.
      */
-    protected DataStorage dataStorage;
+    protected transient DataStorage dataStorage;
 
     // Attributes
 

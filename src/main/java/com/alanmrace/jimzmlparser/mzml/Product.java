@@ -7,7 +7,7 @@ import java.util.Collection;
  * 
  * @author Alan Race
  */
-public class Product extends MzMLContentWithChildren {
+public class Product extends MzMLContent implements HasChildren {
 
     /**
      * Serialisation version ID.

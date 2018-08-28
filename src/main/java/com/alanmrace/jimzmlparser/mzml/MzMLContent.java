@@ -31,7 +31,7 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
     /**
      * Content change listener list.
      */
-    private List<MzMLContentListener> listeners;
+    private transient List<MzMLContentListener> listeners;
     
     /**
      * Add content change listener.

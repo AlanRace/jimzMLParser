@@ -34,7 +34,7 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
     /**
      * List of Scans.
      */
-    protected List<Scan> scanList = null;
+    private List<Scan> list = Collections.emptyList();
 
     /**
      * Create an empty list with specified capacity.
@@ -57,10 +57,10 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
             InstrumentConfigurationList icList) {
         super(scanList, rpgList);
 
-        this.scanList = new ArrayList<Scan>(scanList.size());
+        this.list = new ArrayList<Scan>(scanList.size());
 
         for (Scan scan : scanList) {
-            this.scanList.add(new Scan(scan, rpgList, icList, sourceFileList));
+            this.list.add(new Scan(scan, rpgList, icList, sourceFileList));
         }
     }
     
@@ -68,13 +68,13 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
     public void add(Scan scan) {
         scan.setParent(this);
 
-        if (scanList instanceof ArrayList) {
-            scanList.add(scan);
-        } else if (scanList != null) {
-            scanList = new ArrayList<Scan>(scanList);
-            scanList.add(scan);
+        if (list.size() > 1) {
+            list.add(scan);
+        } else if (list.size() == 1) {
+            list = new ArrayList<Scan>(list);
+            list.add(scan);
         } else {
-            scanList = Collections.singletonList(scan);
+            list = Collections.singletonList(scan);
         }
     }
 
@@ -90,10 +90,7 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
 
     @Override
     public Scan get(int index) {
-        if(scanList == null)
-            return null;
-        
-        return scanList.get(index);
+        return list.get(index);
     }
     
     /**
@@ -108,21 +105,18 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
     }
     
     @Override
-    public int size() {
-        if(scanList == null)
-            return 0;
-        
-        return scanList.size();
+    public int size() {        
+        return list.size();
     }
 
     @Override
     protected void addTagSpecificElementsAtXPathToCollection(Collection<MzMLTag> elements, String fullXPath, String currentXPath) throws InvalidXPathException {
         if (currentXPath.startsWith("/scan")) {
-            if (scanList == null) {
+            if (list.isEmpty()) {
                 throw new UnfollowableXPathException("No scanList exists, so cannot go to " + fullXPath, fullXPath, currentXPath);
             }
 
-            for (Scan scan : scanList) {
+            for (Scan scan : list) {
                 scan.addElementsAtXPathToCollection(elements, fullXPath, currentXPath);
             }
         }
@@ -135,10 +129,7 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
 
     @Override
     public Iterator<Scan> iterator() {
-        if(scanList == null)
-            return Collections.emptyIterator();
-        
-        return scanList.iterator();
+        return list.iterator();
     }
 
     @Override
@@ -150,32 +141,22 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
     public void addChildrenToCollection(Collection<MzMLTag> children) {
         super.addChildrenToCollection(children);
         
-        if(scanList != null)
-            children.addAll(scanList);
+        children.addAll(list);
     }
 
     @Override
     public int indexOf(Scan item) {
-        if(scanList == null)
-            return -1;
-        
-        return scanList.indexOf(item);
+        return list.indexOf(item);
     }
 
     @Override
     public Scan remove(int index) {
-        if(scanList == null)
-            return null;
-        
-        return scanList.remove(index);
+        return list.remove(index);
     }
     
     @Override
     public boolean remove(Scan item) {
-        if(scanList == null)
-            return false;
-        
-        return scanList.remove(item);
+        return list.remove(item);
     }
     
     public static ScanList create() {
@@ -189,15 +170,11 @@ public class ScanList extends MzMLContentWithParams implements MzMLTagList<Scan>
 
     @Override
     public boolean contains(Scan item) {
-        if(scanList == null)
-            return false;
-        
-        return scanList.contains(item);
+        return list.contains(item);
     }
 
     @Override
     public void clear() {
-        if(scanList != null)
-            scanList.clear();
+        list.clear();
     }
 }

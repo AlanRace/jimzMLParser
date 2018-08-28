@@ -73,7 +73,6 @@ public class SpectrumList extends MzMLIDContentList<Spectrum> {
             Spectrum newSpectrum = new Spectrum(spectrum, rpgList, dpList, sourceFileList, icList);
 
             add(newSpectrum);
-//            this.spectrumMap.put(newSpectrum.getID(), newSpectrum);
         }
 
         if (spectrumList.defaultDataProcessingRef != null && dpList != null) {
@@ -184,9 +183,6 @@ public class SpectrumList extends MzMLIDContentList<Spectrum> {
         
         if(spectrumMap != null)
             removedSpectrum = spectrumMap.remove(spectrum.getID());
-        
-        // Below method only included in Java 1.8
-//        spectrumMap.remove(spectrum.getID(), spectrum);
         
         return success && (removedSpectrum.equals(spectrum));
     }

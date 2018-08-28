@@ -1,6 +1,7 @@
 package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.util.XMLHelper;
+import java.io.Serializable;
 
 /**
  * MzMLTag which describes a reference to another MzMLTag.
@@ -8,7 +9,7 @@ import com.alanmrace.jimzmlparser.util.XMLHelper;
  * @author Alan Race
  * @param <T> MzMLTag the reference is to
  */
-public abstract class MzMLReference<T extends Enum<T> & ReferenceableTag & MzMLTag> extends MzMLContent {
+public abstract class MzMLReference<T extends ReferenceableTag & MzMLTag & Serializable> extends MzMLContent {
 
     /**
      * Referenced MzMLTag.

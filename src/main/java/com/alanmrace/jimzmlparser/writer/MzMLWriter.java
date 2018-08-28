@@ -14,6 +14,7 @@ import com.alanmrace.jimzmlparser.mzml.MzMLTagList;
 import com.alanmrace.jimzmlparser.mzml.Spectrum;
 import com.alanmrace.jimzmlparser.util.HexHelper;
 import java.io.BufferedWriter;
+import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -150,53 +151,8 @@ public class MzMLWriter implements MzMLWritable {
         }
     }
 
-//    public static void main(String[] args) throws IOException {
-//        ImzML imzML = ImzML.create();
-//        ImzMLWriter writer = new ImzMLWriter();
-//        writer.write(imzML, "test_comp.imzML.xz");
-//        
-//        ImzML newImzML = ImzMLHandler.parseimzML("test_comp.imzML.xz");
-//        System.out.println(newImzML);
-//        
-//        
-//        //
-//        imzML = ImzMLHandler.parseimzML("D:\\Axel\\M333_KW121_EHM_M20_OT10_CHCA aus ACNundH2O_20um_250x230_lock455.imzML");
-//        
-//        Spectrum spectrum = imzML.getSpectrum(1, 1);
-//        
-//        int length = spectrum.getmzArray().length * 2 * 8;
-//        
-//        ZstdDictTrainer dictTrainer = new ZstdDictTrainer(length, 256);
-//        
-//        dictTrainer.addSample(DataTypeTransform.convertDoublesToBytes(spectrum.getmzArray()));
-//        dictTrainer.addSample(DataTypeTransform.convertDoublesToBytes(spectrum.getIntensityArray()));
-//        
-//        byte[] dict = dictTrainer.trainSamples();
-//        
-//        spectrum = imzML.getSpectrum(2, 2);
-//        
-//        byte[] temp = new byte[spectrum.getmzArray().length * 8];
-//        
-//        System.out.println("Original size: " + temp.length);
-//        System.out.println("Compressed m/z array: " + Zstd.compress(DataTypeTransform.convertDoublesToBytes(spectrum.getmzArray()), 3).length);
-//        System.out.println("Compressed intensity array: " + Zstd.compress(DataTypeTransform.convertDoublesToBytes(spectrum.getIntensityArray()), 3).length);
-//        
-//        ZstdDictCompress dictCompress = new ZstdDictCompress(dict, 3);
-//        
-//        System.out.println("Dictionary m/z: " +  Zstd.compressUsingDict(DataTypeTransform.convertDoublesToBytes(spectrum.getmzArray()), dict, 3).length);
-//        System.out.println("Dictionary intensity: " +  Zstd.compressUsingDict(DataTypeTransform.convertDoublesToBytes(spectrum.getIntensityArray()), dict, 3).length);
-//    }
-    
-    @Override
-    public void write(MzML mzML, String outputLocation) throws IOException {
-        notifyStart();
-        
-        this.metadataLocation = outputLocation;
-        dataContainerLocations = new HashMap<MzMLDataContainer, Long>();
-
-        metadataRAF = new RandomAccessFile(metadataLocation, "rw");
-        
-        OutputStream outputStream = new FileOutputStream(metadataRAF.getFD());
+    protected OutputStream getAppropriateOutputStream(String outputLocation, FileDescriptor metadataFD) throws IOException {
+        OutputStream outputStream = new FileOutputStream(metadataFD);
         
         if(outputLocation.endsWith(".lz4")) {
             outputStream = new LZ4BlockOutputStream(outputStream);
@@ -206,6 +162,18 @@ public class MzMLWriter implements MzMLWritable {
             outputStream = new XZOutputStream(outputStream, new LZMA2Options());
         }
         
+        return outputStream;
+    }
+    
+    @Override
+    public void write(MzML mzML, String outputLocation) throws IOException {
+        notifyStart();
+        
+        this.metadataLocation = outputLocation;
+        dataContainerLocations = new HashMap<MzMLDataContainer, Long>();
+
+        metadataRAF = new RandomAccessFile(metadataLocation, "rw");
+        OutputStream outputStream = getAppropriateOutputStream(outputLocation, metadataRAF.getFD());
         OutputStreamWriter out = new OutputStreamWriter(outputStream, encoding);
 
         output = new BufferedWriter(out);

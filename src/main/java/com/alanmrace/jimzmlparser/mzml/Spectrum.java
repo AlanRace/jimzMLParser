@@ -433,7 +433,7 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
      */
     public double[] getmzArray(boolean keepInMemory) throws IOException {
         if (binaryDataArrayList == null) {
-            return null;
+            return new double[0];
         }
 
         ensureLoadableData();

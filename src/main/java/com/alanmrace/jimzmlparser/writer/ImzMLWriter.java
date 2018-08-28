@@ -41,7 +41,7 @@ import java.util.zip.DataFormatException;
  * @author Alan Race
  */
 public class ImzMLWriter extends ImzMLHeaderWriter {
-    
+
     /**
      * Logger for the class.
      */
@@ -58,16 +58,16 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
     protected DataOutputStream dataOutput;
 
     /**
-     * Possible means of outputting data, as defined by the ImzML standard. 
-     * Continuous type means that each spectrum of an image has the same m/z values.
-     * Processed type means that each spectrum has its own m/z array.
+     * Possible means of outputting data, as defined by the ImzML standard.
+     * Continuous type means that each spectrum of an image has the same m/z
+     * values. Processed type means that each spectrum has its own m/z array.
      */
     public enum OutputType {
         /**
-         * Continuous type means that each spectrum of an image has the same m/z values.
+         * Continuous type means that each spectrum of an image has the same m/z
+         * values.
          */
         CONTINUOUS,
-        
         /**
          * Processed type means that each spectrum has its own m/z array.
          */
@@ -88,7 +88,6 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
          * SHA-1.
          */
         SHA1,
-
         /**
          * MD5.
          */
@@ -106,7 +105,8 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
     protected MessageDigest messageDigest;
 
     /**
-     * Create an ImzMLWriter with defaults (processed output type and SHA-1 checksum).
+     * Create an ImzMLWriter with defaults (processed output type and SHA-1
+     * checksum).
      */
     public ImzMLWriter() {
         super();
@@ -115,50 +115,104 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
         checksum = Checksum.SHA1;
     }
 
+    protected String getIBDLocationFromOutput(String outputLocation) {
+        String ibdLocation = outputLocation;
+
+        int pos = ibdLocation.toLowerCase().lastIndexOf(".imzml");
+
+        if (pos > 0) {
+            ibdLocation = ibdLocation.substring(0, pos);
+        }
+
+        return ibdLocation;
+    }
+
+    protected void updateOBOList(MzML mzML) {
+        mzML.getCVList().clear();
+        OBO obo = OBO.getOBO();
+        List<OBO> fullOBOList = obo.getFullImportHeirarchy();
+
+        for (OBO currentOBO : fullOBOList) {
+            mzML.getCVList().addCV(new CV(currentOBO));
+        }
+    }
+
+    protected void updateStorageInformation(MzML mzML) {
+        FileContent fileContent = mzML.getFileDescription().getFileContent();
+        fileContent.removeChildrenOfCVParam(FileContent.BINARY_TYPE_ID, false);
+
+        switch (outputType) {
+            case CONTINUOUS:
+                fileContent.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(FileContent.BINARY_TYPE_CONTINUOUS_ID)));
+                break;
+            case PROCESSED:
+            default:
+                fileContent.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(FileContent.BINARY_TYPE_PROCESSED_ID)));
+                break;
+        }
+
+        // Make sure that any referanceableParamGroup for the data arrays state that the data is external
+        ReferenceableParamGroup rpgmzArray = mzML.getReferenceableParamGroupList().getReferenceableParamGroup("mzArray");
+        if (rpgmzArray != null) {
+            rpgmzArray.removeCVParam(BinaryDataArray.EXTERNAL_DATA_ID);
+            rpgmzArray.addCVParam(new BooleanCVParam(OBO.getOBO().getTerm(BinaryDataArray.EXTERNAL_DATA_ID), true));
+        }
+        ReferenceableParamGroup rpgintensityArray = mzML.getReferenceableParamGroupList().getReferenceableParamGroup("intensityArray");
+        if (rpgintensityArray != null) {
+            rpgintensityArray.removeCVParam(BinaryDataArray.EXTERNAL_DATA_ID);
+            rpgintensityArray.addCVParam(new BooleanCVParam(OBO.getOBO().getTerm(BinaryDataArray.EXTERNAL_DATA_ID), true));
+        }
+    }
+
+    protected void updateMaxCoordinateInformation(MzML mzML) {
+        int maxX = 0;
+        int maxY = 0;
+
+        if (mzML.getRun().getSpectrumList() != null) {
+            for (Spectrum spectrum : mzML.getRun().getSpectrumList()) {
+                PixelLocation location = spectrum.getPixelLocation();
+
+                if (location.getX() > maxX) {
+                    maxX = location.getX();
+                }
+                if (location.getY() > maxY) {
+                    maxY = location.getY();
+                }
+            }
+        }
+
+        // If the scan settings does not currently exist, make sure to add one
+        ScanSettings scanSettings;
+
+        if (mzML.getScanSettingsList() == null) {
+            mzML.setScanSettingsList(new ScanSettingsList(1));
+        }
+
+        ScanSettingsList scanSettingsList = mzML.getScanSettingsList();
+
+        if (scanSettingsList.size() == 0) {
+            scanSettings = new ScanSettings("scanSettings");
+            scanSettingsList.add(scanSettings);
+        } else {
+            scanSettings = mzML.getScanSettingsList().getScanSettings(0);
+            scanSettings.removeCVParam(ScanSettings.MAX_COUNT_PIXEL_X_ID);
+            scanSettings.removeCVParam(ScanSettings.MAX_COUNT_PIXEL_Y_ID);
+        }
+
+        scanSettings.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(ScanSettings.MAX_COUNT_PIXEL_X_ID), maxX));
+        scanSettings.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(ScanSettings.MAX_COUNT_PIXEL_Y_ID), maxY));
+    }
+
     @Override
     public void write(MzML mzML, String outputLocation) throws IOException {
         try {
-            String ibdLocation = outputLocation;
-
-            int pos = ibdLocation.toLowerCase().lastIndexOf(".imzml");
-            if (pos > 0) {
-                ibdLocation = ibdLocation.substring(0, pos);
-            }
+            String ibdLocation = getIBDLocationFromOutput(outputLocation);
 
             // Update the ontology list
-            mzML.getCVList().clear();
-            OBO obo = OBO.getOBO();
-            List<OBO> fullOBOList = obo.getFullImportHeirarchy();
+            updateOBOList(mzML);
 
-            for(OBO currentOBO : fullOBOList) {
-                mzML.getCVList().addCV(new CV(currentOBO));
-            }
-            
             // Update the imzML header information about storage type
-            FileContent fileContent = mzML.getFileDescription().getFileContent();
-            fileContent.removeChildrenOfCVParam(FileContent.BINARY_TYPE_ID, false);
-
-            switch (outputType) {
-                case CONTINUOUS:
-                    fileContent.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(FileContent.BINARY_TYPE_CONTINUOUS_ID)));
-                    break;
-                case PROCESSED:
-                default:
-                    fileContent.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(FileContent.BINARY_TYPE_PROCESSED_ID)));
-                    break;
-            }
-            
-            // Make sure that any referanceableParamGroup for the data arrays state that the data is external
-            ReferenceableParamGroup rpgmzArray = mzML.getReferenceableParamGroupList().getReferenceableParamGroup("mzArray");
-            if(rpgmzArray != null) {
-                rpgmzArray.removeCVParam(BinaryDataArray.EXTERNAL_DATA_ID);
-                rpgmzArray.addCVParam(new BooleanCVParam(OBO.getOBO().getTerm(BinaryDataArray.EXTERNAL_DATA_ID), true));
-            }
-            ReferenceableParamGroup rpgintensityArray = mzML.getReferenceableParamGroupList().getReferenceableParamGroup("intensityArray");
-            if(rpgintensityArray != null) {
-                rpgintensityArray.removeCVParam(BinaryDataArray.EXTERNAL_DATA_ID);
-                rpgintensityArray.addCVParam(new BooleanCVParam(OBO.getOBO().getTerm(BinaryDataArray.EXTERNAL_DATA_ID), true));
-            }
+            updateStorageInformation(mzML);
 
             // Set up the checksum
             // TODO: move this to a different method?
@@ -203,21 +257,23 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
                         } else {
                             LOGGER.log(Level.SEVERE, "Null data in BinaryDataArray {0}", bda);
                         }
-                        
+
                         // Update the TIC 
-                        if(bda.isIntensityArray()) {
+                        if (bda.isIntensityArray()) {
                             double total = 0;
-                            
-                            for(int i = 0; i < ddata.length; i++)
+
+                            for (int i = 0; i < ddata.length; i++) {
                                 total += ddata[i];
-                            
+                            }
+
                             CVParam ticParam = spectrum.getCVParam(Spectrum.TOTAL_ION_CURRENT_ID);
-                            
-                            if(ticParam == null) {
+
+                            if (ticParam == null) {
                                 ticParam = new DoubleCVParam(OBO.getOBO().getTerm(Spectrum.TOTAL_ION_CURRENT_ID), total);
                                 spectrum.addCVParam(ticParam);
-                            } else
+                            } else {
                                 ((DoubleCVParam) ticParam).setValue(total);
+                            }
                         }
                     }
                 }
@@ -239,6 +295,7 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
             dataOutput.close();
 
             // Update UUID in the metadata
+            FileContent fileContent = mzML.getFileDescription().getFileContent();
             fileContent.removeCVParam(FileContent.UUID_IDENTIFICATION_ID);
             fileContent.addCVParam(new StringCVParam(OBO.getOBO().getTerm(FileContent.UUID_IDENTIFICATION_ID), uuid.toString()));
 
@@ -247,42 +304,7 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
             fileContent.addCVParam(new StringCVParam(OBO.getOBO().getTerm(FileContent.SHA1_CHECKSUM_ID), HexHelper.byteArrayToHexString(messageDigest.digest())));
 
             // Update max x and max y coordinates
-            int maxX = 0;
-            int maxY = 0;
-
-            if (mzML.getRun().getSpectrumList() != null) {
-                for (Spectrum spectrum : mzML.getRun().getSpectrumList()) {
-                    PixelLocation location = spectrum.getPixelLocation();
-
-                    if (location.getX() > maxX) {
-                        maxX = location.getX();
-                    }
-                    if (location.getY() > maxY) {
-                        maxY = location.getY();
-                    }
-                }
-            }
-
-            // If the scan settings does not currently exist, make sure to add one
-            ScanSettings scanSettings;
-
-            if (mzML.getScanSettingsList() == null) {
-                mzML.setScanSettingsList(new ScanSettingsList(1));
-            }
-
-            ScanSettingsList scanSettingsList = mzML.getScanSettingsList();
-
-            if (scanSettingsList.size() == 0) {
-                scanSettings = new ScanSettings("scanSettings");
-                scanSettingsList.add(scanSettings);
-            } else {
-                scanSettings = mzML.getScanSettingsList().getScanSettings(0);
-                scanSettings.removeCVParam(ScanSettings.MAX_COUNT_PIXEL_X_ID);
-                scanSettings.removeCVParam(ScanSettings.MAX_COUNT_PIXEL_Y_ID);
-            }
-
-            scanSettings.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(ScanSettings.MAX_COUNT_PIXEL_X_ID), maxX));
-            scanSettings.addCVParam(new IntegerCVParam(OBO.getOBO().getTerm(ScanSettings.MAX_COUNT_PIXEL_Y_ID), maxY));
+            updateMaxCoordinateInformation(mzML);
 
             // Write out metadata
             super.write(mzML, outputLocation);
@@ -308,19 +330,18 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
         try {
             DataTransformation transformation = binaryDataArray.generateDataTransformation();
             byte[] transformedData = transformation.performForwardTransform(data);
-            
+
             // If using LZ4, the size of the decompressed data is required before decompression, so add this in as a UserParam that can be used later
-            if(binaryDataArray.getCVParam(BinaryDataArray.MSNUMPRESS_LINEAR_LZ4_ID) != null || 
-                    binaryDataArray.getCVParam(BinaryDataArray.MSNUMPRESS_POSITIVE_LZ4_ID) != null || 
-                    binaryDataArray.getCVParam(BinaryDataArray.MSNUMPRESS_SLOF_LZ4_ID) != null) {
+            if (binaryDataArray.getCVParam(BinaryDataArray.MSNUMPRESS_LINEAR_LZ4_ID) != null
+                    || binaryDataArray.getCVParam(BinaryDataArray.MSNUMPRESS_POSITIVE_LZ4_ID) != null
+                    || binaryDataArray.getCVParam(BinaryDataArray.MSNUMPRESS_SLOF_LZ4_ID) != null) {
                 int[] dataSizeAtEachStage = transformation.getDataSizeAtEachStage();
-                
-                binaryDataArray.addUserParam(new UserParam("LZ4 decompression size", "" + dataSizeAtEachStage[dataSizeAtEachStage.length-2]));
+
+                binaryDataArray.addUserParam(new UserParam("LZ4 decompression size", "" + dataSizeAtEachStage[dataSizeAtEachStage.length - 2]));
             }
-            
+
             //System.out.println(binaryDataArray.getCVParamOrChild(BinaryDataArray.compressionTypeID));
             //System.out.println(Arrays.toString(transformation.getDataSizeAtEachStage()));
-
             binaryDataArray.removeCVParam(BinaryDataArray.EXTERNAL_DATA_ID);
 
             binaryDataArray.removeCVParam(BinaryDataArray.EXTERNAL_OFFSET_ID);

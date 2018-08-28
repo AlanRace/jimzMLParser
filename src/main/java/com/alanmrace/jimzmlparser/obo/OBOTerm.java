@@ -380,12 +380,12 @@ public class OBOTerm implements Serializable {
      * @param strippedLine Single line from an OBO file with all preceding and proceeding white characters removed.
      */
     public void parse(String strippedLine) {
-        int indexOfColon = strippedLine.indexOf(":");
+        int indexOfColon = strippedLine.indexOf(':');
         String tag = strippedLine.substring(0, indexOfColon).trim();
         String value = strippedLine.substring(indexOfColon + 1).trim();
 
         // Strip comments
-        int indexOfExclaimation = value.indexOf("!");
+        int indexOfExclaimation = value.indexOf('!');
 
         if (indexOfExclaimation > -1) {
             value = value.substring(0, indexOfExclaimation).trim();
@@ -398,7 +398,7 @@ public class OBOTerm implements Serializable {
         } else if("def".equals(tag)) {
             this.description = value;
         } else if ("relationship".equals(tag)) {
-            int indexOfSpace = value.indexOf(" ");
+            int indexOfSpace = value.indexOf(' ');
             String relationshipTag = value.substring(0, indexOfSpace).trim();
             String relationshipValue = value.substring(indexOfSpace + 1).trim();
 
@@ -448,11 +448,11 @@ public class OBOTerm implements Serializable {
                 } else {
                     LOGGER.log(Level.INFO, "Unknown value-type encountered ''{0}'' @ {1}", new Object[] {value, id});
                 }
-//            } else {
-                //logger.log(Level.INFO, "INFO: Unknown xref encountered ''{0}'' @ {1}", new Object[] {value, id});
+            } else {
+                LOGGER.log(Level.FINE, "Unknown xref encountered ''{0}'' @ {1}", new Object[] {value, id});
             }
-//        } else {
-            //logger.log(Level.INFO, "INFO: Tag not implemented ''{0}''", tag);
+        } else {
+            LOGGER.log(Level.FINE, "Tag not implemented ''{0}''", tag);
         }
     }
 
