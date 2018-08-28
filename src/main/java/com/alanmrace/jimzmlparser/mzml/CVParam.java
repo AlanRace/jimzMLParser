@@ -7,6 +7,8 @@ import com.alanmrace.jimzmlparser.exceptions.NonFatalParseException;
 
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Base class of CVParam with no type. Describes the {@literal <cvParam>} tag.
@@ -21,6 +23,12 @@ import com.alanmrace.jimzmlparser.util.XMLHelper;
  * @see StringCVParam
  */
 public abstract class CVParam extends MzMLContent { 
+    
+    
+    /**
+     * Class logger.
+     */
+    private static final Logger LOGGER = Logger.getLogger(CVParam.class.getName());
 
     /**
      * List of possible cvParam sub types, corresponding to a value type.
@@ -234,6 +242,8 @@ public abstract class CVParam extends MzMLContent {
                 type = CVParamType.LONG;
                 break;
             default:
+                //LOGGER.log(Level.SEVERE, "Unknown CVParamType: {0} (assigned to term {1})", new Object[] {term.getValueType().toString(), term.getID()});
+                
                 InvalidFormatIssue issue = new InvalidFormatIssue(term, term.getValueType());
                 
                 throw new NonFatalParseException(issue);

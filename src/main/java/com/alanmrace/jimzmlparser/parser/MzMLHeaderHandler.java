@@ -32,6 +32,7 @@ import com.alanmrace.jimzmlparser.exceptions.ObsoleteTermUsed;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.nio.channels.Channels;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
@@ -346,11 +347,15 @@ public class MzMLHeaderHandler extends DefaultHandler {
         }
     }
 
-    public void registerParserListener(ParserListener listener) {
+    public void registerParserListener(ParserListener listener) {        
         this.listeners.add(listener);
+        
+        LOGGER.log(Level.FINER, "Registered listener {0}: {1}", new Object[] {listener, Arrays.toString(listeners.toArray())});
     }
 
     protected void notifyParserListeners(Issue issue) {
+        LOGGER.log(Level.FINER, "Notifying {0} listeners about the issue {1}", new Object[] {Arrays.toString(listeners.toArray()), issue});
+        
         for (ParserListener listener : listeners) {
             listener.issueFound(issue);
         }
@@ -536,11 +541,11 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
                     notifyParserListeners(issue);
 
-                    LOGGER.log(Level.SEVERE, null, ex);
+                    LOGGER.log(Level.SEVERE, issue.getIssueMessage());//, ex);
                 }
             }
         } else {
-            throw new FatalRuntimeParseException(new InvalidMzMLIssue("<cvParam> tag without a parent.", ""));
+            throw new FatalRuntimeParseException(new InvalidMzMLIssue("<cvParam> tag without a parent."));
         }
     }
 
@@ -952,7 +957,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
         spectrumList = new SpectrumList(numberOfSpectra, dataProcessing);
 
         if (run == null) {
-            throw new FatalRuntimeParseException(new InvalidMzMLIssue("<run> tag not defined prior to defining <spectrumList> tag.", ""));
+            throw new FatalRuntimeParseException(new InvalidMzMLIssue("<run> tag not defined prior to defining <spectrumList> tag."));
         }
 
         run.setSpectrumList(spectrumList);
@@ -1042,11 +1047,11 @@ public class MzMLHeaderHandler extends DefaultHandler {
             if (dataProcessing != null) {
                 chromatogramList = new ChromatogramList(Integer.parseInt(attributes.getValue(COUNT_ATTRIBUTE_NAME)), dataProcessing);
             } else {
-                throw new FatalRuntimeParseException(new InvalidMzMLIssue("Can't find defaultDataProcessingRef '" + defaultDataProcessingRef + "' referenced by chromatogramList.", ""));
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("Can't find defaultDataProcessingRef '" + defaultDataProcessingRef + "' referenced by chromatogramList."));
             }
         } else {
             // msconvert doesn't include default data processing so try and fix it				
-            throw new FatalRuntimeParseException(new InvalidMzMLIssue("No defaultProcessingRef attribute in chromatogramList.", ""));
+            throw new FatalRuntimeParseException(new InvalidMzMLIssue("No defaultProcessingRef attribute in chromatogramList."));
         }
 
         try {
@@ -1074,7 +1079,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             if (dataProcessing != null) {
                 currentChromatogram.setDataProcessingRef(dataProcessing);
             } else {
-                throw new FatalRuntimeParseException(new InvalidMzMLIssue("Can't find dataProcessingRef '" + dataProcessingRef + "' referenced by chromatogram '" + currentChromatogram.getID() + "'.", ""));
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("Can't find dataProcessingRef '" + dataProcessingRef + "' referenced by chromatogram '" + currentChromatogram.getID() + "'."));
             }
         } else {
             currentChromatogram.setDataProcessingRef(chromatogramList.getDefaultDataProcessingRef());
@@ -1083,7 +1088,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
         try {
             chromatogramList.addChromatogram(currentChromatogram);
         } catch (NullPointerException ex) {
-            throw new FatalRuntimeParseException(new InvalidMzMLIssue("<chromatogramList> tag not defined prior to defining <chromatogram> tag.", ""));
+            throw new FatalRuntimeParseException(new InvalidMzMLIssue("<chromatogramList> tag not defined prior to defining <chromatogram> tag."));
         }
 
         currentContent = currentChromatogram;
@@ -1498,7 +1503,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             try {
                 currentSpectrum.setScanList(currentScanList);
             } catch (NullPointerException ex) {
-                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<spectrum> tag not defined prior to defining <scanList> tag.", ""));
+                throw new FatalRuntimeParseException(new InvalidMzMLIssue("<spectrum> tag not defined prior to defining <scanList> tag."));
             }
 
             currentContent = currentScanList;

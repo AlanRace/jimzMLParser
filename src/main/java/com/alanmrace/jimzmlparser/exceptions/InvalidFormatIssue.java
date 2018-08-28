@@ -115,35 +115,43 @@ public class InvalidFormatIssue extends NonFatalParseIssue {
     
     @Override
     public String getIssueMessage() {
-        String message = "";
+        StringBuilder message = new StringBuilder("");
         
         if(term != null && xmlType == null && expectedParamType == null) {
-            message += "Expected";
+            message.append("Expected");
             
             if(term.getValueType() == null)
-                message += " no value";
+                message.append(" no value");
             else
-                message += " a value of type " + term.getValueType();
+                message.append(" a value of type ").append(term.getValueType());
             
-            message += " for CVParam " + term.getID();
+            message.append(" for CVParam ").append(term.getID());
             
             if(term.getName() != null)
-                message += " (" + term.getName() + ")";
+                message.append(" (").append(term.getName()).append(")");
             
             if(value == null)
-                message += " but the value attribute was ommited";
+                message.append(" but the value attribute was ommited");
             else
-                message += " but got value \"" + value + "\"";
+                message.append(" but got value \"").append(value).append("\"");
+        }
+        
+        if(term != null && xmlType != null) {
+            message.append("Unimplemented or unexpected XMLType ");
+            message.append(term.getValueType().toString());
+            message.append(" (assigned to term ");
+            message.append(term.getID());
+            message.append(")");
         }
         
         if(term == null) {
-            message += "Expected format " + expectedFormat + " but got " + value;
+            message.append("Expected format ").append(expectedFormat).append(" but got ").append(value);
         }
         
         if(attemptedFix) {
-            message += "\nAttempted to fix by changing CVParam value type to String.";
+            message.append("\nAttempted to fix by changing CVParam value type to String.");
         }
         
-        return message;
+        return message.toString();
     }
 }

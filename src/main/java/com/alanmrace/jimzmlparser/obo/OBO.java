@@ -163,23 +163,9 @@ public class OBO implements Serializable {
                 term.clearIsA();
             }
 
-//            Collection<String> part_of = term.getPartOf();
-//
-//            for (String id : part_of) {
-//                OBOTerm parentTerm = getTerm(id);
-//
-//                if (parentTerm == null) {
-//                    System.err.println("Haven't found " + id);
-//                } else {
-//                    parentTerm.addChild(term);
-//                    term.addParent(parentTerm);
-//                }
-//            }
-
             // Units
             if(term.unitList != null) {
                 for(String unitName : term.unitList) {
-                //if (term.getUnitName() != null) {
                     term.addUnit(getTerm(unitName));
                 }
                 

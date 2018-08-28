@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -26,23 +25,20 @@ import org.xml.sax.SAXException;
 
 public class MzMLHandler extends MzMLHeaderHandler {
 
-    private static final Logger logger = Logger.getLogger(MzMLHandler.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(MzMLHandler.class.getName());
 
     protected boolean processingBinary;
 
     protected File temporaryBinaryFile;
 
     protected DataOutputStream temporaryFileStream;
-    protected StringBuffer binaryData;
+    protected StringBuilder binaryData;
     protected long offset = 0;
-
-    private byte[] temp;
-    private ArrayList<Byte> uncompressedData;
 
     public MzMLHandler(OBO obo, File temporaryBinaryFile) throws FileNotFoundException {
         super(obo);
 
-        binaryData = new StringBuffer();
+        binaryData = new StringBuilder();
         this.temporaryBinaryFile = temporaryBinaryFile;
         this.dataStorage = new BinaryDataStorage(temporaryBinaryFile, true);
 
@@ -55,12 +51,8 @@ public class MzMLHandler extends MzMLHeaderHandler {
 
     public static MzML parsemzML(String filename, ParserListener listener) throws MzMLParseException {
         try {
-            //OBO obo = new OBO("imagingMS.obo");
             OBO obo = OBO.getOBO();
 
-            // Necessary if the passed in filename is a resource
-            //File resource = new File(filename);
-            //String absolutePath = resource.getAbsolutePath();
             File tmpFile = new File(filename.substring(0, filename.lastIndexOf('.')) + ".tmp");
             tmpFile.deleteOnExit();
 
@@ -85,20 +77,20 @@ public class MzMLHandler extends MzMLHeaderHandler {
 
             return handler.getmzML();
         } catch (SAXException ex) {
-            logger.log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, null, ex);
 
             
             throw new MzMLParseException(new FatalParseIssue("SAXException: " + ex, ex.getLocalizedMessage()), ex);
         } catch (FileNotFoundException ex) {
-            logger.log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, null, ex);
 
             throw new MzMLParseException(new FatalParseIssue("File not found: " + ex, ex.getLocalizedMessage()), ex);
         } catch (IOException ex) {
-            logger.log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, null, ex);
 
             throw new MzMLParseException(new FatalParseIssue("IOException: " + ex, ex.getLocalizedMessage()), ex);
         } catch (ParserConfigurationException ex) {
-            logger.log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, null, ex);
 
             throw new MzMLParseException(new FatalParseIssue("ParserConfigurationException: " + ex, ex.getLocalizedMessage()), ex);
         }
@@ -108,7 +100,7 @@ public class MzMLHandler extends MzMLHeaderHandler {
         try {
             temporaryFileStream.close();
         } catch (IOException e) {
-            logger.log(Level.SEVERE, null, e);
+            LOGGER.log(Level.SEVERE, null, e);
         }
 
         temporaryFileStream = null;
@@ -138,58 +130,15 @@ public class MzMLHandler extends MzMLHeaderHandler {
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if ("binary".equals(qName)) {
-
             // Convert the data from base 64
             byte[] processedData = Base64.decodeBase64(binaryData.toString().getBytes());
 
             int lengthToWrite = processedData.length;
 
-//            if (currentBinaryDataArray.isCompressed()) {
-//                Inflater decompressor = new Inflater();
-//                decompressor.setInput(processedData);
-//
-//                if (uncompressedData == null) {
-//                    uncompressedData = new ArrayList<Byte>(2 ^ 20);
-//                }
-//
-//                lengthToWrite = 0;
-//                int uncompressed = 0;
-//
-//                if (temp == null) {
-//                    temp = new byte[1048576]; // 2^20
-//                }
-//                do {
-//                    try {
-//                        uncompressed = decompressor.inflate(temp);
-//
-//                        for (int i = 0; i < uncompressed; i++) {
-//                            if (uncompressedData.size() <= lengthToWrite) {
-//                                uncompressedData.add(temp[i]);
-//                                lengthToWrite++;
-//                            } else {
-//                                uncompressedData.set(lengthToWrite++, temp[i]);
-//                            }
-//                        }
-//                    } catch (DataFormatException ex) {
-//                        logger.log(Level.SEVERE, null, ex);
-//                    }
-//
-//                } while (uncompressed != 0);
-//
-//                if (processedData.length < lengthToWrite) {
-//                    processedData = new byte[lengthToWrite];
-//                }
-//
-//                for (int i = 0; i < lengthToWrite; i++) {
-//                    processedData[i] = uncompressedData.get(i);
-//                }
-//                
-//                decompressor.end();
-//            }
             try {
                 temporaryFileStream.write(processedData, 0, lengthToWrite);
             } catch (IOException ex) {
-                logger.log(Level.SEVERE, null, ex);
+                LOGGER.log(Level.SEVERE, null, ex);
             }
 
             DataLocation location = new DataLocation(dataStorage, offset, lengthToWrite);

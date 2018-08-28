@@ -16,6 +16,11 @@ public class FatalParseIssue implements ParseIssue, Serializable {
     String title;
     String message;
     
+    public FatalParseIssue(String message) {
+        this.title = message;
+        this.message = message;
+    }
+    
     public FatalParseIssue(String title, String message) {
         this.title = title;
         this.message = message;

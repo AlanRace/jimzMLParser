@@ -9,6 +9,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
+        <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
+        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+        <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
     </properties>
     <build>
         <resources>
@@ -154,10 +157,10 @@
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>0.7.9</version>
-                    <configuration>
+                    <!--<configuration>
                         <destFile>${basedir}/target/coverage-reports/jacoco-unit.exec</destFile>
                         <dataFile>${basedir}/target/coverage-reports/jacoco-unit.exec</dataFile>
-                    </configuration>
+                    </configuration>-->
                     <executions>
                         <execution>
                             <id>prepare-agent</id>

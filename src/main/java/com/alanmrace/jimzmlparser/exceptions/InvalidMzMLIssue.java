@@ -8,6 +8,10 @@ package com.alanmrace.jimzmlparser.exceptions;
  */
 public class InvalidMzMLIssue extends FatalParseIssue {
 
+    public InvalidMzMLIssue(String message) {
+        super(message);
+    }
+    
     public InvalidMzMLIssue(String title, String message) {
         super(title, message);
     }

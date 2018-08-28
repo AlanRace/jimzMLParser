@@ -244,10 +244,6 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
                 for (Spectrum spectrum : mzML.getRun().getSpectrumList()) {
 
                     for (BinaryDataArray bda : spectrum.getBinaryDataArrayList()) {
-                        //if (bda.getCVParamList().isEmpty()) {
-                        //    System.out.println("Empty CVParamList: " + spectrum + " [" + bda.getReferenceableParamGroupRef(0).getReference().getCVParamCount() + "]");
-                        //}
-
                         double[] ddata = bda.getDataAsDouble();
 
                         if (ddata != null) {
