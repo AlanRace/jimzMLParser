@@ -50,7 +50,7 @@ public class MzMLWriter implements MzMLWritable {
     /**
      * Encoding to write the XML document out as. Default is ISO-8859-1.
      */
-    protected String encoding = "ISO-8859-1";
+    protected String encoding;
 
     /**
      * Location of the metadata file.

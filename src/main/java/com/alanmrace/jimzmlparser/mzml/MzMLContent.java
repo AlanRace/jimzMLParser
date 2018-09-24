@@ -85,8 +85,7 @@ public abstract class MzMLContent implements Serializable, MzMLTag {
             }
         }
         
-        if(event.notifyParents() && parent != null && 
-                parent instanceof MzMLContent && ((MzMLContent) parent).hasListeners())
+        if(event.notifyParents() && parent instanceof MzMLContent && ((MzMLContent) parent).hasListeners())
             ((MzMLContent)parent).notifyListeners(event);
     }
     

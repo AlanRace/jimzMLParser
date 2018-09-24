@@ -209,11 +209,11 @@ public class ScanSettings extends MzMLContentWithParams implements Referenceable
      * Get CVParam or child CVParam of line scan direction, or null if one is not found.
      * 
      * @return CVParam if found, null otherwise
-     * @see ScanSettings#lineScanDirectionID
-     * @see ScanSettings#lineScanDirectionLeftRightID
-     * @see ScanSettings#lineScanDirectionRightLeftID
-     * @see ScanSettings#lineScanDirectionTopDownID
-     * @see ScanSettings#lineScanDirectionBottomUpID
+     * @see ScanSettings#LINE_SCAN_DIRECTION_ID
+     * @see ScanSettings#LINE_SCAN_DIRECTION_LEFT_RIGHT_ID
+     * @see ScanSettings#LINE_SCAN_DIRECTION_RIGHT_LEFT_ID
+     * @see ScanSettings#LINE_SCAN_DIRECTION_TOP_DOWN_ID
+     * @see ScanSettings#LINE_SCAN_DIRECTION_BOTTOM_UP_ID
      */
     public CVParam getLineScanDirection() {
         return getCVParamOrChild(LINE_SCAN_DIRECTION_ID);
@@ -223,11 +223,11 @@ public class ScanSettings extends MzMLContentWithParams implements Referenceable
      * Get CVParam or child CVParam of scan direction, or null if one is not found.
      * 
      * @return CVParam if found, null otherwise
-     * @see ScanSettings#scanDirectionID
-     * @see ScanSettings#scanDirectionLeftRightID
-     * @see ScanSettings#scanDirectionRightLeftID
-     * @see ScanSettings#scanDirectionTopDownID
-     * @see ScanSettings#scanDirectionBottomUpID
+     * @see ScanSettings#SCAN_DIRECTION_ID
+     * @see ScanSettings#SCAN_DIRECTION_LEFT_RIGHT_ID
+     * @see ScanSettings#SCAN_DIRECTION_RIGHT_LEFT_ID
+     * @see ScanSettings#SCAN_DIRECTION_TOP_DOWN_ID
+     * @see ScanSettings#SCAN_DIRECTION_BOTTOM_UP_ID
      */
     public CVParam getScanDirection() {
         return getCVParamOrChild(SCAN_DIRECTION_ID);
@@ -237,10 +237,10 @@ public class ScanSettings extends MzMLContentWithParams implements Referenceable
      * Get CVParam or child CVParam of scan pattern, or null if one is not found.
      * 
      * @return CVParam if found, null otherwise
-     * @see ScanSettings#scanPatternID
-     * @see ScanSettings#scanPatternFlybackID
-     * @see ScanSettings#scanPatternMeanderingID
-     * @see ScanSettings#scanPatternRandomAccessID
+     * @see ScanSettings#SCAN_PATTERN_ID
+     * @see ScanSettings#SCAN_PATTERN_FLYBACK_ID
+     * @see ScanSettings#SCAN_PATTERN_MEANDERING_ID
+     * @see ScanSettings#SCAN_PATTERN_RANDOM_ACCESS_ID
      */
     public CVParam getScanPattern() {
         return getCVParamOrChild(SCAN_PATTERN_ID);
@@ -250,8 +250,8 @@ public class ScanSettings extends MzMLContentWithParams implements Referenceable
      * Get CVParam or child CVParam of scan type, or null if one is not found.
      * 
      * @return CVParam if found, null otherwise
-     * @see ScanSettings#scanTypeID
-     * @see ScanSettings#scanTypeVerticalID
+     * @see ScanSettings#SCAN_TYPE_ID
+     * @see ScanSettings#SCAN_TYPE_VERTICAL_ID
      */
     public CVParam getScanType() {
         return getCVParamOrChild(SCAN_TYPE_ID);

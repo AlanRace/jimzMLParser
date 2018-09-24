@@ -235,7 +235,7 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
     /**
      * Accession: Signed 32-bit integer (IMS:1000141). Copy of MS:1000519.
      *
-     * @see BinaryDataArray#signed32bitIntegerID
+     * @see BinaryDataArray#SIGNED_32BIT_INTEGER_ID
      */
     public static final String IMS_SIGNED_32BIT_INTEGER_ID = "IMS:1000141";
 
@@ -247,7 +247,7 @@ public class BinaryDataArray extends MzMLContentWithParams implements Serializab
     /**
      * Accession: Signed 64-bit integer (IMS:1000142). Copy of MS:1000522.
      *
-     * @see BinaryDataArray#signed64bitIntegerID
+     * @see BinaryDataArray#SIGNED_64BIT_INTEGER_ID
      */
     public static final String IMS_SIGNED_64BIT_INTEGER_ID = "IMS:1000142";
 

@@ -212,11 +212,11 @@ public class OBOTerm implements Serializable {
          */
         INTEGER,
         /**
-         * Non-positive integer, derived from Integer with the constraint <= 0.
+         * Non-positive integer, derived from Integer with the constraint {@code <= 0}.
          */
         NON_POSITIVE_INTEGER,
         /**
-         * Negative integer, derived from Integer with the constraint < 0.
+         * Negative integer, derived from Integer with the constraint {@code < 0}.
          */
         NEGATIVE_INTEGER,
         /**
@@ -236,37 +236,37 @@ public class OBOTerm implements Serializable {
          */
         BYTE,
         /**
-         * Non-negative integer, derived from Integer with the constraint >= 0.
+         * Non-negative integer, derived from Integer with the constraint {@code >= 0}.
          */
         NON_NEGATIVE_INTEGER,
         /**
-         * Derived from Long with the constraint >= 0.
+         * Derived from Long with the constraint {@code >= 0}.
          */
         UNSIGNED_LONG,
         /**
-         * Derived from Int with the constraint >= 0.
+         * Derived from Int with the constraint {@code >= 0}.
          */
         UNSIGNED_INT,
         /**
-         * Derived from Short with the constraint >= 0.
+         * Derived from Short with the constraint {@code >= 0}.
          */
         UNSIGNED_SHORT,
         /**
-         * Derived from Byte with the constraint >= 0.
+         * Derived from Byte with the constraint {@code >= 0}.
          */
         UNSIGNED_BYTE,
         /**
-         * Derived from Integer with the constraint > 0.
+         * Derived from Integer with the constraint {@code > 0}.
          */
         POSITIVE_INTEGER,
         // Custom Derived Types
 
         /**
-         * Derived from Float, with the constraint >= 0.0.
+         * Derived from Float, with the constraint {@code >= 0.0}.
          */
         NON_NEGATIVE_FLOAT,
         /**
-         * Derived from Double, with the constraint >= 0.0.
+         * Derived from Double, with the constraint {@code >= 0.0}.
          */
         NON_NEGATIVE_DOUBLE,
     }
@@ -313,7 +313,7 @@ public class OBOTerm implements Serializable {
          * In contrast to BROAD. For example, the class cranium could
          * conceivably be a NARROW synonym for "skull".
          *
-         * @see OBOTerm.Synonym#Broad
+         * @see OBOTerm.Synonym#BROAD
          * @see
          * <a href="http://owlcollab.github.io/oboformat/doc/obo-syntax.html">OBO
          * File Format 1.4</a>
@@ -322,9 +322,9 @@ public class OBOTerm implements Serializable {
         /**
          * If a synonym is neither EXACT, NARROW or BROAD, then it is RELATED.
          *
-         * @see OBOTerm.Synonym#Exact
-         * @see OBOTerm.Synonym#Broad
-         * @see OBOTerm.Synonym#Narrow
+         * @see OBOTerm.Synonym#EXACT
+         * @see OBOTerm.Synonym#BROAD
+         * @see OBOTerm.Synonym#NARROW
          * @see
          * <a href="http://owlcollab.github.io/oboformat/doc/obo-syntax.html">OBO
          * File Format 1.4</a>
@@ -570,9 +570,13 @@ public class OBOTerm implements Serializable {
     public List<OBOTerm> getAllChildren(boolean includeThis) {
         ArrayList<OBOTerm> allChildren = new ArrayList<OBOTerm>();
 
+        if (includeThis) {
+            allChildren.add(this);
+        }
+
         if (children != null) {
             for (OBOTerm child : children) {
-                child.getAllChildren(allChildren, includeThis);
+                child.getAllChildren(allChildren, true);
             }
         }
 
@@ -611,7 +615,11 @@ public class OBOTerm implements Serializable {
 
         LOGGER.log(Level.FINEST, "Getting all parents of {0}, which has {1} parent(s)", new Object[]{this.id, parents.size()});
 
-        getAllParents(allParents, includeThis);
+        if(includeThis)
+            allParents.add(this);
+
+
+        getAllParents(allParents, true);
 
         return allParents;
     }
@@ -648,8 +656,8 @@ public class OBOTerm implements Serializable {
      * Get list of is_a relationships.
      *
      * TODO: The public version of this should return a converted set of
-     * relationships (i.e. List<OBOTerm>) TODO: Create relationship interface
-     * and store all in the same List<> and then use list filters to select is_a
+     * relationships (i.e. <code>List&lt;OBOTerm&gt;</code>) TODO: Create relationship interface
+     * and store all in the same <code>List&lt;&gt;</code> and then use list filters to select is_a
      * etc.
      *
      * @return List of is_a relationships

@@ -18,23 +18,23 @@ public interface MzMLWritable {
      * 
      * @param listener Listener to add
      */
-    public void addListener(WriterListener listener);
+    void addListener(WriterListener listener);
     
     /**
      * Returns whether the writer should output indexed mzML.
      * 
      * @return true if indexed mzML, false otherwise
      */
-    public boolean shouldOutputIndex();
+    boolean shouldOutputIndex();
     
-    public void shouldOutputIndex(boolean shouldOutputIndex);
+    void shouldOutputIndex(boolean shouldOutputIndex);
     
     /**
      * Returns the full path location of the metadata file.
      * 
      * @return File and path of the metadata file
      */
-    public String getMetadataLocation();
+    String getMetadataLocation();
     
     /**
      * Returns the current file pointer location in the metadata file. When 
@@ -44,7 +44,7 @@ public interface MzMLWritable {
      * @return Current location of file pointer in metadata file
      * @throws IOException Issue retrieving the file pointer location
      */
-    public long getMetadataPointer() throws IOException;
+    long getMetadataPointer() throws IOException;
 
     /**
      * Returns the current file pointer location in the data file. When 
@@ -54,7 +54,7 @@ public interface MzMLWritable {
      * @return Current location of file pointer in data file
      * @throws IOException Issue retrieving the file pointer location
      */
-    public long getDataPointer() throws IOException;
+    long getDataPointer() throws IOException;
         
     /**
      * Prepare data to be written out. This involves the conversion of double[] 
@@ -69,7 +69,7 @@ public interface MzMLWritable {
      * @return byte[] as it should be written out
      * @throws IOException Issue preparing or reading the data
      */
-    public byte[] prepareData(double[] data, BinaryDataArray binayDataArray) throws IOException;
+    byte[] prepareData(double[] data, BinaryDataArray binayDataArray) throws IOException;
     
     /**
      * Write out mzML file.
@@ -78,7 +78,7 @@ public interface MzMLWritable {
      * @param outputLocation Location to write mzML to
      * @throws IOException Issue writing data
      */
-    public void write(MzML mzML, String outputLocation) throws IOException;
+    void write(MzML mzML, String outputLocation) throws IOException;
     
     /**
      * Write metadata out to metadata file.
@@ -86,7 +86,7 @@ public interface MzMLWritable {
      * @param str Metadata to write out
      * @throws IOException Issue writing data
      */
-    public void writeMetadata(String str) throws IOException;
+    void writeMetadata(String str) throws IOException;
 
     /**
      * Write binary data out to data file.
@@ -94,19 +94,19 @@ public interface MzMLWritable {
      * @param data Data to write out
      * @throws IOException Issue writing data
      */
-    public void writeData(byte[] data) throws IOException;
+    void writeData(byte[] data) throws IOException;
     
     /**
      * Flush both the metadata and the data file.
      * 
      * @throws IOException Issue caused by flushing
      */
-    public void flush() throws IOException;
+    void flush() throws IOException;
 
     /**
      * Close both the metadata and the data file.
      * 
      * @throws IOException Issue caused by closing
      */
-    public void close() throws IOException;
+    void close() throws IOException;
 }

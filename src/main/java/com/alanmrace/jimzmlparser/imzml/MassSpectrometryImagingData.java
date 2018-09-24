@@ -15,7 +15,7 @@ public interface MassSpectrometryImagingData {
      * 
      * @return List of all m/z values within the dataset
      */
-    public double[] getFullmzList();
+    double[] getFullmzList();
 
     /**
      * Get the spatial dimensionality. 1 if MS experiment, 2 if MSI experiment 
@@ -23,7 +23,7 @@ public interface MassSpectrometryImagingData {
      * 
      * @return Spatial dimensionality
      */
-    public int getSpatialDimensionality();
+    int getSpatialDimensionality();
 
     /**
      * Get the dimensionality of dataset. At least 1 greater than 
@@ -33,7 +33,7 @@ public interface MassSpectrometryImagingData {
      * 
      * @return Dimensionality
      */
-    public int getDimensionality();
+    int getDimensionality();
 
     /**
      * Get the number of spectra per pixel with different scan properties, such 
@@ -42,7 +42,7 @@ public interface MassSpectrometryImagingData {
      * 
      * @return Number of spectra per pixel
      */
-    public int getNumberOfSpectraPerPixel();
+    int getNumberOfSpectraPerPixel();
 
     /**
      * Get the spectrum at (x, y).
@@ -54,7 +54,7 @@ public interface MassSpectrometryImagingData {
      * @param y y-coordinate
      * @return First spectrum at (x, y), or null if none
      */
-    public Spectrum getSpectrum(int x, int y);
+    Spectrum getSpectrum(int x, int y);
 
     /**
      * Get the spectrum at (x, y, z).
@@ -64,56 +64,56 @@ public interface MassSpectrometryImagingData {
      * @param z z-coordinate
      * @return First spectrum at (x, y, z), or null if none
      */
-    public Spectrum getSpectrum(int x, int y, int z);
+    Spectrum getSpectrum(int x, int y, int z);
 
     /**
      * Get width of image in pixels.
      * 
      * @return Width of image in pixels
      */
-    public int getWidth();
+    int getWidth();
     
     /**
      * Get height of image in pixels.
      * 
      * @return Height of image in pixels
      */
-    public int getHeight();
+    int getHeight();
     
     /**
      * Get depth of image in pixels.
      * 
      * @return Depth of image in pixels
      */
-    public int getDepth();
+    int getDepth();
 
     /**
      * Get the minimum m/z that was detected within any spectrum in the dataset.
      * 
      * @return Minimum m/z value
      */
-    public double getMinimumDetectedmz();
+    double getMinimumDetectedmz();
     
     /**
      * Get the maximum m/z that was detected within any spectrum in the dataset.
      * 
      * @return Maximum m/z value
      */
-    public double getMaximumDetectedmz();
+    double getMaximumDetectedmz();
     
     /**
      * Get whether the MSI data is stored in processed format (discrete).
      * 
      * @return true if data is discrete, false otherwise
      */
-    public boolean isProcessed();
+    boolean isProcessed();
     
     /**
      * Get whether the MSI data is stored in continuous format.
      * 
      * @return true if data is continuous, false otherwise
      */
-    public boolean isContinuous();
+    boolean isContinuous();
             
     /**
      * Get the total ion count (TIC) image for the dataset by summing up all intensities 
@@ -121,5 +121,5 @@ public interface MassSpectrometryImagingData {
      * 
      * @return TIC image
      */
-    public double[][] generateTICImage();
+    double[][] generateTICImage();
 }

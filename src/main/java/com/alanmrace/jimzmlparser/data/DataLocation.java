@@ -124,7 +124,7 @@ public class DataLocation implements Serializable {
      * to a double[]. If no {@link DataTransformation} has been supplied then this 
      * method will just convert the byte[] to a double[] directly, therefore if
      * the data is not stored as a double[], then a DataTransformation should be
-     * added which performs the necessary data type -> double transformation.
+     * added which performs the necessary data type -&lt; double transformation.
      * 
      * @return Converted and decompressed data as double[]
      * @throws DataFormatException Issue with converting the data

@@ -175,9 +175,7 @@ public class SpectrumList extends MzMLIDContentList<Spectrum> {
 
     @Override
     public boolean remove(Spectrum spectrum) {
-        boolean success = true;
-        
-        success &= getList().remove(spectrum);
+        boolean success = getList().remove(spectrum);
         
         Spectrum removedSpectrum = spectrum;
         

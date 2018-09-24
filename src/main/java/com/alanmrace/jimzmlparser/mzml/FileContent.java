@@ -94,7 +94,7 @@ public class FileContent extends MzMLContentWithParams {
 
     /**
      * Returns all CV parameters which have  child terms of 
-     * {@link FileContent#dataFileContentID} ontology parameter.
+     * {@link FileContent#DATA_FILE_CONTENT_ID} ontology parameter.
      * 
      * @return List of CVParam
      */
@@ -109,7 +109,7 @@ public class FileContent extends MzMLContentWithParams {
     
     /**
      * Create the default, valid (according to imzML) FileContent. Default file contents
-     * CV parameter is mass spectrum ({@link FileContent#massSpectrumID}).
+     * CV parameter is mass spectrum ({@link FileContent#MASS_SPECTRUM_ID}).
      * 
      * @return Default valid FileContent
      */

@@ -28,7 +28,7 @@ public abstract class DataStorage {
     private final RandomAccessFile randomAccessFile;
     
     /** Boolean to determine whether the RandomAccessFile is open or not. */
-    private boolean fileStreamOpen = false;
+    private boolean fileStreamOpen;
     
     /**
      * Define a data storage by specifying the File containing the data.

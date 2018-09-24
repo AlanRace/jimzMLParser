@@ -250,26 +250,26 @@ public class ImzMLWriter extends ImzMLHeaderWriter {
                             byte[] bdata = prepareData(ddata, bda);
 
                             writeData(bdata);
+
+                            // Update the TIC
+                            if (bda.isIntensityArray()) {
+                                double total = 0;
+
+                                for (double dataPoint : ddata) {
+                                    total += dataPoint;
+                                }
+
+                                CVParam ticParam = spectrum.getCVParam(Spectrum.TOTAL_ION_CURRENT_ID);
+
+                                if (ticParam == null) {
+                                    ticParam = new DoubleCVParam(OBO.getOBO().getTerm(Spectrum.TOTAL_ION_CURRENT_ID), total);
+                                    spectrum.addCVParam(ticParam);
+                                } else {
+                                    ((DoubleCVParam) ticParam).setValue(total);
+                                }
+                            }
                         } else {
                             LOGGER.log(Level.SEVERE, "Null data in BinaryDataArray {0}", bda);
-                        }
-
-                        // Update the TIC 
-                        if (bda.isIntensityArray()) {
-                            double total = 0;
-
-                            for (int i = 0; i < ddata.length; i++) {
-                                total += ddata[i];
-                            }
-
-                            CVParam ticParam = spectrum.getCVParam(Spectrum.TOTAL_ION_CURRENT_ID);
-
-                            if (ticParam == null) {
-                                ticParam = new DoubleCVParam(OBO.getOBO().getTerm(Spectrum.TOTAL_ION_CURRENT_ID), total);
-                                spectrum.addCVParam(ticParam);
-                            } else {
-                                ((DoubleCVParam) ticParam).setValue(total);
-                            }
                         }
                     }
                 }

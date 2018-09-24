@@ -43,9 +43,9 @@ public class HexHelper {
             'c', 'd', 'e', 'f'
         };
 
-        for (int i = 0; i < byteArray.length; i++) {
+        for (byte curByte : byteArray) {
 
-            int v = byteArray[i] & 0xff;
+            int v = curByte & 0xff;
 
             sb.append((char) hexhars[v >> 4]);
             sb.append((char) hexhars[v & 0xf]);

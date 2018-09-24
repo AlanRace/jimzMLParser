@@ -94,7 +94,7 @@ public class Precursor extends MzMLContentWithParams {
     /**
      * Set the details of the location of the spectrum describing the precursor
      * in an external SourceFile [Optional]. The spectrum ID of a precursor spectrum which 
-     * is stored in the external document (see {@link Precursor#setSourceFileRef}) 
+     * is stored in the external document (see {@link Precursor#setExternalSpectrum(SourceFile, String)})
      * must also be supplied.
      * 
      * @param sourceFileRef Reference to the SourceFile containing the spectrum

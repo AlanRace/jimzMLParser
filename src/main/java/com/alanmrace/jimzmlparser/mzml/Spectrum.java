@@ -458,7 +458,7 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
      * not update any metadata, and therefore should only be used when creating
      * new spectra which have not had any processing applied. For all other
      * cases, use
-     * {@link Spectrum#updateIntesityArray(double[], DataProcessing)}.
+     * {@link Spectrum#updateIntensityArray(double[], DataProcessing)}.
      *
      * @param intensities New spectral data as double[]
      */

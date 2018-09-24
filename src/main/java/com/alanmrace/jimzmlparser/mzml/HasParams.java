@@ -16,7 +16,7 @@ public interface HasParams extends HasChildren {
      * 
      * @param cvParam CVParam to add
      */
-    public void addCVParam(CVParam cvParam);
+    void addCVParam(CVParam cvParam);
     
     /**
      * Get the cvParam which has the specified id. Checks list of CVParams as well
@@ -25,7 +25,7 @@ public interface HasParams extends HasChildren {
      * @param id Ontology ID
      * @return CVParam with id if found, null otherwise
      */
-    public CVParam getCVParam(String id);
+    CVParam getCVParam(String id);
     
     /**
      * Get cvParam at specified index.
@@ -33,7 +33,7 @@ public interface HasParams extends HasChildren {
      * @param index Index within the list of cvParams
      * @return CVParam if exists at index, null if not
      */
-    public CVParam getCVParam(int index);
+    CVParam getCVParam(int index);
     
     /**
      * Get the first cvParam, or cvParam with child ontology 
@@ -43,7 +43,7 @@ public interface HasParams extends HasChildren {
      * @param id Ontology ID 
      * @return CVParam with id (or child of) if found, null otherwise
      */
-    public CVParam getCVParamOrChild(String id);
+    CVParam getCVParamOrChild(String id);
     
     /**
      * Get all cvParam with have ontology terms which are children of the specified
@@ -54,42 +54,42 @@ public interface HasParams extends HasChildren {
      * @param includeCurrent Whether to include the ID specified (if it exists) in the list of children
      * @return List of CVParams which have IDs listed as children of the input ontology ID
      */
-    public List<CVParam> getChildrenOf(String id, boolean includeCurrent);
+    List<CVParam> getChildrenOf(String id, boolean includeCurrent);
     
     /**
      * Get the list of CVParams associated with this MzMLContent.
      * 
      * @return List of cvParams
      */
-    public List<CVParam> getCVParamList();
+    List<CVParam> getCVParamList();
     
     /**
      * Get count of cvParams (only includes cvParams within the CVParam list).
      * 
      * @return Count of cvParams within the list
      */
-    public int getCVParamCount();
+    int getCVParamCount();
     
     /**
      * Remove cvParam at the specified index.
      * 
      * @param index Index within the list of cvParams
      */
-    public void removeCVParam(int index);
+    void removeCVParam(int index);
     
     /**
      * Remove cvParam with the specified ID.
      * 
      * @param id Ontology ID
      */
-    public void removeCVParam(String id);
+    void removeCVParam(String id);
     
     /**
      * Remove specified cvParam.
      * 
      * @param param CVParam to remove
      */
-    public void removeCVParam(CVParam param);
+    void removeCVParam(CVParam param);
     
     /**
      * Remove all cvParams which are defined as children of the specified ontology term 
@@ -98,14 +98,14 @@ public interface HasParams extends HasChildren {
      * @param id Ontology ID 
      * @param includeCurrent Whether to remove the ID specified (if it exists) rather than solely children
      */
-    public void removeChildrenOfCVParam(String id, boolean includeCurrent);
+    void removeChildrenOfCVParam(String id, boolean includeCurrent);
         
     /**
      * Add userParam to MzMLContent.
      * 
      * @param userParam UserParam to add
      */
-    public void addUserParam(UserParam userParam);
+    void addUserParam(UserParam userParam);
     
     /**
      * Get userParam with the specified name.
@@ -113,7 +113,7 @@ public interface HasParams extends HasChildren {
      * @param name Name of the userParam
      * @return UserParam if it exists, or null if not
      */
-    public UserParam getUserParam(String name);
+    UserParam getUserParam(String name);
     
     /**
      * Get userParam at the specified index.
@@ -121,21 +121,21 @@ public interface HasParams extends HasChildren {
      * @param index Index within the list of userParams
      * @return UserParam if it exists, or null if not
      */
-    public UserParam getUserParam(int index);
+    UserParam getUserParam(int index);
     
     /**
      * Remove userParam at the specified index.
      * 
      * @param index Index within the list of userParams
      */
-    public void removeUserParam(int index);
+    void removeUserParam(int index);
     
     /**
      * Get list of UserParams associated with this MzMLContent.
      * 
      * @return List of userParams
      */
-    public List<UserParam> getUserParamList();
+    List<UserParam> getUserParamList();
     
     /**
      * Add a referenceableParamGroup reference to the MzMLContent.
@@ -143,7 +143,7 @@ public interface HasParams extends HasChildren {
      * @param rpg referenceableParamGroup reference to add
      * @see ReferenceableParamGroup
      */
-    public void addReferenceableParamGroupRef(ReferenceableParamGroupRef rpg);
+    void addReferenceableParamGroupRef(ReferenceableParamGroupRef rpg);
     
     /**
      * Get the count of ReferenceableParamGroupRefs in the MzMLContent.
@@ -151,7 +151,7 @@ public interface HasParams extends HasChildren {
      * @return Count of referenceableParamGroup references
      * @see ReferenceableParamGroupRef
      */
-    public int getReferenceableParamGroupRefCount();
+    int getReferenceableParamGroupRefCount();
     
     /**
      * Get the referenceableParamGroup reference at the specified index.
@@ -159,7 +159,7 @@ public interface HasParams extends HasChildren {
      * @param index Index of the referenceableParamGroup reference
      * @return referenceableParamGroup reference at the specified index
      */
-    public ReferenceableParamGroupRef getReferenceableParamGroupRef(int index);
+    ReferenceableParamGroupRef getReferenceableParamGroupRef(int index);
     
     /**
      * Get the referenceableParamGroup reference where the referenceableParamGroup 
@@ -168,5 +168,5 @@ public interface HasParams extends HasChildren {
      * @param id ID of the referenceableParamGroup
      * @return Reference to the referenceableParamGroup with the specified ID, or null if not found
      */
-    public ReferenceableParamGroupRef getReferenceableParamGroupRef(String id);
+    ReferenceableParamGroupRef getReferenceableParamGroupRef(String id);
 }

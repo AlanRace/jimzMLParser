@@ -15,7 +15,7 @@ public interface MzMLTagList<T extends MzMLTag> extends Iterable<T> {
      * 
      * @param item Item to add to the list
      */
-    public void add(T item);
+    void add(T item);
     
     /**
      * Returns the item in the list at the specified index, or null if no such 
@@ -24,7 +24,7 @@ public interface MzMLTagList<T extends MzMLTag> extends Iterable<T> {
      * @param index Index in the list
      * @return Item in the list at specified index, or null if none exists
      */
-    public T get(int index);
+    T get(int index);
     
     /**
      * Remove an item in the list at the specified index.
@@ -32,7 +32,7 @@ public interface MzMLTagList<T extends MzMLTag> extends Iterable<T> {
      * @param index Index of the item to remove
      * @return Item removed from list, or null if nothing removed
      */
-    public T remove(int index);
+    T remove(int index);
     
     /**
      * Remove the specified item from the list.
@@ -40,12 +40,12 @@ public interface MzMLTagList<T extends MzMLTag> extends Iterable<T> {
      * @param item Item to remove
      * @return true if an item was removed from the list, false otherwise
      */
-    public boolean remove(T item);
+    boolean remove(T item);
     
     /**
      * Remove all entries from the list.
      */
-    public void clear();
+    void clear();
     
     /**
      * Returns the index of the specified item in the list.
@@ -53,7 +53,7 @@ public interface MzMLTagList<T extends MzMLTag> extends Iterable<T> {
      * @param item Item to find index of
      * @return Index of specified item
      */
-    public int indexOf(T item);
+    int indexOf(T item);
     
     /**
      * Checks whether the list contains the specified item in the list.
@@ -61,12 +61,12 @@ public interface MzMLTagList<T extends MzMLTag> extends Iterable<T> {
      * @param item Item to check
      * @return true if item found in list, false otherwise
      */
-    public boolean contains(T item);
+    boolean contains(T item);
     
     /**
      * Returns the number of items in the list.
      * 
      * @return Number of items in the list
      */
-    public int size();
+    int size();
 }

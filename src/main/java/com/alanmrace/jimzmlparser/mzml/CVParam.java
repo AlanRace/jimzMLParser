@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  * @see BooleanCVParam
  * @see DoubleCVParam
  * @see EmptyCVParam
- * @see IntgerCVParam
+ * @see IntegerCVParam
  * @see LongCVParam
  * @see StringCVParam
  */
@@ -242,7 +242,7 @@ public abstract class CVParam extends MzMLContent {
                 type = CVParamType.LONG;
                 break;
             default:
-                //LOGGER.log(Level.SEVERE, "Unknown CVParamType: {0} (assigned to term {1})", new Object[] {term.getValueType().toString(), term.getID()});
+                LOGGER.log(Level.FINE, "Unknown CVParamType: {0} (assigned to term {1})", new Object[] {term.getValueType().toString(), term.getID()});
                 
                 InvalidFormatIssue issue = new InvalidFormatIssue(term, term.getValueType());
                 

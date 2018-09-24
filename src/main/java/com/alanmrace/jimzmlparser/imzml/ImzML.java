@@ -476,8 +476,8 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
                             double[] intensityArray = spectrum.getIntensityArray();
 
                             if(intensityArray != null) {
-                                for (int i = 0; i < intensityArray.length; i++) {
-                                    ticImage[y][x] += intensityArray[i];
+                                for (double intensity : intensityArray) {
+                                    ticImage[y][x] += intensity;
                                 }
                                 
                                 spectrum.addCVParam(new DoubleCVParam(OBO.getOBO().getTerm(Spectrum.TOTAL_ION_CURRENT_ID), ticImage[y][x]));

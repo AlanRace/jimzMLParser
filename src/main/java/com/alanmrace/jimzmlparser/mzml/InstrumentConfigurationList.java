@@ -79,7 +79,7 @@ public class InstrumentConfigurationList extends MzMLIDContentList<InstrumentCon
     /**
      * Create default valid InstrumentConfiguration List. This contains a single
      * InstrumentConfiguration with the reference 'instrumentConfiguration', which
-     * has solely the term {@link InstrumentConfiguration#instrumentModelID}.
+     * has solely the term {@link InstrumentConfiguration#INSTRUMENT_MODEL_ID}.
      * 
      * @return Valid InstrumentConfigurationList
      */

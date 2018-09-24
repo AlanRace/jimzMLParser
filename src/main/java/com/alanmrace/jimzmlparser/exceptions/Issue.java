@@ -10,7 +10,7 @@ public interface Issue {
     /**
      * The severity level of the issue, SEVERE, ERROR or WARNING. 
      */
-    public enum IssueLevel {
+    enum IssueLevel {
         /** Severe failure that probably prevents continuation. */
         SEVERE,
         /** Error, but possible to attempt to continue. */
@@ -25,7 +25,7 @@ public interface Issue {
      * 
      * @return Short description of the issue.
      */
-    public String getIssueTitle();
+    String getIssueTitle();
 
     /**
      * Provides detail about the issue, in prose, such that a non-expert could
@@ -33,7 +33,7 @@ public interface Issue {
      * 
      * @return Description of the issue.
      */
-    public String getIssueMessage();
+    String getIssueMessage();
     
     /**
      * Provides the assigned severity level of the issue.
@@ -41,5 +41,5 @@ public interface Issue {
      * @return IssueLevel of the issue
      * @see IssueLevel
      */
-    public IssueLevel getIssueLevel();
+    IssueLevel getIssueLevel();
 }

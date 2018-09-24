@@ -138,7 +138,7 @@ public abstract class MzMLContentWithParams extends MzMLContent implements HasPa
                     String value1 = curParam.getValueAsString();
                     String value2 = cvParam.getValueAsString();
 
-                    if ((value1 == null && value2 == null) || (value1 != null && value2 != null && value1.equals(value2))) {
+                    if ((value1 == null && value2 == null) || (value1 != null && value1.equals(value2))) {
                         numParamsFound++;
                     }
                 }

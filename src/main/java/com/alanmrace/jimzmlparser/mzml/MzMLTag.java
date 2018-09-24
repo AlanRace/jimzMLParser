@@ -16,7 +16,7 @@ public interface MzMLTag extends Serializable {
      *
      * @return tag name
      */
-    public String getTagName();
+    String getTagName();
 
     /**
      * Add all child MzMLContent (mzML tags) that match the specified XPath to
@@ -26,7 +26,7 @@ public interface MzMLTag extends Serializable {
      * @param xPath Full XPath to query
      * @throws InvalidXPathException thrown if the XPath can not be followed
      */
-    public void addElementsAtXPathToCollection(Collection<MzMLTag> elements, String xPath) throws InvalidXPathException;
+    void addElementsAtXPathToCollection(Collection<MzMLTag> elements, String xPath) throws InvalidXPathException;
 
     /**
      * Add all child MzMLContent (mzML tags) that match the specified XPath to
@@ -38,14 +38,14 @@ public interface MzMLTag extends Serializable {
      * current MzMLContent
      * @throws InvalidXPathException thrown if the XPath can not be followed
      */
-    public void addElementsAtXPathToCollection(Collection<MzMLTag> elements, String fullXPath, String currentXPath) throws InvalidXPathException;
+    void addElementsAtXPathToCollection(Collection<MzMLTag> elements, String fullXPath, String currentXPath) throws InvalidXPathException;
 
     /**
      * Returns XML formatted text describing XML attributes for the MzMLTag.
      *
      * @return XML formatted attribute text
      */
-    public String getXMLAttributeText();
+    String getXMLAttributeText();
 
     /**
      * Set the parent MzMLContent of this MzMLContent. This method currently
@@ -53,7 +53,7 @@ public interface MzMLTag extends Serializable {
      *
      * @param parent Parent MzMLContent to add
      */
-    public void setParent(MzMLTag parent);
+    void setParent(MzMLTag parent);
 
     /**
      * Returns the parent MzMLTag of this MzMLTag, or null if top level (I)mzML
@@ -61,12 +61,12 @@ public interface MzMLTag extends Serializable {
      *
      * @return Parent MzMLContent to add
      */
-    public MzMLTag getParent();
+    MzMLTag getParent();
 
     /**
      * Returns the XPath of the current MzMLTag.
      *
      * @return XPath
      */
-    public String getXPath();
+    String getXPath();
 }

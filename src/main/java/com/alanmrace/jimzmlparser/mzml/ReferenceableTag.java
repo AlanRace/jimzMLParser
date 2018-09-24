@@ -14,12 +14,12 @@ public interface ReferenceableTag {
      * 
      * @return Unique identifier
      */
-    public String getID();
+    String getID();
     
     /**
      * Set the unique identifier.
      * 
      * @param id Unique ID
      */
-    public void setID(String id);
+    void setID(String id);
 }

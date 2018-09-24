@@ -40,7 +40,7 @@ public class BinaryDataArrayList extends MzMLContentList<BinaryDataArray> {
 
     /**
      * Returns the BinaryDataArray which contains the CVParam 
-     * {@link BinaryDataArray#mzArrayID}, or null if one is not present within the 
+     * {@link BinaryDataArray#MZ_ARRAY_ID}, or null if one is not present within the
      * list.
      * 
      * @return m/z BinaryDataArray, or null if not found
@@ -60,7 +60,7 @@ public class BinaryDataArrayList extends MzMLContentList<BinaryDataArray> {
 
     /**
      * Returns the BinaryDataArray which contains the CVParam 
-     * {@link BinaryDataArray#intensityArrayID}, or null if one is not present within the 
+     * {@link BinaryDataArray#INTENSITY_ARRAY_ID}, or null if one is not present within the
      * list.
      * 
      * @return Intensity BinaryDataArray, or null if not found

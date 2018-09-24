@@ -127,16 +127,14 @@ public class OBO implements Serializable {
                     String tag = curLine.substring(0, locationOfColon).trim();
                     String value = curLine.substring(locationOfColon + 1).trim().toLowerCase();
 
-                    if (tag != null && value != null){
-                        if("import".equals(tag)) {
-                            imports.add(new OBO(value));
-                        } else if("default-namespace".equals(tag)) {
-                            defaultNamespace = value;                            
-                        } else if("ontology".equals(tag)) {
-                            ontologyIdentifier = value;
-                        } else if("data-version".equals(tag)) {
-                            dataVersion = value;
-                        }
+                    if("import".equals(tag)) {
+                        imports.add(new OBO(value));
+                    } else if("default-namespace".equals(tag)) {
+                        defaultNamespace = value;
+                    } else if("ontology".equals(tag)) {
+                        ontologyIdentifier = value;
+                    } else if("data-version".equals(tag)) {
+                        dataVersion = value;
                     }
                 }
             }

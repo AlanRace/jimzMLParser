@@ -15,7 +15,7 @@ import java.util.zip.DataFormatException;
 /**
  * DataTransformation where data stored in a byte[] representation of one data 
  * type is converted to a byte[] representation of another data type. For example
- * this could be the conversion of a double -> integer. Valid data types are 
+ * this could be the conversion of a double -&lt; integer. Valid data types are 
  * included in {@link DataTypeTransform.DataType}.
  * 
  * @author Alan Race
@@ -142,18 +142,18 @@ public class DataTypeTransform implements DataTransform {
     public static byte[] convertDoublesToBytes(double[] data) {
         byte[] convertedData = new byte[data.length*8];
         int j = 0;
-        
-        for (int i = 0; i < data.length; i++) {
-          long doubleVal = Double.doubleToLongBits(data[i]);
-          
-          convertedData[j++] = (byte)(doubleVal);
-          convertedData[j++] = (byte)(doubleVal>>>8);
-          convertedData[j++] = (byte)(doubleVal>>>16);
-          convertedData[j++] = (byte)(doubleVal>>>24);
-          convertedData[j++] = (byte)(doubleVal>>>32);
-          convertedData[j++] = (byte)(doubleVal>>>40);
-          convertedData[j++] = (byte)(doubleVal>>>48);
-          convertedData[j++] = (byte)(doubleVal>>>56);
+
+        for (double aData : data) {
+            long doubleVal = Double.doubleToLongBits(aData);
+
+            convertedData[j++] = (byte) (doubleVal);
+            convertedData[j++] = (byte) (doubleVal >>> 8);
+            convertedData[j++] = (byte) (doubleVal >>> 16);
+            convertedData[j++] = (byte) (doubleVal >>> 24);
+            convertedData[j++] = (byte) (doubleVal >>> 32);
+            convertedData[j++] = (byte) (doubleVal >>> 40);
+            convertedData[j++] = (byte) (doubleVal >>> 48);
+            convertedData[j++] = (byte) (doubleVal >>> 56);
         }
         
         return convertedData;
@@ -168,7 +168,7 @@ public class DataTypeTransform implements DataTransform {
      * @return Data as double[]
      */
     public static double[] convertDataToDouble(byte[] data, DataType dataType) {
-        double[] convertedData = null;
+        double[] convertedData = new double[0];
 
         if (data == null) {
             return convertedData;

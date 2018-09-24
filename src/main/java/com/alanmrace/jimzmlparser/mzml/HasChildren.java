@@ -15,5 +15,5 @@ public interface HasChildren {
      * 
      * @param children Collection to add the children to
      */
-    public void addChildrenToCollection(Collection<MzMLTag> children);
+    void addChildrenToCollection(Collection<MzMLTag> children);
 }
