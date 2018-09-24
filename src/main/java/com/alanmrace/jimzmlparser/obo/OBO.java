@@ -60,7 +60,7 @@ public class OBO implements Serializable {
     /**
      * Singleton OBO instance.
      */
-    protected static final OBO ONTOLOGY = new OBO(IMS_OBO_URI);
+    protected static OBO ONTOLOGY;
 
     /**
      * Generate ontology database from the specified .obo file. 
@@ -70,24 +70,11 @@ public class OBO implements Serializable {
      * 
      * @param path Location of the .obo file to load the ontology from.
      */
-    public OBO(String path) {
-        this.path = path;
-
+    private OBO(String location, OBOLoader loader) {
         imports = new ArrayList<OBO>();
         terms = new HashMap<String, OBOTerm>();
 
-        String resourcePath = path;
-        
-        // Strip off the URL details if they exist
-        if (resourcePath.contains("http://") || resourcePath.contains("https://")) {
-            resourcePath = resourcePath.substring(resourcePath.lastIndexOf('/') + 1);
-        }
-
-        logger.log(Level.FINER, "Parsing OBO /obo/{0}", resourcePath);
-
-        InputStream is = OBO.class.getResourceAsStream("/obo/" + resourcePath);
-        
-        InputStreamReader isr = new InputStreamReader(is);
+        InputStreamReader isr = new InputStreamReader(loader.getInputStream(location));
         BufferedReader in = new BufferedReader(isr);
 
         String curLine;
@@ -128,7 +115,7 @@ public class OBO implements Serializable {
                     String value = curLine.substring(locationOfColon + 1).trim().toLowerCase();
 
                     if("import".equals(tag)) {
-                        imports.add(new OBO(value));
+                        imports.add(new OBO(value, loader));
                     } else if("default-namespace".equals(tag)) {
                         defaultNamespace = value;
                     } else if("ontology".equals(tag)) {
@@ -171,14 +158,46 @@ public class OBO implements Serializable {
             }
         }
     }
-    
+
     /**
      * Static function to load in the imagingMS.obo file stored as a project resource.
      * 
      * @return Loaded ontology
      */
     public static OBO getOBO() {
+        if(ONTOLOGY == null)
+            try {
+                logger.log(Level.INFO, "Trying to load OBO from files");
+                ONTOLOGY = OBO.loadOntologyFromFile(IMS_OBO_URI);
+            } catch (Exception ex) {
+                logger.log(Level.WARNING, null, ex);
+                try {
+                    logger.log(Level.INFO, "Trying to load OBO from URL");
+                    ONTOLOGY = OBO.loadOntologyFromURL(IMS_OBO_URI);
+                } catch (Exception ex1) {
+                    logger.log(Level.WARNING, null, ex1);
+                    logger.log(Level.INFO, "Trying to load OBO from resource");
+                    ONTOLOGY = OBO.loadOntologyFromResource(IMS_OBO_URI);
+                }
+            }
+
         return ONTOLOGY;
+    }
+
+    public static void setOBO(OBO obo) {
+        ONTOLOGY = obo;
+    }
+
+    public static OBO loadOntologyFromURL(String url) {
+        return new OBO(url, new HTTPOBOLoader());
+    }
+
+    public static OBO loadOntologyFromResource(String resource) {
+        return new OBO(resource, new ResourceOBOLoader());
+    }
+
+    public static OBO loadOntologyFromFile(String file) {
+        return new OBO(file, new FileOBOLoader());
     }
     
     /**
