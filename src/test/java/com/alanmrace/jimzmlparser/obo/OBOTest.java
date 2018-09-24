@@ -5,6 +5,9 @@
  */
 package com.alanmrace.jimzmlparser.obo;
 
+import com.alanmrace.jimzmlparser.mzml.BinaryDataArray;
+import com.alanmrace.jimzmlparser.mzml.CVParam;
+import com.alanmrace.jimzmlparser.mzml.EmptyCVParam;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
@@ -69,5 +72,13 @@ public class OBOTest {
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
-    
+
+    @Test
+    public void hasParentTest() {
+        OBO obo = OBO.getOBO();
+
+        CVParam param = new EmptyCVParam(obo.getTerm(BinaryDataArray.EXTERNAL_DATA_ID));
+
+        assert (!param.getTerm().hasParent(obo.getTerm(BinaryDataArray.EXTERNAL_DATA_ID)));
+    }
 }

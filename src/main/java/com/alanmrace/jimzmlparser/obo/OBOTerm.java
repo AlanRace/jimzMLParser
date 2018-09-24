@@ -613,13 +613,9 @@ public class OBOTerm implements Serializable {
     public List<OBOTerm> getAllParents(boolean includeThis) {
         ArrayList<OBOTerm> allParents = new ArrayList<OBOTerm>();
 
-        LOGGER.log(Level.FINEST, "Getting all parents of {0}, which has {1} parent(s)", new Object[]{this.id, parents.size()});
+        LOGGER.log(Level.FINER, "Getting all parents of {0}, which has {1} parent(s)", new Object[]{this.id, parents.size()});
 
-        if(includeThis)
-            allParents.add(this);
-
-
-        getAllParents(allParents, true);
+        getAllParents(allParents, includeThis);
 
         return allParents;
     }
