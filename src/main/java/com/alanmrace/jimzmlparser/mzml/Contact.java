@@ -1,5 +1,6 @@
 package com.alanmrace.jimzmlparser.mzml;
 
+import com.alanmrace.jimzmlparser.obo.OBO;
 import java.io.Serializable;
 
 /**
@@ -46,12 +47,57 @@ public class Contact extends MzMLContentWithParams implements Serializable {
         super(contact, rpgList);
     }
 
+    /**
+     * Returns the name of the contact.
+     *
+     * @return Contact's name.
+     */
+    public String getName() {
+        return getCVParam(CONTACT_NAME_ID).getValueAsString();
+    }
+
+    /**
+     * Returns the name of the organisation that the contact belongs to.
+     *
+     * @return Contact's organisation.
+     */
+    public String getOrganisation() {
+        return getCVParam(CONTACT_ORGANISATION_ID).getValueAsString();
+    }
+
+    /**
+     * Set the name of the contact. A new CV param will be added if the contact name is not already present, or will be
+     * updated if so.
+     *
+     * @param name Name of the contact.
+     */
+    public void setName(String name) {
+        CVParam param = getCVParam(CONTACT_NAME_ID);
+        
+        if(param != null)
+            param.setValueAsString(name);
+        else
+            addCVParam(new StringCVParam(OBO.getOBO().getTerm(CONTACT_NAME_ID), name));
+    }
+
+    /**
+     * Set the organisation of the contact. A new CV param will be added if the contact organisation is not already
+     * present, or will be updated if so.
+     *
+     * @param organisation Organisation of the contact.
+     */
+    public void setOrganisation(String organisation) {
+        CVParam param = getCVParam(CONTACT_ORGANISATION_ID);
+        
+        if(param != null)
+            param.setValueAsString(organisation);
+        else
+            addCVParam(new StringCVParam(OBO.getOBO().getTerm(CONTACT_ORGANISATION_ID), organisation));
+    }
+    
     @Override
     public String toString() {
-        String name = getCVParam(CONTACT_NAME_ID).getValueAsString();
-        String organisation = getCVParam(CONTACT_ORGANISATION_ID).getValueAsString();
-
-        return "contact: " + name + " (" + organisation + ")";
+        return "contact: " + getName() + " (" + getOrganisation() + ")";
     }
 
     @Override
