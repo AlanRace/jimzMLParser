@@ -110,12 +110,12 @@ public class InvalidFormatIssue extends NonFatalParseIssue {
     
     @Override
     public String getIssueTitle() {
-        return "Invalid value";
+        return "Invalid value format";
     }
     
     @Override
     public String getIssueMessage() {
-        StringBuilder message = new StringBuilder("");
+        StringBuilder message = new StringBuilder();
         
         if(term != null && xmlType == null && expectedParamType == null) {
             message.append("Expected");
@@ -131,7 +131,7 @@ public class InvalidFormatIssue extends NonFatalParseIssue {
                 message.append(" (").append(term.getName()).append(")");
             
             if(value == null)
-                message.append(" but the value attribute was ommited");
+                message.append(" but the value attribute was omitted");
             else
                 message.append(" but got value \"").append(value).append("\"");
         }
@@ -154,4 +154,5 @@ public class InvalidFormatIssue extends NonFatalParseIssue {
         
         return message.toString();
     }
+
 }

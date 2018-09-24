@@ -1,10 +1,17 @@
 package com.alanmrace.jimzmlparser.parser;
 
+import com.alanmrace.jimzmlparser.ParserIssueHandler;
 import com.alanmrace.jimzmlparser.exceptions.FatalParseException;
+import com.alanmrace.jimzmlparser.exceptions.InvalidFormatIssue;
+import com.alanmrace.jimzmlparser.exceptions.Issue;
+import com.alanmrace.jimzmlparser.exceptions.MzMLParseException;
 import com.alanmrace.jimzmlparser.mzml.MzML;
 import com.alanmrace.jimzmlparser.writer.MzMLWriter;
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Logger;
+
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -53,7 +60,7 @@ public class MzMLHeaderHandlerTest {
         String resourcePath = MzMLHeaderHandlerTest.class.getResource(TEST_RESOURCE).getPath(); //"D:\\Bristol\\141024_HM_02.mzML"; // // //
         
         boolean openDataFile = false;
-        MzML result = MzMLHeaderHandler.parsemzMLHeader(resourcePath, openDataFile);
+        MzML result = MzMLHeaderHandler.parsemzMLHeader(resourcePath, openDataFile, new ParserIssueHandler());
         
         assertNotNull(result);
     }
@@ -71,7 +78,7 @@ public class MzMLHeaderHandlerTest {
         
         String resourcePath = MzMLHeaderHandlerTest.class.getResource(TEST_RESOURCE).getPath();
         
-        MzML result = MzMLHeaderHandler.parsemzMLHeader(resourcePath);
+        MzML result = MzMLHeaderHandler.parsemzMLHeader(resourcePath, false, new ParserIssueHandler());
         result.close();
     }
 
@@ -121,7 +128,7 @@ public class MzMLHeaderHandlerTest {
         
         System.out.println(" ---- testmzML() ---- ");
         System.out.println(resourcePath);
-        MzML mzML = MzMLHandler.parsemzML(resourcePath);
+        MzML mzML = MzMLHandler.parsemzML(resourcePath, new ParserIssueHandler());
         
         MzMLWriter writer = new MzMLWriter();
         resourcePath = resourcePath.replace(".mzML", ".output.mzML");
@@ -145,7 +152,7 @@ public class MzMLHeaderHandlerTest {
         
         System.out.println(" ---- testmzMLHeader() ---- ");
         System.out.println(resourcePath);
-        MzML mzML = MzMLHeaderHandler.parsemzMLHeader(resourcePath);
+        MzML mzML = MzMLHeaderHandler.parsemzMLHeader(resourcePath, new ParserIssueHandler());
         
         MzMLWriter writer = new MzMLWriter();
         resourcePath = resourcePath.replace(".mzML", ".outputHeader.mzML");
@@ -169,7 +176,7 @@ public class MzMLHeaderHandlerTest {
         
         String resourcePath = MzMLHeaderHandlerTest.class.getResource(FULL_PWIZ_RESOURCE).getFile();
         
-        MzML mzML = MzMLHeaderHandler.parsemzMLHeader(resourcePath);
+        MzML mzML = MzMLHeaderHandler.parsemzMLHeader(resourcePath, new ParserIssueHandler());
         
         MzMLWriter writer = new MzMLWriter();
         resourcePath = resourcePath.replace(".mzML", ".outputHeader.mzML");
@@ -179,5 +186,24 @@ public class MzMLHeaderHandlerTest {
         //MzML mzMLReloaded = MzMLHeaderHandler.parsemzMLHeader(resourcePath);
         
         validateMzML(resourcePath);
+    }
+
+    @Test
+    @Ignore
+    public void testIncorrectValue() throws MzMLParseException {
+        String fileLocation = "";
+
+        ParserIssueHandler issueHandler = new ParserIssueHandler();
+
+        MzML mzML = MzMLHeaderHandler.parsemzMLHeader(fileLocation, issueHandler);
+
+        List<Issue> issueList = issueHandler.getIssueList();
+
+        for(Issue issue : issueList) {
+            if(issue instanceof InvalidFormatIssue) {
+                System.out.println(((InvalidFormatIssue) issue).getIssueLocation());
+            }
+        }
+
     }
 }

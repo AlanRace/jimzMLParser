@@ -369,6 +369,10 @@ public class MzMLHeaderHandler extends DefaultHandler {
         return parsemzMLHeader(filename, openDataFile, null);
     }
 
+    public static MzML parsemzMLHeader(String filename, ParserListener listener) throws MzMLParseException {
+        return parsemzMLHeader(filename, true, listener);
+    }
+
     public static MzML parsemzMLHeader(String filename, boolean openDataFile, ParserListener listener) throws MzMLParseException {
         OBO obo = OBO.getOBO();
 
@@ -541,7 +545,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
                     notifyParserListeners(issue);
 
-                    LOGGER.log(Level.SEVERE, issue.getIssueMessage());//, ex);
+                    LOGGER.log(Level.FINE, issue.getIssueMessage(), ex);
                 }
             }
         } else {

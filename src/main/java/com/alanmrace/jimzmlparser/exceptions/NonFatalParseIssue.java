@@ -100,5 +100,25 @@ public abstract class NonFatalParseIssue implements ParseIssue, Serializable {
     public IssueLevel getIssueLevel() {
         return IssueLevel.SEVERE;
     }
-    
+
+
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append(getIssueTitle());
+        stringBuilder.append(": ");
+
+        String[] splitString = getIssueMessage().split("\n");
+
+        if(splitString.length > 0) {
+            stringBuilder.append(splitString[0]);
+        } else {
+            stringBuilder.append(getIssueMessage());
+        }
+
+        stringBuilder.append(" at ");
+        stringBuilder.append(location);
+
+        return stringBuilder.toString();
+    }
 }
