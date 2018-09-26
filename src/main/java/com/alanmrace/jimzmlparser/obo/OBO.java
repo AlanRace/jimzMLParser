@@ -34,7 +34,7 @@ public class OBO implements Serializable {
     public static final String PATO_OBO_URI = "https://raw.githubusercontent.com/pato-ontology/pato/master/pato.obo";
     
     /** Location of the MSI ontology. */
-    public static final String IMS_OBO_URI = "https://raw.githubusercontent.com/imzML/imzML/master/imagingMS.obo";
+    public static final String IMS_OBO_URI = "https://raw.githubusercontent.com/imzML/imzML/development/imagingMS.obo";
     /** Full name of the MSI ontology. */
     public static final String IMS_OBO_FULLNAME = "Mass Spectrometry Imaging Ontology";
     /** Shorthand identifier for the MSI ontology. */
@@ -70,7 +70,7 @@ public class OBO implements Serializable {
      * 
      * @param path Location of the .obo file to load the ontology from.
      */
-    private OBO(String location, OBOLoader loader) {
+    private OBO(String location, OBOLoader loader) throws IOException {
         imports = new ArrayList<OBO>();
         terms = new HashMap<String, OBOTerm>();
 
@@ -167,17 +167,20 @@ public class OBO implements Serializable {
     public static OBO getOBO() {
         if(ONTOLOGY == null)
             try {
-                logger.log(Level.INFO, "Trying to load OBO from files");
+                logger.log(Level.FINER, "Trying to load OBO from files");
                 ONTOLOGY = OBO.loadOntologyFromFile(IMS_OBO_URI);
-            } catch (Exception ex) {
-                logger.log(Level.WARNING, null, ex);
+            } catch (IOException ex) {
                 try {
-                    logger.log(Level.INFO, "Trying to load OBO from URL");
+                    logger.log(Level.FINER, "Trying to load OBO from URL");
                     ONTOLOGY = OBO.loadOntologyFromURL(IMS_OBO_URI);
-                } catch (Exception ex1) {
-                    logger.log(Level.WARNING, null, ex1);
-                    logger.log(Level.INFO, "Trying to load OBO from resource");
-                    ONTOLOGY = OBO.loadOntologyFromResource(IMS_OBO_URI);
+                } catch (IOException ex1) {
+                    logger.log(Level.FINER, "Trying to load OBO from resource");
+
+                    try {
+                        ONTOLOGY = OBO.loadOntologyFromResource(IMS_OBO_URI);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -188,15 +191,15 @@ public class OBO implements Serializable {
         ONTOLOGY = obo;
     }
 
-    public static OBO loadOntologyFromURL(String url) {
+    public static OBO loadOntologyFromURL(String url) throws IOException {
         return new OBO(url, new HTTPOBOLoader());
     }
 
-    public static OBO loadOntologyFromResource(String resource) {
+    public static OBO loadOntologyFromResource(String resource) throws IOException {
         return new OBO(resource, new ResourceOBOLoader());
     }
 
-    public static OBO loadOntologyFromFile(String file) {
+    public static OBO loadOntologyFromFile(String file) throws IOException {
         return new OBO(file, new FileOBOLoader());
     }
     
