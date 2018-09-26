@@ -1,6 +1,8 @@
 package com.alanmrace.jimzmlparser.obo;
 
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -185,6 +187,37 @@ public class OBO implements Serializable {
             }
 
         return ONTOLOGY;
+    }
+
+    public static void downloadOBO(String oboLocation) throws IOException {
+        InputStream in = new URL(oboLocation).openStream();
+
+        String filename = oboLocation.substring(oboLocation.lastIndexOf('/') + 1);
+
+        installOBO(in, filename);
+
+        in.close();
+    }
+
+    public static String ONTOLOGIES_FOLDER = "Ontologies";
+
+    public static void installOBO(InputStream in, String filename) throws IOException {
+        File ontologiesFolder = new File(ONTOLOGIES_FOLDER);
+
+        if(!ontologiesFolder.exists())
+            ontologiesFolder.mkdir();
+
+        File file = new File(ontologiesFolder, filename);
+
+        FileOutputStream out = new FileOutputStream(file);
+        byte[] buffer = new byte[1024];
+        int len;
+
+        while ((len = in.read(buffer)) != -1) {
+            out.write(buffer, 0, len);
+        }
+
+        out.close();
     }
 
     public static void setOBO(OBO obo) {
