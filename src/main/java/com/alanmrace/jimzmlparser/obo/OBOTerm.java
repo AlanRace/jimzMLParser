@@ -439,6 +439,8 @@ public class OBOTerm implements Serializable {
                     valueType = XMLType.BOOLEAN;
                 } else if ("date".equals(substrings[0])) {
                     valueType = XMLType.DATE;
+                } else if ("datetime".equals(substrings[0])) {
+                    valueType = XMLType.DATETIME;
                 } else if ("float".equals(substrings[0])) {
                     valueType = XMLType.FLOAT;
                 } else if ("nonNegativeFloat".equals(substrings[0])) {

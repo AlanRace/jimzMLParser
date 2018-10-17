@@ -12,3 +12,27 @@
 \.settings/org\.eclipse\.m2e\.core\.prefs
 
 \.idea/
+
+test_comp\.ibd
+
+test_comp\.imzML
+
+test_comp\.imzML\.gz
+
+test_comp\.imzML\.xz
+
+test\.ibd
+
+test\.imzML
+
+test\.imzML\.gz
+
+test\.imzML\.ibd
+
+test\.imzML\.ibd\.lz4
+
+test\.imzML\.lz4
+
+test2\.ibd
+
+test2\.imzML

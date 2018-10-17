@@ -70,7 +70,8 @@ public class OBO implements Serializable {
      * associated with the project. The path of the import is ignored, with only 
      * the final name considered as the location of the resource.
      * 
-     * @param path Location of the .obo file to load the ontology from.
+     * @param location Location of the .obo file to load the ontology from.
+     * @param loader Means of loading the OBO
      */
     private OBO(String location, OBOLoader loader) throws IOException {
         imports = new ArrayList<OBO>();
