@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static org.junit.Assert.assertNotNull;
+
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -25,6 +27,7 @@ import org.junit.Test;
  */
 public class ImzMLWriterTest {
     @Test
+    @Ignore
     public void testMzMLToImzMLWriter() throws IOException, MzMLParseException {
         MzML mzML = MzMLHeaderHandler.parsemzMLHeader("D:\\Compression\\M451_mousebrain_01_measure1_29_716_400-1200.mzML");
         
@@ -56,6 +59,7 @@ public class ImzMLWriterTest {
     }
     
     @Test
+    @Ignore
     public void testImzMLWriter() throws IOException, ImzMLParseException {
         ImzML oldimzML = ImzMLHandler.parseimzML("D:\\M288_Maus Lunge_KW121_ohneCMC_M16_EHM_0.5h_20x40um_270x170Pixel_mz100-400_400-900_Att30.RAW_0.imzML");
         
