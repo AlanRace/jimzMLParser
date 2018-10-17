@@ -36,3 +36,7 @@ test\.imzML\.lz4
 test2\.ibd
 
 test2\.imzML
+
+release\.properties
+
+src/test/resources/MatrixTests_N2\.imzML\.lz4
