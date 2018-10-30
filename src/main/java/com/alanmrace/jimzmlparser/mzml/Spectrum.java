@@ -83,6 +83,11 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
     public static final String PROFILE_SPECTRUM_ID = "MS:1000128"; // EmptyCVParam
 
     /**
+     * Accession: profile spectrum (MS:1000128).
+     */
+    public static final String CENTROID_SPECTRUM_ID = "MS:1000127"; // EmptyCVParam
+
+    /**
      * Static number used to generate a unique ID for any Spectrum generated
      * using the {@link Spectrum#createSpectrum(double[], double[])} or
      * {@link Spectrum#createSpectrum(double[], double[], com.alanmrace.jimzmlparser.mzml.DataProcessing)}
@@ -172,6 +177,18 @@ public class Spectrum extends MzMLDataContainer implements Serializable {
         if (spectrum.productList != null) {
             productList = new ProductList(spectrum.productList, rpgList);
         }
+    }
+
+    public boolean isCentroid() {
+        CVParam centroidSpectrumCVParam = getCVParam(CENTROID_SPECTRUM_ID);
+
+        return centroidSpectrumCVParam != null;
+    }
+
+    public boolean isProfile() {
+        CVParam profileSpectrumCVParam = getCVParam(PROFILE_SPECTRUM_ID);
+
+        return profileSpectrumCVParam != null;
     }
 
     /**
