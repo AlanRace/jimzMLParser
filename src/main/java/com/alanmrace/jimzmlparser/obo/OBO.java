@@ -1,7 +1,6 @@
 package com.alanmrace.jimzmlparser.obo;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -141,7 +140,7 @@ public class OBO implements Serializable {
                     OBOTerm parentTerm = getTerm(id);
 
                     if (parentTerm == null) {
-                        System.err.println("Haven't found " + id);
+                        logger.log(Level.WARNING, "Haven't found {0} ", id);
                     } else {
                         parentTerm.addChild(term);
                         term.addParent(parentTerm);
@@ -182,7 +181,7 @@ public class OBO implements Serializable {
                     try {
                         ONTOLOGY = OBO.loadOntologyFromResource(IMS_OBO_URI);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        logger.log(Level.SEVERE, "Failed to load any ontology: {0} ", e);
                     }
                 }
             }
@@ -200,25 +199,45 @@ public class OBO implements Serializable {
         in.close();
     }
 
+    /**
+     * Name of the folder to store and find ontologies in.
+     */
     public static String ONTOLOGIES_FOLDER = "Ontologies";
 
+    /**
+     * Set the location of the ontologies folder.
+     *
+     * @param folder Folder
+     */
+    public static void setOntologiesFolder(String folder) {
+        ONTOLOGIES_FOLDER = folder;
+    }
+
     public static void installOBO(InputStream in, String filename) throws IOException {
-        File ontologiesFolder = new File(ONTOLOGIES_FOLDER);
+        FileOutputStream out = null;
 
-        if(!ontologiesFolder.exists())
-            ontologiesFolder.mkdir();
+        try {
+            File ontologiesFolder = new File(ONTOLOGIES_FOLDER);
 
-        File file = new File(ontologiesFolder, filename);
+            if (!ontologiesFolder.exists()) {
+                if (!ontologiesFolder.mkdir()) {
+                    throw new IOException("Unable to create the folder " + ontologiesFolder);
+                }
+            }
 
-        FileOutputStream out = new FileOutputStream(file);
-        byte[] buffer = new byte[1024];
-        int len;
+            File file = new File(ontologiesFolder, filename);
 
-        while ((len = in.read(buffer)) != -1) {
-            out.write(buffer, 0, len);
+            out = new FileOutputStream(file);
+            byte[] buffer = new byte[1024];
+            int len;
+
+            while ((len = in.read(buffer)) != -1) {
+                out.write(buffer, 0, len);
+            }
+        } finally {
+            if(out != null)
+                out.close();
         }
-
-        out.close();
     }
 
     public static void setOBO(OBO obo) {
