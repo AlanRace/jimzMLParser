@@ -1,6 +1,8 @@
 package com.alanmrace.jimzmlparser.mzml;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,6 +27,8 @@ import java.util.regex.Pattern;
  */
 public abstract class MzMLIDContentList<T extends ReferenceableTag & MzMLTag> extends MzMLContentList<T> 
     implements ReferenceList<T> {
+
+    Map<String, T> dictionary = new HashMap<String, T>();
 
     /**
      * Create an empty list with specified capacity.
@@ -51,18 +55,7 @@ public abstract class MzMLIDContentList<T extends ReferenceableTag & MzMLTag> ex
      * @return Element of the list with the unique ID, null if none found
      */
     public T get(String id) {
-        List<T> list = getList();
-        
-        if(list == null)
-            return null;
-        
-        for (T item : list) {
-            if (item.getID().equals(id)) {
-                return item;
-            }
-        }
-
-        return null;
+        return dictionary.get(id);
     }
     
     private static final Pattern LAST_INTEGER_PATTERN = Pattern.compile("[^0-9]+([0-9]+)$");
@@ -83,23 +76,30 @@ public abstract class MzMLIDContentList<T extends ReferenceableTag & MzMLTag> ex
             
             //TODO: change ID and then warn the validator
         }
-        
+
+        dictionary.put(item.getID(), item);
         super.add(item);
+    }
+
+    @Override
+    public T remove(int index) {
+        T removed = super.remove(index);
+
+        if(removed != null)
+            dictionary.remove(removed);
+
+        return removed;
+    }
+
+    @Override
+    public boolean remove(T item) {
+        dictionary.remove(item);
+
+        return super.remove(item);
     }
     
     public boolean containsID(String id) {
-        List<T> list = getList();
-        
-        if(list == null)
-            return false;
-        
-        for (T item : list) {
-            if (item.getID().equals(id)) {
-                return true;
-            }
-        }
-        
-        return false;
+        return dictionary.containsKey(id);
     }
     
     @Override
