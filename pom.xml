@@ -10,7 +10,7 @@
     
     <groupId>com.alanmrace</groupId>
     <artifactId>jimzmlparser</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -80,7 +80,7 @@
                     <executions>
                         <execution>
                             <id>sign-artifacts</id>
-                            <phase>deploy</phase>
+                            <phase>verify</phase>
                             <goals>
                                 <goal>sign</goal>
                             </goals>

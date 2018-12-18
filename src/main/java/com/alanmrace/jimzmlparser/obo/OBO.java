@@ -83,52 +83,48 @@ public class OBO implements Serializable {
         OBOTerm curTerm = null;
         boolean processingTerms = false;
 
-        try {
-            while ((curLine = in.readLine()) != null) {
-                // Skip empty lines
-                if (curLine.trim().isEmpty()) {
-                    continue;
+        while ((curLine = in.readLine()) != null) {
+            // Skip empty lines
+            if (curLine.trim().isEmpty()) {
+                continue;
+            }
+
+            if (curLine.trim().equals("[Term]")) {
+                // Process a term
+                processingTerms = true;
+
+                // Get the ID
+                curLine = in.readLine();
+                // TODO: Requires that the first tag in the term is the ID tag
+
+                if (curLine != null) {
+                    int indexOfColon = curLine.indexOf(':');
+                    String id = curLine.substring(indexOfColon + 1).trim();
+
+                    curTerm = new OBOTerm(this, id);
+
+                    terms.put(id, curTerm);
                 }
+            } else if (curLine.trim().equals("[Typedef]")) {
+                processingTerms = false;
+            } else if (curTerm != null && processingTerms) {
+                curTerm.parse(curLine);
+            } else {
+                // TODO: Add in header information
+                int locationOfColon = curLine.indexOf(':');
+                String tag = curLine.substring(0, locationOfColon).trim();
+                String value = curLine.substring(locationOfColon + 1).trim().toLowerCase();
 
-                if (curLine.trim().equals("[Term]")) {
-                    // Process a term
-                    processingTerms = true;
-
-                    // Get the ID
-                    curLine = in.readLine();
-                    // TODO: Requires that the first tag in the term is the ID tag 
-                    
-                    if(curLine != null) {
-	                    int indexOfColon = curLine.indexOf(':');
-	                    String id = curLine.substring(indexOfColon + 1).trim();
-	
-	                    curTerm = new OBOTerm(this, id);
-	
-	                    terms.put(id, curTerm);
-                    }
-                } else if (curLine.trim().equals("[Typedef]")) {
-                    processingTerms = false;
-                } else if (curTerm != null && processingTerms) {
-                    curTerm.parse(curLine);
-                } else {
-                    // TODO: Add in header information
-                    int locationOfColon = curLine.indexOf(':');
-                    String tag = curLine.substring(0, locationOfColon).trim();
-                    String value = curLine.substring(locationOfColon + 1).trim().toLowerCase();
-
-                    if("import".equals(tag)) {
-                        imports.add(new OBO(value, loader));
-                    } else if("default-namespace".equals(tag)) {
-                        defaultNamespace = value;
-                    } else if("ontology".equals(tag)) {
-                        ontologyIdentifier = value;
-                    } else if("data-version".equals(tag)) {
-                        dataVersion = value;
-                    }
+                if ("import".equals(tag)) {
+                    imports.add(new OBO(value, loader));
+                } else if ("default-namespace".equals(tag)) {
+                    defaultNamespace = value;
+                } else if ("ontology".equals(tag)) {
+                    ontologyIdentifier = value;
+                } else if ("data-version".equals(tag)) {
+                    dataVersion = value;
                 }
             }
-        } catch (IOException ex) {
-            Logger.getLogger(OBO.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         // Process relationships

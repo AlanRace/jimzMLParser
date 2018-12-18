@@ -13,7 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.*;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -32,10 +32,6 @@ import com.alanmrace.jimzmlparser.exceptions.ObsoleteTermUsed;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.nio.channels.Channels;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.logging.Level;
 
 import org.xml.sax.Attributes;
@@ -54,12 +50,27 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Alan Race
  */
 public class MzMLHeaderHandler extends DefaultHandler {
-    
-    public static final String ACCESSION_ATTRIBUTE_NAME = "accession";
-    public static final String VALUE_ATTRIBUTE_NAME = "value";
-    public static final String UNIT_ACCESSION_ATTRIBUTE_NAME = "unitAccession";
-    public static final String ID_ATTRIBUTE_NAME = "id";
-    public static final String COUNT_ATTRIBUTE_NAME = "count";
+
+    /**
+     * Name of the XML attribute where the CV parameter accession number is stored.
+     */
+    static final String ACCESSION_ATTRIBUTE_NAME = "accession";
+    /**
+     * Name of the XML attribute where the CV parameter value is stored.
+     */
+    static final String VALUE_ATTRIBUTE_NAME = "value";
+    /**
+     * Name of the XML attribute where the unit CV accession number is stored.
+     */
+    private static final String UNIT_ACCESSION_ATTRIBUTE_NAME = "unitAccession";
+    /**
+     * Name of the XML attribute where the ID of a tag is stored.
+     */
+    static final String ID_ATTRIBUTE_NAME = "id";
+    /**
+     * Name of the XML attribute where the count of a list is stored.
+     */
+    private static final String COUNT_ATTRIBUTE_NAME = "count";
 
     /**
      * Class logger.
@@ -121,19 +132,19 @@ public class MzMLHeaderHandler extends DefaultHandler {
      * Current ScanSettings created each time a {@literal <scanSettings>} tag is
      * encountered.
      */
-    protected ScanSettings currentScanSettings;
+    ScanSettings currentScanSettings;
 
     /**
      * Current SourceFileRefList created each time a
      * {@literal <sourceFileRefList>} tag is encountered.
      */
-    protected SourceFileRefList currentSourceFileRefList;
+    private SourceFileRefList currentSourceFileRefList;
 
     /**
      * Current TargetList created each time a {@literal <targetList>} tag is
      * encountered.
      */
-    protected TargetList currentTargetList;
+    private TargetList currentTargetList;
 
     /**
      * InstrumentConfigurationList associated with the MzML that is currently
@@ -145,26 +156,26 @@ public class MzMLHeaderHandler extends DefaultHandler {
      * Current InstrumentConfiguration created each time a
      * {@literal <instrumentConfiguration>} tag is encountered.
      */
-    protected InstrumentConfiguration currentInstrumentConfiguration;
+    private InstrumentConfiguration currentInstrumentConfiguration;
 
     /**
      * Current ComponentList (can consist of Source, Analyzer and Detector)
      * created each time a {@literal <instrumentConfiguration>} tag is
      * encountered.
      */
-    protected ComponentList currentComponentList;
+    private ComponentList currentComponentList;
 
     /**
      * DataProcessingList associated with the MzML that is currently being
      * parsed.
      */
-    protected DataProcessingList dataProcessingList;
+    private DataProcessingList dataProcessingList;
 
     /**
      * Current DataProcessing created each time a {@literal <dataProcessing>}
      * tag is encountered.
      */
-    protected DataProcessing currentDataProcessing;
+    private DataProcessing currentDataProcessing;
 
     /**
      * Run associated with the MzML that is currently being parsed.
@@ -180,131 +191,134 @@ public class MzMLHeaderHandler extends DefaultHandler {
      * Current Spectrum created each time a {@literal <spectrum>} tag is
      * encountered.
      */
-    protected Spectrum currentSpectrum;
+    private Spectrum currentSpectrum;
 
     /**
      * Current ScanList created each time a {@literal <scanList>} tag is
      * encountered.
      */
-    protected ScanList currentScanList;
+    private ScanList currentScanList;
 
     /**
      * Current Scan created each time a {@literal <scan>} tag is encountered.
      */
-    protected Scan currentScan;
+    Scan currentScan;
 
     /**
      * Current ScanWindowList created each time a {@literal <scanWindowList>}
      * tag is encountered.
      */
-    protected ScanWindowList currentScanWindowList;
+    private ScanWindowList currentScanWindowList;
 
     /**
      * Current PrecursorList created each time a {@literal <precursorList>} tag
      * is encountered.
      */
-    protected PrecursorList currentPrecursorList;
+    private PrecursorList currentPrecursorList;
 
     /**
      * Current Precursor created each time a {@literal <precursor>} tag is
      * encountered.
      */
-    protected Precursor currentPrecursor;
+    private Precursor currentPrecursor;
 
     /**
      * Current SelectedIonList created each time a {@literal <selectedIonList>}
      * tag is encountered.
      */
-    protected SelectedIonList currentSelectedIonList;
+    private SelectedIonList currentSelectedIonList;
 
     /**
      * Current ProductList created each time a {@literal <productList>} tag is
      * encountered.
      */
-    protected ProductList currentProductList;
+    private ProductList currentProductList;
 
     /**
      * Current Product created each time a {@literal <product>} tag is
      * encountered.
      */
-    protected Product currentProduct;
+    private Product currentProduct;
 
     /**
      * Current BinaryDataArrayList created each time a
      * {@literal <binaryDataArrayList>} tag is encountered.
      */
-    protected BinaryDataArrayList currentBinaryDataArrayList;
+    private BinaryDataArrayList currentBinaryDataArrayList;
 
     /**
      * Current BinaryDataArray created each time a {@literal <binaryDataArray>}
      * tag is encountered.
      */
-    protected BinaryDataArray currentBinaryDataArray;
+    BinaryDataArray currentBinaryDataArray;
 
     /**
      * ChromatogramList associated with the current MzML being parsed.
      */
-    protected ChromatogramList chromatogramList;
+    private ChromatogramList chromatogramList;
 
     /**
      * Current Chromatogram created each time a {@literal <chromatogram>} tag is
      * encountered.
      */
-    protected Chromatogram currentChromatogram;
+    private Chromatogram currentChromatogram;
 
     /**
      * Current tag.
      */
-    protected MzMLContent currentContent;
+    //protected MzMLContent currentContent;
+
+    protected Stack<MzMLContent> contentStack = new Stack<MzMLContent>();
+    private boolean needToPop = false;
 
     // Flags for tags that share the same sub-tags
     /**
      * True after {@literal <spectrum>} tag and before the end tag has been
      * encountered.
      */
-    protected boolean processingSpectrum;
+    private boolean processingSpectrum;
 
     /**
      * True after {@literal <chromatogram>} tag and before the end tag has been
      * encountered.
      */
-    protected boolean processingChromatogram;
+    private boolean processingChromatogram;
 
     /**
      * True after {@literal <precursor>} tag and before the end tag has been
      * encountered.
      */
-    protected boolean processingPrecursor;
+    private boolean processingPrecursor;
 
     /**
      * True after {@literal <product>} tag and before the end tag has been
      * encountered.
      */
-    protected boolean processingProduct;
+    private boolean processingProduct;
 
     /**
      * True after {@literal <offset>} tag and before the end tag has been
      * encountered.
      */
-    protected boolean processingOffset;
+    private boolean processingOffset;
 
     /**
      * StringBuffer containing the contents between the {@literal <offset>} and
      * {@literal </offset>} tags.
      */
-    protected StringBuffer offsetData;
+    private StringBuffer offsetData;
 
-    protected String previousOffsetIDRef;
-    protected String currentOffsetIDRef;
+    private String previousOffsetIDRef;
+    private String currentOffsetIDRef;
 
-    protected long previousOffset = -1;
+    private long previousOffset = -1;
 
-    protected DataStorage dataStorage;
-    protected boolean openDataStorage = true;
+    DataStorage dataStorage;
+    private boolean openDataStorage = true;
 
-    protected int numberOfSpectra = 0;
+    int numberOfSpectra = 0;
 
-    protected List<ParserListener> listeners;
+    private List<ParserListener> listeners;
 
     /**
      * Set up a SAX parser for MzML metadata with the specified ontology
@@ -312,7 +326,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
      *
      * @param obo Ontology database
      */
-    protected MzMLHeaderHandler(OBO obo) {
+    MzMLHeaderHandler(OBO obo) {
         this.obo = obo;
 
         processingSpectrum = false;
@@ -331,6 +345,11 @@ public class MzMLHeaderHandler extends DefaultHandler {
         this.locator = locator;
     }
 
+    /**
+     * Set whether the data file should be opened and remain open after parsing is complete.
+     *
+     * @param openDataStorage true if data file should be opened, false if it should be closed.
+     */
     public void setOpenDataStorage(boolean openDataStorage) {
         this.openDataStorage = openDataStorage;
     }
@@ -455,7 +474,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
     }
 
     protected void startCVParam(Attributes attributes) {
-        if (currentContent != null) {
+        if (contentStack.peek() != null) {
             String accession = attributes.getValue(ACCESSION_ATTRIBUTE_NAME);
 
             OBOTerm term = obo.getTerm(accession);
@@ -464,17 +483,17 @@ public class MzMLHeaderHandler extends DefaultHandler {
             // Notify listeners of the fact that an issue occured and we attempted to resolve it
             if (term == null) {
                 UserParam userParam = new UserParam(attributes.getValue(ACCESSION_ATTRIBUTE_NAME), attributes.getValue(VALUE_ATTRIBUTE_NAME), obo.getTerm(attributes.getValue(UNIT_ACCESSION_ATTRIBUTE_NAME)));
-                ((MzMLContentWithParams) currentContent).addUserParam(userParam);
+                ((MzMLContentWithParams) contentStack.peek()).addUserParam(userParam);
 
                 CVParamAccessionNotFoundIssue notFound = new CVParamAccessionNotFoundIssue(attributes.getValue(ACCESSION_ATTRIBUTE_NAME), userParam);
 
-                notFound.setIssueLocation(currentContent);
+                notFound.setIssueLocation(contentStack.peek());
 
                 notifyParserListeners(notFound);
             } else {
                 if (term.isObsolete()) {
                     ObsoleteTermUsed obsoleteIssue = new ObsoleteTermUsed(term);
-                    obsoleteIssue.setIssueLocation(currentContent);
+                    obsoleteIssue.setIssueLocation(contentStack.peek());
 
                     notifyParserListeners(obsoleteIssue);
                 }
@@ -496,7 +515,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
                                 if (value != null && !value.isEmpty()) {
                                     InvalidFormatIssue formatIssue = new InvalidFormatIssue(term, attributes.getValue(VALUE_ATTRIBUTE_NAME));
-                                    formatIssue.setIssueLocation(currentContent);
+                                    formatIssue.setIssueLocation(contentStack.peek());
 
                                     notifyParserListeners(formatIssue);
                                 }
@@ -518,7 +537,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
                                 InvalidFormatIssue formatIssue = new InvalidFormatIssue(term, paramType);
                                 formatIssue.fixAttemptedByChangingType((StringCVParam) cvParam);
-                                formatIssue.setIssueLocation(currentContent);
+                                formatIssue.setIssueLocation(contentStack.peek());
                                 notifyParserListeners(formatIssue);
 
                                 break;
@@ -528,20 +547,20 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
                         InvalidFormatIssue formatIssue = new InvalidFormatIssue(term, attributes.getValue(VALUE_ATTRIBUTE_NAME));
                         formatIssue.fixAttemptedByChangingType((StringCVParam) cvParam);
-                        formatIssue.setIssueLocation(currentContent);
+                        formatIssue.setIssueLocation(contentStack.peek());
 
                         notifyParserListeners(formatIssue);
                     }
 
-                    if (currentContent instanceof MzMLContentWithParams) {
-                        ((MzMLContentWithParams) currentContent).addCVParam(cvParam);
+                    if (contentStack.peek() instanceof MzMLContentWithParams) {
+                        ((MzMLContentWithParams) contentStack.peek()).addCVParam(cvParam);
                     } else {
-                        throw new RuntimeException("Failure to add CVParam to " + currentContent);
+                        throw new RuntimeException("Failure to add CVParam to " + contentStack.peek());
                     }
                 } catch (NonFatalParseException ex) {
                     NonFatalParseIssue issue = ex.getIssue();
 
-                    issue.setIssueLocation(currentContent);
+                    issue.setIssueLocation(contentStack.peek());
 
                     notifyParserListeners(issue);
 
@@ -562,17 +581,17 @@ public class MzMLHeaderHandler extends DefaultHandler {
             if (group != null) {
                 ReferenceableParamGroupRef ref = new ReferenceableParamGroupRef(group);
 
-                if (currentContent != null) {
+                if (contentStack.peek() != null) {
                     foundReference = true;
 
-                    ((MzMLContentWithParams) currentContent).addReferenceableParamGroupRef(ref);
+                    ((MzMLContentWithParams) contentStack.peek()).addReferenceableParamGroupRef(ref);
                 }
             }
         }
 
         if (!foundReference) {
             MissingReferenceIssue missingRefIssue = new MissingReferenceIssue(attributes.getValue("ref"), "referenceableParamGroupRef", "ref");
-            missingRefIssue.setIssueLocation(currentContent);
+            missingRefIssue.setIssueLocation(contentStack.peek());
             missingRefIssue.fixAttemptedByRemovingReference();
 
             notifyParserListeners(missingRefIssue);
@@ -596,7 +615,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             run = new Run(attributes.getValue(ID_ATTRIBUTE_NAME), instrumentConfiguration);
         } else {
             MissingReferenceIssue missingRefIssue = new MissingReferenceIssue(instrumentConfigurationRef, "run", "defaultInstrumentConfigurationRef");
-            missingRefIssue.setIssueLocation(currentContent);
+            missingRefIssue.setIssueLocation(contentStack.peek());
 
             // TODO: Workaround only in place because of ABSciex converter bug where 
             // the defaultInstrumentConfigurationRef is auto-incremented in every raster
@@ -630,7 +649,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
             if (!foundRef) {
                 MissingReferenceIssue missingRefIssue = new MissingReferenceIssue(defaultSourceFileRef, "run", "defaultSourceFileRef");
-                missingRefIssue.setIssueLocation(currentContent);
+                missingRefIssue.setIssueLocation(contentStack.peek());
                 missingRefIssue.fixAttemptedByRemovingReference();
 
                 notifyParserListeners(missingRefIssue);
@@ -653,7 +672,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
             if (!foundRef) {
                 MissingReferenceIssue missingRefIssue = new MissingReferenceIssue(sampleRef, "run", "sampleRef");
-                missingRefIssue.setIssueLocation(currentContent);
+                missingRefIssue.setIssueLocation(contentStack.peek());
                 missingRefIssue.fixAttemptedByRemovingReference();
 
                 notifyParserListeners(missingRefIssue);
@@ -675,7 +694,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             } catch (ParseException ex) {
                 // Inform validator that invalid timestamp used
                 InvalidFormatIssue formatIssue = new InvalidFormatIssue("startTimeStamp", "yyyy-MM-dd'T'HH:mm:ss", startTimeStamp);
-                formatIssue.setIssueLocation(currentContent);
+                formatIssue.setIssueLocation(contentStack.peek());
 
                 notifyParserListeners(formatIssue);
 
@@ -689,7 +708,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                     run.setStartTimeStamp(calendar);
                 } catch (ParseException pe) {
                     InvalidFormatIssue secondFormatIssue = new InvalidFormatIssue("startTimeStamp", "EEE MMM dd HH:mm:ss zzz yyyy", startTimeStamp);
-                    secondFormatIssue.setIssueLocation(currentContent);
+                    secondFormatIssue.setIssueLocation(contentStack.peek());
 
                     notifyParserListeners(secondFormatIssue);
                 }
@@ -698,7 +717,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
         mzML.setRun(run);
 
-        currentContent = run;
+        contentStack.push(run);
     }
 
     protected void startInstrumentConfiguration(Attributes attributes) {
@@ -713,7 +732,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 currentInstrumentConfiguration.setScanSettingsRef(scanSettings);
             } else {
                 MissingReferenceIssue missingRefIssue = new MissingReferenceIssue(scanSettingsRef, "instrumentConfiguration", "scanSettingsRef");
-                missingRefIssue.setIssueLocation(currentContent);
+                missingRefIssue.setIssueLocation(contentStack.peek());
                 missingRefIssue.fixAttemptedByRemovingReference();
 
                 notifyParserListeners(missingRefIssue);
@@ -726,7 +745,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             throw new FatalRuntimeParseException(new InvalidMzMLIssue("<instrumentConfigurationList> tag not defined prior to defining <instrumentConfiguration> tag.", ex.getLocalizedMessage()), ex);
         }
 
-        currentContent = currentInstrumentConfiguration;
+        contentStack.push(currentInstrumentConfiguration);
     }
 
     protected void startScan(Attributes attributes) {
@@ -751,7 +770,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 currentScan.setInstrumentConfigurationRef(instrumentConfiguration);
             } else {
                 MissingReferenceIssue refIssue = new MissingReferenceIssue(instrumentConfigurationRef, "scan", "instrumentConfigurationRef");
-                refIssue.setIssueLocation(currentContent);
+                refIssue.setIssueLocation(contentStack.peek());
 
                 // TODO: Workaround only in place because of ABSciex converter bug where 
                 // the defaultInstrumentConfigurationRef is auto-incremented in every raster
@@ -789,7 +808,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
             if (!foundRef) {
                 MissingReferenceIssue refIssue = new MissingReferenceIssue(sourceFileRef, "scan", "sourceFileRef");
-                refIssue.setIssueLocation(currentContent);
+                refIssue.setIssueLocation(contentStack.peek());
                 refIssue.fixAttemptedByRemovingReference();
 
                 notifyParserListeners(refIssue);
@@ -806,7 +825,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             throw new FatalRuntimeParseException(new InvalidMzMLIssue("<scanList> tag not defined prior to defining <scan> tag.", ex.getLocalizedMessage()), ex);
         }
 
-        currentContent = currentScan;
+        contentStack.push(currentScan);
     }
 
     protected void startPrecursor(Attributes attributes) {
@@ -829,7 +848,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
             if (!foundRef) {
                 MissingReferenceIssue refIssue = new MissingReferenceIssue(sourceFileRef, "precursor", "sourceFileRef");
-                refIssue.setIssueLocation(currentContent);
+                refIssue.setIssueLocation(contentStack.peek());
                 refIssue.fixAttemptedByRemovingReference();
 
                 notifyParserListeners(refIssue);
@@ -853,6 +872,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 throw new FatalRuntimeParseException(new InvalidMzMLIssue("<chromatogram> tag not defined prior to defining <precursor> tag.", ex.getLocalizedMessage()), ex);
             }
         }
+
+        contentStack.push(currentPrecursor);
     }
 
     protected void startProcessingMethod(Attributes attributes) {
@@ -874,17 +895,17 @@ public class MzMLHeaderHandler extends DefaultHandler {
         ProcessingMethod pm = new ProcessingMethod(software);
         currentDataProcessing.addProcessingMethod(pm);
 
-        currentContent = pm;
+        contentStack.push(pm);
 
         if (!referenceFound && software != null) {
             MissingReferenceIssue missingRefIssue = new MissingReferenceIssue(softwareRef, "processingMethod", "softwareRef");
-            missingRefIssue.setIssueLocation(currentContent);
+            missingRefIssue.setIssueLocation(contentStack.peek());
             missingRefIssue.fixAttemptedByChangingReference(software);
 
             notifyParserListeners(missingRefIssue);
         } else if (!referenceFound) {
             MissingReferenceIssue missingRefIssue = new MissingReferenceIssue(softwareRef, "processingMethod", "softwareRef");
-            missingRefIssue.setIssueLocation(currentContent);
+            missingRefIssue.setIssueLocation(contentStack.peek());
             missingRefIssue.fixAttemptedByRemovingReference();
 
             notifyParserListeners(missingRefIssue);
@@ -915,7 +936,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
             if (!foundRef) {
                 MissingReferenceIssue refIssue = new MissingReferenceIssue(dataProcessingRef, "binaryDataArray", "dataProcessingRef");
-                refIssue.setIssueLocation(currentContent);
+                refIssue.setIssueLocation(contentStack.peek());
                 refIssue.fixAttemptedByRemovingReference();
 
                 notifyParserListeners(refIssue);
@@ -928,7 +949,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             throw new FatalRuntimeParseException(new InvalidMzMLIssue("<binaryDataArrayList> tag not defined prior to defining <binaryDataArray> tag.", ex.getLocalizedMessage()), ex);
         }
 
-        currentContent = currentBinaryDataArray;
+        contentStack.push(currentBinaryDataArray);
     }
 
     protected void startSpectrumList(Attributes attributes) {
@@ -948,7 +969,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
         if (!foundRef) {
             MissingReferenceIssue refIssue = new MissingReferenceIssue(defaultDataProcessingRef, "spectrumList", "defaultDataProcessingRef");
-            refIssue.setIssueLocation(currentContent);
+            refIssue.setIssueLocation(contentStack.peek());
             refIssue.fixAttemptedByRemovingReference();
 
             notifyParserListeners(refIssue);
@@ -965,6 +986,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
         }
 
         run.setSpectrumList(spectrumList);
+
+        contentStack.push(spectrumList);
     }
 
     protected void startSpectrum(Attributes attributes) {
@@ -986,7 +1009,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
             if (!foundRef) {
                 MissingReferenceIssue refIssue = new MissingReferenceIssue(dataProcessingRef, "spectrum", "dataProcessingRef");
-                refIssue.setIssueLocation(currentContent);
+                refIssue.setIssueLocation(contentStack.peek());
                 refIssue.fixAttemptedByRemovingReference();
 
                 notifyParserListeners(refIssue);
@@ -1012,7 +1035,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
             if (!foundRef) {
                 MissingReferenceIssue refIssue = new MissingReferenceIssue(sourceFileRef, "spectrum", "sourceFileRef");
-                refIssue.setIssueLocation(currentContent);
+                refIssue.setIssueLocation(contentStack.peek());
                 refIssue.fixAttemptedByRemovingReference();
 
                 notifyParserListeners(refIssue);
@@ -1033,7 +1056,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             throw new FatalRuntimeParseException(new InvalidMzMLIssue("<spectrumList> tag not defined prior to defining <spectrum> tag.", ex.getLocalizedMessage()), ex);
         }
 
-        currentContent = currentSpectrum;
+        contentStack.push(currentSpectrum);
     }
 
     protected void startChromatogramList(Attributes attributes) {
@@ -1060,6 +1083,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
         try {
             run.setChromatogramList(chromatogramList);
+
+            contentStack.push(chromatogramList);
         } catch (NullPointerException ex) {
             throw new FatalRuntimeParseException(new InvalidMzMLIssue("<run> tag not defined prior to defining <chromatogramList> tag.", ex.getLocalizedMessage()), ex);
         }
@@ -1095,11 +1120,11 @@ public class MzMLHeaderHandler extends DefaultHandler {
             throw new FatalRuntimeParseException(new InvalidMzMLIssue("<chromatogramList> tag not defined prior to defining <chromatogram> tag."));
         }
 
-        currentContent = currentChromatogram;
+        contentStack.push(currentChromatogram);
     }
 
     protected void startUserParam(Attributes attributes) {
-        if (currentContent != null) {
+        if (contentStack.peek() != null) {
             UserParam userParam = new UserParam(attributes.getValue("name"));
 
             String type = attributes.getValue("type");
@@ -1112,7 +1137,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             }
 
             userParam.setUnits(obo.getTerm(attributes.getValue(UNIT_ACCESSION_ATTRIBUTE_NAME)));
-            ((MzMLContentWithParams) currentContent).addUserParam(userParam);
+            ((MzMLContentWithParams) contentStack.peek()).addUserParam(userParam);
         }
     }
 
@@ -1130,6 +1155,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
         if (attributes.getValue(ID_ATTRIBUTE_NAME) != null) {
             mzML.setID(attributes.getValue(ID_ATTRIBUTE_NAME));
         }
+
+        contentStack.push(mzML);
     }
 
     protected void startCVList(Attributes attributes) {
@@ -1140,14 +1167,21 @@ public class MzMLHeaderHandler extends DefaultHandler {
         } catch (NullPointerException ex) {
             throw new FatalRuntimeParseException(new InvalidMzMLIssue("<mzML> tag not defined prior to defining <cvList> tag.", ex.getLocalizedMessage()), ex);
         }
+
+        contentStack.push(cvList);
     }
 
     protected void startCV(Attributes attributes) {
         OBO childOBO = OBO.getOBO().getOBOWithID(attributes.getValue(ID_ATTRIBUTE_NAME));
 
         if (childOBO != null) {
-            cvList.add(new CV(childOBO));
+            CV cv = new CV(childOBO);
+
+            cvList.add(cv);
+
+            contentStack.push(cv);
         } else {
+            contentStack.push(null);
             LOGGER.log(Level.SEVERE, "WEIRD ONTOLOGY FOUND! {0}", attributes.getValue(ID_ATTRIBUTE_NAME));
         }
     }
@@ -1161,7 +1195,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             throw new FatalRuntimeParseException(new InvalidMzMLIssue("<fileDescription> tag not defined prior to defining <fileContent> tag.", ex.getLocalizedMessage()), ex);
         }
 
-        currentContent = fc;
+        contentStack.push(fc);
     }
 
     protected void startSourceFileList(Attributes attributes) {
@@ -1172,6 +1206,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
         } catch (NullPointerException ex) {
             throw new FatalRuntimeParseException(new InvalidMzMLIssue("<fileDescription> tag not defined prior to defining <sourceFileList> tag.", ex.getLocalizedMessage()), ex);
         }
+
+        contentStack.push(sourceFileList);
     }
 
     protected void startSourceFile(Attributes attributes) {
@@ -1183,7 +1219,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             throw new FatalRuntimeParseException(new InvalidMzMLIssue("<sourceFileList> tag not defined prior to defining <sourceFile> tag.", ex.getLocalizedMessage()), ex);
         }
 
-        currentContent = sf;
+        contentStack.push(sf);
     }
 
     protected void startContact() {
@@ -1195,7 +1231,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             throw new FatalRuntimeParseException(new InvalidMzMLIssue("<fileDescription> tag not defined prior to defining <contact> tag.", ex.getLocalizedMessage()), ex);
         }
 
-        currentContent = contact;
+        contentStack.push(contact);
     }
 
     protected void startReferenceableParamGroupList(Attributes attributes) {
@@ -1206,11 +1242,13 @@ public class MzMLHeaderHandler extends DefaultHandler {
         } catch (NullPointerException ex) {
             throw new FatalRuntimeParseException(new InvalidMzMLIssue("<mzML> tag not defined prior to defining <referenceableParamGroupList> tag.", ex.getLocalizedMessage()), ex);
         }
+
+        contentStack.push(referenceableParamGroupList);
     }
 
     protected void startReferenceableParamGroup(Attributes attributes) {
         ReferenceableParamGroup rpg = new ReferenceableParamGroup(attributes.getValue(ID_ATTRIBUTE_NAME));
-        currentContent = rpg;
+        contentStack.push(rpg);
 
         referenceableParamGroupList.addReferenceableParamGroup(rpg);
     }
@@ -1223,6 +1261,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
         } catch (NullPointerException ex) {
             throw new FatalRuntimeParseException(new InvalidMzMLIssue("<mzML> tag not defined prior to defining <sampleList> tag.", ex.getLocalizedMessage()), ex);
         }
+
+        contentStack.push(sampleList);
     }
 
     protected void startSample(Attributes attributes) {
@@ -1238,7 +1278,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             throw new FatalRuntimeParseException(new InvalidMzMLIssue("<sampleList> tag not defined prior to defining <sample> tag.", ex.getLocalizedMessage()), ex);
         }
 
-        currentContent = sample;
+        contentStack.push(sample);
     }
 
     protected void startSoftwareList(Attributes attributes) {
@@ -1249,6 +1289,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
         } catch (NullPointerException ex) {
             throw new FatalRuntimeParseException(new InvalidMzMLIssue("<mzML> tag not defined prior to defining <softwareList> tag.", ex.getLocalizedMessage()), ex);
         }
+
+        contentStack.push(softwareList);
     }
 
     protected void startSoftware(Attributes attributes) {
@@ -1259,7 +1301,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
         } catch (NullPointerException ex) {
             throw new FatalRuntimeParseException(new InvalidMzMLIssue("<softwareList> tag not defined prior to defining <software> tag.", ex.getLocalizedMessage()), ex);
         }
-        currentContent = sw;
+        contentStack.push(sw);
     }
 
     protected void startScanSettingsList(Attributes attributes) {
@@ -1270,6 +1312,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
         } catch (NullPointerException ex) {
             throw new FatalRuntimeParseException(new InvalidMzMLIssue("<mzML> tag not defined prior to defining <scanSettingsList> tag.", ex.getLocalizedMessage()), ex);
         }
+
+        contentStack.push(scanSettingsList);
     }
 
     protected void startScanSettings(Attributes attributes) {
@@ -1281,7 +1325,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             throw new FatalRuntimeParseException(new InvalidMzMLIssue("<scanSettingsList> tag not defined prior to defining <scanSettings> tag.", ex.getLocalizedMessage()), ex);
         }
 
-        currentContent = currentScanSettings;
+        contentStack.push(currentScanSettings);
     }
 
     protected void startSourceFileRefList(Attributes attributes) {
@@ -1292,6 +1336,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
         } catch (NullPointerException ex) {
             throw new FatalRuntimeParseException(new InvalidMzMLIssue("<scanSettings> tag not defined prior to defining <sourceFileRefList> tag.", ex.getLocalizedMessage()), ex);
         }
+
+        contentStack.push(currentSourceFileRefList);
     }
 
     protected void startSourceFileRef(Attributes attributes) {
@@ -1311,7 +1357,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
         if (!foundReference) {
             MissingReferenceIssue missingRefIssue = new MissingReferenceIssue(attributes.getValue("ref"), "sourceFileRef", "ref");
-            missingRefIssue.setIssueLocation(currentContent);
+            missingRefIssue.setIssueLocation(contentStack.peek());
             missingRefIssue.fixAttemptedByRemovingReference();
 
             notifyParserListeners(missingRefIssue);
@@ -1326,6 +1372,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
         } catch (NullPointerException ex) {
             throw new FatalRuntimeParseException(new InvalidMzMLIssue("<scanSettings> tag not defined prior to defining <targetList> tag.", ex.getLocalizedMessage()), ex);
         }
+
+        contentStack.push(currentTargetList);
     }
 
     protected void startTarget() {
@@ -1337,7 +1385,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             throw new FatalRuntimeParseException(new InvalidMzMLIssue("<targetList> tag not defined prior to defining <target> tag.", ex.getLocalizedMessage()), ex);
         }
 
-        currentContent = target;
+        contentStack.push(target);
     }
 
     protected void startInstrumentConfigurationList(Attributes attributes) {
@@ -1348,6 +1396,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
         } catch (NullPointerException ex) {
             throw new FatalRuntimeParseException(new InvalidMzMLIssue("<mzML> tag not defined prior to defining <instrumentConfigurationList> tag.", ex.getLocalizedMessage()), ex);
         }
+
+        contentStack.push(instrumentConfigurationList);
     }
 
     protected void startComponentList() {
@@ -1358,6 +1408,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
         } catch (NullPointerException ex) {
             throw new FatalRuntimeParseException(new InvalidMzMLIssue("<instrumentConfiguration> tag not defined prior to defining <componentList> tag.", ex.getLocalizedMessage()), ex);
         }
+
+        contentStack.push(currentComponentList);
     }
 
     protected void startSource() {
@@ -1369,11 +1421,13 @@ public class MzMLHeaderHandler extends DefaultHandler {
             throw new FatalRuntimeParseException(new InvalidMzMLIssue("<componentList> tag not defined prior to defining <source> tag.", ex.getLocalizedMessage()), ex);
         }
 
-        currentContent = source;
+        contentStack.push(source);
     }
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+
+        int stackSize = contentStack.size();
 
         // Most common attribute at the start to reduce the number of comparisons needed
         if ("cvParam".equals(qName)) {
@@ -1392,6 +1446,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
             fileDescription = new FileDescription();
 
             mzML.setFileDescription(fileDescription);
+
+            contentStack.push(fileDescription);
         } else if ("fileContent".equals(qName)) {
             startFileContent();
         } else if ("sourceFileList".equals(qName)) {
@@ -1441,7 +1497,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 throw new FatalRuntimeParseException(new InvalidMzMLIssue("<componentList> tag not defined prior to defining <analyser> tag.", ex.getLocalizedMessage()), ex);
             }
 
-            currentContent = analyser;
+            contentStack.push(analyser);
         } else if ("detector".equals(qName)) {
             Detector detector = new Detector();
 
@@ -1451,7 +1507,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 throw new FatalRuntimeParseException(new InvalidMzMLIssue("<componentList> tag not defined prior to defining <detector> tag.", ex.getLocalizedMessage()), ex);
             }
 
-            currentContent = detector;
+            contentStack.push(detector);
         } else if ("softwareRef".equals(qName)) {
             String softwareRef = attributes.getValue("ref");
 
@@ -1469,7 +1525,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
             if (!foundReference) {
                 MissingReferenceIssue missingRefIssue = new MissingReferenceIssue(softwareRef, "softwareRef", "ref");
-                missingRefIssue.setIssueLocation(currentContent);
+                missingRefIssue.setIssueLocation(contentStack.peek());
                 missingRefIssue.fixAttemptedByRemovingReference();
 
                 notifyParserListeners(missingRefIssue);
@@ -1482,6 +1538,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
             } catch (NullPointerException ex) {
                 throw new FatalRuntimeParseException(new InvalidMzMLIssue("<mzML> tag not defined prior to defining <dataProcessingList> tag.", ex.getLocalizedMessage()), ex);
             }
+
+            contentStack.push(dataProcessingList);
         } else if ("dataProcessing".equals(qName)) {
             DataProcessing dp = new DataProcessing(attributes.getValue(ID_ATTRIBUTE_NAME));
 
@@ -1492,7 +1550,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
             }
 
             currentDataProcessing = dp;
-            currentContent = dp;
+            contentStack.push(dp);
         } else if ("processingMethod".equals(qName)) {
             startProcessingMethod(attributes);
         } else if ("run".equals(qName)) {
@@ -1510,7 +1568,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 throw new FatalRuntimeParseException(new InvalidMzMLIssue("<spectrum> tag not defined prior to defining <scanList> tag."));
             }
 
-            currentContent = currentScanList;
+            contentStack.push(currentScanList);
         } else if ("scan".equals(qName)) {
             startScan(attributes);
         } else if ("scanWindowList".equals(qName)) {
@@ -1521,6 +1579,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
             } catch (NullPointerException ex) {
                 throw new FatalRuntimeParseException(new InvalidMzMLIssue("<scan> tag not defined prior to defining <scanWindowList> tag.", ex.getLocalizedMessage()), ex);
             }
+
+            contentStack.push(currentScanWindowList);
         } else if ("scanWindow".equals(qName)) {
             ScanWindow scanWindow = new ScanWindow();
 
@@ -1530,7 +1590,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 throw new FatalRuntimeParseException(new InvalidMzMLIssue("<scanWindowList> tag not defined prior to defining <scanWindow> tag.", ex.getLocalizedMessage()), ex);
             }
 
-            currentContent = scanWindow;
+            contentStack.push(scanWindow);
         } else if ("precursorList".equals(qName)) {
             currentPrecursorList = new PrecursorList(Integer.parseInt(attributes.getValue(COUNT_ATTRIBUTE_NAME)));
 
@@ -1539,6 +1599,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
             } catch (NullPointerException ex) {
                 throw new FatalRuntimeParseException(new InvalidMzMLIssue("<spectrum> tag not defined prior to defining <precursorList> tag.", ex.getLocalizedMessage()), ex);
             }
+
+            contentStack.push(currentPrecursorList);
         } else if ("precursor".equals(qName)) {
             startPrecursor(attributes);
         } else if ("isolationWindow".equals(qName)) {
@@ -1558,7 +1620,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 }
             }
 
-            currentContent = isolationWindow;
+            contentStack.push(isolationWindow);
         } else if ("selectedIonList".equals(qName)) {
             currentSelectedIonList = new SelectedIonList(Integer.parseInt(attributes.getValue(COUNT_ATTRIBUTE_NAME)));
 
@@ -1567,6 +1629,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
             } catch (NullPointerException ex) {
                 throw new FatalRuntimeParseException(new InvalidMzMLIssue("<precursor> tag not defined prior to defining <selectedIonList> tag.", ex.getLocalizedMessage()), ex);
             }
+
+            contentStack.push(currentSelectedIonList);
         } else if ("selectedIon".equals(qName)) {
             SelectedIon selectedIon = new SelectedIon();
 
@@ -1576,7 +1640,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 throw new FatalRuntimeParseException(new InvalidMzMLIssue("<selectedIonList> tag not defined prior to defining <selectedIon> tag.", ex.getLocalizedMessage()), ex);
             }
 
-            currentContent = selectedIon;
+            contentStack.push(selectedIon);
         } else if ("activation".equals(qName)) {
             Activation activation = new Activation();
 
@@ -1586,7 +1650,7 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 throw new FatalRuntimeParseException(new InvalidMzMLIssue("<precursor> tag not defined prior to defining <activation> tag.", ex.getLocalizedMessage()), ex);
             }
 
-            currentContent = activation;
+            contentStack.push(activation);
         } else if ("productList".equals(qName)) {
             currentProductList = new ProductList(Integer.parseInt(attributes.getValue(COUNT_ATTRIBUTE_NAME)));
 
@@ -1595,6 +1659,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
             } catch (NullPointerException ex) {
                 throw new FatalRuntimeParseException(new InvalidMzMLIssue("<spectrum> tag not defined prior to defining <productList> tag.", ex.getLocalizedMessage()), ex);
             }
+
+            contentStack.push(currentProductList);
         } else if ("product".equals(qName)) {
             processingProduct = true;
             currentProduct = new Product();
@@ -1612,6 +1678,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
                     throw new FatalRuntimeParseException(new InvalidMzMLIssue("<chromatogram> tag not defined prior to defining <product> tag.", ex.getLocalizedMessage()), ex);
                 }
             }
+
+            contentStack.push(currentProduct);
         } else if ("binaryDataArrayList".equals(qName)) {
             currentBinaryDataArrayList = new BinaryDataArrayList(Integer.parseInt(attributes.getValue(COUNT_ATTRIBUTE_NAME)));
 
@@ -1628,6 +1696,8 @@ public class MzMLHeaderHandler extends DefaultHandler {
                     throw new FatalRuntimeParseException(new InvalidMzMLIssue("<chromatogram> tag not defined prior to defining <binaryDataArrayList> tag.", ex.getLocalizedMessage()), ex);
                 }
             }
+
+            contentStack.push(currentBinaryDataArrayList);
         } else if ("binaryDataArray".equals(qName)) {
             startBinaryDataArray(attributes);
         } else if ("binary".equals(qName)) {
@@ -1655,6 +1725,11 @@ public class MzMLHeaderHandler extends DefaultHandler {
         } else {
             LOGGER.log(Level.FINEST, "No processing for tag <{0}>", qName);
         }
+
+        //needToPop = stackSize != contentStack.size();
+
+        //if(!needToPop)
+        //    System.out.println(qName + ": doesn't need to pop! ");
     }
 
     @Override
@@ -1753,11 +1828,11 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 currentScan.replaceCVParamsWithRPG(bestGroup);
             }
         } else if ("scanWindow".equals(qName)) {
-            if (currentContent instanceof MzMLContentWithParams) {
-                CVParam cvParam = ((MzMLContentWithParams) currentContent).getCVParamOrChild("MS:1000501");
+            if (contentStack.peek() instanceof MzMLContentWithParams) {
+                CVParam cvParam = ((MzMLContentWithParams) contentStack.peek()).getCVParamOrChild("MS:1000501");
 
-                if (((MzMLContentWithParams) currentContent).containsCVParam(cvParam)) {
-                    ReferenceableParamGroup bestGroup = ((MzMLContentWithParams) currentContent).findBestFittingRPG(referenceableParamGroupList);
+                if (((MzMLContentWithParams) contentStack.peek()).containsCVParam(cvParam)) {
+                    ReferenceableParamGroup bestGroup = ((MzMLContentWithParams) contentStack.peek()).findBestFittingRPG(referenceableParamGroupList);
 
                     if (bestGroup == null) {
                         // TODO: Give it a better name
@@ -1770,11 +1845,11 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
                         referenceableParamGroupList.add(bestGroup);
 
-                        bestGroup.addCVParam(((MzMLContentWithParams) currentContent).getCVParamOrChild("MS:1000501"));
-                        bestGroup.addCVParam(((MzMLContentWithParams) currentContent).getCVParamOrChild("MS:1000500"));
+                        bestGroup.addCVParam(((MzMLContentWithParams) contentStack.peek()).getCVParamOrChild("MS:1000501"));
+                        bestGroup.addCVParam(((MzMLContentWithParams) contentStack.peek()).getCVParamOrChild("MS:1000500"));
                     }
 
-                    ((MzMLContentWithParams) currentContent).replaceCVParamsWithRPG(bestGroup);
+                    ((MzMLContentWithParams) contentStack.peek()).replaceCVParamsWithRPG(bestGroup);
                 }
             }
         } else if ("chromatogram".equals(qName)) {
@@ -1808,6 +1883,12 @@ public class MzMLHeaderHandler extends DefaultHandler {
                 }
             }
         }
+
+        if(!qName.equals("indexedmzML") && !qName.equals("cvParam") && !qName.equals("userParam") && !qName.equals("softwareRef")
+                && !qName.equals("binary") && !qName.equals("referenceableParamGroupRef") && !qName.equals("sourceFileRef")
+                && !qName.equals("index") && !qName.equals("indexList") && !qName.equals("offset") && !qName.equals("indexListOffset")
+                && !qName.equals("fileChecksum"))
+            contentStack.pop();
     }
 
     public MzML getmzML() {

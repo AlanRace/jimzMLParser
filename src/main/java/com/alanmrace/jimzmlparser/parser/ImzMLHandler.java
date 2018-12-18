@@ -320,6 +320,8 @@ public class ImzMLHandler extends MzMLHeaderHandler {
         if (attributes.getValue(MzMLHeaderHandler.ID_ATTRIBUTE_NAME) != null) {
             mzML.setID(attributes.getValue(MzMLHeaderHandler.ID_ATTRIBUTE_NAME));
         }
+
+        contentStack.push(mzML);
     }
 
     @Override
