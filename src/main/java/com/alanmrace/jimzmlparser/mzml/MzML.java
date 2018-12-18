@@ -175,7 +175,7 @@ public class MzML extends MzMLContentWithParams implements Serializable {
      * 
      * @param dataStorage dataStorage
      */
-    public void setDataStorage(DataStorage dataStorage) {
+    public synchronized void setDataStorage(DataStorage dataStorage) {
         this.dataStorage = dataStorage;
     }
 
@@ -581,7 +581,7 @@ public class MzML extends MzMLContentWithParams implements Serializable {
      * Close the DataStorage (if it exists) for the data within the mzML file. 
      * This should be called when the MzML file is no longer required.
      */
-    public void close() {
+    public synchronized void close() {
         if (dataStorage != null) {
             try {
                 dataStorage.close();

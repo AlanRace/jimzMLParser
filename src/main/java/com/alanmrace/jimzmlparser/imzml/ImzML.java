@@ -146,7 +146,7 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
     }
     
     @Override
-    public synchronized double[] getFullmzList() {
+    public double[] getFullmzList() {
         LOGGER.entering(ImzML.class.getName(), "getFullmzList");
 
         if (fullmzList == null) {
@@ -169,7 +169,7 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
                         int numBytesPerDouble = Double.SIZE / Byte.SIZE;
                         // The below is only available in Java 1.8
                         //Double.BYTES
-                        
+
                         fullmzList = new double[fullmzListBytes.length / numBytesPerDouble];
 
                         ByteBuffer buffer = ByteBuffer.wrap(fullmzListBytes);

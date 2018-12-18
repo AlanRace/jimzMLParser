@@ -71,7 +71,12 @@ public abstract class MzMLContentList<T extends MzMLTag>
         if (item instanceof MzMLContent) {
             item.setParent(this);
         }
-        
+
+        /*if(list.isEmpty())
+            list = new ArrayList<T>();
+
+        list.add(item);*/
+
         if (list.size() > 1) {
             list.add(item);
         } else if (list.size() == 1) {
@@ -89,11 +94,17 @@ public abstract class MzMLContentList<T extends MzMLTag>
 
     @Override
     public T remove(int index) {
+        if(list == null)
+            return null;
+
         return list.remove(index);
     }
     
     @Override
     public boolean remove(T item) {
+        if(list == null)
+            return false;
+
         return list.remove(item);
     }
 

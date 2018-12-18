@@ -59,7 +59,7 @@ public abstract class MzMLIDContentList<T extends ReferenceableTag & MzMLTag> ex
     }
     
     private static final Pattern LAST_INTEGER_PATTERN = Pattern.compile("[^0-9]+([0-9]+)$");
-    
+
     @Override
     public void add(T item) {
         if(containsID(item.getID())) {
@@ -76,6 +76,10 @@ public abstract class MzMLIDContentList<T extends ReferenceableTag & MzMLTag> ex
             
             //TODO: change ID and then warn the validator
         }
+
+        // TODO: Unsure why this is necessary, but dictionary == null when converting
+        if(dictionary == null)
+            dictionary = new HashMap<String, T>();
 
         dictionary.put(item.getID(), item);
         super.add(item);
@@ -99,6 +103,11 @@ public abstract class MzMLIDContentList<T extends ReferenceableTag & MzMLTag> ex
     }
     
     public boolean containsID(String id) {
+//        System.out.println("CHecking for " + id);
+
+        if(dictionary == null)
+            return false;
+
         return dictionary.containsKey(id);
     }
     

@@ -197,6 +197,10 @@ public abstract class MzMLContentWithParams extends MzMLContent implements HasPa
         }
     }
 
+    public void removeAllReferenceableParamGroupRefs() {
+        referenceableParamGroupRefs = Collections.emptyList();
+    }
+
     @Override
     public int getReferenceableParamGroupRefCount() {
         return getReferenceableParamGroupRefList().size();

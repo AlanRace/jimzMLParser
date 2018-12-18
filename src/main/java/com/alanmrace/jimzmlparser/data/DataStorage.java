@@ -84,20 +84,20 @@ public abstract class DataStorage {
      * @throws IOException Exception thrown when trying to read data
      */
     public byte[] getData(long offset, int length) throws IOException {
-	if(!fileStreamOpen) {
-	    LOGGER.log(Level.SEVERE, "Trying to access data from a closed stream ({0})", randomAccessFile);
-	    
-	    return new byte[0];
-	}
-	
-	byte[] buffer = new byte[length];
-	
+        if(!fileStreamOpen) {
+            LOGGER.log(Level.SEVERE, "Trying to access data from a closed stream ({0})", randomAccessFile);
+
+            return new byte[0];
+        }
+
+        byte[] buffer = new byte[length];
+
         synchronized(randomAccessFile) {
             randomAccessFile.seek(offset);
             randomAccessFile.read(buffer);
         }
 	
-	return buffer;
+	    return buffer;
     }
     
     /**
