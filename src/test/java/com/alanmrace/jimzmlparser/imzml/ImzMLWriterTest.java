@@ -7,13 +7,14 @@ package com.alanmrace.jimzmlparser.imzml;
 
 import com.alanmrace.jimzmlparser.exceptions.ImzMLParseException;
 import com.alanmrace.jimzmlparser.exceptions.MzMLParseException;
-import com.alanmrace.jimzmlparser.mzml.BinaryDataArray;
-import com.alanmrace.jimzmlparser.mzml.MzML;
-import com.alanmrace.jimzmlparser.mzml.Spectrum;
+import com.alanmrace.jimzmlparser.mzml.*;
+import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.parser.ImzMLHandler;
 import com.alanmrace.jimzmlparser.parser.MzMLHeaderHandler;
+import com.alanmrace.jimzmlparser.writer.ImzMLSteamWriter;
 import com.alanmrace.jimzmlparser.writer.ImzMLWriter;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static org.junit.Assert.assertNotNull;
@@ -80,5 +81,31 @@ public class ImzMLWriterTest {
 //            Logger.getLogger(ImzMLWriterTest.class.getName()).log(Level.SEVERE, null, ex);
 //        }
         
+    }
+
+    @Test
+    public void testImzMLStreamWriter() throws IOException, NoSuchAlgorithmException {
+        ImzML imzML = ImzML.create();
+
+        ReferenceableParamGroup mzRPG = new ReferenceableParamGroup();
+        mzRPG.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(BinaryDataArray.MZ_ARRAY_ID)));
+        mzRPG.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(BinaryDataArray.DOUBLE_PRECISION_ID)));
+        mzRPG.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(BinaryDataArray.NO_COMPRESSION_ID)));
+
+        ReferenceableParamGroup countRPG = new ReferenceableParamGroup();
+        countRPG.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(BinaryDataArray.INTENSITY_ARRAY_ID)));
+        countRPG.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(BinaryDataArray.DOUBLE_PRECISION_ID)));
+        countRPG.addCVParam(new EmptyCVParam(OBO.getOBO().getTerm(BinaryDataArray.NO_COMPRESSION_ID)));
+
+        ImzMLSteamWriter streamer = new ImzMLSteamWriter("stream_test.imzML", mzRPG, countRPG);
+
+        Spectrum spectrum1 = new Spectrum("test", 1234);
+        spectrum1.setPixelLocation(2, 3);
+        double[] mzs1 = {100.5, 200.6};
+        double[] intensities = {239.234, 234234.45};
+
+        streamer.write(spectrum1, mzs1, intensities);
+
+        streamer.write(imzML);
     }
 }
