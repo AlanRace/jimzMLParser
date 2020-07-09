@@ -57,7 +57,7 @@ public class ImzML extends MzML implements MassSpectrometryImagingData {
      * Height of mass spectrometry image in pixels.
      */
     private int height;
-    
+
     /**
      * Depth of mass spectrometry image in pixels.
      */

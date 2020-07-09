@@ -14,10 +14,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import com.alanmrace.jimzmlparser.mzml.BinaryDataArray;
+import com.alanmrace.jimzmlparser.imzml.PixelLocation;
+import com.alanmrace.jimzmlparser.mzml.*;
 import com.alanmrace.jimzmlparser.obo.OBO;
-import com.alanmrace.jimzmlparser.mzml.MzMLDataContainer;
-import com.alanmrace.jimzmlparser.mzml.Scan;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -205,7 +205,34 @@ public class ImzMLHandler extends MzMLHeaderHandler {
             //parse the file and also register this class for call backs
             sp.parse(inputStream, handler);
 
-            handler.getimzML().setOBO(obo);
+            ImzML imzML = handler.getimzML();
+            imzML.setOBO(obo);
+
+            // Check if Bruker data, and then correct the image to be relative rather than absolute
+            InstrumentConfiguration ic = imzML.getInstrumentConfigurationList().getInstrumentConfiguration(0);
+            if(ic.getCVParamOrChild("MS:1000122") != null) {
+                int minX = Integer.MAX_VALUE;
+                int minY = Integer.MAX_VALUE;
+
+                for(Spectrum spectrum : imzML.getRun().getSpectrumList()) {
+                    PixelLocation location = spectrum.getPixelLocation();
+                    if(location.getX() < minX)
+                        minX = location.getX();
+                    if(location.getY() < minY)
+                        minY = location.getY();
+                }
+
+                for(Spectrum spectrum : imzML.getRun().getSpectrumList()) {
+                    PixelLocation location = spectrum.getPixelLocation();
+                    spectrum.setPixelLocation(location.getX() - minX + 1, location.getY() - minY + 1);
+                }
+
+                CVParam curWidth = imzML.getScanSettingsList().getScanSettings(0).getCVParam(ScanSettings.MAX_COUNT_PIXEL_X_ID);
+                curWidth.setValueAsString("" + (curWidth.getValueAsLong() - minX + 1));
+
+                CVParam curHeight = imzML.getScanSettingsList().getScanSettings(0).getCVParam(ScanSettings.MAX_COUNT_PIXEL_Y_ID);
+                curHeight.setValueAsString("" + (curHeight.getValueAsLong() - minY + 1));
+            }
         } catch (SAXException ex) {
             LOGGER.log(Level.SEVERE, null, ex);
 
@@ -399,7 +426,7 @@ public class ImzMLHandler extends MzMLHeaderHandler {
     /**
      * Get the ImzML created in the SAX parser process.
      *
-     * @return
+     * @return ImzML
      */
     public ImzML getimzML() {
         ImzML imzML = (ImzML) mzML;

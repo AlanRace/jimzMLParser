@@ -88,7 +88,7 @@ public class SoftwareList extends MzMLIDContentList<Software> {
      * Create a default valid SoftwareList. This creates a list with a single 
      * item, created by {@code Software.create()}.
      * 
-     * @return
+     * @return SoftwareList with default Software included
      */
     public static SoftwareList create() {
         SoftwareList softwareList = new SoftwareList(1);
