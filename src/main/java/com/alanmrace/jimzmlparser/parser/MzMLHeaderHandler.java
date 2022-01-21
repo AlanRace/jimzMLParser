@@ -269,7 +269,6 @@ public class MzMLHeaderHandler extends DefaultHandler {
     //protected MzMLContent currentContent;
 
     protected Stack<MzMLContent> contentStack = new Stack<MzMLContent>();
-    private boolean needToPop = false;
 
     // Flags for tags that share the same sub-tags
     /**
@@ -1426,9 +1425,6 @@ public class MzMLHeaderHandler extends DefaultHandler {
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-
-        int stackSize = contentStack.size();
-
         // Most common attribute at the start to reduce the number of comparisons needed
         if ("cvParam".equals(qName)) {
             startCVParam(attributes);

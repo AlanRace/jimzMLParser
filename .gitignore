@@ -40,3 +40,5 @@ test2\.imzML
 release\.properties
 
 src/test/resources/MatrixTests_N2\.imzML\.lz4
+
+.vscode/

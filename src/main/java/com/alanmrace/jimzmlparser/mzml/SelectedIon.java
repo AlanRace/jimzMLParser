@@ -1,13 +1,11 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import java.io.Serializable;
-
 /**
  * Class describing a selected ion.
  * 
  * @author Alan Race
  */
-public class SelectedIon extends MzMLContentWithParams implements Serializable {
+public class SelectedIon extends MzMLContentWithParams {
 
     /**
      * Serialisation version ID.

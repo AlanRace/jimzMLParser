@@ -14,7 +14,6 @@ import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.obo.OBOTerm;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,7 +24,7 @@ import java.util.zip.DataFormatException;
  *
  * @author Alan Race
  */
-public class BinaryDataArray extends MzMLContentWithParams implements Serializable {
+public class BinaryDataArray extends MzMLContentWithParams {
     
     private static final Logger LOGGER = Logger.getLogger(BinaryDataArray.class.getName());
 

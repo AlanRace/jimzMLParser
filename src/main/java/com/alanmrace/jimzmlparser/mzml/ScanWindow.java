@@ -1,13 +1,12 @@
 package com.alanmrace.jimzmlparser.mzml;
 
-import java.io.Serializable;
 
 /**
  * Description of a scan window for a spectrum.
  *  
  * @author Alan Race
  */
-public class ScanWindow extends MzMLContentWithParams implements Serializable {
+public class ScanWindow extends MzMLContentWithParams {
 
     /**
      * Serialisation version ID.

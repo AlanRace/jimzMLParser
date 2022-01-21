@@ -1,14 +1,13 @@
 package com.alanmrace.jimzmlparser.mzml;
 
 import com.alanmrace.jimzmlparser.obo.OBO;
-import java.io.Serializable;
 
 /**
  * Class describing a person of contact responsible for the mzML file.
  * 
  * @author Alan Race
  */
-public class Contact extends MzMLContentWithParams implements Serializable {
+public class Contact extends MzMLContentWithParams {
 
     /**
      * Serialisation version ID.

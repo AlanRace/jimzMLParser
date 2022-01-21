@@ -6,7 +6,6 @@ import com.alanmrace.jimzmlparser.imzml.PixelLocation;
 import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.util.XMLHelper;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.Collection;
 
 /**
@@ -15,7 +14,7 @@ import java.util.Collection;
  *
  * @author Alan Race
  */
-public class Spectrum extends MzMLDataContainer implements Serializable {
+public class Spectrum extends MzMLDataContainer {
 
     /**
      * Serialisation version ID.

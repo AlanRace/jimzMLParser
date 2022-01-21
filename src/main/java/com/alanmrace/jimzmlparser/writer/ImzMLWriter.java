@@ -1,7 +1,5 @@
 package com.alanmrace.jimzmlparser.writer;
 
-import com.alanmrace.jimzmlparser.data.DataTransformation;
-import com.alanmrace.jimzmlparser.imzml.PixelLocation;
 import com.alanmrace.jimzmlparser.mzml.BinaryDataArray;
 import com.alanmrace.jimzmlparser.mzml.BooleanCVParam;
 import com.alanmrace.jimzmlparser.mzml.CV;
@@ -10,15 +8,10 @@ import com.alanmrace.jimzmlparser.mzml.Chromatogram;
 import com.alanmrace.jimzmlparser.mzml.DoubleCVParam;
 import com.alanmrace.jimzmlparser.mzml.EmptyCVParam;
 import com.alanmrace.jimzmlparser.mzml.FileContent;
-import com.alanmrace.jimzmlparser.mzml.IntegerCVParam;
-import com.alanmrace.jimzmlparser.mzml.LongCVParam;
 import com.alanmrace.jimzmlparser.mzml.MzML;
 import com.alanmrace.jimzmlparser.mzml.ReferenceableParamGroup;
-import com.alanmrace.jimzmlparser.mzml.ScanSettings;
-import com.alanmrace.jimzmlparser.mzml.ScanSettingsList;
 import com.alanmrace.jimzmlparser.mzml.Spectrum;
 import com.alanmrace.jimzmlparser.mzml.StringCVParam;
-import com.alanmrace.jimzmlparser.mzml.UserParam;
 import com.alanmrace.jimzmlparser.obo.OBO;
 import com.alanmrace.jimzmlparser.util.HexHelper;
 import com.alanmrace.jimzmlparser.util.UUIDHelper;
@@ -32,8 +25,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.zip.DataFormatException;
-
 /**
  * Writer for exporting both the metadata into an imzML file and the binary data
  * to an IBD file.

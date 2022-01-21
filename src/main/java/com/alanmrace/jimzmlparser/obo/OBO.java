@@ -1,6 +1,7 @@
 package com.alanmrace.jimzmlparser.obo;
 
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,7 +29,7 @@ public class OBO implements Serializable {
     public static final String MS_OBO_FULLNAME = "Proteomics Standards Initiative Mass Spectrometry Ontology";
     
     /** Location of the Units ontology. */
-    public static final String UO_OBO_URI = "http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/phenotype/unit.obo";
+    public static final String UO_OBO_URI = "http://purl.obolibrary.org/obo/uo.obo";
     public static final String UO_OBO_FULLNAME = "Units of Measurement Ontology";
     
     public static final String PATO_OBO_FULLNAME = "Phenotype And Trait Ontology";
@@ -186,7 +187,29 @@ public class OBO implements Serializable {
     }
 
     public static void downloadOBO(String oboLocation) throws IOException {
-        InputStream in = new URL(oboLocation).openStream();
+        URL url = new URL(oboLocation);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+        boolean redirect = false;
+
+        // normally, 3xx is redirect
+        int status = conn.getResponseCode();
+        if (status != HttpURLConnection.HTTP_OK) {
+            if (status == HttpURLConnection.HTTP_MOVED_TEMP
+                || status == HttpURLConnection.HTTP_MOVED_PERM
+                    || status == HttpURLConnection.HTTP_SEE_OTHER)
+            redirect = true;
+        }
+
+        if (redirect) {
+            // get redirect url from "location" header field
+            String newUrl = conn.getHeaderField("Location");
+    
+            // open the new connnection again
+            conn = (HttpURLConnection) new URL(newUrl).openConnection();
+        }
+
+        InputStream in = conn.getInputStream();
 
         String filename = oboLocation.substring(oboLocation.lastIndexOf('/') + 1);
 
